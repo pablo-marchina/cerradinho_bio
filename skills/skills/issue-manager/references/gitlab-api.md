@@ -34,7 +34,7 @@ Labels do projeto (levantadas com `python scripts/get_labels.py` em 2026-10-15).
 | Grupo | Labels |
 |---|---|
 | Prioridade | `Prioridade Alta`, `Prioridade Média`, `Prioridade Baixa` |
-| Tamanho (estimativa mínima) | `PP` (menos de 30min), `P` (30min), `M` (1h), `G` (2h), `GG` (mais de 2h) |
+| Tamanho (estimativa mínima) | `PP` (menos de 30min), `P` (30min), `M` (1h), `G` (2h até 3h), `GG` (mais de 3h) |
 | Tipo | `Infraestrutura`, `CODE`, `CODE_REVIEW`, `DESIGN`, `DOCUMENTATION`, `DEPLOY`, `REQUIREMENTS`, `TEST`, `BUG` |
 | Kanban | `Backlog`, `Doing`, `Review`, `Waiting Review` |
 | Artefato | `Artefato 1`, `Artefato 2`, `Artefato 3`, `Artefato 4` |
