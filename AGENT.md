@@ -173,3 +173,4 @@ Corpo opcional explicando o porquê da mudança, não o como.
   - `fix(#27): corrige leitura do sensor de lacre no firmware`
 - Mudança que quebra compatibilidade (por exemplo, formato da API): acrescente `!` depois do escopo (`feat(#40)!: ...`) e explique no corpo.
 - O autor do commit deve ser o usuário do Inteli (`nome.sobrenome <nome.sobrenome@sou.inteli.edu.br>`), configurado localmente no repositório, para o GitLab ligar o commit ao perfil.
+- Não coloque na mensagem do commit (nem na descrição de merge request) linhas de coautoria de ferramentas de IA (por exemplo `Co-Authored-By: Claude ...`) nem links de sessões ou conversas com assistentes de IA. As conversas do grupo com IA são privadas; o histórico do Git é público para professores e parceiro.
