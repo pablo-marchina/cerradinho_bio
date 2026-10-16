@@ -79,8 +79,45 @@ def token():
 
 class Api:
     def __init__(self, project):
+        self.project = project
         self.base = f"{HOST}/projects/{urllib.parse.quote(project, safe='')}"
         self.tok = token()
+
+    def graphql(self, query, variables=None):
+        data = json.dumps({'query': query, 'variables': variables or {}}).encode()
+        req = urllib.request.Request(HOST.replace('/api/v4', '/api/graphql'), data=data, method='POST',
+                                     headers={'PRIVATE-TOKEN': self.tok, 'Content-Type': 'application/json'})
+        try:
+            with urllib.request.urlopen(req) as r:
+                out = json.load(r)
+        except urllib.error.HTTPError as e:
+            sys.exit(f'graphql -> HTTP {e.code}: {e.read().decode(errors="replace")[:300]}')
+        if out.get('errors'):
+            sys.exit(f"graphql: {out['errors'][0]['message']}")
+        return out['data']
+
+    def dates(self, iids):
+        """{iid: (work item gid, startDate, dueDate)} from the Datas field of the card (START_AND_DUE_DATE widget).
+
+        The REST API only exposes due_date; the start date the board shows lives only in this widget."""
+        q = '''query($p: ID!, $iids: [String!]) { project(fullPath: $p) { workItems(iids: $iids, first: 100) {
+                 nodes { iid id widgets { type ... on WorkItemWidgetStartAndDueDate { startDate dueDate } } } } } }'''
+        out = {}
+        for k in range(0, len(iids), 100):
+            data = self.graphql(q, {'p': self.project, 'iids': [str(i) for i in iids[k:k + 100]]})
+            for n in data['project']['workItems']['nodes']:
+                w = next((w for w in n['widgets'] if w['type'] == 'START_AND_DUE_DATE'), {})
+                out[int(n['iid'])] = (n['id'], w.get('startDate'), w.get('dueDate'))
+        return out
+
+    def set_dates(self, iid, start=None, due=None):
+        """Write start and/or due date into the card's Datas field; the date not given keeps its value."""
+        gid, cur_start, cur_due = self.dates([iid])[iid]
+        m = '''mutation($id: WorkItemID!, $s: Date, $d: Date) { workItemUpdate(input: {id: $id,
+                 startAndDueDateWidget: {startDate: $s, dueDate: $d}}) { errors } }'''
+        errs = self.graphql(m, {'id': gid, 's': start or cur_start, 'd': due or cur_due})['workItemUpdate']['errors']
+        if errs:
+            sys.exit(f'set dates: {errs}')
 
     def call(self, method, path, body=None):
         data = json.dumps(body).encode() if body is not None else None
@@ -138,7 +175,7 @@ def split_sections(desc):
     return result
 
 
-def audit_issue(issue, members, milestone_due):
+def audit_issue(issue, members, milestone_due, start_field=None):
     errors, warns = [], []
     labels = set(issue['labels'])
     desc = issue.get('description') or ''
@@ -149,6 +186,8 @@ def audit_issue(issue, members, milestone_due):
         errors.append('no milestone')
     if not issue.get('due_date'):
         errors.append(f'no due date (milestone due: {milestone_due or "unset"})')
+    if not start_field:
+        errors.append('no start date in the card Datas field (fix with --start YYYY-MM-DD)')
 
     pr = labels & PRIORITY
     if len(pr) != 1:
@@ -158,7 +197,7 @@ def audit_issue(issue, members, milestone_due):
         errors.append(f'size label: expected 1, found {sz or "none"}')
     if not labels & TYPE:
         errors.append('no type label (CODE/DOCUMENTATION/DESIGN/DATA/infrastructure/...)')
-    if not any(label.lower().startswith(('artifact', 'artefact')) for label in labels):
+    if not any(label.lower().startswith(('artifact', 'artefact', 'artefato')) for label in labels):
         warns.append('no Artifact label (fine if the card is not tied to an artifact)')
 
     col = labels & KANBAN
@@ -179,7 +218,9 @@ def audit_issue(issue, members, milestone_due):
         warns.append(f'estimate {est} reaches the {bigger} floor ({floor}m); size {sz[0]} may be too small')
 
     ts = issue['time_stats']
-    if issue['state'] == 'closed' and ts['time_estimate'] and ts['total_time_spent'] != ts['time_estimate']:
+    if not ts['total_time_spent'] and (issue['state'] == 'closed' or col & {'Review', 'Waiting Review', 'Done'}):
+        errors.append('no time spent, but the work is done or in review (log it with --spent 2h or --spent-equals-estimate)')
+    elif issue['state'] == 'closed' and ts['time_estimate'] and ts['total_time_spent'] != ts['time_estimate']:
         errors.append(f"time spent {ts['human_total_time_spent'] or 'none'} differs from the estimate {est} "
                       "(closed cards record spent = estimate; fix with --spent-equals-estimate)")
 
@@ -249,13 +290,15 @@ def cmd_audit(api, args):
             q['assignee_username'] = args.assignee
         issues = api.paged('/issues?' + urllib.parse.urlencode(q))
     issues.sort(key=lambda i: i['iid'])
+    dates = api.dates([i['iid'] for i in issues]) if issues else {}
 
     report = []
     for i in issues:
         ms = (i.get('milestone') or {}).get('title')
-        errors, warns = audit_issue(i, members, milestones.get(ms or args.milestone))
+        start = dates.get(i['iid'], (None, None, None))[1]
+        errors, warns = audit_issue(i, members, milestones.get(ms or args.milestone), start)
         report.append({'iid': i['iid'], 'title': i['title'], 'state': i['state'], 'url': i['web_url'],
-                       'labels': i['labels'], 'milestone': ms, 'due_date': i.get('due_date'),
+                       'labels': i['labels'], 'milestone': ms, 'start_date': start, 'due_date': i.get('due_date'),
                        'estimate': i['time_stats']['human_time_estimate'],
                        'assignees': [a['username'] for a in i['assignees']],
                        'errors': errors, 'warnings': warns})
@@ -267,7 +310,7 @@ def cmd_audit(api, args):
     for r in report:
         mark = 'OK ' if not r['errors'] else 'FIX'
         print(f"[{mark}] #{r['iid']} {r['title'][:70]} ({r['state']})")
-        print(f"      labels={r['labels']} milestone={r['milestone']} due={r['due_date']} "
+        print(f"      labels={r['labels']} milestone={r['milestone']} start={r['start_date']} due={r['due_date']} "
               f"estimate={r['estimate']} assignees={r['assignees']}")
         for e in r['errors']:
             print(f'      ERROR  {e}')
@@ -295,6 +338,7 @@ def cmd_apply(api, args):
     if args.due and not re.fullmatch(r'\d{4}-\d{2}-\d{2}', args.due):
         sys.exit(f'--due {args.due!r} is not YYYY-MM-DD')
     before = api.call('GET', f'/issues/{iid}')
+    before['start_field'] = api.dates([iid])[iid][1]
     body = {}
     if args.add_labels:
         body['add_labels'] = args.add_labels
@@ -327,6 +371,8 @@ def cmd_apply(api, args):
         sys.exit('refusing: the description contains Claude Code attribution')
     if body:
         api.call('PUT', f'/issues/{iid}', body)
+    if args.start:
+        api.set_dates(iid, start=args.start, due=args.due)
     if args.estimate:
         api.call('POST', f'/issues/{iid}/time_estimate?duration={urllib.parse.quote(args.estimate)}')
     if args.spent_equals_estimate or args.spent:
@@ -336,9 +382,11 @@ def cmd_apply(api, args):
         api.call('POST', f'/issues/{iid}/reset_spent_time')
         api.call('POST', f'/issues/{iid}/add_spent_time?duration={urllib.parse.quote(want)}')
     after = api.call('GET', f'/issues/{iid}')
+    after['start_field'] = api.dates([iid])[iid][1]
     for field, get in [('labels', lambda i: i['labels']),
                        ('milestone', lambda i: (i.get('milestone') or {}).get('title')),
                        ('assignees', lambda i: [a['username'] for a in i['assignees']]),
+                       ('start date (campo Datas)', lambda i: i['start_field']),
                        ('due_date', lambda i: i.get('due_date')),
                        ('estimate', lambda i: i['time_stats']['human_time_estimate']),
                        ('spent', lambda i: i['time_stats']['human_total_time_spent']),
@@ -360,7 +408,7 @@ def main():
     ap.add_argument('--add-labels')
     ap.add_argument('--remove-labels')
     ap.add_argument('--due')
-    ap.add_argument('--start', help='apply: set "Data de início" under Datas in the description (YYYY-MM-DD)')
+    ap.add_argument('--start', help='apply: set the start date in the card Datas field and the "Data de início" line in the description (YYYY-MM-DD)')
     ap.add_argument('--spent', help='apply: set time spent to this duration (replaces what was logged)')
     ap.add_argument('--spent-equals-estimate', action='store_true', help='apply: set time spent equal to the estimate')
     ap.add_argument('--set-assignee', help='apply: username to assign the card to, e.g. arthur.loyola')
