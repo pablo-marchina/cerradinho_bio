@@ -23,7 +23,7 @@ import urllib.request
 HOST = 'https://git.inteli.edu.br/api/v4'
 DEFAULT_PROJECT = 'graduacao/2026-2b/t24/g01'
 
-PRIORITY = {'High Priority', 'Medium Priority', 'Low Priority'}
+PRIORITY = {'Prioridade Alta', 'Prioridade Média', 'Prioridade Baixa'}
 SIZE = ['PP', 'P', 'M', 'G', 'GG']
 # Team rule: P = 30m, M = 1h minimum, G = 2h. PP/GG have no agreed number, so they are only held to
 # their neighbour: PP stays below the P floor, GG is not below the G floor.
@@ -33,7 +33,7 @@ NEXT_FLOOR = {'PP': ('P', 30), 'P': ('M', 60), 'M': ('G', 120)}
 START_DATE = r'(?im)^[ 	]*[-*]?[ 	]*\**(?:start date|data de in[ií]cio)\**:?\**[ 	]*(\d{4}-\d{2}-\d{2})'
 DURATION = re.compile(r'(\d+)\s*(mo|[wdhm])')
 UNITS = {'mo': 4 * 5 * 8 * 60, 'w': 5 * 8 * 60, 'd': 8 * 60, 'h': 60, 'm': 1}  # GitLab's 8h day, 5d week, 4w month
-TYPE = {'CODE', 'DOCUMENTATION', 'DESIGN', 'DATA', 'infrastructure', 'BUSINESS', 'TEST', 'DEPLOY',
+TYPE = {'Infraestrutura', 'CODE', 'DOCUMENTATION', 'DESIGN', 'DATA', 'infrastructure', 'BUSINESS', 'TEST', 'DEPLOY',
         'REQUIREMENTS', 'bug', 'BUG', 'chore', 'CODE_REVIEW', 'reunion'}
 KANBAN = {'Backlog', 'Doing', 'Review', 'Waiting Review', 'Done'}
 

@@ -46,11 +46,11 @@ references/
 3. As heurísticas erram às vezes: leia a descrição bruta antes de reportar um problema de seção ou placeholder.
 4. Vá além do script: compare a coluna do card com o estado real (branches, merge requests) e a data com a sprint.
 5. Proponha correções exatas e aplique uma por vez, com OK do dono:
-   `python scripts/audit_cards.py apply --iid N [--add-labels "Done,M"] [--remove-labels ...] [--estimate 1h] [--due AAAA-MM-DD] [--start AAAA-MM-DD] [--milestone "Sprint 1"] [--set-assignee arthur.loyola] [--description-file rascunho.md]`
+   `python scripts/audit_cards.py apply --iid N [--add-labels "Prioridade Média,M"] [--remove-labels ...] [--estimate 1h] [--due AAAA-MM-DD] [--start AAAA-MM-DD] [--milestone "Sprint 1"] [--set-assignee arthur.loyola] [--description-file rascunho.md]`
 
 ## Regras
 
-1. **Nunca invente label.** Rode `get_labels.py`. As listas de prioridade, tamanho, tipo e kanban no topo de `audit_cards.py` vieram do Módulo 3; confirme se valem para este projeto e ajuste o script se não valerem.
+1. **Nunca invente label.** Rode `get_labels.py`. Prioridade: `Prioridade Alta`, `Prioridade Média` ou `Prioridade Baixa`. Tamanho: `PP`, `P`, `M`, `G` ou `GG`. As listas no topo de `audit_cards.py` seguem `references/gitlab-api.md`; se o grupo criar ou renomear labels, atualize as duas.
 2. **Nunca remova uma label que você não colocou** sem perguntar.
 3. **Cards em português**, seguindo `references/model.md`, sem linha de atribuição de IA.
 4. **Desenvolvedor(a) e Revisor(a) ficam na descrição** com `@username`; vários colegas podem não ser membros diretos, então `assignee_ids` pode falhar.

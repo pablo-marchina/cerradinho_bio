@@ -26,7 +26,20 @@ Cabeçalho em toda requisição: `PRIVATE-TOKEN: <token>`. O token fica na vari�
 
 ## Labels
 
-O catálogo de labels deste projeto ainda não foi levantado. Rode `python scripts/get_labels.py` e confira se as listas no topo de `scripts/audit_cards.py` (`PRIORITY`, `SIZE`, `TYPE`, `KANBAN`) batem com o que existe. Se o grupo usar outros nomes, ajuste as listas no script em vez de criar labels novas.
+Labels do projeto (levantadas com `python scripts/get_labels.py` em 2026-10-15). Cada card leva uma de prioridade, uma de tamanho, uma de tipo e uma de coluna do kanban.
+
+| Grupo | Labels |
+|---|---|
+| Prioridade | `Prioridade Alta`, `Prioridade Média`, `Prioridade Baixa` |
+| Tamanho (estimativa mínima) | `PP` (menos de 30min), `P` (30min), `M` (1h), `G` (2h), `GG` (mais de 2h) |
+| Tipo | `Infraestrutura`, `CODE`, `CODE_REVIEW`, `DESIGN`, `DOCUMENTATION`, `DEPLOY`, `REQUIREMENTS`, `TEST`, `BUG` |
+| Kanban | `Backlog`, `Doing`, `Review`, `Waiting Review` |
+| Artefato | `Artefato 1`, `Artefato 2`, `Artefato 3`, `Artefato 4` |
+| Tema | `Skils` (cards da estrutura de skills) |
+| Problemas | `BLOCKED`, `DOR_INCOMPLETE`, `DOD_INCOMPLETE` |
+| Turma (padrão do Inteli) | `Ano: ...`, `Curso: ...`, `Semestre: ...`, `Trimestre: ...`, `Status: Em Andamento` |
+
+As listas `PRIORITY`, `SIZE`, `TYPE` e `KANBAN` no topo de `scripts/audit_cards.py` seguem esta tabela. Se o grupo criar ou renomear labels, atualize as duas.
 
 ## Pessoas
 
