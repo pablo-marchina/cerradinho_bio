@@ -67,6 +67,7 @@ São **restritos**: cadastros de ativos e fornecedores, notas fiscais, localiza�
 .
 ├── AGENT.md                  # este arquivo
 ├── README.md                 # visão geral do projeto, integrantes, instalação e versões
+├── skills/                   # skills para agentes de IA (ver skills/README.md e skills/SKILLS_INDEX.md)
 ├── assets/                   # imagens, vídeos e logo do grupo
 ├── document/
 │   ├── documentacao.md       # documentação principal (IoTDoc), dividida por sprint
@@ -82,6 +83,7 @@ São **restritos**: cadastros de ativos e fornecedores, notas fiscais, localiza�
 - Os arquivos `placeholder.md` devem ser apagados quando a pasta tiver conteúdo real.
 - Ao criar uma nova pasta em `src/`, atualize a seção "Estrutura de pastas" do `README.md`.
 - O repositório é hospedado no GitLab do Inteli (`git.inteli.edu.br`).
+- Antes de tarefas recorrentes (cards, índices de relatórios, snapshot da main, criação de skills), consulte `skills/SKILLS_INDEX.md` e siga a skill indicada.
 
 ## 5. Cards do Kanban (issues no GitLab)
 
@@ -126,5 +128,48 @@ Regras ao criar ou sugerir um card:
 - Não invente dados do parceiro (quantidade de remessas, prazos reais, fornecedores). Se a informação não estiver no repositório, marque como pendente ou pergunte ao grupo.
 - Prefira mudanças pequenas e focadas, alinhadas a um card.
 - Não faça commit, push ou merge sem pedido explícito de um integrante do grupo.
-- Mensagens de commit em português, no imperativo e descritivas (ex.: "Adiciona leitura do sensor de lacre no firmware").
+- Commits e branches seguem a seção 7 (Conventional Commits ligados a uma issue).
 - Ao documentar testes, registre métricas (comunicação, localização válida, latência de alertas, detecção de violação, falsos alertas, consumo) e as metas combinadas antes do teste.
+
+## 7. Convenções de Git
+
+### Branches
+
+- A `main` é protegida contra force push e representa o que é entregue. Não commite direto nela: todo trabalho vai numa branch própria e entra por merge request.
+- Nome da branch: `tipo/NN-descricao-curta`, em minúsculas, sem acento, palavras separadas por hífen.
+  - `tipo` é o mesmo dos commits (lista abaixo).
+  - `NN` é o número da issue que a branch resolve, com dois dígitos quando for menor que 10.
+  - Exemplos: `docs/01-estrutura-skills`, `feat/12-alerta-permanencia`, `fix/27-leitura-lacre`, `test/31-ensaio-agua`.
+- Uma branch por issue. Se a tarefa crescer para outra issue, abra outra branch.
+
+### Commits (Conventional Commits)
+
+Formato:
+
+```text
+tipo(#NN): descrição curta em português
+
+Corpo opcional explicando o porquê da mudança, não o como.
+```
+
+- `#NN` é o número da issue; **todo commit referencia uma issue**. Use o mesmo número da branch.
+- A descrição começa com verbo em minúscula, no presente ("adiciona", "corrige", "remove"), sem ponto final e com até cerca de 72 caracteres.
+- Tipos:
+
+| Tipo | Quando usar |
+|---|---|
+| `feat` | funcionalidade nova (firmware, backend, interface, API) |
+| `fix` | correção de bug |
+| `docs` | documentação, cards, README, AGENT.md, skills |
+| `test` | testes e ensaios (código ou registro de resultado) |
+| `refactor` | mudança de código sem alterar comportamento |
+| `style` | formatação, sem mudança de lógica |
+| `chore` | manutenção: .gitignore, dependências, configuração |
+| `build` / `ci` | build, pipeline e automação do GitLab |
+
+- Exemplos:
+  - `docs(#01): adiciona estrutura de skills para agentes de IA`
+  - `feat(#12): implementa alerta de permanência configurável`
+  - `fix(#27): corrige leitura do sensor de lacre no firmware`
+- Mudança que quebra compatibilidade (por exemplo, formato da API): acrescente `!` depois do escopo (`feat(#40)!: ...`) e explique no corpo.
+- O autor do commit deve ser o usuário do Inteli (`nome.sobrenome <nome.sobrenome@sou.inteli.edu.br>`), configurado localmente no repositório, para o GitLab ligar o commit ao perfil.
