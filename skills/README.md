@@ -16,6 +16,12 @@ skills/
         └── assets/      opcional: modelos e arquivos usados na saída
 ```
 
+## Requisitos
+
+- Python 3.
+- O validador de skills (`skills/skills/skill-creator/scripts/quick_validate.py`) precisa do PyYAML: `pip install pyyaml`.
+- Os scripts da `issue-manager` usam só a biblioteca padrão e precisam da variável de ambiente `GITLAB_TOKEN` (veja a seção Segurança).
+
 ## Como usar
 
 1. Leia o `AGENT.md` da raiz.
@@ -33,7 +39,7 @@ python skills/skills/skill-creator/scripts/init_skill.py <nome-da-skill> --path 
 python skills/skills/skill-creator/scripts/quick_validate.py skills/skills/<nome-da-skill>
 ```
 
-O `quick_validate.py` precisa do PyYAML (`pip install pyyaml`).
+O `quick_validate.py` precisa do PyYAML (veja [Requisitos](#requisitos)).
 
 Depois:
 
