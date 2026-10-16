@@ -25,10 +25,10 @@ DEFAULT_PROJECT = 'graduacao/2026-2b/t24/g01'
 
 PRIORITY = {'Prioridade Alta', 'Prioridade Média', 'Prioridade Baixa'}
 SIZE = ['PP', 'P', 'M', 'G', 'GG']
-# Team rule: PP < 30m, P = 30m, M = 1h, G = 2h up to 3h, GG = more than 3h.
-MIN_MINUTES = {'PP': 0, 'P': 30, 'M': 60, 'G': 120, 'GG': 181}
+# Team rule: PP < 30m, P = 30m, M = 1h, G = 2h up to under 3h, GG = 3h or more.
+MIN_MINUTES = {'PP': 0, 'P': 30, 'M': 60, 'G': 120, 'GG': 180}
 # An estimate that reaches the next size's floor is a warning: the size label is probably too small.
-NEXT_FLOOR = {'PP': ('P', 30), 'P': ('M', 60), 'M': ('G', 120), 'G': ('GG', 181)}
+NEXT_FLOOR = {'PP': ('P', 30), 'P': ('M', 60), 'M': ('G', 120), 'G': ('GG', 180)}
 START_DATE = r'(?im)^[ 	]*[-*]?[ 	]*\**(?:start date|data de in[ií]cio)\**:?\**[ 	]*(\d{4}-\d{2}-\d{2})'
 DURATION = re.compile(r'(\d+)\s*(mo|[wdhm])')
 UNITS = {'mo': 4 * 5 * 8 * 60, 'w': 5 * 8 * 60, 'd': 8 * 60, 'h': 60, 'm': 1}  # GitLab's 8h day, 5d week, 4w month

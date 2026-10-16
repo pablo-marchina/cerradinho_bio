@@ -44,7 +44,7 @@ references/
 Um card só está completo com todos estes campos. Preencha tudo na mesma rodada:
 
 - **Labels:** uma de prioridade, uma de tamanho, uma de tipo, a de coluna do kanban que bate com o estado real (MR aberto em revisão → `Waiting Review`; ainda não começado → `Backlog`) e `Artefato N` quando o card for de um artefato (título `[ART. N]`).
-- **Tamanho e estimativa batem:** `PP` menos de 30min, `P` 30min, `M` 1h, `G` de 2h até 3h, `GG` mais de 3h. Se a descrição já tiver uma estimativa (por exemplo em Observações), o tamanho segue ela.
+- **Tamanho e estimativa batem:** `PP` menos de 30min, `P` 30min, `M` 1h, `G` de 2h até menos de 3h, `GG` 3h ou mais. Se a descrição já tiver uma estimativa (por exemplo em Observações), o tamanho segue ela.
 - **Milestone** da sprint e **responsável** (`--set-assignee`).
 - **Data de início e data de término no campo Datas do card**, as duas. `--start` grava o início no campo e na linha "Data de início" da descrição; `--due` grava o término. Só o `--due` deixa o card sem início no quadro.
 - **Tempo gasto** quando o trabalho já foi feito (card em `Waiting Review`, `Review`, `Done` ou fechado), junto com a estimativa: `--spent 2h` ou `--spent-equals-estimate`. Não espere o card fechar.
