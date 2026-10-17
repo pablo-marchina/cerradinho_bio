@@ -1,0 +1,735 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Planning Sprint 1 Cerradinho</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  /* Mesmo sistema do runbook dos Artefatos 8–10: coluna única, linha do tempo por dia, uma cor por artefato. */
+  :root{
+    --paper:#F1F3F0; --paper-raised:#FFFFFF; --ink:#182420; --ink-soft:#4B5A54;
+    --line:#CBD4CD; --accent:#1F5C52; --accent-soft:#DCE8E3; --warm:#A9691F;
+    --warm-soft:#F1E2CC; --dash:#3F5A8A; --dash-soft:#DEE5F1; --plum:#6B4A86; --plum-soft:#EAE1F1;
+    --critical:#9B3A34; --critical-soft:#F3DCD8;
+    --mono-tint:#E7ECE8; --shadow:0 1px 0 rgba(24,36,32,0.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme:dark;
+      --paper:#121815; --paper-raised:#182420; --ink:#E7EDE9; --ink-soft:#9FAFA7;
+      --line:#2B3B34; --accent:#6BC1AC; --accent-soft:#1D332C; --warm:#E3A458;
+      --warm-soft:#3A2E1B; --dash:#93AEDD; --dash-soft:#1E2838; --plum:#C2A3DE; --plum-soft:#2C2236;
+      --critical:#E08B82; --critical-soft:#3A211E;
+      --mono-tint:#1B2622; --shadow:0 1px 0 rgba(0,0,0,0.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --paper:#121815; --paper-raised:#182420; --ink:#E7EDE9; --ink-soft:#9FAFA7;
+    --line:#2B3B34; --accent:#6BC1AC; --accent-soft:#1D332C; --warm:#E3A458;
+    --warm-soft:#3A2E1B; --dash:#93AEDD; --dash-soft:#1E2838; --plum:#C2A3DE; --plum-soft:#2C2236;
+    --critical:#E08B82; --critical-soft:#3A211E;
+    --mono-tint:#1B2622; --shadow:0 1px 0 rgba(0,0,0,0.3);
+  }
+  *{ box-sizing:border-box; }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; } }
+  body{ background:var(--paper); color:var(--ink); font-family:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif; font-size:16px; line-height:1.5; margin:0; padding-block:3.5rem 6rem; padding-inline:1.25rem; }
+  .page{ max-width:900px; margin:0 auto; display:flex; flex-direction:column; gap:3rem; }
+  code{ font-family:"IBM Plex Mono",monospace; }
+
+  .masthead{ display:flex; flex-direction:column; gap:0.9rem; }
+  .eyebrow{ font-family:"IBM Plex Mono",monospace; font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); font-weight:600; }
+  h1{ font-family:"Newsreader",Georgia,serif; font-weight:600; font-size:clamp(2rem,4.6vw,2.7rem); line-height:1.1; margin:0; text-wrap:balance; }
+  .dek{ max-width:68ch; color:var(--ink-soft); font-size:1.02rem; margin:0; }
+  .facts{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-top:0.4rem; }
+  .fact{ background:var(--paper-raised); padding:0.9rem 1rem; display:flex; flex-direction:column; gap:0.25rem; }
+  .fact .k{ font-family:"IBM Plex Mono",monospace; font-size:0.66rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft); }
+  .fact .v{ font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:0.95rem; }
+  .fact.merge .v{ color:var(--accent); }
+  .fact.deadline .v{ color:var(--critical); }
+
+  .panel{ background:var(--paper-raised); border:1px solid var(--line); border-radius:10px; padding:1.25rem 1.4rem; display:flex; flex-direction:column; gap:0.75rem; box-shadow:var(--shadow); }
+  .panel h2{ font-family:"IBM Plex Mono",monospace; font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-soft); margin:0; }
+  .panel p{ margin:0; font-size:0.92rem; max-width:72ch; }
+  .panel ul, .panel ol{ margin:0.2rem 0 0; padding-left:1.2rem; font-size:0.92rem; }
+  .panel li{ margin-bottom:0.4rem; }
+  .panel code, .notes code, .instr code, td code{ background:var(--mono-tint); padding:0 0.3rem; border-radius:3px; font-size:0.9em; overflow-wrap:anywhere; }
+  .panel.alert{ border-color:var(--critical); }
+  .panel.alert h2{ color:var(--critical); }
+
+  .team{ display:flex; gap:1.6rem; flex-wrap:wrap; margin-top:0.2rem; }
+  .grp{ display:flex; flex-direction:column; gap:0.35rem; }
+  .grp-label{ font-family:"IBM Plex Mono",monospace; font-size:0.66rem; letter-spacing:0.1em; text-transform:uppercase; }
+  .grp.neg .grp-label{ color:var(--warm); }
+  .grp.ux .grp-label{ color:var(--dash); }
+  .grp.proto .grp-label{ color:var(--accent); }
+  .grp.req .grp-label{ color:var(--plum); }
+  .grp .names{ display:flex; flex-wrap:wrap; gap:0.35rem; }
+  .grp .names span{ font-family:"IBM Plex Mono",monospace; font-size:0.78rem; border-radius:999px; padding:0.14rem 0.6rem; border:1px solid var(--line); }
+  .grp.neg .names span{ background:var(--warm-soft); }
+  .grp.ux .names span{ background:var(--dash-soft); }
+  .grp.proto .names span{ background:var(--accent-soft); }
+  .grp.req .names span{ background:var(--plum-soft); }
+  .grp .names span.rev{ background:transparent; color:var(--ink-soft); }
+
+  .section-h{ font-family:"Newsreader",Georgia,serif; font-size:1.5rem; font-weight:600; margin:0; text-wrap:balance; }
+  .section{ display:flex; flex-direction:column; gap:1rem; }
+  .section > p{ margin:0; color:var(--ink-soft); max-width:70ch; font-size:0.95rem; }
+
+  .notes{ background:var(--paper-raised); border:1px solid var(--line); border-radius:10px; padding:1.25rem 1.4rem; display:flex; flex-direction:column; gap:0.6rem; box-shadow:var(--shadow); }
+  .notes h2{ font-family:"IBM Plex Mono",monospace; font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-soft); margin:0; }
+  .notes dl{ margin:0; display:grid; grid-template-columns:minmax(0,11rem) minmax(0,1fr); gap:0.45rem 0.9rem; font-size:0.88rem; }
+  .notes dt{ font-family:"IBM Plex Mono",monospace; color:var(--ink-soft); font-size:0.8rem; }
+  .notes dd{ margin:0; min-width:0; }
+  .notes a{ color:var(--dash); text-underline-offset:2px; }
+  .notes a:focus-visible{ outline:2px solid var(--dash); outline-offset:2px; border-radius:2px; }
+  @media (max-width:560px){ .notes dl{ grid-template-columns:1fr; } .notes dt{ margin-top:0.4rem; } }
+
+  .tbl-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:10px; background:var(--paper-raised); }
+  table.map{ border-collapse:collapse; width:100%; min-width:620px; font-size:0.86rem; }
+  table.map th, table.map td{ text-align:left; vertical-align:top; padding:0.55rem 0.75rem; border-bottom:1px solid var(--line); }
+  table.map th{ font-family:"IBM Plex Mono",monospace; font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-soft); font-weight:500; background:var(--mono-tint); }
+  table.map tr:last-child td{ border-bottom:none; }
+  table.map td.grp-cell{ font-family:"IBM Plex Mono",monospace; font-size:0.74rem; color:var(--accent); white-space:nowrap; }
+  table.map td.grp-cell.neg{ color:var(--warm); }
+  table.map td.grp-cell.ux{ color:var(--dash); }
+  table.map td.grp-cell.req{ color:var(--plum); }
+  table.map td.id{ font-family:"IBM Plex Mono",monospace; font-size:0.78rem; white-space:nowrap; font-weight:600; }
+  .who{ font-family:"IBM Plex Mono",monospace; font-size:0.76rem; color:var(--ink-soft); white-space:nowrap; }
+  .pill{ font-family:"IBM Plex Mono",monospace; font-size:0.66rem; letter-spacing:0.05em; text-transform:uppercase; padding:0.05rem 0.4rem; border-radius:4px; white-space:nowrap; }
+  .pill.in{ background:var(--accent-soft); color:var(--accent); }
+  .pill.part{ background:var(--warm-soft); color:var(--warm); }
+  .pill.out{ background:var(--critical-soft); color:var(--critical); }
+  .pill.later{ background:var(--dash-soft); color:var(--dash); }
+
+  .timeline{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; }
+  .timeline > li{ position:relative; }
+  .rail{ position:relative; padding-left:1.6rem; }
+  .rail::before{ content:""; position:absolute; left:0.4rem; top:0; bottom:0; width:1px; background:var(--line); }
+  .off{ display:flex; align-items:center; flex-wrap:wrap; gap:0.75rem; padding:0.9rem 0 0.9rem 1.6rem; color:var(--ink-soft); font-family:"IBM Plex Mono",monospace; font-size:0.78rem; letter-spacing:0.04em; }
+  .off::before{ content:""; position:absolute; left:0.28rem; width:7px; height:7px; border-radius:50%; background:var(--paper); border:1px solid var(--line); }
+  .off .date{ min-width:6.2rem; }
+  .off .tag{ text-transform:uppercase; }
+  .buffer{ color:var(--critical); }
+  .buffer::before{ border-color:var(--critical); background:var(--critical-soft); }
+
+  .day{ padding:1.3rem 0 1.5rem 1.6rem; display:flex; flex-direction:column; gap:0.9rem; }
+  .day::before{ content:""; position:absolute; left:0.16rem; top:1.55rem; width:13px; height:13px; border-radius:50%; background:var(--accent-soft); border:2px solid var(--accent); }
+  .day.merge::before{ background:var(--warm-soft); border-color:var(--warm); }
+  .day.today{ background:var(--paper-raised); border-radius:12px; box-shadow:var(--shadow); margin-left:-1rem; padding-left:2.6rem; padding-right:1.4rem; border:1px solid var(--accent-soft); }
+  .day.today::before{ left:1.16rem; }
+  .day-head{ display:flex; align-items:baseline; flex-wrap:wrap; gap:0.6rem 0.9rem; }
+  .day-idx{ font-family:"IBM Plex Mono",monospace; font-size:0.74rem; letter-spacing:0.08em; color:var(--accent); font-weight:600; }
+  .day-date{ font-family:"IBM Plex Mono",monospace; font-size:0.85rem; color:var(--ink-soft); }
+  .today-pill{ font-family:"IBM Plex Mono",monospace; font-size:0.66rem; letter-spacing:0.1em; text-transform:uppercase; background:var(--accent); color:var(--paper-raised); padding:0.15rem 0.5rem; border-radius:999px; display:none; }
+  .day.today .today-pill{ display:inline-block; }
+  .day h3{ font-family:"Newsreader",Georgia,serif; font-size:1.4rem; font-weight:600; margin:0; text-wrap:balance; }
+  .day-note{ font-size:0.86rem; color:var(--ink-soft); margin:0; max-width:72ch; }
+
+  .people{ display:grid; grid-template-columns:1fr; gap:0.6rem; }
+  @media (min-width:760px){ .people{ grid-template-columns:1fr 1fr; } }
+  .prow{ border-radius:8px; padding:0.6rem 0.75rem; min-width:0; }
+  .prow.n{ background:var(--warm-soft); }
+  .prow.u{ background:var(--dash-soft); }
+  .prow.t{ background:var(--accent-soft); }
+  .prow.r{ background:var(--plum-soft); }
+  .prow-head{ display:flex; align-items:baseline; gap:0.4rem; font-family:"IBM Plex Mono",monospace; font-size:0.78rem; }
+  .prow-name{ font-weight:600; color:var(--ink); }
+  .prow-total{ margin-left:auto; color:var(--ink-soft); }
+  .prow ul{ list-style:none; margin:0.35rem 0 0; padding:0; display:flex; flex-direction:column; gap:0.55rem; }
+  .prow li{ font-size:0.86rem; display:flex; flex-wrap:wrap; gap:0.3rem; align-items:baseline; }
+  .kind{ font-family:"IBM Plex Mono",monospace; font-size:0.62rem; letter-spacing:0.05em; text-transform:uppercase; padding:0.01rem 0.35rem; border-radius:4px; flex-shrink:0; background:var(--paper-raised); }
+  .kind.rv{ color:var(--ink-soft); }
+  .item-min{ font-family:"IBM Plex Mono",monospace; font-size:0.78rem; color:var(--ink-soft); margin-left:auto; white-space:nowrap; }
+  .instr{ flex-basis:100%; color:var(--ink-soft); font-size:0.82rem; line-height:1.5; margin-top:0.1rem; }
+  .instr code{ background:var(--paper-raised); }
+  .tags{ display:flex; flex-wrap:wrap; gap:0.4rem; }
+  .tag{ font-family:"IBM Plex Mono",monospace; font-size:0.68rem; color:var(--ink-soft); background:var(--mono-tint); border:1px solid var(--line); padding:0.1rem 0.45rem; border-radius:6px; }
+
+  table.totals{ border-collapse:collapse; font-family:"IBM Plex Mono",monospace; font-size:0.8rem; width:100%; min-width:560px; }
+  table.totals th, table.totals td{ text-align:right; padding:0.4rem 0.55rem; border:1px solid var(--line); font-variant-numeric:tabular-nums; }
+  table.totals th{ color:var(--ink-soft); font-weight:500; }
+  table.totals th.person, table.totals td.person{ text-align:left; color:var(--ink); font-weight:600; }
+  table.totals tr.n td.person{ color:var(--warm); }
+  table.totals tr.u td.person{ color:var(--dash); }
+  table.totals tr.t td.person{ color:var(--accent); }
+  table.totals tr.r td.person{ color:var(--plum); }
+
+  footer{ color:var(--ink-soft); font-size:0.82rem; text-align:center; }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <div class="eyebrow">Sprint 1 &middot; Artefatos 1, 2, 3 e 4 &middot; Grupo 01 &middot; Cerradinho</div>
+    <h1>Um rastreador simulado, quatro artefatos, seis dias úteis.</h1>
+    <p class="dek">De quinta 15 a quinta 22, sem fim de semana. Pablo e Rachel escrevem o negócio,
+    Arthur e Bruno constroem as personas, Guilherme e Kadota montam o rastreador no Wokwi, Luis e
+    Rachel escrevem requisitos e regras. As quatro frentes se encontram na RTM do Dia 4, que liga
+    cada persona a um requisito, uma regra e um caso de teste que o protótipo de fato passa. Merge
+    da <code>dev</code> na <code>main</code> na quinta, com tudo revisado; sexta fica de folga para imprevistos.</p>
+    <div class="facts">
+      <div class="fact"><span class="k">Dia 1</span><span class="v">Qui 15/out</span></div>
+      <div class="fact merge"><span class="k">Merge dev &rarr; main</span><span class="v">Qui 22/out</span></div>
+      <div class="fact deadline"><span class="k">Prazo</span><span class="v">Sex 23/out</span></div>
+      <div class="fact"><span class="k">Dias úteis</span><span class="v">6 &middot; sem fim de semana</span></div>
+      <div class="fact"><span class="k">Casos de teste</span><span class="v">CT01&ndash;CT15</span></div>
+    </div>
+  </header>
+
+  <section class="panel">
+    <h2>Regras que este plano segue</h2>
+    <ul>
+      <li><strong>Cada tarefa tem um dono e um revisor, nunca a mesma pessoa.</strong> Cada artefato tem uma dupla fixa de revisores (tabela abaixo); todas as revisões de um artefato saem dessa dupla.</li>
+      <li><strong>Um build e no máximo uma revisão por pessoa por dia.</strong> O Dia 1 é só build; o Dia 6 é só revisão e merge.</li>
+      <li><strong>Nenhuma dependência atravessa o dia.</strong> O que se revisa hoje foi feito ontem, e cada build usa só o que existe no fim do dia anterior. Duas exceções combinadas na manhã do Dia 1: o mapa de pinos (Guilherme e Kadota) e a numeração de RF e CT (Guilherme e Luis).</li>
+      <li><strong>O tempo segue a tarefa.</strong> As estimativas dizem quanto o trabalho custa, não uma meta diária; veja a tabela de carga no fim.</li>
+      <li><strong>Uma branch por tarefa, saindo da <code>dev</code></strong>, com o nome <code>tipo/artN-descricao</code> (por exemplo <code>docs/art1-secao-1</code>, <code>feat/art3-lacre</code>). MR para a <code>dev</code> com o revisor do dia marcado. Ninguém faz commit direto na <code>dev</code> nem na <code>main</code>.</li>
+      <li><strong><code>documentacao.md</code> é de todos.</strong> Cada pessoa edita só a sua seção, abre MRs pequenos e faz rebase antes do merge. Imagens vão para a subpasta de <code>assets/</code> do artefato.</li>
+      <li><strong>O texto-guia em itálico sai quando a seção é preenchida.</strong> O próprio template diz que ele não faz parte da versão final.</li>
+      <li><strong>Evidência só do que rodou.</strong> Print e "passou" só depois de executar; caso que falhou fica registrado como falha até ser rodado de novo. Teste ainda não executado aparece como pendente, nunca como aprovado.</li>
+      <li><strong>Fato com fonte, hipótese com rótulo.</strong> Todo dado público leva URL e data de consulta. O que depende da Cerradinho e ainda não chegou (safra, perdas, número de ativos, DPO, retenção) aparece como <code>PENDENTE DE VALIDAÇÃO</code>, nunca inventado.</li>
+      <li><strong>Nada restrito vai para o repositório.</strong> O TAPI classifica como restritos cadastros de ativos e fornecedores, notas fiscais, localizações, rotas, prazos e custos. Só dados fictícios.</li>
+    </ul>
+    <div class="team">
+      <div class="grp neg"><span class="grp-label">Art. 1 &middot; Negócios</span>
+        <div class="names"><span>Pablo</span><span>Rachel</span><span class="rev">rev. Arthur, Bruno</span></div></div>
+      <div class="grp ux"><span class="grp-label">Art. 2 &middot; Personas</span>
+        <div class="names"><span>Arthur</span><span>Bruno</span><span class="rev">rev. Pablo, Kadota</span></div></div>
+      <div class="grp proto"><span class="grp-label">Art. 3 &middot; Wokwi</span>
+        <div class="names"><span>Guilherme</span><span>Kadota</span><span class="rev">rev. Luis, Rachel</span></div></div>
+      <div class="grp req"><span class="grp-label">Art. 4 &middot; Requisitos e RTM</span>
+        <div class="names"><span>Luis</span><span>Rachel</span><span class="rev">rev. Guilherme, Arthur</span></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-h">Quem revisa o quê, e por quê</h2>
+    <p>Oito vagas de revisão para sete pessoas: alguém revisa dois artefatos. Fica com o Arthur, porque personas é a frente mais leve de build. Rachel já constrói dois artefatos, então revisa só o Art. 3, como pedido.</p>
+    <div class="tbl-wrap">
+      <table class="map">
+        <thead><tr><th>Artefato</th><th>Seções</th><th>Autores</th><th>Revisores</th><th>Motivo</th></tr></thead>
+        <tbody>
+          <tr><td class="grp-cell neg">Art. 1</td><td>1, 1.1&ndash;1.3, 3.1.1&ndash;3.1.7</td><td>Pablo (1, 3.1.1&ndash;3.1.4) &middot; Rachel (3.1.5&ndash;3.1.7)</td><td><strong>Arthur, Bruno</strong></td><td>Personas dependem do negócio. Revisar o Art. 1 obriga a dupla de UX a absorver o contexto da Cerradinho antes de escrever dores e cenários.</td></tr>
+          <tr><td class="grp-cell ux">Art. 2</td><td>3.2.1</td><td>Arthur &middot; Bruno</td><td><strong>Pablo, Kadota</strong></td><td>Pablo confere a coerência com os stakeholders do TAPI e com o VPC; Kadota confere se os cenários batem com o que o dispositivo faz.</td></tr>
+          <tr><td class="grp-cell">Art. 3</td><td>3.4.1 + <code>src/firmware/</code></td><td>Guilherme &middot; Kadota</td><td><strong>Luis, Rachel</strong></td><td>Definido pelo grupo. Também é a dupla que precisa dos CTs para fechar RF e RTM.</td></tr>
+          <tr><td class="grp-cell req">Art. 4</td><td>3.3.1, 3.3.2, 3.3.4</td><td>Luis (RF, RN) &middot; Rachel (RTM)</td><td><strong>Guilherme, Arthur</strong></td><td>Guilherme confere os itens técnicos da rubrica (sensor, MQTT, Wi‑Fi) e o vínculo RF &harr; CT; Arthur confere a coluna de personas da RTM.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel alert">
+    <h2>Assumido antes do Dia 1</h2>
+    <ol>
+      <li><strong>Merge na quinta, prazo na sexta.</strong> Tudo revisado e na <code>dev</code> até o fim da quarta (Dia 5); quinta é só revisão final e merge <code>dev</code> &rarr; <code>main</code> (Guilherme). Sexta 23 fica como contingência. Se a <code>dev</code> não existir, Guilherme a cria a partir da <code>main</code> no início do Dia 1.</li>
+      <li><strong>Divisão do Art. 1.</strong> Pablo fica com as seções 1, 3.1.1, 3.1.2, 3.1.3 e 3.1.4 (6,0 pontos); Rachel com 3.1.5, 3.1.6 e 3.1.7 (4,0 pontos), porque ela também faz a RTM no Dia 4.</li>
+      <li><strong>Wi‑Fi no protótipo, celular em aberto.</strong> O módulo avalia conexão Wi‑Fi, MQTT e dashboard, então RF008 e RF009 falam de Wi‑Fi e MQTT. O TAPI pede para não pressupor Wi‑Fi corporativo nas oficinas. Por isso 1.2, 3.1.3, a matriz de riscos e o BOM dizem a mesma coisa: o protótipo usa Wi‑Fi, e o canal de produção (por exemplo, rede celular) entra na matriz comparativa de tecnologias de uma sprint seguinte.</li>
+      <li><strong>Wokwi sem broker nesta sprint.</strong> O sketch imprime no Serial o JSON exatamente como seria publicado no tópico MQTT. Wi‑Fi e broker reais entram na Sprint 3 (3.4.3). Uma chave deslizante (<code>SW_REDE</code>) simula a queda do canal lógico, não a perda real de cobertura; coordenadas no JSON são fictícias e marcadas como simuladas. A documentação não pode usar o Wokwi como prova de geolocalização.</li>
+      <li><strong>Tempo simulado: 1 s real = 1 dia.</strong> O limiar de 150 dias leva 2,5 minutos, então dá para testar o valor de referência do TAPI de verdade, e também um limiar curto (10 dias), como o TAPI pede ("150 dias e outros limiares com datas simuladas"). 150 dias é o limiar de permanência, não a autonomia exigida da bateria nem o prazo de toda manutenção; nenhuma seção deve tratar como tal.</li>
+    </ol>
+  </section>
+
+  <section class="panel alert">
+    <h2>A confirmar com o parceiro ou a orientadora</h2>
+    <ol>
+      <li><strong>Dados da última safra.</strong> O TAPI diz "a disponibilizar". Se não chegarem até o Dia 3, 3.1.3.1 descreve a dor de forma qualitativa e deixa a quantificação (remessas, previsto x realizado, atrasos) marcada como pendente com o parceiro.</li>
+      <li><strong>Encarregado de dados (DPO) da Cerradinho</strong> para 3.1.6.13. Não inventar nome nem contato: se não vier, o campo diz que será indicado pela Cerradinho.</li>
+      <li><strong>Duas personas por padrão</strong> (Controladoria e Manutenção, como no plano do Pablo). A P3 só entra se Arthur e Bruno decidirem no Dia 1 que há fôlego; duas bem feitas valem mais que três rasas.</li>
+      <li><strong>Wi‑Fi no protótipo:</strong> confirmar com a orientadora (Camila Naves Arantes) que o recorte do item 3 acima atende ao módulo e ao TAPI.</li>
+      <li><strong>Nome do grupo e dos professores</strong> para o README e o cabeçalho da documentação (Arthur, Dia 5).</li>
+    </ol>
+  </section>
+
+  <section class="section">
+    <h2 class="section-h">Onde cada critério avaliado é atendido</h2>
+    <p>Art. 1 vale até 10 pontos, distribuídos por seção. Os critérios gerais (escrita, coerência com o parceiro, uso correto dos templates) valem para todas as seções. Art. 3 mira o nível Avançado da rubrica, linha por linha.</p>
+    <div class="tbl-wrap">
+      <table class="map">
+        <thead><tr><th>Artefato</th><th>Critério</th><th>Coberto por</th></tr></thead>
+        <tbody>
+          <tr><td class="grp-cell neg">Art. 1</td><td>Seção 1: introdução, objetivos, proposta, justificativa (1,0)</td><td><span class="who">Pablo D1, D5</span> &middot; rev. <span class="who">Bruno D2, D6</span></td></tr>
+          <tr><td class="grp-cell neg">Art. 1</td><td>3.1.1 Contexto da indústria + 5 Forças (1,0)</td><td><span class="who">Pablo D2</span> &middot; rev. <span class="who">Arthur D3</span></td></tr>
+          <tr><td class="grp-cell neg">Art. 1</td><td>3.1.2 SWOT em quadrante (1,5)</td><td><span class="who">Pablo D3</span> &middot; rev. <span class="who">Bruno D4</span></td></tr>
+          <tr><td class="grp-cell neg">Art. 1</td><td>3.1.3 Descrição da solução, 6 itens (1,0)</td><td><span class="who">Pablo D3</span> &middot; rev. <span class="who">Bruno D4</span></td></tr>
+          <tr><td class="grp-cell neg">Art. 1</td><td>3.1.4 Value Proposition Canvas (1,5)</td><td><span class="who">Pablo D4</span> &middot; rev. <span class="who">Bruno D5</span></td></tr>
+          <tr><td class="grp-cell neg">Art. 1</td><td>3.1.5 Matriz de riscos (1,5)</td><td><span class="who">Rachel D1</span> &middot; rev. <span class="who">Arthur D2</span></td></tr>
+          <tr><td class="grp-cell neg">Art. 1</td><td>3.1.6 Política de privacidade LGPD (1,0)</td><td><span class="who">Rachel D2</span> &middot; rev. <span class="who">Bruno D3</span></td></tr>
+          <tr><td class="grp-cell neg">Art. 1</td><td>3.1.7 BOM (1,5)</td><td><span class="who">Rachel D3</span> &middot; rev. <span class="who">Arthur D4</span></td></tr>
+          <tr><td class="grp-cell ux">Art. 2</td><td>Pesquisa e reunião de informações, síntese</td><td><span class="who">Bruno D1</span> &middot; rev. <span class="who">Pablo D2</span></td></tr>
+          <tr><td class="grp-cell ux">Art. 2</td><td>Template próprio e adequado ao projeto</td><td><span class="who">Arthur D1</span> &middot; rev. <span class="who">Kadota D2</span></td></tr>
+          <tr><td class="grp-cell ux">Art. 2</td><td>Profundidade, completude e relação com o projeto</td><td><span class="who">Arthur D2, D3</span>; <span class="who">Bruno D2</span> &middot; rev. <span class="who">Pablo D3, D4</span>; <span class="who">Kadota D3</span></td></tr>
+          <tr><td class="grp-cell ux">Art. 2</td><td>Descrição do processo de construção e do uso de IA</td><td><span class="who">Bruno D3</span> &middot; rev. <span class="who">Kadota D4</span></td></tr>
+          <tr><td class="grp-cell ux">Art. 2</td><td>Organização da apresentação</td><td><span class="who">Arthur D4</span>; <span class="who">Bruno D4, D5</span> &middot; rev. <span class="who">Kadota D5</span>; <span class="who">Pablo D5, D6</span></td></tr>
+          <tr><td class="grp-cell">Art. 3</td><td>Conta Wokwi do grupo; simula um projeto pronto</td><td><span class="who">Guilherme D1</span></td></tr>
+          <tr><td class="grp-cell">Art. 3</td><td>Projeto próprio com LEDs e botões, com <code>setup</code> e <code>loop</code></td><td><span class="who">Guilherme D1</span> circuito; <span class="who">Kadota D1</span> código</td></tr>
+          <tr><td class="grp-cell">Art. 3</td><td>Ao menos 2 funções além de <code>setup</code>/<code>loop</code>, usadas por elas</td><td><span class="who">Kadota D1&ndash;D2</span>: <code>lerEntradas()</code>, <code>atualizarLeds()</code>, <code>publicarEvento()</code>, <code>verificarPrazos()</code></td></tr>
+          <tr><td class="grp-cell">Art. 3</td><td>Classe definida, com instância usada em <code>setup</code>/<code>loop</code></td><td><span class="who">Kadota D1</span>: <code>Lacre</code>, <code>FilaEventos</code>, <code>Rastreador</code> (instância global <code>rastreador</code>)</td></tr>
+          <tr><td class="grp-cell">Art. 3</td><td>Código no GitLab, executável no Wokwi sem erros</td><td><span class="who">Kadota D3</span> export; <span class="who">D5</span> regressão &middot; rev. <span class="who">Rachel D6</span></td></tr>
+          <tr><td class="grp-cell">Art. 3</td><td>Casos de teste objetivos, com sucesso e falha</td><td><span class="who">Guilherme D1</span> plano; <span class="who">D4</span> seção 3.4.1</td></tr>
+          <tr><td class="grp-cell">Art. 3</td><td>O protótipo passa em todos os casos descritos</td><td><span class="who">Guilherme D3</span> execução; <span class="who">Kadota D4</span> correções; <span class="who">D5</span> regressão</td></tr>
+          <tr><td class="grp-cell">Art. 3</td><td>Figuras do simulador</td><td><span class="who">Guilherme D3</span>, atualizadas em <span class="who">D5</span></td></tr>
+          <tr><td class="grp-cell req">Art. 4</td><td>RF cobrem todos os itens da rubrica</td><td><span class="who">Luis D1, D3</span> &middot; rev. <span class="who">Guilherme D2, D4</span>; ver a tabela de RF abaixo</td></tr>
+          <tr><td class="grp-cell req">Art. 4</td><td>Regras de negócio</td><td><span class="who">Luis D2</span> &middot; rev. <span class="who">Guilherme D3</span></td></tr>
+          <tr><td class="grp-cell req">Art. 4</td><td>Matriz de rastreabilidade</td><td><span class="who">Rachel D4, D5</span> &middot; rev. <span class="who">Guilherme D5, D6</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Sobre "o protótipo passa nos casos descritos": um caso de falha descreve uma leitura ruim de entrada ou uma queda de rede, e o resultado esperado é o tratamento que o sistema dá a ela. O caso passa quando o tratamento acontece. Nenhum CT entra na tabela com resultado esperado que o código não cumpre.</p>
+  </section>
+
+  <section class="section">
+    <h2 class="section-h">Do TAPI para a Sprint 1</h2>
+    <p>O que o MVP do TAPI pede e onde cada item aparece agora. "Requisito" significa escrito em RF e RN nesta sprint e construído depois.</p>
+    <div class="tbl-wrap">
+      <table class="map">
+        <thead><tr><th>Item do TAPI</th><th>Status</th><th>Como</th></tr></thead>
+        <tbody>
+          <tr><td>MVP 1: cadastro de ao menos 5 equipamentos com NF</td><td><span class="pill part">requisito</span></td><td>RF001, RF002, RN02. Cinco equipamentos fictícios (<code>EQ-001</code>&ndash;<code>EQ-005</code>) usados como exemplo em toda a documentação (<span class="who">Luis D3</span>).</td></tr>
+          <tr><td>MVP 2: arquitetura escolhida após comparação técnica, percurso externo</td><td><span class="pill later">sprints 2&ndash;4</span></td><td>Citado em 1.2 e 3.1.3; componentes candidatos no BOM (<span class="who">Rachel D3</span>); riscos de cobertura e GNSS na matriz (<span class="who">Rachel D1</span>).</td></tr>
+          <tr><td>MVP 3: saída, fornecedor, prazo, retorno, vínculo, histórico na reutilização</td><td><span class="pill in">simulado</span></td><td>RF003, RF018, RN01, RN11. No Wokwi: encerrar ciclo e recusar vínculo simultâneo (CT14, CT15).</td></tr>
+          <tr><td>MVP 4: atualização semanal configurável, alerta de permanência com 150 dias e outros limiares</td><td><span class="pill in">simulado</span></td><td>RF011, RF012, RN03, RN04, RN07. CT02, CT03, CT04 com limiar 10 e 150.</td></tr>
+          <tr><td>MVP 5: violação do lacre, retirada autorizada, comportamento sem conexão</td><td><span class="pill in">simulado</span></td><td>RF005, RF006, RF010, RN05, RN06, RN09. CT05&ndash;CT10.</td></tr>
+          <tr><td>MVP 6: interface com última localização, dias fora, bateria, lacre, histórico; API para BI</td><td><span class="pill part">requisito</span></td><td>RF014&ndash;RF017, RF019. Construção nas sprints 3 e 4.</td></tr>
+          <tr><td>MVP 7: testes de comunicação, fixação, consumo, água</td><td><span class="pill later">sprint 2+</span></td><td>Protótipo físico. Nesta sprint: riscos (água, fixação sem dano, autonomia) e itens do BOM.</td></tr>
+          <tr><td>Diferenciar atraso de permanência prolongada</td><td><span class="pill in">simulado</span></td><td>RN04: dois alertas distintos que podem coexistir. LED amarelo piscando (atraso) x fixo (permanência), CT03 e CT04.</td></tr>
+          <tr><td>Restrições: sem posicionamento indoor preciso, sem rastrear pessoas</td><td><span class="pill in">respeitado</span></td><td>Valem para personas, RF, LGPD e riscos. A LGPD trata a localização no transporte como dado pessoal indireto e a minimiza (<span class="who">Rachel D2</span>).</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-h">Plano revisado do Pablo: o que entra</h2>
+    <p>O plano do Pablo distribuía 42 cartões em rodízio entre sete pessoas anônimas. A divisão por artefato e as duplas de revisores definidas pelo grupo continuam valendo; dele entra o que melhora a nota ou evita retrabalho sem custo grande.</p>
+    <div class="tbl-wrap">
+      <table class="map">
+        <thead><tr><th>Ideia</th><th></th><th>Onde / por quê</th></tr></thead>
+        <tbody>
+          <tr><td>Links diretos dos templates do Drive</td><td><span class="pill in">in</span></td><td>Na referência comum. Evita usar formato diferente do oficial.</td></tr>
+          <tr><td>Vocabulário comum (ativo, ciclo, NF, device, associação, evento, alerta)</td><td><span class="pill in">in</span></td><td>Na referência comum, para RF, RN, LGPD e personas usarem os mesmos termos.</td></tr>
+          <tr><td>Evidência honesta: falha fica falha, teste não rodado é pendente</td><td><span class="pill in">in</span></td><td>Nas regras. A rubrica do Art. 3 exige que o protótipo passe nos casos descritos.</td></tr>
+          <tr><td>Simulação &ne; campo; 150 dias é limiar, não autonomia</td><td><span class="pill in">in</span></td><td>Em "Assumido antes do Dia 1", itens 4 e 5.</td></tr>
+          <tr><td>Hora de ocorrência &ne; hora de recebimento; última comunicação &ne; última posição válida</td><td><span class="pill in">in</span></td><td>RN08 e RN09 (<span class="who">Luis D2</span>); <code>event_id</code> e <code>seq</code> no payload.</td></tr>
+          <tr><td>Personas sem entrevistas simuladas; tabela evidência &times; inferência &times; lacuna</td><td><span class="pill in">in</span></td><td><span class="who">Bruno D1, D3</span>.</td></tr>
+          <tr><td>LGPD com <code>PENDENTE DE VALIDAÇÃO</code>, política preliminar do projeto</td><td><span class="pill in">in</span></td><td><span class="who">Rachel D2</span>.</td></tr>
+          <tr><td>BOM em três cenários (Wokwi, piloto, escala), custo único x recorrente</td><td><span class="pill in">in</span></td><td><span class="who">Rachel D3</span>.</td></tr>
+          <tr><td>Riscos: ao menos 10, escala 1&ndash;5, causa e efeito</td><td><span class="pill in">in</span></td><td><span class="who">Rachel D1</span>.</td></tr>
+          <tr><td>Wokwi executável no Dia 1, respondendo a um botão</td><td><span class="pill in">in</span></td><td><span class="who">Kadota D1</span>.</td></tr>
+          <tr><td>Botão segurado não gera enxurrada de eventos</td><td><span class="pill in">in</span></td><td>CT11 ampliado.</td></tr>
+          <tr><td>Origem no TAPI para cada RF</td><td><span class="pill in">in</span></td><td><span class="who">Luis D1</span>.</td></tr>
+          <tr><td>Checklist do revisor e prioridade P0/P1/P2 para corte de escopo</td><td><span class="pill in">in</span></td><td>Painéis próprios abaixo; gates no fim dos Dias 2, 4 e 5.</td></tr>
+          <tr><td>Teto de 2 h por pessoa por dia (80 + 25 + 15 min)</td><td><span class="pill out">fora</span></td><td>Decidido em 15/out: o teto não é rígido. Valem as estimativas deste plano (carga no fim); a regra P0/P1/P2 fica para imprevistos.</td></tr>
+          <tr><td>Wi‑Fi e MQTT reais no Wokwi</td><td><span class="pill out">fora</span></td><td>A rubrica do Art. 3 não pede; o próprio plano do Pablo o classifica como extra (P2). Fica para a Sprint 3.</td></tr>
+          <tr><td>Fragmentos em <code>docs/fonte/</code> + script de montagem</td><td><span class="pill out">fora</span></td><td>Cada pessoa edita só a sua seção de <code>documentacao.md</code>; o git junta trechos diferentes sem conflito. O script seria mais uma coisa para manter.</td></tr>
+          <tr><td>Rodízio de revisores entre todos</td><td><span class="pill out">fora</span></td><td>O grupo definiu duplas fixas por artefato.</td></tr>
+          <tr><td>IDs <code>RF-01</code>, <code>CT-W01</code></td><td><span class="pill out">fora</span></td><td>O template da documentação usa <code>RF001</code>, <code>RN01</code>, <code>CT01</code>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="notes">
+    <h2>Checklist de toda revisão (comentário no MR)</h2>
+    <dl>
+      <dt>Rubrica</dt><dd>Cumpre cada item do enunciado e da rubrica daquela seção, não só a ortografia.</dd>
+      <dt>TAPI</dt><dd>Coerente com o TAPI; hipóteses e pendências rotuladas.</dd>
+      <dt>Template</dt><dd>Template oficial aberto e conferido, não só o parágrafo que o acompanha (5 Forças, SWOT, VPC, Riscos, BOM).</dd>
+      <dt>Execução</dt><dd>Código rodado no Wokwi, planilha aberta e recalculada por amostra, links clicados.</dd>
+      <dt>Sigilo</dt><dd>Nenhum dado real da Cerradinho ou de fornecedores, nenhuma credencial.</dd>
+      <dt>Status</dt><dd><code>Aprovado</code> ou <code>Correções</code> com até dois ajustes prioritários. O revisor aponta; quem corrige é o dono.</dd>
+    </dl>
+  </section>
+
+  <section class="section">
+    <h2 class="section-h">Ponto de partida para o Art. 4</h2>
+    <p>Rascunho para o Luis refinar no Dia 1, não a versão final. A coluna da direita mostra qual item da rubrica cada RF cobre; os seis itens citados no nível Avançado têm ao menos um RF cada.</p>
+    <div class="tbl-wrap">
+      <table class="map">
+        <thead><tr><th>RF</th><th>O sistema deve&hellip;</th><th>Item da rubrica / TAPI</th><th>CT</th></tr></thead>
+        <tbody>
+          <tr><td class="id">RF001</td><td>Cadastrar equipamento (ID, descrição, dimensões, foto)</td><td>TAPI MVP 1</td><td>&mdash;</td></tr>
+          <tr><td class="id">RF002</td><td>Abrir ciclo de manutenção externa com fornecedor, NF de remessa, data de saída, prazo previsto e responsável</td><td>TAPI MVP 3</td><td>&mdash;</td></tr>
+          <tr><td class="id">RF003</td><td>Vincular e desvincular dispositivo e ciclo, preservando o histórico</td><td>Definição de devices / TAPI MVP 3</td><td>CT14, CT15</td></tr>
+          <tr><td class="id">RF004</td><td>Coletar posição GNSS na rotina e guardar a última localização válida com horário</td><td><strong>Coleta via sensor</strong></td><td>sprint 2</td></tr>
+          <tr><td class="id">RF005</td><td>Monitorar o lacre e detectar abertura ou rompimento</td><td><strong>Coleta via sensor</strong></td><td>CT05, CT07</td></tr>
+          <tr><td class="id">RF006</td><td>Registrar retirada autorizada e reaplicação do lacre</td><td>TAPI MVP 5</td><td>CT06</td></tr>
+          <tr><td class="id">RF007</td><td>Medir o nível de bateria e enviá-lo em cada mensagem</td><td><strong>Coleta via sensor</strong></td><td>CT12, CT13</td></tr>
+          <tr><td class="id">RF008</td><td>Conectar-se à rede Wi‑Fi e reconectar automaticamente</td><td><strong>Conexão Wi‑Fi</strong></td><td>CT08, CT09 (simulado)</td></tr>
+          <tr><td class="id">RF009</td><td>Publicar status e eventos no broker MQTT, em JSON, no tópico padronizado</td><td><strong>Formatação para MQTT</strong></td><td>CT01, CT02 (payload no Serial)</td></tr>
+          <tr><td class="id">RF010</td><td>Guardar eventos sem conexão e enviá-los na ordem ao reconectar</td><td>TAPI MVP 5</td><td>CT08&ndash;CT10</td></tr>
+          <tr><td class="id">RF011</td><td>Enviar status periódico (semanal por padrão, configurável)</td><td>TAPI MVP 4</td><td>CT02</td></tr>
+          <tr><td class="id">RF012</td><td>Calcular dias fora e emitir alerta de atraso e alerta de permanência (limiar configurável, padrão 150)</td><td>TAPI MVP 4</td><td>CT03, CT04</td></tr>
+          <tr><td class="id">RF013</td><td>Cadastrar dispositivos na plataforma, cada um com ID e credencial próprios</td><td><strong>Definição de devices na plataforma</strong></td><td>sprint 3</td></tr>
+          <tr><td class="id">RF014</td><td>Autenticar usuários do painel com credencial individual e perfil de acesso</td><td><strong>Chave de identificação e acesso ao dashboard</strong></td><td>sprint 3</td></tr>
+          <tr><td class="id">RF015</td><td>Listar equipamentos fora: fornecedor, NF, saída, previsão, dias fora, última localização e horário, última comunicação, bateria, lacre, alertas</td><td><strong>Representação gráfica</strong> / Output do TAPI</td><td>sprint 3</td></tr>
+          <tr><td class="id">RF016</td><td>Exibir gráficos e mapa: equipamentos por faixa de dias fora, alertas por tipo, última posição</td><td><strong>Representação gráfica</strong></td><td>sprint 3</td></tr>
+          <tr><td class="id">RF017</td><td>Registrar o tratamento de um alerta (responsável, data, comentário)</td><td>Fluxo do TAPI</td><td>&mdash;</td></tr>
+          <tr><td class="id">RF018</td><td>Encerrar o ciclo no retorno, com conferência e NF de retorno, e liberar o dispositivo</td><td>Fluxo do TAPI</td><td>CT14</td></tr>
+          <tr><td class="id">RF019</td><td>Oferecer API autenticada e documentada para consulta por BI</td><td>TAPI MVP 6</td><td>sprint 4</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-h">Casos de teste planejados para 3.4.1</h2>
+    <p>Plano do Guilherme para o Dia 1, nas colunas do template. Os valores de tempo são dias simulados. A Sprint 2 continua a numeração a partir de CT16.</p>
+    <div class="tbl-wrap">
+      <table class="map">
+        <thead><tr><th>CT</th><th>Entrada e leitura</th><th>Saída esperada</th><th>Tipo</th></tr></thead>
+        <tbody>
+          <tr><td class="id">CT01</td><td>Ligar o ESP32 com <code>SW_LACRE</code> fechado e <code>SW_REDE</code> ligado</td><td>LED verde fixo, demais apagados; Serial mostra JSON <code>STATUS</code> com <code>dias_fora=0</code>, <code>lacre="fechado"</code></td><td><span class="pill in">sucesso</span></td></tr>
+          <tr><td class="id">CT02</td><td>Deixar correr até o dia 7 e o dia 14</td><td>Um <code>STATUS_SEMANAL</code> a cada 7 dias, nem antes nem depois</td><td><span class="pill in">sucesso</span></td></tr>
+          <tr><td class="id">CT03</td><td><code>dias_fora</code> passa do prazo previsto (5) e fica abaixo do limiar</td><td>LED amarelo piscando a 1 Hz; <code>ALERTA_ATRASO</code> emitido uma vez</td><td><span class="pill in">sucesso</span></td></tr>
+          <tr><td class="id">CT04</td><td><code>dias_fora</code> atinge o limiar (rodar com 10 e com 150)</td><td>LED amarelo fixo; <code>ALERTA_PERMANENCIA</code> emitido uma vez em cada rodada</td><td><span class="pill in">sucesso</span></td></tr>
+          <tr><td class="id">CT05</td><td>Abrir <code>SW_LACRE</code> sem autorização</td><td>LED vermelho piscando; <code>VIOLACAO_LACRE</code> sai na hora, fora da rotina semanal</td><td><span class="pill out">violação</span></td></tr>
+          <tr><td class="id">CT06</td><td>Apertar <code>BTN_AUTORIZAR</code>, abrir o lacre dentro da janela (3 dias), fechar</td><td><code>RETIRADA_AUTORIZADA</code>, sem alerta; verde piscando durante a retirada; ao fechar, <code>LACRE_REAPLICADO</code> e verde fixo</td><td><span class="pill in">sucesso</span></td></tr>
+          <tr><td class="id">CT07</td><td>Apertar <code>BTN_AUTORIZAR</code>, esperar mais que 3 dias, abrir</td><td>Mesmo resultado do CT05: autorização expirada vira violação</td><td><span class="pill out">falha tratada</span></td></tr>
+          <tr><td class="id">CT08</td><td>Desligar <code>SW_REDE</code> e abrir o lacre</td><td>LED azul piscando; nada publicado; Serial mostra <code>[FILA] 1 pendente</code></td><td><span class="pill out">falha tratada</span></td></tr>
+          <tr><td class="id">CT09</td><td>Religar <code>SW_REDE</code></td><td>Eventos pendentes publicados na ordem, com o dia original; LED azul apaga</td><td><span class="pill in">sucesso</span></td></tr>
+          <tr><td class="id">CT10</td><td>Rede desligada, gerar mais de 8 eventos</td><td><code>FILA_CHEIA</code>; descarta o evento não crítico mais antigo; nenhuma violação perdida</td><td><span class="pill out">falha tratada</span></td></tr>
+          <tr><td class="id">CT11</td><td>Pressões rápidas em <code>BTN_AUTORIZAR</code> (ruído de contato) e depois o botão segurado por 3 s</td><td>Um único evento por pressão real (debounce de 50 ms, detecção por borda); segurar não repete o evento</td><td><span class="pill out">falha tratada</span></td></tr>
+          <tr><td class="id">CT12</td><td>Girar <code>POT_BATERIA</code> abaixo de 20%, depois acima de 25%</td><td><code>BATERIA_BAIXA</code> uma vez; não repete até voltar a 25% (histerese)</td><td><span class="pill in">sucesso</span></td></tr>
+          <tr><td class="id">CT13</td><td><code>POT_BATERIA</code> no mínimo (ADC = 0, divisor desconectado)</td><td><code>SENSOR_BATERIA_FALHA</code>; nenhum <code>BATERIA_BAIXA</code> falso</td><td><span class="pill out">falha tratada</span></td></tr>
+          <tr><td class="id">CT14</td><td>Lacre fechado, segurar <code>BTN_CICLO</code> por 2 s</td><td><code>CICLO_ENCERRADO</code>; <code>dias_fora</code> zera; <code>ciclo_id</code> sobe; contador de ciclos preservado</td><td><span class="pill in">sucesso</span></td></tr>
+          <tr><td class="id">CT15</td><td>Ciclo ativo, toque curto em <code>BTN_CICLO</code> (novo vínculo)</td><td><code>VINCULO_RECUSADO</code>; o ciclo atual continua igual</td><td><span class="pill out">falha tratada</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="notes">
+    <h2>Referência comum: os nomes que todas as tarefas usam</h2>
+    <dl>
+      <dt>Documento</dt><dd><code>document/documentacao.md</code>. Templates usados sem alterar a estrutura e exportados em PNG.</dd>
+      <dt>Templates</dt><dd><a href="https://drive.google.com/file/d/1Kr8A2GRrTDUFi5JslJQd7LWVOwyn8E_c/view">5 Forças</a> &middot; <a href="https://drive.google.com/file/d/1MlAGazi8MLqqjenGM02_6t7UfTHvlk37/view">SWOT</a> &middot; <a href="https://drive.google.com/file/d/1vom1OaLU4NgDpoQ9vIaJ2lpS2YoGcUjM/view">VPC</a> &middot; <a href="https://drive.google.com/file/d/1k2m97EdtxYZgsWKrdPFKhjBTZ9R8ePkC/view">Matriz de Riscos</a> &middot; <a href="https://docs.google.com/spreadsheets/d/1HkK3xpUSAyeI6M1ktXWHkgXrmn9UGyEG/edit">BOM</a> &middot; <a href="https://drive.google.com/drive/folders/1lTqisJ_gxxtc5J5aXM8ula2kQ4MsII_M?usp=sharing">pasta</a> &middot; <a href="https://www.nuvemshop.com.br/ferramentas/gerador-politica-de-privacidade">gerador LGPD</a> &middot; <a href="https://rockcontent.com/br/blog/5-forcas-de-porter/">guia 5 Forças</a>. Personas: template próprio, não há modelo na pasta.</dd>
+      <dt>Vocabulário</dt><dd><strong>Ativo</strong> (equipamento patrimonial); <strong>ciclo</strong> (uma remessa e seu retorno); <strong>fornecedor</strong>; <strong>NF de remessa</strong> e <strong>NF de retorno</strong>; <strong>dispositivo</strong> (rastreador reutilizável); <strong>vínculo</strong> (dispositivo &harr; ciclo); <strong>evento</strong> (ocorrência física ou telemetria); <strong>alerta</strong> (evento que pede ação de alguém).</dd>
+      <dt>Evidências</dt><dd><code>assets/negocios/</code> (5 forças, SWOT, VPC, riscos, BOM), <code>assets/personas/</code>, <code>assets/wokwi/</code> (<code>circuito.png</code>, <code>CT01.png</code>&hellip;<code>CT15.png</code>, com o monitor Serial visível).</dd>
+      <dt>Firmware</dt><dd><code>src/firmware/prototipo_wokwi/</code>: <code>sketch.ino</code>, <code>diagram.json</code>, <code>libraries.txt</code> (se houver) e <code>README.md</code> com o link público do Wokwi e como rodar.</dd>
+      <dt>IDs</dt><dd><code>RF001</code>&hellip;, <code>RN01</code>&hellip;, <code>CT01</code>&hellip; (formato do template); personas <code>P1</code>&ndash;<code>P3</code>; equipamentos fictícios <code>EQ-001</code>&ndash;<code>EQ-005</code>; dispositivos <code>DISP-01</code>&hellip;; fornecedores "Fornecedor A, B, C"; NFs fictícias.</dd>
+      <dt>Pinos (ESP32 DevKit)</dt><dd>LEDs: verde GPIO 25, amarelo 26, vermelho 27, azul 14. <code>SW_LACRE</code> 32 (chave deslizante, fechado/aberto), <code>BTN_AUTORIZAR</code> 33, <code>BTN_CICLO</code> 13, <code>SW_REDE</code> 18, todos com <code>INPUT_PULLUP</code>. <code>POT_BATERIA</code> 34 (ADC1).</dd>
+      <dt>LEDs</dt><dd>Verde: operando, lacre íntegro (piscando = retirada autorizada em curso). Amarelo: piscando = atraso, fixo = permanência acima do limiar. Vermelho: violação do lacre. Azul: sem rede com eventos na fila.</dd>
+      <dt>Constantes</dt><dd><code>SEGUNDOS_POR_DIA = 1</code>, <code>INTERVALO_STATUS_DIAS = 7</code>, <code>LIMIAR_PERMANENCIA_DIAS = 150</code>, <code>PRAZO_PREVISTO_DIAS = 5</code> (teste), <code>JANELA_AUTORIZACAO_DIAS = 3</code>, <code>CAPACIDADE_FILA = 8</code>, <code>BATERIA_BAIXA_PCT = 20</code>, <code>DEBOUNCE_MS = 50</code>.</dd>
+      <dt>Eventos</dt><dd><code>STATUS</code>, <code>STATUS_SEMANAL</code>, <code>ALERTA_ATRASO</code>, <code>ALERTA_PERMANENCIA</code>, <code>VIOLACAO_LACRE</code>, <code>RETIRADA_AUTORIZADA</code>, <code>LACRE_REAPLICADO</code>, <code>BATERIA_BAIXA</code>, <code>SENSOR_BATERIA_FALHA</code>, <code>FILA_CHEIA</code>, <code>CICLO_ENCERRADO</code>, <code>VINCULO_RECUSADO</code>. Críticos: <code>VIOLACAO_LACRE</code>.</dd>
+      <dt>Tópicos MQTT</dt><dd><code>rastreio/{device_id}/status</code> e <code>rastreio/{device_id}/eventos</code>. Payload: <code>{"device_id":"DISP-01","event_id":17,"seq":17,"ciclo_id":3,"equip":"EQ-001","tipo":"VIOLACAO_LACRE","dia":42,"dias_fora":42,"lacre":"aberto","bateria":76,"pendentes":0,"loc_fonte":"simulada"}</code>. <code>dia</code> é a hora de ocorrência e não muda quando o evento sai da fila.</dd>
+      <dt>Personas</dt><dd>Hipóteses de partida: P1 analista de Gestão Patrimonial / Controladoria (acompanha ativos em terceiros, cobra fornecedores); P2 supervisor ou técnico de Manutenção (envia o equipamento, pede a retirada do lacre, confere o retorno); P3 opcional, analista de BI/TI ou Fiscal (consome a API, confere NF).</dd>
+      <dt>Contatos do TAPI</dt><dd>Líder do projeto Luis Paulo da Conceição; backup Franciele Mendes da Silva; técnico Bruno Veronesi; negócio Lucas Milhorin. Perguntas ao parceiro saem pelo canal combinado com a orientadora, depois de aprovadas pelo grupo.</dd>
+      <dt>Escrita</dt><dd>Português formal, frases curtas, fontes com URL e data de consulta em 5. Referências. Texto gerado por IA é reescrito e conferido por quem assina a seção.</dd>
+    </dl>
+  </section>
+
+  <ol class="timeline" id="timeline">
+
+    <li class="rail">
+    <div class="day" data-date="2026-10-15">
+      <div class="day-head"><span class="day-idx">DIA 1 / 6</span><span class="day-date">Qui 15/out</span><span class="today-pill">Hoje</span></div>
+      <h3>Abrir todas as frentes e fixar os nomes</h3>
+      <p class="day-note">Só build. Na primeira hora: Guilherme e Kadota fecham o mapa de pinos; Guilherme e Luis fecham a numeração RF &harr; CT; Arthur e Bruno decidem se são duas ou três personas.</p>
+      <div class="people">
+        <div class="prow n"><div class="prow-head"><span class="prow-name">Pablo</span><span class="prow-total">180 min</span></div>
+          <ul><li><span class="kind">build</span>Seção 1: introdução, objetivos, proposta, justificativa<span class="item-min">180</span>
+            <div class="instr">Pesquise em fontes oficiais (site institucional, relatórios, imprensa setorial) e cite cada uma: porte (faturamento, funcionários, capacidade), localização das unidades, área de atuação (bioenergia: etanol, energia de biomassa, coprodutos) e posicionamento. Confirme cada dado antes de escrever. Feche a introdução com o problema do TAPI sem citar a solução. Em 1.1, objetivos gerais e específicos sem tecnologia: visibilidade dos ativos em terceiros, vínculo de cada ciclo à NF, diferenciar atraso de permanência, menos cobrança manual, histórico. Em 1.2, a solução em alto nível (dispositivo reutilizável com lacre, plataforma com alertas, API para BI). Em 1.3, benefícios e diferenciais; o TAPI diz que redução de prazo e de perdas depende do tratamento dos alertas, então escreva como potencial, não como garantia.</div></li></ul></div>
+        <div class="prow n"><div class="prow-head"><span class="prow-name">Rachel</span><span class="prow-total">180 min</span></div>
+          <ul><li><span class="kind">build</span>3.1.5 Matriz de riscos<span class="item-min">180</span>
+            <div class="instr">Template do Drive. Numere ao menos 10 riscos (<code>R01</code>&hellip;) com causa, efeito, probabilidade e impacto de 1 a 5, justificativa da posição, resposta e responsável. Candidatos: dados da safra atrasam; GNSS sem sinal em oficina coberta ou junto a ativo metálico; autonomia de 150 dias não comprovável em ensaio curto; oficinas sem Wi‑Fi; falso alarme do lacre; fixação que danifica o equipamento ou atrapalha o reparo; água e lavagem; custo de conectividade; fornecedores indisponíveis para teste; dado restrito exposto no repositório; carga do time na sprint. Inclua oportunidades se o template tiver o quadrante. Exportar para <code>assets/negocios/matriz_riscos.png</code>.</div></li></ul></div>
+        <div class="prow u"><div class="prow-head"><span class="prow-name">Arthur</span><span class="prow-total">150 min</span></div>
+          <ul><li><span class="kind">build</span>Template próprio de persona<span class="item-min">150</span>
+            <div class="instr">Uma página em Figma ou Canva, exportável em PNG. Campos: nome fictício e ilustração (sem foto de pessoa real), cargo e área ligados a um stakeholder do TAPI, dados demográficos, rotina e ferramentas (ERP, planilhas, e-mail, mensagens), objetivos, dores, necessidades, desejos, cenários de uso numerados (<code>P1-C1</code>&hellip;, que a RTM vai citar), letramento digital em escala de 1 a 5 com o critério de cada nível, frase característica e o que é sucesso para ela.</div></li></ul></div>
+        <div class="prow u"><div class="prow-head"><span class="prow-name">Bruno</span><span class="prow-total">180 min</span></div>
+          <ul><li><span class="kind">build</span>Pesquisa e proto-personas<span class="item-min">180</span>
+            <div class="instr">A partir do TAPI (stakeholders e a frase "definir quem cadastra, instala, autoriza retirada do lacre, configura e trata alertas e confirma o retorno"), do kickoff e de pesquisa desk, monte a tabela papel &times; interação com o produto e escolha 2 ou 3 proto-personas. Escreva as perguntas para o parceiro sobre rotina, ferramentas e dores de quem envia e de quem acompanha os equipamentos. Inclua a tabela evidência do TAPI &times; inferência &times; lacuna para cada papel. Notas em <code>document/outros/pesquisa_personas.md</code>, sem nomes reais de funcionários.</div></li></ul></div>
+        <div class="prow t"><div class="prow-head"><span class="prow-name">Guilherme</span><span class="prow-total">210 min</span></div>
+          <ul><li><span class="kind">build</span>Conta Wokwi, circuito e plano de casos de teste<span class="item-min">210</span>
+            <div class="instr">Primeiro: criar a <code>dev</code> a partir da <code>main</code>, se não existir. Na conta Wokwi do grupo, rodar um exemplo pronto (Blink) para registrar a evidência, depois criar o projeto ESP32 com o mapa de pinos da referência: 4 LEDs com resistores, 2 botões, 2 chaves deslizantes e 1 potenciômetro. Deixar o link público. Escrever o plano CT01&ndash;CT15 da tabela acima nas colunas do template, com os IDs de RF que o Luis está numerando hoje. Mandar a lista de componentes para a Rachel (BOM no Dia 3).</div></li></ul></div>
+        <div class="prow t"><div class="prow-head"><span class="prow-name">Kadota</span><span class="prow-total">210 min</span></div>
+          <ul><li><span class="kind">build</span>Estrutura do código: classes e funções<span class="item-min">210</span>
+            <div class="instr">Constantes no topo (ver referência). Classes <code>Lacre</code> (leitura com debounce, estado, janela de autorização), <code>FilaEventos</code> (buffer circular de 8, prioridade para críticos) e <code>Rastreador</code> (ciclo, dias fora, alertas emitidos, estado da rede, montagem do JSON). Instância global <code>Rastreador rastreador;</code> usada em <code>setup()</code> e <code>loop()</code>. Funções livres chamadas pelo <code>loop()</code>: <code>lerEntradas()</code>, <code>verificarPrazos()</code>, <code>atualizarLeds()</code>, <code>publicarEvento()</code>. Corpos podem ficar vazios hoje, mas o projeto compila no Wokwi e já acende um LED ao apertar um botão: é a primeira evidência do Art. 3.</div></li></ul></div>
+        <div class="prow r"><div class="prow-head"><span class="prow-name">Luis</span><span class="prow-total">210 min</span></div>
+          <ul><li><span class="kind">build</span>3.3.1 Requisitos funcionais<span class="item-min">210</span>
+            <div class="instr">Parta da tabela RF001&ndash;RF019 acima e do TAPI. Cada RF começa com "O sistema deve&hellip;", descreve um comportamento só, é verificável (vira um caso de teste), cita a origem no TAPI (MVP n, fluxo básico, escopo) e tem prioridade e status (<code>Planejado</code> ou <code>Simulado no Wokwi</code>). Confira que os seis itens da rubrica (sensor, MQTT, Wi‑Fi, chave de usuário e acesso ao dashboard, devices na plataforma, representação gráfica) têm RF. Combine a numeração com o Guilherme.</div></li></ul></div>
+      </div>
+      <div class="tags"><span class="tag">Mapa de pinos</span><span class="tag">RF &harr; CT</span><span class="tag">Conta Wokwi</span><span class="tag">Template de persona</span></div>
+    </div>
+    </li>
+
+    <li class="rail">
+    <div class="day" data-date="2026-10-16">
+      <div class="day-head"><span class="day-idx">DIA 2 / 6</span><span class="day-date">Sex 16/out</span><span class="today-pill">Hoje</span></div>
+      <h3>Primeiros rascunhos, primeiras revisões</h3>
+      <p class="day-note">Gate do fim do dia: Wokwi próprio compila e responde a botões; RF e RN com IDs estáveis; seção 1 com 1.2 e 1.3 escritas; nenhum dado real ou credencial no repositório.</p>
+      <div class="people">
+        <div class="prow n"><div class="prow-head"><span class="prow-name">Pablo</span><span class="prow-total">280 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Pesquisa e proto-personas do Bruno<span class="item-min">40</span>
+            <div class="instr">Os papéis batem com os stakeholders do TAPI; nada sugere rastrear pessoas; as perguntas ao parceiro não pedem dado restrito.</div></li>
+            <li><span class="kind">build</span>3.1.1 Contexto da indústria e 5 Forças<span class="item-min">240</span>
+            <div class="instr">O setor é o da Cerradinho: bioenergia e sucroenergético, não IoT. Um parágrafo com no mínimo 3 concorrentes (candidatos: Raízen, São Martinho, BP Bunge Bioenergia e, no etanol de milho, FS e Inpasa; confirmar números em fontes), um sobre modelo de negócio, um sobre tendências (etanol de milho, RenovaBio e CBIOs, Lei do Combustível do Futuro, SAF e biometano, digitalização da manutenção). 5 Forças no template, cada força com nível e justificativa do ponto de vista da Cerradinho. Exportar para <code>assets/negocios/</code>.</div></li></ul></div>
+        <div class="prow n"><div class="prow-head"><span class="prow-name">Rachel</span><span class="prow-total">250 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Estrutura do código do Kadota<span class="item-min">40</span>
+            <div class="instr">Abre e compila no Wokwi; há uma classe com instância usada em <code>setup</code>/<code>loop</code>; ao menos duas funções além delas são chamadas pelo <code>loop</code>.</div></li>
+            <li><span class="kind">build</span>3.1.6 Política de privacidade (LGPD)<span class="item-min">210</span>
+            <div class="instr">Use o gerador da Nuvemshop como ponto de partida e adapte para o projeto, preenchendo as 13 subseções do template. Dados pessoais: usuários do painel (nome, e-mail corporativo, cargo, perfil, logs de acesso, IP, horário), responsáveis pelos ciclos e alertas, contatos de fornecedores. A localização é do equipamento, mas no transporte pode indicar a posição de um motorista: trate como dado pessoal indireto e minimize (só a última posição válida, rotina semanal, sem rastreamento contínuo, restrições 1 e 5 do TAPI). Cookies de sessão do painel; compartilhamento com provedores de nuvem, broker e conectividade; retenção por tipo de dado como critério, com prazo <code>PENDENTE DE VALIDAÇÃO</code>; cookies só se o painel previsto usar; DPO a confirmar. Dados do equipamento não são dados pessoais por si só. Escreva como política preliminar do projeto, sem afirmar aprovação jurídica da Cerradinho. Use o rascunho de RF do Luis.</div></li></ul></div>
+        <div class="prow u"><div class="prow-head"><span class="prow-name">Arthur</span><span class="prow-total">220 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Matriz de riscos da Rachel<span class="item-min">40</span>
+            <div class="instr">Template usado como está; cada risco tem posição justificada e resposta; os riscos são do projeto, não genéricos.</div></li>
+            <li><span class="kind">build</span>Persona P1<span class="item-min">180</span>
+            <div class="instr">Gestão Patrimonial / Controladoria, preenchida no template. Dores tiradas do problema do TAPI (consolidar localização, NF, prazo e retorno; cobrança manual). Cenários numerados que usam o painel e os alertas.</div></li></ul></div>
+        <div class="prow u"><div class="prow-head"><span class="prow-name">Bruno</span><span class="prow-total">220 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Seção 1 do Pablo<span class="item-min">40</span>
+            <div class="instr">Escrita, fontes citadas, 1.1 sem tecnologia, problema sem a solução na introdução.</div></li>
+            <li><span class="kind">build</span>Persona P2<span class="item-min">180</span>
+            <div class="instr">Manutenção: quem envia o equipamento, pede a retirada do lacre durante o reparo e confere o retorno. Inclua o cenário de retirada autorizada e o de equipamento que volta sem aviso.</div></li></ul></div>
+        <div class="prow t"><div class="prow-head"><span class="prow-name">Guilherme</span><span class="prow-total">285 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Requisitos funcionais do Luis<span class="item-min">45</span>
+            <div class="instr">Cada item da rubrica tem RF; cada RF é testável; os CTs planejados apontam para RFs que existem.</div></li>
+            <li><span class="kind">build</span>Tempo simulado, prazos e LEDs<span class="item-min">240</span>
+            <div class="instr">Implementar o relógio de dias simulados, <code>STATUS_SEMANAL</code> a cada 7 dias, <code>verificarPrazos()</code> com atraso (passou de <code>PRAZO_PREVISTO_DIAS</code>) e permanência (atingiu <code>LIMIAR_PERMANENCIA_DIAS</code>) como alertas separados, emitidos uma vez cada, e <code>atualizarLeds()</code> com o padrão da referência. Usar <code>millis()</code>, nunca <code>delay()</code> no <code>loop</code>.</div></li></ul></div>
+        <div class="prow t"><div class="prow-head"><span class="prow-name">Kadota</span><span class="prow-total">280 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Template de persona do Arthur<span class="item-min">40</span>
+            <div class="instr">Tem todos os campos que a rubrica cita: apresentação, demografia, dores, necessidades, desejos, cenários, letramento digital.</div></li>
+            <li><span class="kind">build</span>Lacre, autorização, fila e debounce<span class="item-min">240</span>
+            <div class="instr">Abertura sem autorização gera <code>VIOLACAO_LACRE</code> na hora, fora da rotina. <code>BTN_AUTORIZAR</code> abre uma janela de 3 dias; abrir dentro dela gera <code>RETIRADA_AUTORIZADA</code> e fechar gera <code>LACRE_REAPLICADO</code>. Com <code>SW_REDE</code> desligado, eventos vão para a <code>FilaEventos</code> e o azul pisca; ao religar, saem na ordem. Fila cheia: <code>FILA_CHEIA</code> e descarte do não crítico mais antigo. Debounce de 50 ms e eventos por borda: botão segurado gera um evento só.</div></li></ul></div>
+        <div class="prow r"><div class="prow-head"><span class="prow-name">Luis</span><span class="prow-total">220 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Circuito e plano de CTs do Guilherme<span class="item-min">40</span>
+            <div class="instr">Cada CT tem entrada e saída mensuráveis; há casos de falha; o circuito no link público bate com o mapa de pinos.</div></li>
+            <li><span class="kind">build</span>3.3.2 Regras de negócio<span class="item-min">180</span>
+            <div class="instr">Tabela do template com RF associado. Ponto de partida: RN01 um dispositivo e um equipamento por ciclo ativo; RN02 ciclo só abre com NF, fornecedor, saída e prazo; RN03 limiar padrão de 150 dias, configurável de 1 a 365; RN04 atraso e permanência são alertas distintos, cada um emitido uma vez por ciclo; RN05 abertura sem autorização é violação crítica, enviada fora da rotina; RN06 autorização vale por 3 dias e só para perfis de Manutenção ou Patrimônio; RN07 status a cada 7 dias por padrão; RN08 localização válida tem precisão mínima e horário, senão mantém a última; última comunicação e última posição válida são campos distintos; RN09 fila de 8, violação nunca é descartada, evento guardado mantém a hora de ocorrência e a plataforma registra a de recebimento à parte; RN10 bateria abaixo de 20% alerta, volta a 25%, leitura 0 é falha de sensor; RN11 encerrar exige lacre fechado e conferência, histórico nunca é apagado; RN12 painel e API só com usuário autenticado; RN13 mensagem de dispositivo não cadastrado é rejeitada.</div></li></ul></div>
+      </div>
+      <div class="tags"><span class="tag">LGPD</span><span class="tag">5 Forças</span><span class="tag">Regras de negócio</span><span class="tag">Lacre e fila</span></div>
+    </div>
+    </li>
+
+    <li class="off"><span class="date">Sáb 17 &ndash; Dom 18</span><span class="tag">Fim de semana &middot; sem tarefas</span></li>
+
+    <li class="rail">
+    <div class="day" data-date="2026-10-19">
+      <div class="day-head"><span class="day-idx">DIA 3 / 6</span><span class="day-date">Seg 19/out</span><span class="today-pill">Hoje</span></div>
+      <h3>O protótipo roda os casos de teste</h3>
+      <p class="day-note">Fim do dia: se os dados da safra não chegaram, 3.1.3.1 segue com a dor qualitativa e a quantificação marcada como pendente.</p>
+      <div class="people">
+        <div class="prow n"><div class="prow-head"><span class="prow-name">Pablo</span><span class="prow-total">280 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Persona P1 do Arthur<span class="item-min">40</span>
+            <div class="instr">Coerente com o papel no TAPI e com a seção 1; dores reais, não estereótipos.</div></li>
+            <li><span class="kind">build</span>3.1.2 SWOT e 3.1.3 Descrição da solução<span class="item-min">240</span>
+            <div class="instr">SWOT no quadrante do template, sobre a Cerradinho: forças e fraquezas internas, oportunidades e ameaças externas (use o 3.1.1). 3.1.3 nas cinco subseções do template: problema; solução na visão de negócio; uso, seguindo o fluxo básico do TAPI (aprovação, cadastro, vínculo e lacre, saída, alertas, retorno, liberação); benefícios; critério de sucesso e medida (por exemplo, percentual de equipamentos fora com localização válida nos últimos 7 dias, tempo entre violação e alerta, taxa de falsos alertas, tempo para responder "onde está o equipamento X"). O TAPI pede metas acordadas antes dos testes; escreva-as como propostas.</div></li></ul></div>
+        <div class="prow n"><div class="prow-head"><span class="prow-name">Rachel</span><span class="prow-total">225 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Lacre, fila e debounce do Kadota<span class="item-min">45</span>
+            <div class="instr">No Wokwi, abrir o lacre sem autorização e com a rede desligada; conferir a ordem dos eventos ao religar.</div></li>
+            <li><span class="kind">build</span>3.1.7 BOM<span class="item-min">180</span>
+            <div class="instr">Template do Drive, em três cenários. Protótipo da Sprint 1: os componentes do circuito do Guilherme (custo zero no Wokwi, preço do kit real ao lado). Kit físico do piloto (previsto): ESP32, módulo GNSS, módulo de comunicação a definir, bateria Li‑ion com carregador e regulador, sensor do lacre (laço de continuidade ou reed switch), caixa vedada, fixação que não danifica nem atrapalha o reparo, LEDs, botões, resistores, protoboard, jumpers. Escala (estimativa por unidade, para N dispositivos). Quantidade, preço unitário em reais com link e data da cotação, total; custo único separado do recorrente (conectividade, reposição de lacres, manutenção). Item sem preço público fica marcado como estimativa ou lacuna, nunca com número inventado.</div></li></ul></div>
+        <div class="prow u"><div class="prow-head"><span class="prow-name">Arthur</span><span class="prow-total">190 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>3.1.1 e 5 Forças do Pablo<span class="item-min">40</span>
+            <div class="instr">Três concorrentes ou mais, três parágrafos, setor certo, cada força justificada, fontes citadas.</div></li>
+            <li><span class="kind">build</span>Cenários detalhados (ou P3)<span class="item-min">150</span>
+            <div class="instr">Padrão, com duas personas: detalhar os cenários de P1 e P2 passo a passo, com o que a pessoa vê e decide, incluindo um cenário de falha (alerta falso, equipamento sem posição); conferir que P1 e P2 não diferem só no nome e no cargo. Se a dupla optou por três: P3 (BI/TI ou Fiscal), centrada em consulta por API e conferência de NF.</div></li></ul></div>
+        <div class="prow u"><div class="prow-head"><span class="prow-name">Bruno</span><span class="prow-total">160 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>LGPD da Rachel<span class="item-min">40</span>
+            <div class="instr">As 13 subseções preenchidas, coerentes com os RF; nada de rastreamento de pessoas; DPO sem contato inventado.</div></li>
+            <li><span class="kind">build</span>3.2.1 Texto do processo de construção<span class="item-min">120</span>
+            <div class="instr">Fontes (TAPI, kickoff, respostas do parceiro, pesquisa desk), como foi feita a síntese, por que 2 ou 3 personas, e o uso de IA: qual ferramenta, para quê, o que foi reescrito e validado pelo grupo. Se não houve entrevista, diga isso e trate os traços como hipóteses; nunca escreva depoimento inventado. A rubrica pede essa descrição explicitamente.</div></li></ul></div>
+        <div class="prow t"><div class="prow-head"><span class="prow-name">Guilherme</span><span class="prow-total">220 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Regras de negócio do Luis<span class="item-min">40</span>
+            <div class="instr">Cada RN tem um número ou condição testável e aponta para um RF que existe.</div></li>
+            <li><span class="kind">build</span>Executar CT01&ndash;CT15 e capturar<span class="item-min">180</span>
+            <div class="instr">Rodar cada caso no projeto do Wokwi com o código integrado, salvar <code>assets/wokwi/CTxx.png</code> com o monitor Serial visível e anotar passou ou falhou. CT04 roda duas vezes (limiar 10 e 150). Lista de falhas para o Kadota hoje.</div></li></ul></div>
+        <div class="prow t"><div class="prow-head"><span class="prow-name">Kadota</span><span class="prow-total">160 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Persona P2 do Bruno<span class="item-min">40</span>
+            <div class="instr">Os cenários correspondem ao que o dispositivo faz (lacre, retirada autorizada, alertas).</div></li>
+            <li><span class="kind">build</span>Código no repositório<span class="item-min">120</span>
+            <div class="instr">Exportar do Wokwi para <code>src/firmware/prototipo_wokwi/</code> (<code>sketch.ino</code>, <code>diagram.json</code>, <code>libraries.txt</code> se houver), apagar o <code>placeholder.md</code> da pasta, escrever o <code>README.md</code> com o link público e como rodar. Um comentário curto por classe e função.</div></li></ul></div>
+        <div class="prow r"><div class="prow-head"><span class="prow-name">Luis</span><span class="prow-total">195 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Tempo, prazos e LEDs do Guilherme<span class="item-min">45</span>
+            <div class="instr">Rodar com limiar 10 e 150; atraso e permanência saem uma vez cada e com o LED certo.</div></li>
+            <li><span class="kind">build</span>RF e RN, versão 2<span class="item-min">150</span>
+            <div class="instr">Aplicar as revisões do Guilherme. Descrever os cinco equipamentos fictícios <code>EQ-001</code>&ndash;<code>EQ-005</code> (tipo, dimensões perto de 1 &times; 1 &times; 1 m, fornecedor fictício, NF fictícia, prazo) para servirem de exemplo. Marcar como <code>Simulado no Wokwi</code> os RF cobertos por CT.</div></li></ul></div>
+      </div>
+      <div class="tags"><span class="tag">CT01&ndash;CT15</span><span class="tag">SWOT</span><span class="tag">BOM</span><span class="tag">Uso de IA</span></div>
+    </div>
+    </li>
+
+    <li class="rail">
+    <div class="day" data-date="2026-10-20">
+      <div class="day-head"><span class="day-idx">DIA 4 / 6</span><span class="day-date">Ter 20/out</span><span class="today-pill">Hoje</span></div>
+      <h3>Tudo se conecta na RTM</h3>
+      <p class="day-note">Gate do fim do dia: todo o conteúdo existe em versão preliminar (5 Forças, SWOT, VPC nas duas metades, riscos, LGPD, BOM, personas, RF, RN, RTM). Nenhuma dessas seções pode começar na quarta.</p>
+      <div class="people">
+        <div class="prow n"><div class="prow-head"><span class="prow-name">Pablo</span><span class="prow-total">220 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Cenários (ou P3) do Arthur<span class="item-min">40</span>
+            <div class="instr">Mesmos critérios do P1; os cenários têm ID.</div></li>
+            <li><span class="kind">build</span>3.1.4 Value Proposition Canvas<span class="item-min">180</span>
+            <div class="instr">Template do Drive. Perfil do cliente a partir de P1 e P2 (tarefas, dores, ganhos); mapa de valor da solução (produtos e serviços, aliviadores de dor, criadores de ganho). Cada dor relevante tem um aliviador correspondente. Um parágrafo explicando o encaixe.</div></li></ul></div>
+        <div class="prow r"><div class="prow-head"><span class="prow-name">Rachel</span><span class="prow-total">210 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Código no repositório do Kadota<span class="item-min">30</span>
+            <div class="instr">O código do repositório é o mesmo do link público; o README abre o projeto certo.</div></li>
+            <li><span class="kind">build</span>3.3.4 Matriz de rastreabilidade<span class="item-min">180</span>
+            <div class="instr">Uma linha por RF, nas colunas do template: Persona (e cenário), RF, RN, Caso de teste, Evidência (<code>assets/wokwi/CTxx.png</code>). RF que só será construído depois leva "Planejado, sprint N" na evidência. Nenhum RF órfão; todo CT aponta para um RF.</div></li></ul></div>
+        <div class="prow u"><div class="prow-head"><span class="prow-name">Arthur</span><span class="prow-total">130 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>BOM da Rachel<span class="item-min">40</span>
+            <div class="instr">Somas e unidades certas, cada preço com link e data, componentes iguais aos do circuito.</div></li>
+            <li><span class="kind">build</span>Personas finais em imagem<span class="item-min">90</span>
+            <div class="instr">Aplicar a revisão de P1 (Dia 3), exportar P1 e P2 para <code>assets/personas/</code> e inseri-las em 3.2.1 com texto alternativo.</div></li></ul></div>
+        <div class="prow u"><div class="prow-head"><span class="prow-name">Bruno</span><span class="prow-total">130 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>SWOT e 3.1.3 do Pablo<span class="item-min">40</span>
+            <div class="instr">Interno x externo no lugar certo; os seis itens de 3.1.3 respondidos; critério de sucesso mensurável.</div></li>
+            <li><span class="kind">build</span>Montagem da seção 3.2.1<span class="item-min">90</span>
+            <div class="instr">Aplicar as revisões de P2 e montar a seção: texto do processo, personas, cenários. Combinar com o Arthur a ordem das imagens.</div></li></ul></div>
+        <div class="prow t"><div class="prow-head"><span class="prow-name">Guilherme</span><span class="prow-total">220 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>RF e RN v2 do Luis<span class="item-min">40</span>
+            <div class="instr">Os seis itens da rubrica cobertos; status coerente com os CTs que passaram ontem.</div></li>
+            <li><span class="kind">build</span>Seção 3.4.1<span class="item-min">180</span>
+            <div class="instr">Link do Wokwi, figura do circuito, tabela de pinos, tabela CT01&ndash;CT15 nas colunas do template (CT#, Bloco, Componente de entrada, Leitura da entrada, Componente de saída, Leitura da saída, Descrição) e, para cada CT, a figura e duas ou três linhas sobre o teste. Casos de falha identificados como tais.</div></li></ul></div>
+        <div class="prow t"><div class="prow-head"><span class="prow-name">Kadota</span><span class="prow-total">190 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Texto 3.2.1 do Bruno<span class="item-min">40</span>
+            <div class="instr">Processo descrito de forma que outra pessoa conseguiria repetir; uso de IA declarado.</div></li>
+            <li><span class="kind">build</span>Corrigir os CTs que falharam<span class="item-min">150</span>
+            <div class="instr">Corrigir no código cada falha da lista de ontem e rodar de novo esses casos. Wokwi e repositório atualizados no mesmo commit.</div></li></ul></div>
+        <div class="prow r"><div class="prow-head"><span class="prow-name">Luis</span><span class="prow-total">130 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Execução dos CTs do Guilherme<span class="item-min">40</span>
+            <div class="instr">Cada imagem mostra o caso descrito; os resultados anotados batem com a imagem.</div></li>
+            <li><span class="kind">build</span>RF finais e alinhamento com os CTs<span class="item-min">90</span>
+            <div class="instr">Ajustar a redação final dos RF, a coluna de status e as citações de CT nas RN, com base nos resultados de ontem.</div></li></ul></div>
+      </div>
+      <div class="tags"><span class="tag">RTM</span><span class="tag">VPC</span><span class="tag">3.4.1</span></div>
+    </div>
+    </li>
+
+    <li class="rail">
+    <div class="day" data-date="2026-10-21">
+      <div class="day-head"><span class="day-idx">DIA 5 / 6</span><span class="day-date">Qua 21/out</span><span class="today-pill">Hoje</span></div>
+      <h3>Fechamento e regressão</h3>
+      <p class="day-note">Gate do fim do dia: o código do repositório roda no Wokwi com classe, funções e LEDs/botões, e todos os CTs da tabela passam; todos os MRs dos quatro artefatos na <code>dev</code>. Se a regressão falhar, tudo que não é P0 congela até ela passar.</p>
+      <div class="people">
+        <div class="prow n"><div class="prow-head"><span class="prow-name">Pablo</span><span class="prow-total">190 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Seção 3.2.1 montada pelo Bruno<span class="item-min">40</span>
+            <div class="instr">Personas, cenários e processo na ordem certa; imagens legíveis; coerente com o VPC.</div></li>
+            <li><span class="kind">build</span>Seção 1 final e consolidação do Art. 1<span class="item-min">150</span>
+            <div class="instr">Atualizar 1.1&ndash;1.3 com o que 3.1.3 e o VPC definiram. Conferir numeração, imagens em <code>assets/negocios/</code>, fontes do Art. 1 em 5. Referências e texto-guia em itálico removido das seções 1 e 3.1.</div></li></ul></div>
+        <div class="prow r"><div class="prow-head"><span class="prow-name">Rachel</span><span class="prow-total">195 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Seção 3.4.1 do Guilherme<span class="item-min">45</span>
+            <div class="instr">IDs de CT iguais aos da RTM; cada caso tem figura; a tabela segue o template.</div></li>
+            <li><span class="kind">build</span>RTM final e ajustes de LGPD e BOM<span class="item-min">150</span>
+            <div class="instr">Atualizar a RTM com as correções de CT de ontem. Aplicar as revisões de LGPD (Dia 3) e BOM (Dia 4).</div></li></ul></div>
+        <div class="prow u"><div class="prow-head"><span class="prow-name">Arthur</span><span class="prow-total">160 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>RF finais do Luis<span class="item-min">40</span>
+            <div class="instr">A coluna de personas da RTM consegue citar cada RF a partir de um cenário.</div></li>
+            <li><span class="kind">build</span>P3 final, README e cabeçalho da documentação<span class="item-min">120</span>
+            <div class="instr">Aplicar a revisão de P3 (Dia 4) e inseri-la em 3.2.1. Depois o README: nome do grupo e do projeto, integrantes com link, orientadora e instrutores, descrição curta, estrutura de pastas atualizada (incluindo <code>src/firmware/prototipo_wokwi/</code>), sumário com âncoras que funcionam no GitLab.</div></li></ul></div>
+        <div class="prow u"><div class="prow-head"><span class="prow-name">Bruno</span><span class="prow-total">100 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>VPC do Pablo<span class="item-min">40</span>
+            <div class="instr">Template usado; cada dor tem aliviador; perfil do cliente coerente com P1 e P2.</div></li>
+            <li><span class="kind">build</span>3.2.1 final<span class="item-min">60</span>
+            <div class="instr">Aplicar a revisão do Kadota (Dia 4) ao texto do processo; remover o texto-guia em itálico de 3.2.1.</div></li></ul></div>
+        <div class="prow t"><div class="prow-head"><span class="prow-name">Guilherme</span><span class="prow-total">140 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>RTM da Rachel<span class="item-min">50</span>
+            <div class="instr">Nenhum elo quebrado: persona, RF, RN, CT e evidência existem e batem.</div></li>
+            <li><span class="kind">build</span>3.4.1 final<span class="item-min">90</span>
+            <div class="instr">Aplicar a revisão do Luis (Dia 4) e trocar as figuras dos CTs corrigidos ontem.</div></li></ul></div>
+        <div class="prow t"><div class="prow-head"><span class="prow-name">Kadota</span><span class="prow-total">160 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Personas finais do Arthur<span class="item-min">40</span>
+            <div class="instr">Imagens no lugar, legíveis, com texto alternativo.</div></li>
+            <li><span class="kind">build</span>Regressão completa<span class="item-min">120</span>
+            <div class="instr">Colar os arquivos do repositório num projeto Wokwi novo e rodar CT01&ndash;CT15. Tudo precisa passar a partir do repositório, não só do projeto original. Registrar a lista no <code>README.md</code> do firmware.</div></li></ul></div>
+        <div class="prow r"><div class="prow-head"><span class="prow-name">Luis</span><span class="prow-total">130 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Correções de CT do Kadota<span class="item-min">40</span>
+            <div class="instr">Rodar de novo os casos que tinham falhado.</div></li>
+            <li><span class="kind">build</span>Consistência final do Art. 4<span class="item-min">90</span>
+            <div class="instr">Todo RF tem RN ou justificativa e CT ou "Planejado"; tirar o texto-guia em itálico e as linhas de exemplo do template de 3.3.1, 3.3.2 e 3.3.4.</div></li></ul></div>
+      </div>
+      <div class="tags"><span class="tag">Regressão</span><span class="tag">README</span><span class="tag">Tudo na dev</span></div>
+    </div>
+    </li>
+
+    <li class="rail">
+    <div class="day merge" data-date="2026-10-22">
+      <div class="day-head"><span class="day-idx">DIA 6 / 6</span><span class="day-date">Qui 22/out</span><span class="today-pill">Hoje</span></div>
+      <h3>Revisão final e merge da dev na main</h3>
+      <p class="day-note">Só revisão. Cada revisor confere também que o texto-guia em itálico saiu da seção que revisa. Quando todos os MRs estiverem aprovados, Guilherme faz o merge da <code>dev</code> na <code>main</code> e confere a renderização no GitLab.</p>
+      <div class="people">
+        <div class="prow n"><div class="prow-head"><span class="prow-name">Pablo</span><span class="prow-total">40 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>3.2.1 final do Bruno<span class="item-min">40</span>
+            <div class="instr">Leitura de ponta a ponta da seção de personas.</div></li></ul></div>
+        <div class="prow n"><div class="prow-head"><span class="prow-name">Rachel</span><span class="prow-total">40 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Regressão do Kadota<span class="item-min">40</span>
+            <div class="instr">Abrir o link público do Wokwi deslogada e rodar três CTs à escolha.</div></li></ul></div>
+        <div class="prow u"><div class="prow-head"><span class="prow-name">Arthur</span><span class="prow-total">40 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Art. 4 final do Luis<span class="item-min">40</span>
+            <div class="instr">3.3.1, 3.3.2 e 3.3.4 sem texto de exemplo; personas citadas existem.</div></li></ul></div>
+        <div class="prow u"><div class="prow-head"><span class="prow-name">Bruno</span><span class="prow-total">40 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>Art. 1 consolidado do Pablo<span class="item-min">40</span>
+            <div class="instr">Ler seção 1 e 3.1 inteiras contra os três critérios: escrita, coerência com a Cerradinho, templates.</div></li></ul></div>
+        <div class="prow t"><div class="prow-head"><span class="prow-name">Guilherme</span><span class="prow-total">70 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>RTM final da Rachel<span class="item-min">40</span>
+            <div class="instr">Elos conferidos de novo depois das correções de ontem.</div></li>
+            <li><span class="kind">merge</span><code>dev</code> &rarr; <code>main</code><span class="item-min">30</span>
+            <div class="instr">Só com todos os MRs aprovados. Depois, abrir <code>documentacao.md</code> e o README na <code>main</code> e clicar o sumário.</div></li></ul></div>
+        <div class="prow t"><div class="prow-head"><span class="prow-name">Kadota</span><span class="prow-total">30 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>P3 final e README do Arthur<span class="item-min">30</span>
+            <div class="instr">P3 no lugar em 3.2.1; links do README abrem, estrutura de pastas bate com o repositório.</div></li></ul></div>
+        <div class="prow r"><div class="prow-head"><span class="prow-name">Luis</span><span class="prow-total">40 min</span></div>
+          <ul><li><span class="kind rv">revisão</span>3.4.1 final do Guilherme<span class="item-min">40</span>
+            <div class="instr">Figuras atualizadas correspondem ao código da regressão.</div></li></ul></div>
+      </div>
+      <div class="tags"><span class="tag">main</span><span class="tag">Entrega pronta</span></div>
+    </div>
+    </li>
+
+    <li class="off buffer" data-date="2026-10-23"><span class="date">Sex 23/out</span><span class="tag">Contingência &middot; prazo de entrega</span></li>
+
+  </ol>
+
+  <section class="section">
+    <h2 class="section-h">Carga por pessoa, em horas</h2>
+    <p>Builds mais revisões. Rachel carrega mais porque está em dois artefatos; o plano compensa dando a ela só as revisões do Art. 3, como o grupo pediu. O teto de 2 h por pessoa por dia do plano do Pablo não é rígido (decidido em 15/out), então valem estas estimativas, entre 14 e 20 h por pessoa. D2 e D3 são os dias mais pesados.</p>
+    <div class="tbl-wrap">
+      <table class="totals">
+        <thead><tr><th class="person">Pessoa</th><th>D1</th><th>D2</th><th>D3</th><th>D4</th><th>D5</th><th>D6</th><th>Total</th></tr></thead>
+        <tbody>
+          <tr class="n"><td class="person">Pablo</td><td>3.0</td><td>4.7</td><td>4.7</td><td>3.7</td><td>3.2</td><td>0.7</td><td>19.8</td></tr>
+          <tr class="n"><td class="person">Rachel</td><td>3.0</td><td>4.2</td><td>3.8</td><td>3.5</td><td>3.3</td><td>0.7</td><td>18.3</td></tr>
+          <tr class="u"><td class="person">Arthur</td><td>2.5</td><td>3.7</td><td>3.2</td><td>2.2</td><td>2.7</td><td>0.7</td><td>14.8</td></tr>
+          <tr class="u"><td class="person">Bruno</td><td>3.0</td><td>3.7</td><td>2.7</td><td>2.2</td><td>1.7</td><td>0.7</td><td>13.8</td></tr>
+          <tr class="t"><td class="person">Guilherme</td><td>3.5</td><td>4.8</td><td>3.7</td><td>3.7</td><td>2.3</td><td>1.2</td><td>19.1</td></tr>
+          <tr class="t"><td class="person">Kadota</td><td>3.5</td><td>4.7</td><td>2.7</td><td>3.2</td><td>2.7</td><td>0.5</td><td>17.2</td></tr>
+          <tr class="r"><td class="person">Luis</td><td>3.5</td><td>3.7</td><td>3.3</td><td>2.2</td><td>2.2</td><td>0.7</td><td>15.4</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel alert">
+    <h2>Se faltar tempo: o que corta primeiro</h2>
+    <ul>
+      <li><strong>P0, não se corta:</strong> Wokwi compilando com classe, duas funções, LEDs e botões, passando nos CTs descritos; todos os templates oficiais preenchidos; todas as seções da sprint presentes; RTM sem elo quebrado; nenhuma evidência inventada.</li>
+      <li><strong>P1, qualidade:</strong> justificativas específicas, fontes, figuras legíveis, cenários ricos, cotações rastreáveis.</li>
+      <li><strong>P2, extras:</strong> P3, refinamentos visuais, casos de teste além dos 15. Corta-se primeiro.</li>
+      <li><strong>Alguém faltou:</strong> o colega de dupla assume só o P0 da tarefa naquele dia e o resto passa para o dia seguinte; a dupla de revisores continua a mesma.</li>
+      <li><strong>Template do Drive inacessível:</strong> quem tem acesso exporta uma cópia; nunca trocar por outro formato.</li>
+      <li><strong>Tarefa não coube no dia:</strong> abrir o MR com o que existe, marcado como incompleto, e dizer no comentário o que falta. Nada é marcado como pronto sem estar.</li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2>Fora desta sprint, de propósito</h2>
+    <ul>
+      <li><strong>Sem Wi‑Fi nem broker reais no Wokwi.</strong> O payload sai no Serial; a conexão real é da Sprint 3. A rubrica do Art. 3 não pede, e o plano do Pablo também a trata como extra.</li>
+      <li><strong>Sem requisitos não funcionais.</strong> 3.3.3 é da próxima sprint, como o enunciado diz.</li>
+      <li><strong>Sem matriz comparativa de tecnologias</strong> (entregável 2 do TAPI). Fica citada em 1.2 e 3.1.3 e começa na Sprint 2.</li>
+      <li><strong>Sem dados reais da Cerradinho ou de fornecedores no repositório.</strong> Nada de NF, nome de fornecedor, rota ou custo real.</li>
+      <li><strong>Sem posicionamento indoor e sem rastreamento de pessoas</strong>, em nenhuma seção, persona ou cenário.</li>
+      <li><strong>Sem dashboard nem API.</strong> Entram como RF agora e são construídos a partir da Sprint 3.</li>
+      <li><strong>Sem tocar nas seções 2, 3.2.2 e 3.3.5 em diante.</strong> São de sprints futuras.</li>
+    </ul>
+  </section>
+
+  <footer>Grupo 01 &middot; Turma 24 &middot; Cerradinho &times; Inteli &middot; planning da Sprint 1, escrito na quinta, 15/out/2026, com ideias do plano revisado do Pablo</footer>
+</div>
+
+<script>
+  (function(){
+    try{
+      var d=new Date(), iso=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+      var el=document.querySelector('.day[data-date="'+iso+'"]');
+      if(el){ el.classList.add("today"); }
+    }catch(e){}
+  })();
+</script>
+
+</body></html>
