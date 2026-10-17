@@ -19,7 +19,7 @@
 
 ## 2. Personas
 
-### 2.1 Persona principal: Rafael, analista de PCM
+### 2.1 Persona principal: Geraldo, analista de PCM
 
 | | |
 |---|---|
@@ -31,7 +31,7 @@
 | **O que precisa da solução** | Lista de "meus itens fora" ordenada por dias para vencer; alerta por e-mail com antecedência configurável (ex.: 30 dias para item urgente); alerta imediato de lacre; última localização e se está no endereço da NF; registro de abertura autorizada do lacre. |
 | **Frase** | "Pode se perder numa planilha, pode esquecer que esse equipamento tá aqui, principalmente se não for um ativo tão crítico." [14:35] |
 
-### 2.2 Persona secundária: Camila, analista fiscal
+### 2.2 Persona secundária: Clarice, analista fiscal
 
 | | |
 |---|---|
@@ -42,7 +42,7 @@
 | **O que precisa da solução** | Alerta quando o item entra de volta na cerca da usina, para cobrar o lançamento; ciclo que só encerra com o retorno lançado; NF, nº da OS e nº da TAG ligados no mesmo registro. |
 | **Frase** | "O material tá na Cerradinho, ok, mas o processo como um todo não foi finalizado." [48:27] |
 
-### 2.3 Persona secundária: Marcos, analista de logística (acompanhamento de remessas)
+### 2.3 Persona secundária: Izidio, analista de logística (acompanhamento de remessas)
 
 | | |
 |---|---|
