@@ -120,7 +120,13 @@ _BOM (Bill of Material) pode ser definido como uma lista completa de materiais, 
 
 ### 3.2.1. Personas (sprint 1)	
 
-_Coloque aqui suas Personas (seguindo as instruções na descrição do artefato)_
+#### Introdução às personas
+
+As personas são representações dos usuários que ajudam a orientar as decisões de desenvolvimento a partir de seus objetivos, necessidades e dificuldades. Neste projeto, sua construção busca compreender as diferentes interações com a solução de acompanhamento dos equipamentos enviados à manutenção externa da Cerradinho.
+
+Segundo o TAPI, o processo atual apresenta dificuldades para consolidar informações sobre localização, notas fiscais de remessa, prazos previstos e datas de retorno. Esse contexto exige considerar tanto as atividades de registro e conferência dos equipamentos quanto as necessidades de consulta, acompanhamento e tratamento de alertas.
+
+A definição das personas permitirá relacionar essas atividades a cenários de uso, orientando a organização das informações e dos fluxos da solução. Os perfis serão construídos considerando suas dores, necessidades, desejos e nível de letramento digital, com distinção entre informações fundamentadas nas fontes consultadas e características que ainda dependem de validação.
 
 ### 3.2.2. Jornada do Usuário e Storyboard (sprint 2)	
 
