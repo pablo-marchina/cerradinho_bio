@@ -1,4 +1,6 @@
-# Personas do fluxo de remessa para conserto
+# Arthur - Personas do fluxo de remessa para conserto
+
+**Autor:** Arthur Loyola (@arthur.loyola)
 
 > **Pergunta investigada:** quem são as pessoas que tocam o ciclo de saída e retorno de um equipamento, o que cada uma precisa da solução e quem é o usuário principal.
 > **O que foi feito:** leitura das respostas do parceiro às perguntas sobre pessoas no kick-off (pergunta do G01 em [34:02–37:30] e pergunta do G03 em [56:22–57:30]), cruzadas com o fluxo do relatório 02 e com as falas sobre alertas e canais.

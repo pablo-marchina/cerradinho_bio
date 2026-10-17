@@ -1,4 +1,6 @@
-# Kick-off Cerradinho: problemática, expectativas e respostas
+# Arthur - Kick-off Cerradinho: problemática, expectativas e respostas
+
+**Autor:** Arthur Loyola (@arthur.loyola)
 
 > **Pergunta investigada:** o que a Cerradinho apresentou como problema e expectativa no kick-off, e o que respondeu às perguntas dos grupos.
 > **O que foi feito:** leitura da transcrição automática do kick-off (16/10/2026, ~1h35) e do slide "Fluxos de saída de materiais"; organização das falas por tema, com o minuto aproximado de cada uma.

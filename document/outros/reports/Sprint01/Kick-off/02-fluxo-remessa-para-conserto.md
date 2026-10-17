@@ -1,4 +1,6 @@
-# Fluxo da remessa para conserto: hoje e com a TAG
+# Arthur - Fluxo da remessa para conserto: hoje e com a TAG
+
+**Autor:** Arthur Loyola (@arthur.loyola)
 
 > **Pergunta investigada:** como um equipamento sai da Cerradinho para manutenção externa e volta, quem age em cada etapa e onde o acompanhamento se perde.
 > **O que foi feito:** fluxogramas em Mermaid com o responsável por cada etapa e reconstrução do fluxo a partir da fala do parceiro no kick-off [13:33–14:45, 34:28–37:30, 47:37] e do slide "Fluxos de saída de materiais | como funciona hoje e como poderá funcionar".
