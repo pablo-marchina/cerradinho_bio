@@ -120,7 +120,11 @@ _BOM (Bill of Material) pode ser definido como uma lista completa de materiais, 
 
 ### 3.2.1. Personas (sprint 1)	
 
-_Coloque aqui suas Personas (seguindo as instruções na descrição do artefato)_
+#### Introdução às personas
+
+#### Introdução às personas
+
+As personas orientam o desenvolvimento da solução de rastreamento de equipamentos em manutenção externa da Cerradinho a partir dos objetivos, dificuldades e necessidades dos usuários. Os perfis consideram seus cenários de uso e letramento digital, distinguindo informações fundamentadas na pesquisa de hipóteses pendentes de validação.
 
 ### 3.2.2. Jornada do Usuário e Storyboard (sprint 2)	
 
