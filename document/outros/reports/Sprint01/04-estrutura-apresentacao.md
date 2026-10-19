@@ -125,3 +125,58 @@ Pontos em que a apresentação e o planning divergem, ou em que o planning impõ
 - Roteiro no Drive: segunda-feira até as 16h, na pasta da Sprint 1, com nome padronizado.
 - Slides no Drive: quarta-feira até as 16h; só a versão final, identificada.
 - Review: quinta-feira.
+
+## 9. Script (tópicos, pessoas e tempo)
+
+Duração total: 4:55 (5 segundos de folga). Os tempos são cumulativos desde o início da apresentação. Números de RF, RN e CT não são citados; as regras entram pelo texto.
+
+### Bloco 1: Problema e negócio (Arthur, 0:00 a 1:15)
+
+- 0:00 a 0:10: abertura; somos o grupo 01 e o projeto é o GuaráTracking.
+- 0:10 a 0:35: o problema; equipamentos saem para conserto com ICMS suspenso por 270 ou 360 dias; se voltam "por fora" ou passam do prazo, a empresa paga complemento (R$ 602.969 na safra 24/25, dado do parceiro).
+- 0:35 a 0:45: hoje ninguém enxerga o item fora; o que não é crítico some em planilha.
+- 0:45 a 0:55: objetivos; saber onde está cada item, ligar cada ciclo à NF e separar atraso de permanência.
+- 0:55 a 1:05: solução em alto nível; dispositivo reutilizável com lacre, alertas e API para o BI.
+- 1:05 a 1:12: análise de negócio (Artefato 1) em uma frase: 5 Forças, SWOT, canvas, riscos, LGPD e BOM estão na documentação.
+- 1:12 a 1:15: confirmar: "O problema e os objetivos estão como vocês os veem? Os dados da última safra podem ser enviados?"
+
+### Bloco 2: Personas (Arthur, 1:15 a 2:30)
+
+- 1:15 a 1:25: frase de entrada; desenhamos para quem opera o ciclo, não para quem paga a conta.
+- 1:25 a 1:50: **Geraldo, analista de PCM (principal)**; dono do equipamento enquanto está fora; cota a oficina, vincula a TAG, aplica o lacre e cobra o fornecedor; precisa da lista "meus itens fora" e de alerta antes do prazo.
+- 1:50 a 2:10: **Clarice, analista fiscal**; emite a NF de remessa e lança a de retorno; não vê o físico; a dor é o item voltar sem passar no fiscal; precisa do ciclo só fechar com a NF de retorno.
+- 2:10 a 2:20: **Izidio, analista de logística**; consolida para o BI da diretoria; hoje cobra oficina por senso de dono; precisa de API e de histórico confiável.
+- 2:20 a 2:27: como construímos; kick-off, reports e síntese com IA conferida pelo grupo; sem entrevistas, são hipóteses.
+- 2:27 a 2:30: confirmar: "Estas são as pessoas do problema de vocês? Falta alguém? O PCM é mesmo quem usa o painel?" Passa a fala ao Bruno.
+
+### Bloco 3: Decisão, requisitos e regras (Bruno, 2:30 a 3:30)
+
+- 2:30 a 2:35: "A partir das personas, definimos requisitos e regras."
+- 2:35 a 2:45: quadro persona, regra, requisito e teste; é a matriz de rastreabilidade em miniatura.
+- 2:45 a 3:15: quatro regras de negócio, cerca de 7 segundos cada: o ciclo só abre com NF, fornecedor, saída e prazo; atraso e permanência são alertas distintos; lacre aberto sem autorização é violação crítica; o ciclo só fecha com conferência e NF de retorno.
+- 3:15 a 3:23: seis grupos de requisito: sensor, formato MQTT, Wi‑Fi, usuário e acesso ao painel, dispositivos na plataforma e gráficos.
+- 3:23 a 3:30: confirmar: "Estas regras refletem o processo real? O limiar de 150 dias e a janela de 3 dias para retirada autorizada estão certos?"
+
+### Bloco 4: Evidência, protótipo no Wokwi (Bruno, 3:30 a 4:10)
+
+- 3:30 a 3:40: protótipo próprio com LEDs e botões; classe e funções no código; código no repositório.
+- 3:40 a 3:55: print do lacre aberto sem autorização: LED vermelho e alerta imediato.
+- 3:55 a 4:05: print de atraso (amarelo piscando) e permanência (amarelo fixo); 15 casos de teste, com sucesso e falha.
+- 4:05 a 4:10: confirmar: "Os alertas e as cores fazem sentido para quem vai operar?"
+
+### Bloco 5: Resultado e limitações (Bruno, 4:10 a 4:30)
+
+- 4:10 a 4:20: resultado; os quatro artefatos em uma linha cada, com o status real (preencher na véspera).
+- 4:20 a 4:30: limitações; sem dados da última safra; o Wokwi simula e não prova localização em campo; personas e regras ainda não validadas. Passa a fala ao Arthur.
+
+### Bloco 6: Próximo passo e pergunta de ouro (Arthur, 4:30 a 4:55)
+
+- 4:30 a 4:40: próximos passos da Sprint 2: protótipo físico e arquitetura da solução.
+- 4:40 a 4:55: pergunta de ouro: **"O que precisamos validar com o parceiro antes de avançar?"**; resumir os quatro "Confirmar" (problema e dados da safra, personas, regras e limiares, alertas) e anotar as respostas.
+
+### Quadro de falas
+
+| Pessoa | Blocos | Tempo total |
+|---|---|---|
+| Arthur | 1, 2 e 6 | 2:55 |
+| Bruno | 3, 4 e 5 | 2:00 |
