@@ -73,6 +73,7 @@ São **restritos**: cadastros de ativos e fornecedores, notas fiscais, localiza�
 │   ├── documentacao.md       # documentação principal (IoTDoc), dividida por sprint
 │   ├── TemplateManual.md     # manual de instruções (sprints 3 a 5)
 │   └── outros/               # documentos complementares
+│       └── reports/          # reports internos por sprint (SprintNN); não são evidência
 └── src/
     ├── firmware/             # código do dispositivo embarcado
     └── ...                   # crie pastas conforme a arquitetura (ex.: backend/, frontend/, api/)
@@ -84,6 +85,15 @@ São **restritos**: cadastros de ativos e fornecedores, notas fiscais, localiza�
 - Ao criar uma nova pasta em `src/`, atualize a seção "Estrutura de pastas" do `README.md`.
 - O repositório é hospedado no GitLab do Inteli (`git.inteli.edu.br`).
 - Antes de tarefas recorrentes (cards, índices de relatórios, snapshot da main, criação de skills), consulte `skills/SKILLS_INDEX.md` e siga a skill indicada.
+
+### Reports (controle interno)
+
+Os reports em `document/outros/reports/SprintNN/` (kick-off, planning, processo com IA etc.) são registros internos do grupo, não fazem parte da entrega.
+
+- Pode ler os reports para escrever, apoiar a redação e entender o contexto de uma seção.
+- **Nunca** use um report como justificativa ou evidência na `documentacao.md` nem em outro documento de entrega. Frases como "conforme o report X", ou um link para o report no lugar do argumento, não valem.
+- A justificativa e a evidência devem estar escritas no próprio documento, com as fontes reais (por exemplo: a reunião com o parceiro e a data, material do Inteli, artigo, norma ou teste realizado), de forma que o leitor entenda sem abrir o report.
+- Há exceções, mas só quando o grupo combinar explicitamente. Nesse caso, registre a exceção no card e explique no texto por que o report é citado.
 
 ## 5. Cards do Kanban (issues no GitLab)
 
