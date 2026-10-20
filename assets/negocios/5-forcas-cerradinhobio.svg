@@ -43,7 +43,7 @@
   </text>
 
   <rect x="386" y="218" width="318" height="138" rx="10" fill="#8fbe62"/>
-  <text x="410" y="254" class="label">Poder dos compradores</text>
+  <text x="440" y="254" class="label">Poder dos compradores</text>
   <text x="410" y="275" class="rating">MÉDIA</text>
   <text x="410" y="299" class="body">
     <tspan x="410" dy="0">Distribuidores e compradores de commodities</tspan>
