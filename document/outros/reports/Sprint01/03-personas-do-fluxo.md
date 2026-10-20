@@ -60,6 +60,8 @@ As três primeiras (Geraldo, Clarice e Izidio) são as personas do Artefato 2. H
 | **Objetivos** | Saber, sem ligar para ninguém, onde está cada item e quando volta; ser avisado antes do prazo estourar; ter um histórico para defender a decisão de trocar de fornecedor. |
 | **Dores** | Muitos itens ao mesmo tempo; o não crítico some da memória; o fornecedor promete data e não cumpre; não sabe se o fornecedor mandou o item para outra unidade; sem dados, é difícil decidir entre trazer o item de volta, colocar sobressalente ou pedir prorrogação. |
 | **O que precisa da solução** | Lista de "meus itens fora" ordenada por dias para vencer; alerta por e-mail com antecedência configurável (ex.: 30 dias para item urgente); alerta imediato de lacre; última localização e se está no endereço da NF; registro de abertura autorizada do lacre; histórico de cumprimento de prazo por fornecedor, para decidir se renova ou troca de oficina. |
+| **Expectativas** | Que o sistema lhe diga, sem ligações, onde está cada item e quando volta, e que o avise antes do prazo estourar, para decidir com dados e não de memória. |
+| **O que é sucesso para ela** | Nenhum item sai do radar: todo atraso é visto a tempo de trazer de volta, colocar sobressalente ou prorrogar. |
 | **Demografia (hipótese)** | Fonte: papel e área (Manutenção, barracão da usina, dono do ativo). Hipótese do grupo, sem fonte do parceiro: formação técnica ou em engenharia; faixa etária e tempo de casa a validar. |
 | **Letramento digital (hipótese)** | Nível 3. Usa SAP, planilha ou lista no SharePoint, e-mail e telefone [14:35, 34:28], mas controla itens fora por planilha e memória. |
 | **Frase** | "Pode se perder numa planilha, pode esquecer que esse equipamento tá aqui, principalmente se não for um ativo tão crítico." [14:35] |
@@ -80,6 +82,9 @@ As três primeiras (Geraldo, Clarice e Izidio) são as personas do Artefato 2. H
 | **Objetivos** | Nenhum item passar de 270/360 dias sem decisão; nenhum item voltar "por fora" sem lançamento. |
 | **Dores** | Não tem contato com o equipamento; descobre o atraso pelo relatório, não pelo campo; item que voltou sem passar no fiscal deixa a remessa aberta; quando o prazo estoura, a empresa paga complemento de ICMS (R$ 602.969 na safra 24/25, segundo o TAPI). |
 | **O que precisa da solução** | Aviso quando o item entra de volta na usina, para cobrar o lançamento (ideia do grupo: detectar a TAG na portaria, ainda não discutida com o parceiro); ciclo que só encerra com o retorno lançado; NF, nº da OS e nº da TAG ligados no mesmo registro. |
+| **Ferramentas hoje (hipótese)** | Sistema de emissão de NF e portal da SEFAZ; o parceiro não detalhou as demais [35:13]. |
+| **Expectativas** | Saber do retorno físico sem depender do PCM e ter TAG, NF e OS no mesmo registro, para fechar a remessa a tempo. |
+| **O que é sucesso para ela** | Zero complemento de ICMS por prazo vencido sem baixa: todo ciclo fecha com a NF de retorno lançada. |
 | **Demografia (hipótese)** | Fonte: papel e área (Fiscal, relação com a SEFAZ). Hipótese do grupo, sem fonte do parceiro: formação em ciências contábeis ou áreas afins; faixa etária e tempo de casa a validar. |
 | **Letramento digital (hipótese)** | Nível 4. Emite NF eletrônica e lança retorno em sistema fiscal [35:13, 48:27]; a hipótese é de que cruza dados e relatórios com facilidade. |
 | **Frase** | "O material tá na Cerradinho, ok, mas o processo como um todo não foi finalizado." [48:27] |
@@ -99,6 +104,9 @@ As três primeiras (Geraldo, Clarice e Izidio) são as personas do Artefato 2. H
 | **Objetivos** | Mostrar a evolução do ICMS por safra; manter na base todo item que não voltou, mesmo com ICMS já pago. |
 | **Dores** | Dados espalhados entre SAP e planilhas das áreas; não consegue dizer agora quantas remessas saíram na safra; cobra oficinas e prazos manualmente, uma tarefa operacional que não é da área dele [50:16–51:41]. |
 | **O que precisa da solução** | API para alimentar o BI; histórico de ciclos com datas de saída, previsto e retorno; permanência e atraso calculados separadamente. |
+| **Ferramentas hoje** | SAP, planilhas das áreas e BI para a diretoria [50:16–51:41]. |
+| **Expectativas** | Receber os ciclos prontos por API no BI, sem montar planilha à mão nem cobrar oficina fora do papel da área. |
+| **O que é sucesso para ela** | Mostrar à diretoria a evolução do ICMS por safra e os gargalos de oficina com dados confiáveis e sem trabalho manual. |
 | **Demografia (hipótese)** | Fonte: papel e área (Logística, acompanhamento de remessas, relatórios à diretoria). Hipótese do grupo, sem fonte do parceiro: formação em logística, engenharia ou administração; faixa etária e tempo de casa a validar. |
 | **Letramento digital (hipótese)** | Nível 4. Trabalha com SAP, planilhas das áreas e BI [50:16–51:41]; a hipótese é de que consome dados por relatório e por integração. |
 | **Frase** | "Eu só vou dar baixa nele quando ele realmente retornou." [53:16] |
