@@ -106,35 +106,35 @@ Probabilidade: 10%, 30%, 50%, 70% ou 90%; impacto: muito baixo a muito alto. Os 
 
 ### 3.1.6. Política de Privacidade de acordo com a LGPD (sprint 1)	
 
-Esta política preliminar do projeto não representa aprovação jurídica da Cerradinho.
+Política preliminar, sem aprovação jurídica da CerradinhoBio.
 
 #### 3.1.6.1 Informações gerais
 
-O projeto monitora equipamentos e apoia ciclos logísticos.
+A solução acompanha equipamentos da CerradinhoBio em manutenção externa.
 
 #### 3.1.6.2 Tratamento de dados
 
-O tratamento observará finalidade, necessidade, transparência e segurança.
+O tratamento seguirá a LGPD. Correspondência com o rascunho de RF do Luis: **PENDENTE DE VALIDAÇÃO**.
 
 #### 3.1.6.3 Dados coletados
 
-Poderão ser tratados nome, e-mail corporativo, cargo, perfil, logs de acesso, IP e horário dos usuários do painel; identificação dos responsáveis por ciclos e alertas; e contatos profissionais de fornecedores. Dados dos equipamentos não são pessoais por si só. Durante o transporte, a localização poderá indicar indiretamente a posição de um motorista.
+Serão tratados nome, e-mail corporativo, cargo, perfil, logs, IP e horário dos usuários; responsáveis por ciclos e alertas; e contatos profissionais de fornecedores. Dados do equipamento não são pessoais por si só; sua localização pode identificar indiretamente o motorista.
 
 #### 3.1.6.4 Fonte dos dados
 
-Os dados virão dos titulares, responsáveis, fornecedores, painel ou equipamentos.
+Fontes: titulares, responsáveis, fornecedores, painel e equipamentos.
 
 #### 3.1.6.5 Finalidades
 
-Serão usados para autenticação, acesso, auditoria, ciclos, alertas, suporte e comunicação. Da localização, será mantida somente a última posição válida, em rotina semanal e sem rastreamento contínuo, conforme restrições 1 e 5 do TAPI.
+Servirão à autenticação, acesso, auditoria, ciclos, alertas, suporte e comunicação. Será mantida apenas a última posição válida, atualizada semanalmente, sem rastreamento contínuo, conforme restrições 1 e 5 do TAPI.
 
 #### 3.1.6.6 Armazenamento
 
-Os dados ficarão em ambientes controlados, com acesso limitado.
+Cadastros, logs, ciclos e alertas ficarão no backend/banco em nuvem; mensagens, no broker. Provedor, região e tecnologias: **PENDENTE DE VALIDAÇÃO**.
 
 #### 3.1.6.7 Retenção
 
-A retenção variará por tipo de dado. Prazos: **PENDENTE DE VALIDAÇÃO**.
+Cadastros e permissões serão conservados enquanto ativos; logs, pelo período de auditoria; ciclos e alertas, enquanto necessários ao histórico; contatos, durante a relação operacional; localização, até sua substituição semanal; cookies, durante a sessão. Depois, haverá exclusão ou anonimização. Prazos: **PENDENTE DE VALIDAÇÃO**.
 
 #### 3.1.6.8 Cookies
 
@@ -146,19 +146,19 @@ O compartilhamento necessário abrangerá provedores de nuvem, broker e conectiv
 
 #### 3.1.6.10 Segurança
 
-Serão aplicados autenticação, controle de acesso, auditoria e proteção de credenciais.
+Serão aplicados autenticação, acesso restrito, auditoria e proteção de credenciais.
 
 #### 3.1.6.11 Direitos dos titulares
 
-O titular poderá solicitar confirmação, acesso, correção, anonimização, bloqueio, eliminação e informações sobre compartilhamento.
+O titular poderá pedir confirmação, acesso, correção, anonimização, bloqueio, eliminação e informações sobre compartilhamento.
 
 #### 3.1.6.12 Exercício dos direitos
 
-As solicitações deverão ser encaminhadas pelo canal oficial a ser definido pela Cerradinho.
+Solicitações serão recebidas pelo canal oficial, terão identidade e escopo verificados, serão registradas, analisadas e respondidas. Canal: **PENDENTE DE VALIDAÇÃO**.
 
 #### 3.1.6.13 DPO/Encarregado
 
-O encarregado e seu contato serão indicados pela Cerradinho: **PENDENTE DE VALIDAÇÃO**.
+O encarregado e seu contato serão indicados pela CerradinhoBio: **PENDENTE DE VALIDAÇÃO**.
 
 
 ### 3.1.7. Bill of Material (BOM) (sprint 1)
