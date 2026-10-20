@@ -106,38 +106,63 @@ Probabilidade: 10%, 30%, 50%, 70% ou 90%; impacto: muito baixo a muito alto. Os 
 
 ### 3.1.6. Política de Privacidade de acordo com a LGPD (sprint 1)	
 
-_A Política de privacidade para o projeto de acordo com a LGPD deve ser escrita considerando o projeto que os alunos estão criando. Os pontos a seguir precisam ser apresentados. O aluno pode utilizar  o Gerador de Política de Privacidade (https://www.nuvemshop.com.br/ferramentas/gerador-politica-de-privacidade), criado pela Nuvemshop e, de acordo com a empresa, já adaptado a LGPD para ter uma prévia e ajustar de acordo com o seu projeto._
+Esta política preliminar do projeto não representa aprovação jurídica da Cerradinho.
 
-#### 3.1.6.1 Informações gerais sobre a empresa / organização
+#### 3.1.6.1 Informações gerais
 
-#### 3.1.6.2 Informações sobre o tratamento de dados
+O projeto monitora equipamentos e apoia ciclos logísticos.
 
-#### 3.1.6.3 Quais são os dados coletados
+#### 3.1.6.2 Tratamento de dados
 
-#### 3.1.6.4 Onde os dados são coletados 
+O tratamento observará finalidade, necessidade, transparência e segurança.
 
-#### 3.1.6.5 Para quais finalidades os dados serão utilizadas
+#### 3.1.6.3 Dados coletados
 
-#### 3.1.6.6 Onde os dados ficam armazenados 
+Poderão ser tratados nome, e-mail corporativo, cargo, perfil, logs de acesso, IP e horário dos usuários do painel; identificação dos responsáveis por ciclos e alertas; e contatos profissionais de fornecedores. Dados dos equipamentos não são pessoais por si só. Durante o transporte, a localização poderá indicar indiretamente a posição de um motorista.
 
-#### 3.1.6.7 Qual o período de armazenamento dos dados (retenção)
+#### 3.1.6.4 Fonte dos dados
 
-#### 3.1.6.8 Uso de cookies e/ou tecnologias semelhantes
+Os dados virão dos titulares, responsáveis, fornecedores, painel ou equipamentos.
 
-#### 3.1.6.9 Com quem esses dados são compartilhados (parceiros, fornecedores, subcontratados)
+#### 3.1.6.5 Finalidades
 
-#### 3.1.6.10 Informações sobre medidas de segurança adotadas pela empresa
+Serão usados para autenticação, acesso, auditoria, ciclos, alertas, suporte e comunicação. Da localização, será mantida somente a última posição válida, em rotina semanal e sem rastreamento contínuo, conforme restrições 1 e 5 do TAPI.
 
-#### 3.1.6.11 Orientações sobre como a empresa/organização atende aos direitos dos usuários
+#### 3.1.6.6 Armazenamento
 
-#### 3.1.6.12 Informações sobre como o titular de dados pode solicitar e exercer os seus direitos
+Os dados ficarão em ambientes controlados, com acesso limitado.
 
-#### 3.1.6.13 Informações de contato do Data Protection Officer (DPO) ou encarregado de proteção de dados da organização
+#### 3.1.6.7 Retenção
+
+A retenção variará por tipo de dado. Prazos: **PENDENTE DE VALIDAÇÃO**.
+
+#### 3.1.6.8 Cookies
+
+Se previstos no painel, serão usados somente cookies de sessão necessários.
+
+#### 3.1.6.9 Compartilhamento
+
+O compartilhamento necessário abrangerá provedores de nuvem, broker e conectividade.
+
+#### 3.1.6.10 Segurança
+
+Serão aplicados autenticação, controle de acesso, auditoria e proteção de credenciais.
+
+#### 3.1.6.11 Direitos dos titulares
+
+O titular poderá solicitar confirmação, acesso, correção, anonimização, bloqueio, eliminação e informações sobre compartilhamento.
+
+#### 3.1.6.12 Exercício dos direitos
+
+As solicitações deverão ser encaminhadas pelo canal oficial a ser definido pela Cerradinho.
+
+#### 3.1.6.13 DPO/Encarregado
+
+O encarregado e seu contato serão indicados pela Cerradinho: **PENDENTE DE VALIDAÇÃO**.
 
 
 ### 3.1.7. Bill of Material (BOM) (sprint 1)
 _BOM (Bill of Material) pode ser definido como uma lista completa de materiais, que detalha todos os itens necessários para construir, fabricar ou reparar um produto. Deve-se preencher o template fornecido.
-
 
 
 
