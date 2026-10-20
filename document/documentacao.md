@@ -229,16 +229,66 @@ A revisão deverá incluir comentários sobre cada ponto levantado, mostrando co
 
 _Nesta seção, detalhe os resultados obtidos com a implementação, de acordo com o disposto nas subseções._
 
-### 3.4.1.Protótipo Inicial do Projeto usando o Simulador Wokwi (sprint 1)
+### 3.4.1. Protótipo Inicial do Projeto usando o Simulador Wokwi (sprint 1)
 
-_Preencha aqui o link para o protótipo inicial no Wokwi_
+**Link do protótipo:** https://wokwi.com/projects/478276108359405569
 
-_Abaixo você deve registrar diversas situações de teste, indicando exemplos de leitura (entrada) e escrita (saída) apresentadas pelo seu sistema no simulador. Estes registros serão utilizados para testar seus componentes, portanto, descreva várias situações, incluindo não apenas casos de sucesso, mas também de possíveis falhas nas leituras de entradas e saídas. <br>
-Siga as nomenclaturas e convenções já utilizadas anteriormente, e não se esqueça dos alinhamentos de negócios e experiência do usuário para pensar em situações representativas. Inclua figuras do simulador e descreva os testes realizados para ilustrar o funcionamento do protótipo simulado. A tabela a seguir serve como exemplo._
+Na Sprint 1 o dispositivo é simulado no Wokwi com um ESP32 DevKit. Cada entrada do circuito representa uma situação física do rastreador: o lacre (`SW_LACRE`), a disponibilidade de conexão (`SW_REDE`), a autorização de retirada (`BTN_AUTORIZAR`), o encerramento ou vínculo de ciclo (`BTN_CICLO`) e o nível da bateria (`POT_BATERIA`). Os LEDs mostram o estado que, no produto, seria enviado à plataforma, e o Monitor Serial mostra os eventos em JSON, que representam a mensagem MQTT. Não há rede nem broker reais nesta sprint. A localização (GNSS) fica para a Sprint 2.
+
+**Tempo simulado.** Para testar prazos de dias sem esperar dias, 1 segundo de simulação equivale a 1 dia (`SEGUNDOS_POR_DIA = 1`).
+
+**Valores de teste.** Os parâmetros abaixo são valores de teste, `PENDENTE DE VALIDAÇÃO` com a Cerradinho. O TAPI fixa apenas a referência de 150 dias para permanência e o status semanal; os demais serão definidos com o parceiro.
+
+| Parâmetro | Valor de teste | Origem |
+|---|---|---|
+| Status periódico | 7 dias | TAPI ("uma vez por semana, com frequência ajustável") |
+| Limiar de permanência | 150 dias (também testado com 10) | TAPI ("150 dias como referência inicial"; MVP 4 pede outros limiares) |
+| Prazo previsto de retorno | 5 dias | Valor de teste — `PENDENTE DE VALIDAÇÃO` |
+| Janela de autorização de retirada | 3 dias | Valor de teste — `PENDENTE DE VALIDAÇÃO` |
+| Capacidade da fila sem conexão | 8 eventos | Valor de teste — `PENDENTE DE VALIDAÇÃO` |
+| Bateria baixa / recuperada | 20% / 25% | Valor de teste — `PENDENTE DE VALIDAÇÃO` |
+
+**LEDs simultâneos.** Cada LED representa um estado independente e podem acender juntos (por exemplo, vermelho de violação e azul de sem rede no CT08). O verde só fica fixo quando não há violação.
+
+**Do simulador ao dispositivo real.** Cada componente do circuito representa uma parte do rastreador que será montado na Sprint 2. A lógica de decisão do `sketch.ino` é a mesma; mudam apenas as fontes das leituras.
+
+| Componente no Wokwi | O que representa no dispositivo real |
+|---|---|
+| ESP32 DevKit | Microcontrolador do rastreador |
+| SW_LACRE (chave deslizante) | Sensor do lacre (laço de continuidade ou reed switch) |
+| BTN_AUTORIZAR (botão) | Autorização de retirada registrada pelo responsável (no produto, vinda da plataforma) |
+| BTN_CICLO (botão) | Encerramento do ciclo ou novo vínculo, feitos na conferência de retorno |
+| POT_BATERIA (potenciômetro) | Leitura da tensão da bateria por divisor resistivo |
+| SW_REDE (chave deslizante) | Estado do módulo de comunicação (tecnologia a definir; o TAPI não pressupõe Wi‑Fi nas oficinas) |
+| LEDs | Estados que, no produto, viram mensagens enviadas à plataforma |
+| Monitor Serial (JSON) | Mensagem MQTT publicada no broker |
+
+Fica fora desta simulação a localização (GNSS), prevista para a Sprint 2.
+
+Cada CT indica entre parênteses o requisito funcional (RF) e a regra de negócio (RN) que verifica. CT01 e CT11 não testam uma regra de negócio específica: verificam a inicialização e a leitura confiável do botão.
+
+![Circuito no Wokwi com o Monitor Serial](../assets/wokwi/circuito.png)
 
 **CT#** | **Bloco** | **Componente de entrada** | **Leitura da entrada** | **Componente de saída** | **Leitura da saída** | **Descrição**
 |----------|----------|----------|----------|----------|----------|----------|
-|CT01|ex. medidor de umidade relativa do ar|ex. “sensor de umidade XPTO”| < 100 | ex. led amarelo | piscante em intervalo de 1s | quando a umidade está baixa, o led amarelo pisca
+|CT01|Inicialização|SW_LACRE e SW_REDE|Lacre fechado e rede disponível ao ligar|LED verde; Serial|Verde fixo, demais apagados; JSON `STATUS` com `dias_fora=0`, `lacre="fechado"`|Sucesso. Ao ligar com o lacre íntegro e conexão, o dispositivo indica operação normal e publica o primeiro status (RF009).|
+|CT02|Status periódico|Relógio simulado (1 s = 1 dia)|Dias 7 e 14 de ciclo|Serial|Um `STATUS_SEMANAL` no dia 7 e outro no dia 14, nenhum fora desses dias|Sucesso. O status é enviado a cada 7 dias, como pede o TAPI (RF011, RF009; RN07).|
+|CT03|Prazo e atraso|Relógio simulado (1 s = 1 dia)|`dias_fora` passa do prazo previsto (5) e fica abaixo do limiar|LED amarelo; Serial|Amarelo piscando a 1 Hz; `ALERTA_ATRASO` emitido uma única vez|Sucesso. O equipamento passou da data prevista de retorno, o que é diferente de permanência prolongada (RF012; RN04).|
+|CT04|Permanência|Relógio simulado (1 s = 1 dia)|`dias_fora` atinge o limiar (rodar com 10 e com 150)|LED amarelo; Serial|Amarelo fixo; `ALERTA_PERMANENCIA` emitido uma única vez em cada rodada|Sucesso. Testa o limiar configurável com o valor de referência e um valor alternativo, como pede o MVP 4 do TAPI (RF012; RN03, RN04).|
+|CT05|Lacre|SW_LACRE|Lacre aberto sem autorização|LED vermelho; Serial|Vermelho piscando; `VIOLACAO_LACRE` sai na hora, fora da rotina semanal|Violação. Abertura não autorizada gera alerta imediato (RF005; RN05).|
+|CT06|Retirada autorizada|BTN_AUTORIZAR e SW_LACRE|Botão pressionado; lacre aberto dentro da janela de 3 dias e depois fechado|LED verde; Serial|Verde piscando durante a retirada; `RETIRADA_AUTORIZADA` sem alerta; ao fechar, `LACRE_REAPLICADO` e verde fixo|Sucesso. Fluxo de retirada autorizada para o reparo, com reaplicação do lacre (RF006; RN06).|
+|CT07|Autorização expirada|BTN_AUTORIZAR e SW_LACRE|Botão pressionado; lacre aberto depois de mais de 3 dias|LED vermelho; Serial|Mesmo resultado do CT05: `VIOLACAO_LACRE`|Falha tratada. Autorização vencida não libera a abertura (RF005; RN05, RN06).|
+|CT08|Sem conexão|SW_REDE e SW_LACRE|Rede indisponível; lacre aberto sem autorização|LEDs azul e vermelho; Serial|Azul e vermelho piscando; nada publicado; `VIOLACAO_LACRE` guardada na fila; Serial mostra `[FILA] 1 pendente`|Falha tratada. Sem conexão, o evento crítico não se perde: fica guardado para envio posterior (RF010, RF008; RN05, RN09).|
+|CT09|Reconexão|SW_REDE|Rede volta a ficar disponível|LED azul; Serial|Eventos pendentes publicados na ordem, com o dia original de ocorrência; azul apaga|Sucesso. Ao reconectar, a fila é esvaziada sem perder a hora em que cada evento aconteceu (RF010, RF008; RN09).|
+|CT10|Fila cheia|SW_REDE e entradas que geram eventos|Rede indisponível; mais de 8 eventos gerados|Serial|`FILA_CHEIA`; descarta o evento não crítico mais antigo; nenhuma violação perdida|Falha tratada. Com a fila no limite, só eventos não críticos são descartados (RF010; RN09).|
+|CT11|Ruído de botão|BTN_AUTORIZAR|Pressões rápidas (ruído de contato) e depois o botão segurado por 3 s|Serial|Um único evento por pressão real (debounce de 50 ms, detecção por borda); segurar não repete o evento|Falha tratada. Leituras falsas do botão não geram autorizações em duplicidade (RF006).|
+|CT12|Bateria|POT_BATERIA|Nível abaixo de 20%, depois acima de 25%|Serial|`BATERIA_BAIXA` uma única vez; não repete até voltar a 25% (histerese)|Sucesso. O alerta de bateria não fica oscilando perto do limite (RF007; RN10).|
+|CT13|Falha do sensor de bateria|POT_BATERIA|Potenciômetro no mínimo (ADC = 0, representa divisor desconectado)|Serial|`SENSOR_BATERIA_FALHA`; nenhum `BATERIA_BAIXA` falso|Falha tratada. Leitura impossível é tratada como falha do sensor, não como bateria vazia (RF007; RN10).|
+|CT14|Encerramento|BTN_CICLO e SW_LACRE|Lacre fechado; botão segurado por 2 s|Serial|`CICLO_ENCERRADO`; `dias_fora` zera; `ciclo_id` sobe; contador de ciclos preservado|Sucesso. Encerrar o ciclo libera o dispositivo sem apagar o histórico (RF018, RF003; RN11).|
+|CT15|Vínculo simultâneo|BTN_CICLO|Ciclo ativo; toque curto (tentativa de novo vínculo)|Serial|`VINCULO_RECUSADO`; o ciclo atual continua igual|Falha tratada. Impede vínculos simultâneos indevidos, como pede o TAPI (RF003; RN01).|
+|CT16|Encerramento recusado|BTN_CICLO e SW_LACRE|Lacre aberto; botão segurado por 2 s|Serial|`ENCERRAMENTO_RECUSADO`; o ciclo continua ativo|Falha tratada. O ciclo só pode ser encerrado com o lacre fechado (RF018; RN11).|
+
+<!-- Para cada CT, a issue #20 acrescenta a figura assets/wokwi/CTnn.png e duas ou três linhas sobre o teste executado. -->
 
 ### 3.4.2. Protótipo Físico do Projeto (offline) (sprint 2)	
 
