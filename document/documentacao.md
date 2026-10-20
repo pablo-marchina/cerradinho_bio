@@ -130,6 +130,28 @@ As personas foram construídas a partir do TAPI e dos registros do kickoff de 16
 
 O NotebookLM apoiou a síntese dos registros, e o Codex auxiliou na organização e redação da documentação. A apresentação visual também contou com IA, com ajustes humanos de composição e coerência com as funções representadas, conforme o [relato do processo visual](outros/reports/Sprint01/05-Processo-com-IA.md). O conteúdo foi conferido com as falas registradas do parceiro e revisado em merge request. Os nomes são fictícios; demografia e letramento digital permanecem como hipóteses, e os cenários são propostas baseadas no fluxo identificado. Ainda não foram realizadas entrevistas individuais nem a validação das personas com o parceiro.
 
+#### Personas
+
+As três personas abaixo foram construídas a partir do kick-off de 16/10/2026. Idade, formação e nível de letramento digital são hipóteses do grupo, sem entrevista; as falas que aparecem nas imagens são ilustrativas, escritas pelo grupo, e não citações do parceiro. As falas do parceiro, com o minuto da transcrição, estão no [relatório de personas](outros/reports/Sprint01/03-personas-do-fluxo.md).
+
+##### P1. Geraldo, analista de PCM (persona principal)
+
+![Persona 1, Geraldo, analista de PCM, 38 anos (hipótese), técnico em mecânica, com dores, necessidades, objetivos, cenários P1-C1 a P1-C4 e letramento digital 3 de 5](../assets/personas/persona-01-geraldo.png)
+
+Geraldo, analista de PCM de 38 anos (hipótese) e técnico em mecânica, trabalha no barracão da manutenção da usina e é o dono do equipamento enquanto ele está fora: avalia a peça que o mecânico trouxe, escolhe e cota a oficina, vincula a TAG, aplica o lacre, entrega à transportadora e passa horas cobrando o fornecedor, apoiado em SAP, planilhas e e-mail (letramento digital 3 de 5, hipótese). Gerencia muitos itens ao mesmo tempo, os não críticos somem da memória, o fornecedor promete datas que não cumpre e, sem dados, ele não sabe se o atraso pede trazer o item de volta, usar sobressalente ou prorrogar. Precisa saber, sem ligar para ninguém, onde está cada item e quando volta, ser avisado antes de o prazo estourar e ter o histórico de cumprimento de cada fornecedor para decidir se renova ou troca de oficina. Para a plataforma, isso reforça uma tela principal com a lista "meus itens fora" ordenada por dias para vencer, alertas de prazo configuráveis, alerta imediato de lacre aberto e a última localização e o histórico por fornecedor à mão, em vez de painéis gerenciais.
+
+##### P2. Clarice, analista fiscal (persona secundária)
+
+![Persona 2, Clarice, analista fiscal, 34 anos (hipótese), formada em ciências contábeis, com dores, necessidades, objetivos, cenários P2-C1 a P2-C4 e letramento digital 4 de 5](../assets/personas/persona-02-clarice.png)
+
+<!-- Parágrafo da Clarice: a ser escrito pelo Bruno. -->
+
+##### P3. Izidio, analista de logística (persona de inteligência)
+
+![Persona 3, Izidio, analista de logística, 29 anos (hipótese), engenheiro de produção, com dores, necessidades, objetivos, cenários P3-C1 a P3-C3 e letramento digital 4 de 5](../assets/personas/persona-03-izidio.png)
+
+Izidio, analista de logística de 29 anos (hipótese) e engenheiro de produção, consolida o que saiu e voltou para a diretoria e acompanha o custo de ICMS por safra, usando SAP, planilhas, BI e e-mail ou Teams (letramento digital 4 de 5, hipótese). Seus dados ficam espalhados entre o SAP e as planilhas das áreas, ele não consegue dizer quantas remessas saíram na safra e, por "senso de dono", cobra oficinas e prazos manualmente, uma tarefa operacional que não é da sua área. Precisa de uma API que alimente o BI, de histórico de ciclos com datas de saída, previsão e retorno e de permanência e atraso calculados separadamente; espera mostrar à diretoria a evolução do ICMS por safra e manter na base todo item que não voltou, mesmo com o ICMS já pago. Para a plataforma, isso reforça priorizar uma API robusta e dados confiáveis em vez de telas operacionais, e tratar como pendente, nunca como encerrado, o ciclo sem retorno lançado.
+
 ### 3.2.2. Jornada do Usuário e Storyboard (sprint 2)	
 
 _Coloque aqui seu Mapa de Jornada do Usuário (seguindo as instruções na descrição do artefato)_
