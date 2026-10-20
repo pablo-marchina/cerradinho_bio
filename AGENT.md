@@ -174,3 +174,23 @@ Corpo opcional explicando o porquê da mudança, não o como.
 - Mudança que quebra compatibilidade (por exemplo, formato da API): acrescente `!` depois do escopo (`feat(#40)!: ...`) e explique no corpo.
 - O autor do commit deve ser o usuário do Inteli (`nome.sobrenome <nome.sobrenome@sou.inteli.edu.br>`), configurado localmente no repositório, para o GitLab ligar o commit ao perfil.
 - Não coloque na mensagem do commit (nem na descrição de merge request) linhas de coautoria de ferramentas de IA (por exemplo `Co-Authored-By: Claude ...`) nem links de sessões ou conversas com assistentes de IA. As conversas do grupo com IA são privadas; o histórico do Git é público para professores e parceiro.
+
+## 8. Modelagem inicial dos circuitos — card #7
+
+- Antes de alterar o circuito, leia `document/modelagem-inicial/README.md`,
+  `document/modelagem-inicial/modelagem-inicial.md` e o roteiro de validação.
+- Preserve ESP32 DevKit v1, GPS/GNSS customizado, chave para lacre e potenciômetro
+  para bateria simulada. Não acrescente acelerômetro. IR físico e modem continuam
+  pendentes de definição.
+- Mantenha `src/firmware/main.cpp`, `include/config.h` e `diagram.json` coerentes:
+  GPS RX2/TX2 nos GPIO16/17, lacre no GPIO27 com pull-up e bateria no GPIO34/ADC1.
+  UART0 e heartbeat são diagnóstico independente de GPS e internet.
+- Compare posições válidas consecutivas. O primeiro ponto cria referência; falta
+  de fix não vira coordenada zero nem apaga a referência. Preserve as chaves NVS
+  e a fila local, sem afirmar envio ao servidor antes de transporte e confirmação.
+- `demo` usa 30 s; `weekly`, sete dias. O intervalo não valida autonomia.
+- Execute `scripts/setup.ps1`, compile ambos os ambientes com `scripts/build.ps1`
+  e rode `scripts/verify.ps1`. Atualize o relatório distinguindo compilação,
+  testes de lógica, execução no Wokwi e validação física.
+- Ferramentas, logs e binários gerados ficam ignorados pelo Git. Nunca adicione
+  `include/config.local.h`, tokens ou licenças; não ative licenças automaticamente.
