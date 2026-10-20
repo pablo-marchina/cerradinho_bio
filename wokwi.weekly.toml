@@ -1,0 +1,8 @@
+[wokwi]
+version = 1
+firmware = ".pio/build/weekly/firmware.bin"
+elf = ".pio/build/weekly/firmware.elf"
+
+[[chip]]
+name = "gps"
+binary = "chips/gps.chip.wasm"
