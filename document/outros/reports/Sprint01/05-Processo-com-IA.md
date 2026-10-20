@@ -2,6 +2,13 @@
 
 **Autor:** Arthur Loyola (@arthur.loyola)
 
+> **Pergunta investigada:** como a IA foi usada para criar a identidade visual do GuaráTracking, o guia de estilos e as personas visuais, e como o grupo guiou e corrigiu o resultado.
+> **O que foi feito:** relato das etapas, das skills usadas, dos prompts principais e das correções pedidas, em ordem de trabalho.
+> **Evidência:** conversas do Arthur com a IA e os arquivos gerados: guia de estilos v2 (`assets/guia-estilos/`) e personas refinadas (`assets/personas/`).
+> **Em aberto:** confirmar com o grupo a nota de consulta cultural sobre os grafismos Pataxó; exportar o modelo de persona vazio em PNG; o texto do uso de IA na seção 3.2.1 é reescrito e conferido pelo Bruno.
+> **Alimenta:** seção 3.2.1 da `documentacao.md` (processo de construção e uso de IA das personas); cards #19 e #34.
+> **Implicação:** a rubrica do Artefato 2 pede a descrição do uso de IA; este relato é a base e deve ser reescrito e conferido por quem assina a seção, sem tratar a saída da IA como fonte de dados do parceiro.
+
 # Como usei a IA na construção do Guarátracking
 
 ## 1. Contexto e origem da marca
