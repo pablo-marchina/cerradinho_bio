@@ -73,7 +73,7 @@ São **restritos**: cadastros de ativos e fornecedores, notas fiscais, localiza�
 │   ├── documentacao.md       # documentação principal (IoTDoc), dividida por sprint
 │   ├── TemplateManual.md     # manual de instruções (sprints 3 a 5)
 │   └── outros/               # documentos complementares
-│       └── reports/          # reports internos por sprint (SprintNN); não são evidência
+│       └── reports/          # controle interno do grupo (tudo aqui dentro); não é evidência
 └── src/
     ├── firmware/             # código do dispositivo embarcado
     └── ...                   # crie pastas conforme a arquitetura (ex.: backend/, frontend/, api/)
@@ -88,10 +88,10 @@ São **restritos**: cadastros de ativos e fornecedores, notas fiscais, localiza�
 
 ### Reports (controle interno)
 
-Os reports em `document/outros/reports/SprintNN/` (kick-off, planning, processo com IA etc.) são registros internos do grupo, não fazem parte da entrega.
+Tudo o que está em `document/outros/reports/` é controle interno do grupo: qualquer arquivo ou subpasta, organizado por sprint (`SprintNN/`) ou não (kick-off, planning, processo com IA etc.). Nada disso faz parte da entrega.
 
 - Pode ler os reports para escrever, apoiar a redação e entender o contexto de uma seção.
-- **Nunca** use um report como justificativa ou evidência na `documentacao.md` nem em outro documento de entrega. Frases como "conforme o report X", ou um link para o report no lugar do argumento, não valem.
+- **Nunca** use um report (nenhum arquivo de `document/outros/reports/`) como justificativa ou evidência na `documentacao.md` nem em outro documento de entrega. Frases como "conforme o report X", ou um link para o report no lugar do argumento, não valem.
 - A justificativa e a evidência devem estar escritas no próprio documento, com as fontes reais (por exemplo: a reunião com o parceiro e a data, material do Inteli, artigo, norma ou teste realizado), de forma que o leitor entenda sem abrir o report.
 - Há exceções, mas só quando o grupo combinar explicitamente. Nesse caso, registre a exceção no card e explique no texto por que o report é citado.
 
