@@ -122,9 +122,13 @@ _BOM (Bill of Material) pode ser definido como uma lista completa de materiais, 
 
 #### Introdução às personas
 
-#### Introdução às personas
-
 As personas orientam o desenvolvimento da solução de rastreamento de equipamentos em manutenção externa da Cerradinho a partir dos objetivos, dificuldades e necessidades dos usuários. Os perfis consideram seus cenários de uso e letramento digital, distinguindo informações fundamentadas na pesquisa de hipóteses pendentes de validação.
+
+#### Metodologia de construção das personas
+
+As personas foram construídas a partir do TAPI e dos registros do kickoff de 16/10/2026. As respostas do parceiro foram relacionadas às etapas de saída, acompanhamento e retorno dos equipamentos, identificando responsabilidades, ferramentas, dores e necessidades. Essa síntese fundamentou três perfis complementares: Geraldo, de PCM, responsável pelo acompanhamento operacional; Clarice, do Fiscal, ligada ao controle documental; e Izidio, de Logística, voltado à consolidação das informações. As evidências e justificativas estão no [relatório de personas](outros/reports/Sprint01/03-personas-do-fluxo.md).
+
+O NotebookLM apoiou a síntese dos registros, e o Codex auxiliou na organização e redação da documentação. A apresentação visual também contou com IA, com ajustes humanos de composição e coerência com as funções representadas, conforme o [relato do processo visual](outros/reports/Sprint01/05-Processo-com-IA.md). O conteúdo foi conferido com as falas registradas do parceiro e revisado em merge request. Os nomes são fictícios; demografia e letramento digital permanecem como hipóteses, e os cenários são propostas baseadas no fluxo identificado. Ainda não foram realizadas entrevistas individuais nem a validação das personas com o parceiro.
 
 ### 3.2.2. Jornada do Usuário e Storyboard (sprint 2)	
 
