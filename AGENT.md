@@ -177,8 +177,8 @@ Corpo opcional explicando o porquê da mudança, não o como.
 
 ## 8. Modelagem inicial dos circuitos — card #7
 
-- Antes de alterar o circuito, leia `document/modelagem-inicial/README.md`,
-  `document/modelagem-inicial/modelagem-inicial.md` e o roteiro de validação.
+- Antes de alterar o circuito, leia as instruções de instalação no `README.md`
+  e a seção 3.4.1 de `document/documentacao.md`, com o roteiro e as capturas.
 - Preserve ESP32 DevKit v1, GPS/GNSS customizado, chave para lacre e potenciômetro
   para bateria simulada. Não acrescente acelerômetro. IR físico e modem continuam
   pendentes de definição.
@@ -190,7 +190,7 @@ Corpo opcional explicando o porquê da mudança, não o como.
   e a fila local, sem afirmar envio ao servidor antes de transporte e confirmação.
 - `demo` usa 30 s; `weekly`, sete dias. O intervalo não valida autonomia.
 - Execute `scripts/setup.ps1`, compile ambos os ambientes com `scripts/build.ps1`
-  e rode `scripts/verify.ps1`. Atualize o relatório distinguindo compilação,
+  e rode `scripts/verify.ps1`. Ao descrever os resultados, diferencie compilação,
   testes de lógica, execução no Wokwi e validação física.
 - Ferramentas, logs e binários gerados ficam ignorados pelo Git. Nunca adicione
   `include/config.local.h`, tokens ou licenças; não ative licenças automaticamente.

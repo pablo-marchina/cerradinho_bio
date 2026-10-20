@@ -55,7 +55,7 @@ Dentre os arquivos e pastas presentes na raiz do projeto, definem-se:
 
 - <b>scripts</b> e <b>tests</b>: preparação de ferramentas, compilação e verificações da modelagem.
 
-- <b>document/modelagem-inicial</b>: guia do setup, arquitetura, roteiro de testes e resultados.
+- <b>assets/wokwi/3.4.1</b>: capturas do circuito, do monitor serial e da alteração do lacre.
 
 - <b>README.md</b>: arquivo que serve como guia e explicação geral sobre o projeto (o mesmo que você está lendo agora).
 
@@ -101,9 +101,10 @@ ao servidor ou confirmação de entrega. A bateria é sintética; o intervalo se
 não comprova economia de energia. Sensor IR físico, conectividade externa,
 alimentação, deep sleep e autonomia permanecem como etapas futuras.
 
-Consulte o [guia completo do setup](document/modelagem-inicial/README.md),
-a [modelagem e pinagem](document/modelagem-inicial/modelagem-inicial.md) e os
-[resultados de validação](document/modelagem-inicial/resultado-validacao.md).
+O roteiro de testes e as capturas estão na seção 3.4.1 da
+[documentação do projeto](document/documentacao.md).
+A pinagem e os parâmetros estão em [include/config.h](include/config.h),
+e as ligações do circuito, em [diagram.json](diagram.json).
 
 Posicione aqui um link para o Manual de Instruções. (Link do Template: https://docs.google.com/document/d/1HqNJ_Ex2HnDIw98rVrJIXhpvu9lmujeO/edit) (Sprint 4)
 
