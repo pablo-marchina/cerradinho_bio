@@ -78,31 +78,31 @@ _O Canvas da proposta de valor deve ser feito considerando a solução que você
 ### 3.1.5. Matriz de Riscos (sprint 1)
 
 <div align="center">
-  <p><strong>Figura X — Matriz de riscos do projeto</strong></p>
+  <p><strong>Figura 1 — Matriz de riscos do projeto</strong></p>
   <img
-    src="..\assets\Matriz de Riscos - Guará.png"
+    src="..\assets\Matriz de Risco - Guará.png"
     alt="Matriz de riscos do projeto"
-    width="120%"
+    width="100%"
   >
   <p><em>Fonte: Elaborado pelos autores (2026).</em></p>
 </div>
 
-Escalas: probabilidade (P) e impacto (I), de 1 a 5. Na imagem, cada código ocupa o cruzamento P × I. Os 150 dias são limiar de permanência, não autonomia da bateria.
+Probabilidade: 10%, 30%, 50%, 70% ou 90%; impacto: muito baixo a muito alto. Os códigos seguem esses cruzamentos. 150 dias é limiar de alerta, não autonomia.
 
-| ID | Causa e efeito | P | I | Justificativa | Resposta | Responsável |
+| ID | Causa e efeito | Prob. | Impacto | Justificativa | Resposta | Responsável |
 |---|---|---:|---:|---|---|---|
-| R01 | Dados da safra atrasados → diagnóstico impreciso. | 3 | 3 | Dependência externa. | Mitigar: validar hipóteses com o parceiro. | Negócios |
-| R02 | Oficina coberta ou ativo metálico → perda do GNSS. | 4 | 5 | Obstáculos degradam sinais. | Mitigar: guardar posição válida e testar antenas. | Hardware |
-| R03 | Ensaio curto → autonomia real incerta. | 4 | 4 | Ciclos podem ser prolongados. | Mitigar: medir consumo e projetar cenários. | Hardware |
-| R04 | Oficina sem Wi-Fi → eventos não transmitidos. | 5 | 4 | Wi-Fi externo não é garantido. | Mitigar: armazenar eventos e avaliar rede celular. | Conectividade |
-| R05 | Ruído ou abertura autorizada → falso alerta. | 3 | 4 | Eventos legítimos parecem violações. | Mitigar: debounce e autorização. | Firmware |
-| R06 | Fixação inadequada → dano ou reparo prejudicado. | 3 | 5 | Formatos variam. | Evitar: fixação removível e testes físicos. | Hardware |
-| R07 | Água ou lavagem → falha eletrônica. | 4 | 5 | Exposição operacional é provável. | Mitigar: caixa vedada e ensaio de proteção. | Hardware |
-| R08 | Conectividade cara → escala inviável. | 3 | 4 | Há custo recorrente por dispositivo. | Mitigar: comparar tecnologias e planos. | Produto |
-| R09 | Fornecedores indisponíveis → piloto limitado. | 3 | 3 | Testes dependem de terceiros. | Mitigar: antecipar agenda e simular cenários. | PO |
-| R10 | Dado restrito no repositório → exposição indevida. | 2 | 5 | Localizações, notas e fornecedores são sensíveis. | Evitar: usar dados fictícios e revisar commits. | Dados/LGPD |
+| R01 | Safra atrasada → diagnóstico impreciso. | 50% | Moderado | Dependência externa. | Mitigar: validar hipóteses. | Negócios |
+| R02 | Cobertura ou metal → perda do GNSS. | 70% | Muito alto | Obstáculos degradam sinais. | Mitigar: guardar posição e testar antenas. | Hardware |
+| R03 | Ensaio curto → autonomia incerta. | 70% | Alto | Ciclos prolongados. | Mitigar: medir e projetar consumo. | Hardware |
+| R04 | Oficina sem Wi-Fi → eventos retidos. | 90% | Alto | Rede externa incerta. | Mitigar: armazenar e avaliar celular. | Conectividade |
+| R05 | Ruído ou abertura autorizada → falso alerta. | 50% | Alto | Eventos legítimos parecem violações. | Mitigar: debounce e autorização. | Firmware |
+| R06 | Fixação inadequada → dano ou reparo prejudicado. | 50% | Muito alto | Formatos variam. | Evitar: fixação removível testada. | Hardware |
+| R07 | Água ou lavagem → falha eletrônica. | 70% | Muito alto | Exposição provável. | Mitigar: vedação e ensaio. | Hardware |
+| R08 | Conectividade cara → escala inviável. | 50% | Alto | Custo recorrente. | Mitigar: comparar tecnologias e planos. | Produto |
+| R09 | Fornecedores indisponíveis → piloto limitado. | 50% | Moderado | Dependência de terceiros. | Mitigar: antecipar agenda e simular. | PO |
+| R10 | Dado restrito publicado → exposição indevida. | 30% | Muito alto | Informações sensíveis. | Evitar: dados fictícios e revisão. | Dados/LGPD |
 
-**Oportunidades:** O01 — reutilização do rastreador reduz o custo por ciclo (P4/I4; explorar com projeto modular; Produto). O02 — integração com BI centraliza histórico e agiliza decisões (P4/I4; explorar por API autenticada; Software).
+**Oportunidades:** O01 — rastreador reutilizável reduz custo por ciclo (70%; alto; explorar modularidade; Produto). O02 — integração com BI agiliza decisões (70%; alto; explorar API autenticada; Software).
 
 ### 3.1.6. Política de Privacidade de acordo com a LGPD (sprint 1)	
 
