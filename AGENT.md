@@ -73,6 +73,7 @@ São **restritos**: cadastros de ativos e fornecedores, notas fiscais, localiza�
 │   ├── documentacao.md       # documentação principal (IoTDoc), dividida por sprint
 │   ├── TemplateManual.md     # manual de instruções (sprints 3 a 5)
 │   └── outros/               # documentos complementares
+│       └── reports/          # controle interno do grupo (tudo aqui dentro); não é evidência
 └── src/
     ├── firmware/             # código do dispositivo embarcado
     └── ...                   # crie pastas conforme a arquitetura (ex.: backend/, frontend/, api/)
@@ -84,6 +85,15 @@ São **restritos**: cadastros de ativos e fornecedores, notas fiscais, localiza�
 - Ao criar uma nova pasta em `src/`, atualize a seção "Estrutura de pastas" do `README.md`.
 - O repositório é hospedado no GitLab do Inteli (`git.inteli.edu.br`).
 - Antes de tarefas recorrentes (cards, índices de relatórios, snapshot da main, criação de skills), consulte `skills/SKILLS_INDEX.md` e siga a skill indicada.
+
+### Reports (controle interno)
+
+Tudo o que está em `document/outros/reports/` é controle interno do grupo: qualquer arquivo ou subpasta, organizado por sprint (`SprintNN/`) ou não (kick-off, planning, processo com IA etc.). Nada disso faz parte da entrega.
+
+- Pode ler os reports para escrever, apoiar a redação e entender o contexto de uma seção.
+- **Nunca** use um report (nenhum arquivo de `document/outros/reports/`) como justificativa ou evidência na `documentacao.md` nem em outro documento de entrega. Frases como "conforme o report X", ou um link para o report no lugar do argumento, não valem.
+- A justificativa e a evidência devem estar escritas no próprio documento, com as fontes reais (por exemplo: a reunião com o parceiro e a data, material do Inteli, artigo, norma ou teste realizado), de forma que o leitor entenda sem abrir o report.
+- Há exceções, mas só quando o grupo combinar explicitamente. Nesse caso, registre a exceção no card e explique no texto por que o report é citado.
 
 ## 5. Cards do Kanban (issues no GitLab)
 
@@ -175,3 +185,23 @@ Corpo opcional explicando o porquê da mudança, não o como.
 - Mudança que quebra compatibilidade (por exemplo, formato da API): acrescente `!` depois do escopo (`feat(#40)!: ...`) e explique no corpo.
 - O autor do commit deve ser o usuário do Inteli (`nome.sobrenome <nome.sobrenome@sou.inteli.edu.br>`), configurado localmente no repositório, para o GitLab ligar o commit ao perfil.
 - Não coloque na mensagem do commit (nem na descrição de merge request) linhas de coautoria de ferramentas de IA (por exemplo `Co-Authored-By: Claude ...`) nem links de sessões ou conversas com assistentes de IA. As conversas do grupo com IA são privadas; o histórico do Git é público para professores e parceiro.
+
+## 8. Modelagem inicial dos circuitos — card #7
+
+- Antes de alterar o circuito, leia as instruções de instalação no `README.md`
+  e a seção 3.4.1 de `document/documentacao.md`, com o roteiro e as capturas.
+- Preserve ESP32 DevKit v1, GPS/GNSS customizado, chave para lacre e potenciômetro
+  para bateria simulada. Não acrescente acelerômetro. IR físico e modem continuam
+  pendentes de definição.
+- Mantenha `src/firmware/main.cpp`, `include/config.h` e `diagram.json` coerentes:
+  GPS RX2/TX2 nos GPIO16/17, lacre no GPIO27 com pull-up e bateria no GPIO34/ADC1.
+  UART0 e heartbeat são diagnóstico independente de GPS e internet.
+- Compare posições válidas consecutivas. O primeiro ponto cria referência; falta
+  de fix não vira coordenada zero nem apaga a referência. Preserve as chaves NVS
+  e a fila local, sem afirmar envio ao servidor antes de transporte e confirmação.
+- `demo` usa 30 s; `weekly`, sete dias. O intervalo não valida autonomia.
+- Execute `scripts/setup.ps1`, compile ambos os ambientes com `scripts/build.ps1`
+  e rode `scripts/verify.ps1`. Ao descrever os resultados, diferencie compilação,
+  testes de lógica, execução no Wokwi e validação física.
+- Ferramentas, logs e binários gerados ficam ignorados pelo Git. Nunca adicione
+  `include/config.local.h`, tokens ou licenças; não ative licenças automaticamente.
