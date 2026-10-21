@@ -62,3 +62,6 @@ include/config.local.h
 
 # Anotações locais
 local-notes/
+
+# Pasta local de cada integrante
+/local
