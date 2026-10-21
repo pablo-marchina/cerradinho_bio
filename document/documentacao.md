@@ -232,10 +232,21 @@ _Nesta seção, detalhe a especificação da solução, de acordo com o disposto
 
 ### 3.3.2. Regras de Negócio (sprint 1, refinar até sprint 5)
 
-*Numere e redija as RN de forma implementável e testável. Toda RN deve ter pelo menos um teste automatizado associado a partir da sprint 3.*
+As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e vêm das mesmas fontes: TAPI e kick-off com a Cerradinho (16/10/2026). Os valores marcados como `PENDENTE DE VALIDAÇÃO` são valores de teste usados no protótipo da seção 3.4.1 e serão definidos com o parceiro. Os casos de teste da 3.4.1 indicam qual RN verificam.
 
 | ID   | Descrição | RF associado |
 |------|-----------|--------------|
+| RN01 | Um dispositivo só pode estar vinculado a um ciclo ativo por vez, e um equipamento só pode ter um ciclo ativo por vez. Origem: fluxo básico. | RF003, RF004 |
+| RN02 | Um ciclo só pode ser aberto com NF de remessa (número e data de emissão), fornecedor, responsável e prazo previsto de retorno preenchidos. Origem: TAPI MVP 3. | RF002 |
+| RN03 | O limiar de permanência é de 150 dias por padrão e pode ser alterado em cada ciclo para qualquer número inteiro de dias maior que zero. Origem: TAPI MVP 4; Kick-off com a Cerradinho (16/10/2026). | RF014 |
+| RN04 | Atraso e permanência são alertas distintos, podem estar ativos ao mesmo tempo e cada um é emitido uma única vez por ciclo. Origem: TAPI MVP 3 e 4. | RF013, RF014 |
+| RN05 | A abertura do lacre sem autorização vigente é violação crítica e é enviada na hora, fora da rotina de status periódico. Origem: TAPI MVP 5. | RF006 |
+| RN06 | A autorização de retirada vale por 3 dias a partir do registro; a abertura do lacre depois desse prazo é tratada como violação. Origem: TAPI MVP 5. Prazo de 3 dias: `PENDENTE DE VALIDAÇÃO` | RF007 |
+| RN07 | O status periódico é enviado a cada 7 dias por padrão, com frequência configurável até diária. Origem: TAPI MVP 4. | RF011 |
+| RN08 | A última localização válida só é atualizada quando há posição GNSS válida; sem posição válida, a anterior é mantida. Última comunicação e última localização válida são registradas em campos distintos. Origem: TAPI MVP 6. | RF005, RF015 |
+| RN09 | Sem conexão, o dispositivo guarda até 8 eventos; com a fila cheia, descarta o evento não crítico mais antigo e nunca descarta uma violação. Cada evento mantém a hora em que ocorreu, e a plataforma registra a hora de recebimento à parte. Origem: TAPI MVP 5. Capacidade de 8 eventos: `PENDENTE DE VALIDAÇÃO` | RF010 |
+| RN10 | O alerta de bateria baixa é emitido uma vez quando o nível fica abaixo de 20% e só volta a ser emitido depois que o nível passa de 25%. Leitura zero é falha do sensor, não bateria vazia. Origem: TAPI MVP 6. Limites de 20% e 25%: `PENDENTE DE VALIDAÇÃO` | RF019 |
+| RN11 | O encerramento do ciclo é recusado enquanto o lacre estiver aberto ou a NF de retorno não estiver lançada, e o histórico do ciclo encerrado nunca é apagado. Origem: fluxo básico. | RF016, RF017 |
 | RN12 | Uma prorrogação (retorno e nova remessa simbólicos) abre um novo ciclo do mesmo equipamento e do mesmo dispositivo, e os dias fora passam a contar da emissão da nova NF de remessa. Origem: Kick-off com a Cerradinho (16/10/2026). | RF012, RF017 |
 | RN13 | A data limite legal do ciclo é de 270 dias para destino em GO e de 360 dias para destino fora de GO, contados da emissão da NF de remessa. Origem: Kick-off com a Cerradinho (16/10/2026). `PENDENTE DE VALIDAÇÃO` | RF012 |
 
