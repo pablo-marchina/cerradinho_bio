@@ -108,7 +108,19 @@ _A entrega deve ser realizada no formato de quadrante (template), semelhante ao 
 	
 ### 3.1.4. Value Proposition Canvas (sprint 1)	
 
-_O Canvas da proposta de valor deve ser feito considerando a solução que vocês estão desenvolvendo. Usar o template disponível no drive da turma._     
+O [Value Proposition Canvas no Framekit](https://framekit.malafisor-es.workers.dev/) foi preenchido separadamente para P1 (analista de PCM) e P2 (analista Fiscal), a partir do TAPI e do kick-off. Ambos representam o GuaráTracking como TAG reutilizável com lacre e plataforma de consulta, histórico e alertas, mas mantêm distintas as tarefas, dores e ganhos de cada persona. O parceiro informou R$ 602.969 em complemento de ICMS na safra 2024/25; a parcela eventualmente relacionada a atrasos de manutenção externa ainda precisa ser apurada. Os canvases não presumem redução de perdas, atrasos ou ICMS.
+
+**P1 — Analista de PCM.**
+
+![Value Proposition Canvas do GuaráTracking para P1, analista de PCM, exportado diretamente do Framekit.](../assets/negocios/value-proposition-canvas-pcm-p1.png)
+
+**Encaixe para P1.** O cadastro que vincula TAG, ativo, oficina e responsável (AD1) responde à dispersão de status entre planilhas e contatos (D1). A última posição válida, acompanhada do horário (AD2), e a sinalização de falta de comunicação (AD5) tratam a incerteza sobre localização (D2) sem apresentar dados antigos como atuais. Separar prazo esperado e permanência total (AD3) ajuda a distinguir atraso (D3) e, junto aos alertas configuráveis (CG2), a identificar casos que pedem acompanhamento (D4). O alerta e registro da abertura do lacre (AD4) respondem ao risco de não perceber uma abertura (D5). Para rota ou oficina sem cobertura (D6), AD5 explicita a falta de atualização. O histórico por ciclo e oficina (AD6) subsidia a priorização, sem determinar sozinho qual oficina escolher.
+
+**P2 — Analista Fiscal.**
+
+![Value Proposition Canvas do GuaráTracking para P2, analista Fiscal, exportado diretamente do Framekit.](../assets/negocios/value-proposition-canvas-fiscal-p2.png)
+
+**Encaixe para P2.** Vincular a NF de remessa ao equipamento e ao ciclo (AD1) e consultar os documentos em conjunto (CG1) responde à dispersão dos vínculos fiscais e operacionais (D1) e à dificuldade de consolidar ciclos abertos (D4). O estado explícito de retorno físico aguardando baixa (AD2 e CG2) cobre a situação em que o equipamento já voltou, mas a NF de retorno ainda não foi lançada (D2). Separar prazo esperado e permanência total (AD3), com alerta configurável (AD4), torna mais visível a aproximação ou ultrapassagem do prazo (D3), sem garantir evitar incidência fiscal. O histórico de eventos e documentos (AD5) pode apoiar a apuração futura da relação entre atrasos e complemento de ICMS (D5), mas não recupera dados históricos que não foram fornecidos. A última atualização e a falta de conexão visíveis (AD6) respondem à incerteza de cobertura e atualidade da posição (D6). A efetividade dos alertas, a cobertura e qualquer efeito financeiro deverão ser avaliados no piloto.
 
 ### 3.1.5. Matriz de Riscos (sprint 1)	
 
