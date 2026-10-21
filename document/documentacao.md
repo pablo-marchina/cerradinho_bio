@@ -55,9 +55,40 @@ _Link para os templates de negócios: https://drive.google.com/drive/folders/1lT
 
 ### 3.1.1. Contexto da Indústria (sprint 1)	
 
-_O aluno deve fornecer informações sobre a concorrência (mínimo 3 competidores - 1 parágrafo; modelo de negócio - 1 parágrafo, e tendências - 1 parágrafo). Considere o setor do parceiro. Por exemplo, se o parceiro for a Rede Gazeta, o setor de Televisão.<br>
-<br>
-A análise de 5 forças deve ser feita considerando também o parceiro, o aluno deve preencher o template disponibilizado. No link a seguir há indicações de como avaliar as 5 forças: https://rockcontent.com/br/blog/5-forcas-de-porter/_
+**Parceiro:** CerradinhoBio
+**Setor analisado:** bioenergia e indústria sucroenergética brasileira, incluindo etanol de cana e de milho, açúcar, bioeletricidade e coprodutos.
+
+#### Concorrência
+
+A CerradinhoBio compete com grupos integrados de açúcar, etanol e bioenergia e, no segmento de etanol de milho, com produtores especializados. Entre os principais concorrentes estão a **Raízen**, a **São Martinho** e a **bp bioenergy** (antiga joint venture BP Bunge Bioenergia, adquirida integralmente pela bp em 2024). Para comparar a escala no segmento de cana, as empresas divulgam capacidade anual de moagem de aproximadamente 105 milhões de toneladas para a Raízen e 32 milhões para a bp bioenergy; a São Martinho projeta capacidade plena de 24 milhões de toneladas na safra 2026/27. No etanol de milho, a **FS** informa capacidade anual de 2,6 bilhões de litros e a **Inpasa** reporta 5,8 bilhões após a expansão de suas unidades. São indicadores de capacidade na mesma unidade de medida dentro de cada matéria-prima, mas publicados em períodos diferentes; não representam produção realizada no mesmo ano nem participação de mercado. [7, 9–12, 19–20]
+
+#### Modelo de negócio
+
+A CerradinhoBio opera um modelo B2B integrado e intensivo em ativos: transforma cana-de-açúcar e milho em etanol, açúcar VHP, bioeletricidade e coprodutos de milho destinados principalmente à nutrição animal, comercializados para distribuidores de combustíveis, clientes industriais e de alimentos para animais, compradores de açúcar e agentes do setor elétrico. A diversificação entre matérias-primas e produtos permite ajustar o mix de produção às condições de mercado; a venda de coprodutos também ajuda a compensar parte do custo do milho. A companhia participa ainda do mercado de créditos de descarbonização (CBIOs) por meio de sua produção certificada no RenovaBio. O desempenho depende de escala e eficiência agrícola e industrial, logística de matéria-prima e produtos, capital para manutenção e expansão e exposição à sazonalidade e à volatilidade dos preços de commodities. Na safra 2025/26, a empresa informou processamento de 5,2 milhões de toneladas de cana e 1,5 milhão de toneladas de milho, além de produção equivalente de 865 mil m³ de etanol hidratado, dos quais 687 milhões de litros vieram do milho. [2, 4, 8, 14]
+
+#### Tendências
+
+O setor amplia a produção de etanol de milho, que complementa a oferta de cana e aproveita a disponibilidade de grãos e a demanda por coprodutos; a EPE registrou produção total brasileira de etanol de 36,2 bilhões de litros em 2025, com expansão do milho compensando a queda da cana. O RenovaBio e os CBIOs mantêm um mecanismo de incentivo à descarbonização, enquanto a Lei do Combustível do Futuro cria oportunidades e novas exigências para biometano e combustível sustentável de aviação (SAF): para operadores aéreos, a redução mínima de emissões começa em 1% em 2027 e cresce gradualmente até 10% em 2037. Outra frente é digitalizar a manutenção e a gestão de ativos industriais — por exemplo, consolidar registros, localização, prazos e alertas — para dar mais visibilidade à operação e apoiar decisões com dados; os benefícios dependem da qualidade da implantação e da atuação dos responsáveis. [13–17]
+
+#### Cinco Forças de Porter — perspectiva da CerradinhoBio
+
+Escala qualitativa: **baixa**, **média** ou **alta**. A intensidade indica quanto a força tende a pressionar a atratividade e a rentabilidade da CerradinhoBio no setor, consideradas as condições descritas abaixo. A figura foi preenchida sobre o template oficial de cinco forças disponibilizado para o projeto. [18, 21]
+
+![Cinco Forças de Porter para a CerradinhoBio, no formato do template oficial do Inteli](../assets/negocios/cinco_forcas.png)
+*Figura — Cinco Forças de Porter, preenchidas pela perspectiva da CerradinhoBio.*  
+*Fonte: template [“5 forças template.jpeg”](https://drive.google.com/file/d/1Kr8A2GRrTDUFi5JslJQd7LWVOwyn8E_c/view), pasta de templates de negócios do Inteli; conteúdo e adaptação: Grupo G01 (2026). [21]*
+
+| Força | Intensidade | Justificativa do ponto de vista da CerradinhoBio |
+|---|---|---|
+| **Rivalidade entre concorrentes** | **Alta** | Há grandes grupos de cana com escala e portfólios diversificados e produtores de milho em rápida expansão. Etanol e açúcar são produtos amplamente negociados e sujeitos a preços de mercado; isso limita a diferenciação puramente pelo produto e intensifica a disputa por eficiência agrícola e industrial, matéria-prima, logística e contratos de venda. A flexibilidade entre cana, milho, açúcar, energia e coprodutos pode ajudar a CerradinhoBio a responder a ciclos de preço, mas exige disciplina de custos e investimento. |
+| **Poder de barganha dos fornecedores** | **Médio** | O milho, a cana adquirida de terceiros onde aplicável, fertilizantes, combustíveis, peças e equipamentos especializados podem pressionar custos, especialmente diante de sazonalidade, distância logística ou fornecedores concentrados. Em contrapartida, há alternativas de fornecimento para vários insumos, contratos e possibilidade de integração/produção agrícola própria; a operação com duas matérias-primas também reduz a dependência de uma única cadeia. O poder varia por insumo, região e safra, portanto recomenda-se acompanhar concentração e custo posto na usina por categoria. |
+| **Poder de barganha dos compradores** | **Média** | Parte relevante da produção é vendida em mercados de commodities e passa por distribuidores, tradings e compradores industriais com escala, capacidade de comparar fornecedores e negociar grandes volumes. Isso limita a influência individual do produtor sobre o preço. A diversificação entre etanol, açúcar, energia, coprodutos e CBIOs amplia os canais de receita e reduz a dependência de um único comprador, embora cada mercado tenha sua própria concentração, especificação e dinâmica contratual. |
+| **Ameaça de novos entrantes** | **Média** | Uma nova usina de cana ou biorrefinaria de milho exige capital elevado, escala, acesso confiável à matéria-prima, logística, licenciamento, tecnologia e tempo de implantação e ramp-up, o que cria barreiras importantes. Ainda assim, empresas do agronegócio e investidores podem financiar unidades novas, especialmente no milho, onde grãos e infraestrutura regional favorecem projetos. A entrada de novos grupos pode elevar a ameaça; ampliações realizadas por empresas já atuantes não são novos entrantes e reforçam principalmente a rivalidade entre concorrentes. |
+| **Ameaça de produtos substitutos** | **Média** | Gasolina e outros combustíveis podem competir com o etanol no transporte; eletrificação, eficiência energética e outras rotas de baixo carbono podem reduzir demanda de longo prazo. Para açúcar, existem adoçantes alternativos; para energia e coprodutos, há outras fontes e ingredientes. Por outro lado, a mistura obrigatória de etanol na gasolina, a frota flex, as metas de descarbonização e a versatilidade do portfólio ajudam a sustentar mercados atuais e a abrir novas aplicações, como SAF e biometano. |
+
+#### Síntese estratégica
+
+O ambiente competitivo é mais pressionado pela rivalidade e pelo poder dos compradores, pois escala, custos e preços de commodities têm peso elevado. Para a CerradinhoBio, as prioridades estratégicas são preservar eficiência e confiabilidade dos ativos, proteger o abastecimento de cana e milho, ampliar a flexibilidade de mix e desenvolver canais de maior valor para coprodutos e combustíveis de baixo carbono. A digitalização da manutenção pode apoiar a disponibilidade e a gestão patrimonial; no projeto de rastreamento, sua contribuição específica é aumentar a visibilidade de equipamentos em manutenção externa, sem pressupor redução de prazo ou perdas antes de medir os resultados do piloto. [6]
 
 ### 3.1.2. Análise SWOT (sprint 1)	
 
@@ -259,16 +290,62 @@ A revisão deverá incluir comentários sobre cada ponto levantado, mostrando co
 
 _Nesta seção, detalhe os resultados obtidos com a implementação, de acordo com o disposto nas subseções._
 
-### 3.4.1.Protótipo Inicial do Projeto usando o Simulador Wokwi (sprint 1)
+### 3.4.1. Protótipo Inicial do Projeto usando o Simulador Wokwi (sprint 1)
 
-_Preencha aqui o link para o protótipo inicial no Wokwi_
+O protótipo usa ESP32 DevKit v1, GPS/GNSS customizado, chave para simular o lacre
+e potenciômetro para simular o nível de bateria. O circuito está em
+[diagram.json](../diagram.json), com firmware e configuração Wokwi no próprio
+repositório. As instruções para executar pelo VS Code estão no
+[README do projeto](../README.md).
 
-_Abaixo você deve registrar diversas situações de teste, indicando exemplos de leitura (entrada) e escrita (saída) apresentadas pelo seu sistema no simulador. Estes registros serão utilizados para testar seus componentes, portanto, descreva várias situações, incluindo não apenas casos de sucesso, mas também de possíveis falhas nas leituras de entradas e saídas. <br>
-Siga as nomenclaturas e convenções já utilizadas anteriormente, e não se esqueça dos alinhamentos de negócios e experiência do usuário para pensar em situações representativas. Inclua figuras do simulador e descreva os testes realizados para ilustrar o funcionamento do protótipo simulado. A tabela a seguir serve como exemplo._
+No ambiente `demo`, o intervalo de coleta é de 30 segundos. A comparação usa a
+última posição válida e uma tolerância inicial de 100 m. O monitor serial mostra
+GPS, lacre, bateria sintética e registros locais; não há envio ao servidor
+implementado. A simulação não comprova consumo, autonomia ou funcionamento físico.
 
-**CT#** | **Bloco** | **Componente de entrada** | **Leitura da entrada** | **Componente de saída** | **Leitura da saída** | **Descrição**
-|----------|----------|----------|----------|----------|----------|----------|
-|CT01|ex. medidor de umidade relativa do ar|ex. “sensor de umidade XPTO”| < 100 | ex. led amarelo | piscante em intervalo de 1s | quando a umidade está baixa, o led amarelo pisca
+#### Situações de teste
+
+A tabela descreve as ações no simulador e as saídas esperadas.
+
+| CT# | Bloco | Entrada / ação no simulador | Saída esperada no monitor serial |
+|---|---|---|---|
+| CT01 | Diagnóstico e GPS | Iniciar `demo`, com `fixValid=1` e coordenadas padrão | `[boot]`, `[vivo]` a cada 2 s e primeiro `location_sample` com `baseline_created=true` em memória limpa |
+| CT02 | Localização | Manter a posição por mais de 30 s | Distância próxima de zero e `moved=false` |
+| CT03 | Localização | Alterar latitude de -23.5500 para -23.5400, sem reiniciar | Distância maior que 1 km e `moved=true`; na coleta seguinte sem nova alteração, `moved=false` |
+| CT04 | Falha e recuperação do GPS | Alterar `fixValid` para 0, aguardar coleta e timeout de 10 s; retornar a 1 | `location_unavailable`, sem apagar a referência; recuperação comparada à última posição válida |
+| CT05 | Lacre | Mover a chave para a direita e depois para a esquerda | Eventos `seal_changed` com `violated` e `intact`, sem aguardar o intervalo de coleta |
+| CT06 | Bateria simulada | Girar o potenciômetro entre níveis distintos | Mudança de `bateria_sim` no heartbeat e de `battery_sim_pct` nos eventos seguintes |
+
+#### Evidências visuais da montagem e da execução
+
+As capturas da montagem, da saída serial e da alteração do lacre estão em
+`assets/wokwi/3.4.1/`, na ordem apresentada abaixo.
+
+##### Figura 1 — Circuito completo
+
+![Circuito completo do protótipo no Wokwi](../assets/wokwi/3.4.1/circuitoinicial.jpeg)
+
+*Figura 1 — Montagem completa do protótipo simulado no Wokwi.*
+
+Fonte: elaboração própria, captura do simulador Wokwi.
+
+##### Figura 2 — Monitor serial em execução
+
+![Monitor serial com diagnóstico de GPS, lacre e bateria simulada](../assets/wokwi/3.4.1/circuitoserial.jpeg)
+
+*Figura 2 — Diagnóstico serial com fix de GPS válido, lacre íntegro e bateria simulada em 78%.*
+
+Fonte: elaboração própria, captura do simulador Wokwi.
+
+##### Figura 3 — Alteração do lacre
+
+![Alteração da chave do lacre e evento de violação no monitor serial](../assets/wokwi/3.4.1/circuitolacre.jpeg)
+
+*Figura 3 — Alteração do lacre para violado, com evento `seal_changed` e atualização do diagnóstico serial.*
+
+Fonte: elaboração própria, captura do simulador Wokwi.
+
+
 
 ### 3.4.2. Protótipo Físico do Projeto (offline) (sprint 2)	
 
@@ -311,3 +388,18 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 4. CERRADINHOBIO. *Nossos Produtos*. Disponível em: https://www.cerradinhobio.com.br/negocios-e-atividades/nossos-produtos/. Acesso em: 15 out. 2026.
 5. CERRADINHOBIO. *CerradinhoBio tem 3T24/25 com aumento de receita, expansão da produção de açúcar e melhora nos indicadores financeiros*. Disponível em: https://www.cerradinhobio.com.br/news/cerradinhobio-tem-3t24-25-com-aumento-de-receita-expansao-da-producao-de-acucar-e-melhora-nos-indicadores-financeiros/. Acesso em: 15 out. 2026.
 6. CERRADINHO. *TAPI Cerradinho: Rastreamento de Ativos IoT*. Documento de referência do projeto fornecido pelo parceiro, 2026.
+7. RAÍZEN. *Relatório integrado — safra 2024/25*. Disponível em: https://www.raizen.com.br/archives_files/archive81-raizen-rs24-25.pdf. Acesso em: 19 out. 2026.
+8. CERRADINHOBIO. *Nossos produtos*. Disponível em: https://www.cerradinhobio.com.br/negocios-e-atividades/nossos-produtos/. Acesso em: 19 out. 2026.
+9. SÃO MARTINHO. *Relatório da Administração — safra 2024/25*. Disponível em: https://ri.saomartinho.com.br/Download.aspx?Arquivo=MTU+51Kmm5DdaZuzsVXkAw%3D%3D&IdCanal=3kK+JHozjxal5isJwnwwEA%3D%3D&linguagem=pt. Acesso em: 19 out. 2026.
+10. BP. *bp bioenergy — operações e capacidade de produção no Brasil*. Disponível em: https://www.bp.com/pt_br/brazil/home/produtos-e-servicos/bp-bunge-bioenergia.html. Acesso em: 19 out. 2026.
+11. FS. *Etanol, unidades e capacidade de produção*. Disponível em: https://www.fs.agr.br/. Acesso em: 19 out. 2026.
+12. INPASA. *Inauguração da unidade de Balsas e capacidade instalada*. Disponível em: https://www.inpasa.com.br/sala-de-imprensa/inpasa-inaugura-nova-unidade-em-balsas-ma-com-investimento-de-r-2-5-bilhoes-e-reforca-lideranca-no-etanol-de-graos/1023408. Acesso em: 19 out. 2026.
+13. EPE. *Análise de Conjuntura dos Biocombustíveis 2025*. Disponível em: https://www.epe.gov.br/pt/publicacoes-dados-abertos/publicacoes/analise-de-conjuntura-dos-biocombustiveis-2025. Acesso em: 19 out. 2026.
+14. ANP. *RenovaBio — metas, CBIOs e comprovação*. Disponível em: https://www.gov.br/anp/pt-br/assuntos/renovabio. Acesso em: 19 out. 2026.
+15. BRASIL. *Lei nº 14.993, de 8 de outubro de 2024 — Lei do Combustível do Futuro*. Disponível em: https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l14993.htm. Acesso em: 19 out. 2026.
+16. ANP. *Combustível Sustentável de Aviação (SAF)*. Disponível em: https://www.gov.br/anp/pt-br/assuntos/saf. Acesso em: 19 out. 2026.
+17. ANP. *Biometano*. Disponível em: https://www.gov.br/anp/pt-br/assuntos/producao-e-fornecimento-de-biocombustiveis/biometano. Acesso em: 19 out. 2026.
+18. ROCK CONTENT. *As 5 forças de Porter: o que são, para que servem e como aplicar?* Disponível em: https://rockcontent.com/br/blog/5-forcas-de-porter/. Acesso em: 19 out. 2026.
+19. RAÍZEN. *Raízen e produtores de cana-de-açúcar debatem perspectivas para o ano-safra no Fórum de Mercado*. Disponível em: https://www.raizen.com.br/sala-de-imprensa/raizen-e-produtores-de-cana-de-acucar-debatem-perspectivas-para-o-ano-safra-no-forum-de-mercado. Acesso em: 20 out. 2026.
+20. SÃO MARTINHO. *Formulário de Referência 2025*. Disponível em: https://ri.saomartinho.com.br/Download.aspx?Arquivo=zp29unVyAKR4rxhHtOgKfQ%3D%3D&IdCanal=3kK+JHozjxal5isJwnwwEA%3D%3D&linguagem=pt. Acesso em: 20 out. 2026.
+21. INTELI. *5 forças template.jpeg*. Pasta de templates de negócios do projeto, 2022. Disponível em: https://drive.google.com/file/d/1Kr8A2GRrTDUFi5JslJQd7LWVOwyn8E_c/view. Acesso em: 20 out. 2026.
