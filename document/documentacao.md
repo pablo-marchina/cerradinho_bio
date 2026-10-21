@@ -112,6 +112,8 @@ _O Canvas da proposta de valor deve ser feito considerando a solução que você
 
 ### 3.1.5. Matriz de Riscos (sprint 1)
 
+A matriz prioriza riscos e oportunidades. O template adota 10%–90% e impacto muito baixo–muito alto. Classificações vêm do TAPI, do *kick-off* ou de hipóteses técnicas. O alerta é configurável em 150 dias; prazos fiscais são 270 dias em Goiás e 360 fora, sem relação com autonomia.
+
 <div align="center">
   <p><strong>Figura 1 — Matriz de riscos do projeto</strong></p>
   <img
@@ -122,15 +124,13 @@ _O Canvas da proposta de valor deve ser feito considerando a solução que você
   <p><em>Fonte: Elaborado pelos autores (2026).</em></p>
 </div>
 
-A matriz prioriza riscos e oportunidades. O template adota 10%–90% e impacto muito baixo–muito alto. Classificações vêm do TAPI, do *kick-off* ou de hipóteses técnicas. O alerta é configurável em 150 dias; prazos fiscais são 270 dias em Goiás e 360 fora, sem relação com autonomia.
-
 | ID | Causa e efeito | Prob. | Impacto | Justificativa | Resposta | Responsável |
 |---|---|---:|---:|---|---|---|
 | R01 | Nova NF não vinculada à TAG → falso vencimento. | 50% | Moderado | *Kick-off*: retorno simbólico renova o prazo. | Mitigar: associar a NF ao ciclo. | Software/Fiscal |
 | R02 | Metal/galpões atenuam GNSS → perda de localização. | 70% | Muito alto | Hipótese: Sistema Global de Navegação por Satélite sofre atenuação. | Mitigar: guardar posição e testar antenas. | Hardware |
 | R03 | Ensaio curto de bancada → autonomia anual incerta. | 70% | Alto | TAPI: ciclos chegam a um ano. | Mitigar: medir corrente e projetar consumo. | Hardware |
 | R04 | Sem Wi-Fi, NB-IoT ou LTE-M → eventos retidos. | 90% | Alto | TAPI: oficinas/rodovias podem não ter cobertura. | Mitigar: armazenar e comparar redes. | Conectividade |
-| R05 | Ruído ou abertura autorizada → falso alerta. | 50% | Alto | *Kick-off*: retiradas legítimas ocorrem. | Mitigar: *debounce* e autorização. | Firmware |
+| R05 | Ruído no sensor ou abertura autorizada do lacre → falso alerta de violação. | 50% | Alto | *Kick-off*: o lacre pode ser retirado legitimamente durante o reparo. | Mitigar: aplicar *debounce* e registrar autorização prévia. | Firmware |
 | R06 | Fixação inadequada → dano ou reparo prejudicado. | 50% | Muito alto | TAPI: formatos variam. | Evitar: fixação removível. | Hardware |
 | R07 | Água ou lavagem → falha eletrônica. | 70% | Muito alto | TAPI: exposição prevista. | Mitigar: vedação e ensaio. | Hardware |
 | R08 | Conectividade cara → escala inviável. | 50% | Alto | TAPI: custo orienta a escolha. | Mitigar: comparar tecnologias e planos. | Produto |
