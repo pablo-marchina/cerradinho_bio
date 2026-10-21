@@ -1,0 +1,36 @@
+#pragma once
+#include <stdint.h>
+
+#ifndef DEMO_MODE
+#define DEMO_MODE 1
+#endif
+
+#if __has_include("config.local.h")
+#include "config.local.h"
+#endif
+
+#ifndef TRACKER_WIFI_SSID
+#define TRACKER_WIFI_SSID "Wokwi-GUEST"
+#endif
+#ifndef TRACKER_WIFI_PASSWORD
+#define TRACKER_WIFI_PASSWORD ""
+#endif
+
+namespace Config {
+constexpr int GpsRx = 16;
+constexpr int GpsTx = 17;
+constexpr int SealPin = 27;
+constexpr int BatteryPin = 34;  // ADC1, usado com Wi-Fi.
+constexpr uint32_t GpsBaud = 9600;
+constexpr uint32_t ConsoleBaud = 115200;
+constexpr uint32_t WeekMs = 7UL * 24UL * 60UL * 60UL * 1000UL;
+constexpr uint32_t SampleIntervalMs = DEMO_MODE ? 30000UL : WeekMs;
+constexpr uint32_t FixMaxAgeMs = 3000;
+constexpr uint32_t GpsWaitMs = 10000;
+constexpr uint32_t HeartbeatMs = 2000;
+constexpr uint32_t SealDebounceMs = 60;
+constexpr uint32_t WifiRetryMs = 30000;
+constexpr double MovementThresholdM = 100.0;  // Hipotese inicial, validar em campo.
+constexpr uint8_t QueueCapacity = 16;
+constexpr const char *DeviceId = "prototipo-001";
+}

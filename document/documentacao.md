@@ -25,19 +25,23 @@
 
 # <a name="c1"></a>1. Introdução (sprint 1)
 
-_Apresente de forma sucinta o parceiro de negócio, seu porte, local, área de atuação e posicionamento no mercado. Maiores detalhes deverão ser descritos na seção 4. Descreva resumidamente o problema a ser resolvido (sem ainda mencionar a solução)._
+A CerradinhoBio é uma companhia brasileira de capital aberto, com ações negociadas na B3, e integra o Grupo Cerradinho [3]. Atua em bioenergia a partir de cana-de-açúcar e milho: produz etanol, energia elétrica renovável gerada com biomassa, açúcar VHP e coprodutos do milho, como DDGS, WDG e óleo [4]. Suas operações estão em Chapadão do Céu (GO), onde ficam o negócio de cana e uma unidade de etanol de milho, e em Maracaju (MS), que também abriga uma unidade de etanol de milho [2]. Na safra 2025/26, a companhia registrou receita líquida consolidada de R$ 4,288 bilhões [1] e processou 5,2 milhões de toneladas de cana e 1,5 milhão de toneladas de milho; a capacidade instalada da fábrica de açúcar é de 550 mil toneladas por ano [2]. Como referência de porte de pessoal, a companhia informava cerca de 3.800 empregos diretos e indiretos em sua apresentação institucional publicada durante a safra 2024/25 [5]. A empresa se posiciona entre os maiores complexos industriais sucroenergéticos do Brasil [3] e entre os maiores produtores de etanol do país [4].
+
+**Problema do projeto.** O acompanhamento de equipamentos enviados à manutenção externa depende de registros e contatos entre áreas e fornecedores. A dificuldade de consolidar localização, nota fiscal de remessa, prazo previsto e data de retorno reduz a visibilidade dos ativos em terceiros e exige cobranças manuais. Permanência total e atraso em relação ao prazo combinado são informações distintas e precisam ser analisadas separadamente.
 
 ## 1.1 Objetivos
 
-_Descreva os objetivos gerais e específicos do seu parceiro de negócios, sem entrar em méritos técnicos ou especificações de tecnologia. Aqui importa o objetivo em si, não os meios para se chegar até lá._
+**Objetivo geral.** Melhorar o controle dos equipamentos enviados a fornecedores para manutenção externa, desde a saída até o retorno.
+
+**Objetivos específicos.** Ampliar a visibilidade dos ativos enquanto estão com terceiros; associar cada ciclo de envio à respectiva nota fiscal; distinguir permanência prolongada de atraso em relação ao prazo previsto; reduzir o esforço de consulta e cobrança manual; e preservar o histórico dos ciclos e movimentações.
 
 ## 1.2 Proposta da solução
 
-_Descreva resumidamente sua proposta de solução (em alto nível) e como essa solução pretende resolver o problema, atendendo os objetivos listados na seção anterior._
+A proposta reúne um dispositivo reutilizável, fixado ao equipamento com um lacre, e uma plataforma para consultar ativos, ciclos de manutenção, última localização e histórico. No cadastro, cada ciclo relaciona equipamento, fornecedor e nota fiscal, preservando os dados de saída e retorno. A plataforma compara o tempo decorrido desde a saída com o prazo previsto: assim, evidencia a permanência total do ativo e identifica separadamente quando o prazo combinado foi ultrapassado. A localização e o estado do ciclo ampliam a visibilidade dos equipamentos em terceiros; alertas configuráveis destacam casos para acompanhamento e pretendem reduzir consultas e cobranças manuais; o histórico registra os ciclos sucessivos; e uma API disponibiliza esses dados para análise em ferramentas de BI. No protótipo, a comunicação será demonstrada por Wi-Fi em cenário controlado. Como a disponibilidade de Wi-Fi nas oficinas de terceiros não é pressuposta, o canal de comunicação para produção será escolhido em sprint posterior, após comparação das alternativas em uma matriz que considere cobertura nos fornecedores, autonomia, confiabilidade, custo e escalabilidade [6].
 
 ## 1.3 Justificativa
 
-_Faça uma breve defesa de sua proposta de solução, escreva sobre seus potenciais, seus benefícios e como ela se diferencia._
+A centralização das informações pode facilitar a consulta da situação de cada equipamento, dar rastreabilidade documental aos envios e destacar casos que precisam de acompanhamento. O dispositivo reutilizável, o vínculo entre ativo, ciclo e nota fiscal, o histórico preservado entre usos e a disponibilização dos dados para BI compõem os diferenciais da proposta. A identificação mais rápida de pendências pode contribuir para reduzir o tempo de permanência e as perdas de ativos, mas esses resultados dependem do tratamento dos alertas pelos responsáveis e devem ser medidos; não são garantidos pelo protótipo [6].
 
 # <a name="c2"></a>2. Metodologia (sprint 3)
 
@@ -151,7 +155,11 @@ _BOM (Bill of Material) pode ser definido como uma lista completa de materiais, 
 
 ### 3.2.1. Personas (sprint 1)	
 
-_Coloque aqui suas Personas (seguindo as instruções na descrição do artefato)_
+#### Introdução às personas
+
+#### Introdução às personas
+
+As personas orientam o desenvolvimento da solução de rastreamento de equipamentos em manutenção externa da Cerradinho a partir dos objetivos, dificuldades e necessidades dos usuários. Os perfis consideram seus cenários de uso e letramento digital, distinguindo informações fundamentadas na pesquisa de hipóteses pendentes de validação.
 
 ### 3.2.2. Jornada do Usuário e Storyboard (sprint 2)	
 
@@ -256,16 +264,62 @@ A revisão deverá incluir comentários sobre cada ponto levantado, mostrando co
 
 _Nesta seção, detalhe os resultados obtidos com a implementação, de acordo com o disposto nas subseções._
 
-### 3.4.1.Protótipo Inicial do Projeto usando o Simulador Wokwi (sprint 1)
+### 3.4.1. Protótipo Inicial do Projeto usando o Simulador Wokwi (sprint 1)
 
-_Preencha aqui o link para o protótipo inicial no Wokwi_
+O protótipo usa ESP32 DevKit v1, GPS/GNSS customizado, chave para simular o lacre
+e potenciômetro para simular o nível de bateria. O circuito está em
+[diagram.json](../diagram.json), com firmware e configuração Wokwi no próprio
+repositório. As instruções para executar pelo VS Code estão no
+[README do projeto](../README.md).
 
-_Abaixo você deve registrar diversas situações de teste, indicando exemplos de leitura (entrada) e escrita (saída) apresentadas pelo seu sistema no simulador. Estes registros serão utilizados para testar seus componentes, portanto, descreva várias situações, incluindo não apenas casos de sucesso, mas também de possíveis falhas nas leituras de entradas e saídas. <br>
-Siga as nomenclaturas e convenções já utilizadas anteriormente, e não se esqueça dos alinhamentos de negócios e experiência do usuário para pensar em situações representativas. Inclua figuras do simulador e descreva os testes realizados para ilustrar o funcionamento do protótipo simulado. A tabela a seguir serve como exemplo._
+No ambiente `demo`, o intervalo de coleta é de 30 segundos. A comparação usa a
+última posição válida e uma tolerância inicial de 100 m. O monitor serial mostra
+GPS, lacre, bateria sintética e registros locais; não há envio ao servidor
+implementado. A simulação não comprova consumo, autonomia ou funcionamento físico.
 
-**CT#** | **Bloco** | **Componente de entrada** | **Leitura da entrada** | **Componente de saída** | **Leitura da saída** | **Descrição**
-|----------|----------|----------|----------|----------|----------|----------|
-|CT01|ex. medidor de umidade relativa do ar|ex. “sensor de umidade XPTO”| < 100 | ex. led amarelo | piscante em intervalo de 1s | quando a umidade está baixa, o led amarelo pisca
+#### Situações de teste
+
+A tabela descreve as ações no simulador e as saídas esperadas.
+
+| CT# | Bloco | Entrada / ação no simulador | Saída esperada no monitor serial |
+|---|---|---|---|
+| CT01 | Diagnóstico e GPS | Iniciar `demo`, com `fixValid=1` e coordenadas padrão | `[boot]`, `[vivo]` a cada 2 s e primeiro `location_sample` com `baseline_created=true` em memória limpa |
+| CT02 | Localização | Manter a posição por mais de 30 s | Distância próxima de zero e `moved=false` |
+| CT03 | Localização | Alterar latitude de -23.5500 para -23.5400, sem reiniciar | Distância maior que 1 km e `moved=true`; na coleta seguinte sem nova alteração, `moved=false` |
+| CT04 | Falha e recuperação do GPS | Alterar `fixValid` para 0, aguardar coleta e timeout de 10 s; retornar a 1 | `location_unavailable`, sem apagar a referência; recuperação comparada à última posição válida |
+| CT05 | Lacre | Mover a chave para a direita e depois para a esquerda | Eventos `seal_changed` com `violated` e `intact`, sem aguardar o intervalo de coleta |
+| CT06 | Bateria simulada | Girar o potenciômetro entre níveis distintos | Mudança de `bateria_sim` no heartbeat e de `battery_sim_pct` nos eventos seguintes |
+
+#### Evidências visuais da montagem e da execução
+
+As capturas da montagem, da saída serial e da alteração do lacre estão em
+`assets/wokwi/3.4.1/`, na ordem apresentada abaixo.
+
+##### Figura 1 — Circuito completo
+
+![Circuito completo do protótipo no Wokwi](../assets/wokwi/3.4.1/circuitoinicial.jpeg)
+
+*Figura 1 — Montagem completa do protótipo simulado no Wokwi.*
+
+Fonte: elaboração própria, captura do simulador Wokwi.
+
+##### Figura 2 — Monitor serial em execução
+
+![Monitor serial com diagnóstico de GPS, lacre e bateria simulada](../assets/wokwi/3.4.1/circuitoserial.jpeg)
+
+*Figura 2 — Diagnóstico serial com fix de GPS válido, lacre íntegro e bateria simulada em 78%.*
+
+Fonte: elaboração própria, captura do simulador Wokwi.
+
+##### Figura 3 — Alteração do lacre
+
+![Alteração da chave do lacre e evento de violação no monitor serial](../assets/wokwi/3.4.1/circuitolacre.jpeg)
+
+*Figura 3 — Alteração do lacre para violado, com evento `seal_changed` e atualização do diagnóstico serial.*
+
+Fonte: elaboração própria, captura do simulador Wokwi.
+
+
 
 ### 3.4.2. Protótipo Físico do Projeto (offline) (sprint 2)	
 
