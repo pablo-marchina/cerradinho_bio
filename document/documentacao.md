@@ -344,7 +344,7 @@ Na Sprint 1 o dispositivo é simulado no Wokwi com um ESP32 DevKit. Cada entrada
 | BTN_AUTORIZAR (botão) | Autorização de retirada registrada pelo responsável (no produto, vinda da plataforma) |
 | BTN_CICLO (botão) | Encerramento do ciclo ou novo vínculo, feitos na conferência de retorno |
 | POT_BATERIA (potenciômetro) | Leitura da tensão da bateria por divisor resistivo |
-| SW_REDE (chave deslizante) | Estado do módulo de comunicação (tecnologia a definir; o TAPI não pressupõe Wi‑Fi nas oficinas) |
+| SW_REDE (chave deslizante) | Estado da conexão Wi‑Fi do ESP32, que cai e volta a se conectar (RF008) |
 | LEDs | Estados que, no produto, viram mensagens enviadas à plataforma |
 | Monitor Serial (JSON) | Mensagem MQTT publicada no broker |
 
@@ -353,6 +353,10 @@ Fica fora desta simulação a localização (GNSS), prevista para a Sprint 2.
 Cada CT indica entre parênteses o requisito funcional (RF) e a regra de negócio (RN) que verifica. CT01 e CT11 não testam uma regra de negócio específica: verificam a inicialização e a leitura confiável do botão.
 
 ![Circuito no Wokwi com o Monitor Serial](../assets/wokwi/circuito.png)
+
+*Figura 1 — Circuito do protótipo no Wokwi, com o Monitor Serial aberto.*
+
+Fonte: elaboração própria, captura do simulador Wokwi.
 
 **CT#** | **Bloco** | **Componente de entrada** | **Leitura da entrada** | **Componente de saída** | **Leitura da saída** | **Descrição**
 |----------|----------|----------|----------|----------|----------|----------|
