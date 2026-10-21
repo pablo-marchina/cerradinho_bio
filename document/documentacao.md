@@ -110,44 +110,94 @@ _A entrega deve ser realizada no formato de quadrante (template), semelhante ao 
 
 _O Canvas da proposta de valor deve ser feito considerando a solução que vocês estão desenvolvendo. Usar o template disponível no drive da turma._     
 
-### 3.1.5. Matriz de Riscos (sprint 1)	
+### 3.1.5. Matriz de Riscos (sprint 1)
 
-_A Matriz de Risco deve ser desenhada considerando o projeto que os alunos estão criando. Deve ser entregue no template disponível no drive da turma. Os alunos devem enumerar os riscos, distribuí-los na matriz e justificar suas decisões._     
+<div align="center">
+  <p><strong>Figura 1 — Matriz de riscos do projeto</strong></p>
+  <img
+    src="..\assets\Matriz de Risco - Guará.png"
+    alt="Matriz de riscos do projeto"
+    width="100%"
+  >
+  <p><em>Fonte: Elaborado pelos autores (2026).</em></p>
+</div>
+
+Probabilidade: 10%, 30%, 50%, 70% ou 90%; impacto: muito baixo a muito alto. Os códigos seguem esses cruzamentos. 150 dias é limiar de alerta, não autonomia.
+
+| ID | Causa e efeito | Prob. | Impacto | Justificativa | Resposta | Responsável |
+|---|---|---:|---:|---|---|---|
+| R01 | Safra atrasada → diagnóstico impreciso. | 50% | Moderado | Dependência externa. | Mitigar: validar hipóteses. | Negócios |
+| R02 | Cobertura ou metal → perda do GNSS. | 70% | Muito alto | Obstáculos degradam sinais. | Mitigar: guardar posição e testar antenas. | Hardware |
+| R03 | Ensaio curto → autonomia incerta. | 70% | Alto | Ciclos prolongados. | Mitigar: medir e projetar consumo. | Hardware |
+| R04 | Oficina sem Wi-Fi → eventos retidos. | 90% | Alto | Rede externa incerta. | Mitigar: armazenar e avaliar celular. | Conectividade |
+| R05 | Ruído ou abertura autorizada → falso alerta. | 50% | Alto | Eventos legítimos parecem violações. | Mitigar: debounce e autorização. | Firmware |
+| R06 | Fixação inadequada → dano ou reparo prejudicado. | 50% | Muito alto | Formatos variam. | Evitar: fixação removível testada. | Hardware |
+| R07 | Água ou lavagem → falha eletrônica. | 70% | Muito alto | Exposição provável. | Mitigar: vedação e ensaio. | Hardware |
+| R08 | Conectividade cara → escala inviável. | 50% | Alto | Custo recorrente. | Mitigar: comparar tecnologias e planos. | Produto |
+| R09 | Fornecedores indisponíveis → piloto limitado. | 50% | Moderado | Dependência de terceiros. | Mitigar: antecipar agenda e simular. | PO |
+| R10 | Dado restrito publicado → exposição indevida. | 30% | Muito alto | Informações sensíveis. | Evitar: dados fictícios e revisão. | Dados/LGPD |
+
+**Oportunidades:** O01 — rastreador reutilizável reduz custo por ciclo (70%; alto; explorar modularidade; Produto). O02 — integração com BI agiliza decisões (70%; alto; explorar API autenticada; Software).
 
 ### 3.1.6. Política de Privacidade de acordo com a LGPD (sprint 1)	
 
-_A Política de privacidade para o projeto de acordo com a LGPD deve ser escrita considerando o projeto que os alunos estão criando. Os pontos a seguir precisam ser apresentados. O aluno pode utilizar  o Gerador de Política de Privacidade (https://www.nuvemshop.com.br/ferramentas/gerador-politica-de-privacidade), criado pela Nuvemshop e, de acordo com a empresa, já adaptado a LGPD para ter uma prévia e ajustar de acordo com o seu projeto._
+Política preliminar, sem aprovação jurídica da CerradinhoBio.
 
-#### 3.1.6.1 Informações gerais sobre a empresa / organização
+#### 3.1.6.1 Informações gerais
 
-#### 3.1.6.2 Informações sobre o tratamento de dados
+A solução acompanha equipamentos da CerradinhoBio em manutenção externa.
 
-#### 3.1.6.3 Quais são os dados coletados
+#### 3.1.6.2 Tratamento de dados
 
-#### 3.1.6.4 Onde os dados são coletados 
+O tratamento seguirá a LGPD. Correspondência com o rascunho de RF do Luis: **PENDENTE DE VALIDAÇÃO**.
 
-#### 3.1.6.5 Para quais finalidades os dados serão utilizadas
+#### 3.1.6.3 Dados coletados
 
-#### 3.1.6.6 Onde os dados ficam armazenados 
+Serão tratados nome, e-mail corporativo, cargo, perfil, logs, IP e horário dos usuários; responsáveis por ciclos e alertas; e contatos profissionais de fornecedores. Dados do equipamento não são pessoais por si só; sua localização pode identificar indiretamente o motorista.
 
-#### 3.1.6.7 Qual o período de armazenamento dos dados (retenção)
+#### 3.1.6.4 Fonte dos dados
 
-#### 3.1.6.8 Uso de cookies e/ou tecnologias semelhantes
+Fontes: titulares, responsáveis, fornecedores, painel e equipamentos.
 
-#### 3.1.6.9 Com quem esses dados são compartilhados (parceiros, fornecedores, subcontratados)
+#### 3.1.6.5 Finalidades
 
-#### 3.1.6.10 Informações sobre medidas de segurança adotadas pela empresa
+Servirão à autenticação, acesso, auditoria, ciclos, alertas, suporte e comunicação. Será mantida apenas a última posição válida, atualizada semanalmente, sem rastreamento contínuo, conforme restrições 1 e 5 do TAPI.
 
-#### 3.1.6.11 Orientações sobre como a empresa/organização atende aos direitos dos usuários
+#### 3.1.6.6 Armazenamento
 
-#### 3.1.6.12 Informações sobre como o titular de dados pode solicitar e exercer os seus direitos
+Cadastros, logs, ciclos e alertas ficarão no backend/banco em nuvem; mensagens, no broker. Provedor, região e tecnologias: **PENDENTE DE VALIDAÇÃO**.
 
-#### 3.1.6.13 Informações de contato do Data Protection Officer (DPO) ou encarregado de proteção de dados da organização
+#### 3.1.6.7 Retenção
+
+Cadastros e permissões serão conservados enquanto ativos; logs, pelo período de auditoria; ciclos e alertas, enquanto necessários ao histórico; contatos, durante a relação operacional; localização, até sua substituição semanal; cookies, durante a sessão. Depois, haverá exclusão ou anonimização. Prazos: **PENDENTE DE VALIDAÇÃO**.
+
+#### 3.1.6.8 Cookies
+
+Se previstos no painel, serão usados somente cookies de sessão necessários.
+
+#### 3.1.6.9 Compartilhamento
+
+O compartilhamento necessário abrangerá provedores de nuvem, broker e conectividade.
+
+#### 3.1.6.10 Segurança
+
+Serão aplicados autenticação, acesso restrito, auditoria e proteção de credenciais.
+
+#### 3.1.6.11 Direitos dos titulares
+
+O titular poderá pedir confirmação, acesso, correção, anonimização, bloqueio, eliminação e informações sobre compartilhamento.
+
+#### 3.1.6.12 Exercício dos direitos
+
+Solicitações serão recebidas pelo canal oficial, terão identidade e escopo verificados, serão registradas, analisadas e respondidas. Canal: **PENDENTE DE VALIDAÇÃO**.
+
+#### 3.1.6.13 DPO/Encarregado
+
+O encarregado e seu contato serão indicados pela CerradinhoBio: **PENDENTE DE VALIDAÇÃO**.
 
 
 ### 3.1.7. Bill of Material (BOM) (sprint 1)
 _BOM (Bill of Material) pode ser definido como uma lista completa de materiais, que detalha todos os itens necessários para construir, fabricar ou reparar um produto. Deve-se preencher o template fornecido.
-
 
 
 
