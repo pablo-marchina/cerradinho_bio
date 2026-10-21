@@ -21,15 +21,15 @@
 
   <text x="52" y="56" class="label">FATORES INTERNOS</text>
   <text x="52" y="96" class="heading">FORÇAS</text>
-  <text x="52" y="137" class="body"><tspan x="52">• Portfólio diversificado: cana, milho, etanol,</tspan><tspan x="72" dy="22">açúcar, bioeletricidade e coprodutos.</tspan></text>
-  <text x="52" y="195" class="body"><tspan x="52">• Operação industrial integrada e experiência</tspan><tspan x="72" dy="22">na gestão de ativos intensivos em capital.</tspan></text>
-  <text x="52" y="253" class="body"><tspan x="52">• O projeto identifica áreas e pontos focais de</tspan><tspan x="72" dy="22">Patrimônio, Manutenção, Fiscal, Inovação e TI.</tspan></text>
+  <text x="52" y="137" class="body"><tspan x="52">• Portfólio diversificado: etanol, açúcar,</tspan><tspan x="72" dy="22">bioeletricidade e coprodutos.</tspan></text>
+  <text x="52" y="195" class="body"><tspan x="52">• Processa cana e milho: 5,2 mi t e 1,5 mi t</tspan><tspan x="72" dy="22">respectivamente, na safra 2025/26.</tspan></text>
+  <text x="52" y="253" class="body"><tspan x="52">• Duas matérias-primas permitem flexibilidade</tspan><tspan x="72" dy="22">no mix de produção.</tspan></text>
 
   <text x="648" y="56" class="label">FATORES INTERNOS</text>
   <text x="648" y="96" class="heading">FRAQUEZAS</text>
-  <text x="648" y="137" class="body"><tspan x="648">• Gestão de ativos complexos exige capital,</tspan><tspan x="668" dy="22">manutenção e coordenação entre áreas.</tspan></text>
-  <text x="648" y="195" class="body"><tspan x="648">• No fluxo do TAPI, localização, NF, prazo e</tspan><tspan x="668" dy="22">retorno dependem de registros e contatos.</tspan></text>
-  <text x="648" y="253" class="body"><tspan x="648">• Atrasos e esforço de consulta ainda precisam</tspan><tspan x="668" dy="22">ser quantificados com dados da última safra.</tspan></text>
+  <text x="648" y="137" class="body"><tspan x="648">• Operação intensiva em ativos demanda</tspan><tspan x="668" dy="22">capital para manutenção e expansão.</tspan></text>
+  <text x="648" y="195" class="body"><tspan x="648">• Receita ligada a mercados de commodities</tspan><tspan x="668" dy="22">limita o controle sobre os preços de venda.</tspan></text>
+  <text x="648" y="253" class="body"><tspan x="648">• No processo do TAPI, dados de localização,</tspan><tspan x="668" dy="22">prazo e retorno dependem de registros.</tspan></text>
 
   <text x="52" y="510" class="label">FATORES EXTERNOS</text>
   <text x="52" y="550" class="heading">OPORTUNIDADES</text>
@@ -46,5 +46,6 @@
   <polygon points="600,363 687,450 600,537 513,450" fill="#ffffff" stroke="#858585" stroke-width="3"/>
   <text x="600" y="444" text-anchor="middle" class="center">SWOT</text>
   <text x="600" y="472" text-anchor="middle" class="center-sub">CerradinhoBio</text>
-  <text x="52" y="864" class="label">Foco: equipamentos enviados à manutenção externa | Fonte: seção 3.1.1 e TAPI do projeto</text>
+  <text x="52" y="846" class="label">Foco: equipamentos enviados à manutenção externa</text>
+  <text x="52" y="870" class="label">Fonte: elaboração própria; TAPI e fontes setoriais listadas na seção 3.1.1</text>
 </svg>
