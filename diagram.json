@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "author": "Projeto Cerradinho - prototipo",
+  "editor": "wokwi",
+  "serialMonitor": { "display": "always", "collapse": false },
+  "parts": [
+    { "type": "wokwi-esp32-devkit-v1", "id": "esp", "top": 50, "left": 0, "attrs": {} },
+    { "type": "chip-gps", "id": "gps", "top": 20, "left": 310,
+      "attrs": { "latitude": "-23.55", "longitude": "-46.6333", "fixValid": "1" } },
+    { "type": "wokwi-slide-switch", "id": "seal", "top": 210, "left": 310,
+      "attrs": { "bounce": "0" } },
+    { "type": "wokwi-potentiometer", "id": "battery", "top": 320, "left": 310,
+      "attrs": { "value": "800" } },
+    { "type": "wokwi-text", "id": "title", "top": -65, "left": -15,
+      "attrs": { "text": "CERRADINHO | Modelagem inicial - localizacao semanal" } },
+    { "type": "wokwi-text", "id": "gpsLabel", "top": -30, "left": 310,
+      "attrs": { "text": "GPS SIMULADO: clique para alterar latitude, longitude e fix" } },
+    { "type": "wokwi-text", "id": "sealLabel", "top": 165, "left": 310,
+      "attrs": { "text": "LACRE SIMULADO: esquerda = integro | direita = violado" } },
+    { "type": "wokwi-text", "id": "batteryLabel", "top": 285, "left": 310,
+      "attrs": { "text": "BATERIA SIMULADA: controle de nivel, nao e fonte de energia" } },
+    { "type": "wokwi-text", "id": "networkLabel", "top": 440, "left": 0,
+      "attrs": { "text": "Internet: Wi-Fi interno / Wokwi-GUEST. Modem externo ainda a definir.\nDemo: 30 s representam 7 dias. Nao valida consumo ou autonomia." } }
+  ],
+  "connections": [
+    ["esp:TX0", "$serialMonitor:RX", "", []],
+    ["esp:RX0", "$serialMonitor:TX", "", []],
+    ["gps:VCC", "esp:3V3", "red", []],
+    ["gps:GND", "esp:GND.1", "black", []],
+    ["gps:TX", "esp:RX2", "green", []],
+    ["gps:RX", "esp:TX2", "blue", []],
+    ["seal:1", "esp:GND.1", "black", []],
+    ["seal:2", "esp:D27", "orange", []],
+    ["battery:VCC", "esp:3V3", "red", []],
+    ["battery:GND", "esp:GND.1", "black", []],
+    ["battery:SIG", "esp:D34", "purple", []]
+  ]
+}
