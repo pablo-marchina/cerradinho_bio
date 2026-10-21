@@ -292,6 +292,8 @@ Os requisitos abaixo saem do TAPI (MVP 1 a 7 e fluxo básico), da avaliação do
 | RF023 | O sistema deve registrar o tratamento de um alerta com responsável, data e decisão. | Fluxo básico | Média | Planejado |
 | RF024 | O sistema deve oferecer uma API autenticada e documentada para consulta dos dados por ferramentas de BI. | TAPI MVP 6 | Média | Planejado |
 | RF025 | O sistema deve emitir um alerta quando um dispositivo passa do período esperado sem se comunicar. | Kick-off com a Cerradinho (16/10/2026) | Média | Planejado |
+| RF026 | O sistema deve emitir um alerta quando os dias fora atingem a data limite legal do ciclo. | Kick-off com a Cerradinho (16/10/2026) | Alta | Planejado |
+| RF027 | O sistema deve emitir um alerta quando o nível de bateria fica abaixo do limite mínimo. | TAPI MVP 6 | Média | Planejado |
 
 Itens técnicos da avaliação: coleta de dados via sensor (RF005, RF006, RF019) · definição de devices na plataforma (RF003, RF020) · chave de identificação de usuário e acesso ao dashboard (RF021) · conexão Wi‑Fi (RF008) · formatação de dados para MQTT (RF009) · representação gráfica dos dados coletados (RF015, RF022).
 
@@ -310,10 +312,13 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 | RN07 | O status periódico é enviado a cada 7 dias por padrão, com frequência configurável até diária. Origem: TAPI MVP 4. | RF011 |
 | RN08 | A última localização válida só é atualizada quando há posição GNSS válida; sem posição válida, a anterior é mantida. Última comunicação e última localização válida são registradas em campos distintos. Origem: TAPI MVP 6. | RF005, RF015 |
 | RN09 | Sem conexão, o dispositivo guarda até 8 eventos; com a fila cheia, descarta o evento não crítico mais antigo e nunca descarta uma violação. Cada evento mantém a hora em que ocorreu, e a plataforma registra a hora de recebimento à parte. Origem: TAPI MVP 5. Capacidade de 8 eventos: `PENDENTE DE VALIDAÇÃO` | RF010 |
-| RN10 | O alerta de bateria baixa é emitido uma vez quando o nível fica abaixo de 20% e só volta a ser emitido depois que o nível passa de 25%. Leitura zero é falha do sensor, não bateria vazia. Origem: TAPI MVP 6. Limites de 20% e 25%: `PENDENTE DE VALIDAÇÃO` | RF019 |
+| RN10 | O alerta de bateria baixa é emitido uma vez quando o nível fica abaixo de 20% e só volta a ser emitido depois que o nível passa de 25%. Leitura zero é falha do sensor, não bateria vazia. Origem: TAPI MVP 6. Limites de 20% e 25%: `PENDENTE DE VALIDAÇÃO` | RF019, RF027 |
 | RN11 | O encerramento do ciclo é recusado enquanto o lacre estiver aberto ou a NF de retorno não estiver lançada, e o histórico do ciclo encerrado nunca é apagado. Origem: fluxo básico. | RF016, RF017 |
 | RN12 | Uma prorrogação (retorno e nova remessa simbólicos) abre um novo ciclo do mesmo equipamento e do mesmo dispositivo, e os dias fora passam a contar da emissão da nova NF de remessa. Origem: Kick-off com a Cerradinho (16/10/2026). | RF012, RF017 |
-| RN13 | A data limite legal do ciclo é de 270 dias para destino em GO e de 360 dias para destino fora de GO, contados da emissão da NF de remessa. Origem: Kick-off com a Cerradinho (16/10/2026). `PENDENTE DE VALIDAÇÃO` | RF012 |
+| RN13 | A data limite legal do ciclo é de 270 dias para destino em GO e de 360 dias para destino fora de GO, contados da emissão da NF de remessa. Origem: Kick-off com a Cerradinho (16/10/2026). `PENDENTE DE VALIDAÇÃO` | RF012, RF026 |
+| RN14 | Um dispositivo é considerado sem comunicação quando passa de dois intervalos de status periódico sem enviar nenhuma mensagem (14 dias com o padrão de 7 dias); o alerta é emitido uma vez e só volta a ser emitido depois de uma nova comunicação. Origem: Kick-off com a Cerradinho (16/10/2026). Dois intervalos: `PENDENTE DE VALIDAÇÃO` | RF025 |
+| RN15 | O painel e a API só respondem a usuário autenticado; sem credencial válida, o acesso é negado e nenhum dado é exibido. Origem: TAPI MVP 6. | RF021, RF024 |
+| RN16 | Mensagem de dispositivo não cadastrado ou com credencial inválida é rejeitada e não altera nenhum ciclo. Origem: TAPI MVP 3. | RF020 |
 
 ### 3.3.3. Requisitos Não Funcionais — 8 Eixos ISO/IEC 25010 (sprints 2 a 5)
 
