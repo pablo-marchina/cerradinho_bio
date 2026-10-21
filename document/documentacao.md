@@ -138,38 +138,37 @@ _Nesta seção, detalhe a especificação da solução, de acordo com o disposto
 
 ### 3.3.1. Requisitos Funcionais (sprint 1, refinar e atualizar até sprint 5)
 
-Os requisitos abaixo saem do TAPI (MVP 1 a 7 e fluxo básico) e do kick-off com a Cerradinho em 16/10/2026. Os minutos entre colchetes remetem ao relatório [Kick-off: problemática, expectativas e respostas](outros/reports/Sprint01/Kick-off/01-problematica-e-respostas-kickoff.md). A coluna Rubrica indica qual item técnico da avaliação cada RF cobre; "—" significa que o RF não atende a um item técnico da rubrica e existe por pedido do parceiro, com a fonte indicada na coluna Origem. A prioridade segue o que o parceiro chamou de indispensável: alerta de lacre, alerta de prazo e geolocalização [1:09:48]. Um RF só passa a `Simulado no Wokwi` depois que o caso de teste correspondente (seção 3.4.1) é executado e passa.
+Os requisitos abaixo saem do TAPI (MVP 1 a 7 e fluxo básico), da avaliação do protótipo e do kick-off com a Cerradinho (16/10/2026). A prioridade segue o que o parceiro chamou de indispensável no kick-off: alerta de lacre, alerta de prazo e geolocalização. Um RF só passa a `Simulado no Wokwi` depois que o caso de teste correspondente (seção 3.4.1) é executado e passa. Os IDs estão congelados: um RF removido não libera o número, e um RF novo entra no fim da lista.
 
-| ID    | Descrição | Origem | Rubrica | Prioridade | Status |
-|-------|-----------|--------|---------|------------|--------|
-| RF001 | O sistema deve cadastrar o equipamento com identificador próprio (ex.: `EQ-001`), descrição, dimensões e foto, mesmo quando a peça não tem plaqueta de patrimônio. | TAPI MVP 1; kick-off [45:37] | — | Alta | Planejado |
-| RF002 | O sistema deve abrir um ciclo de manutenção externa com NF de remessa e sua data de emissão, número da ordem de manutenção, fornecedor e endereço de destino, área requisitante, responsável e prazo previsto de retorno. | TAPI MVP 3; kick-off [30:37, 42:03] | — | Alta | Planejado |
-| RF003 | O sistema deve vincular e desvincular um dispositivo a um ciclo, preservando o histórico e recusando um segundo vínculo ativo para o mesmo dispositivo. | TAPI MVP 3; fluxo básico | Definição de devices na plataforma | Alta | Planejado |
-| RF004 | O sistema deve coletar a posição GNSS na rotina de envio e guardar a última localização válida com data e hora. | TAPI MVP 2; kick-off [58:54] | Coleta de dados via sensor | Alta | Planejado |
-| RF005 | O sistema deve monitorar o lacre e detectar sua abertura ou rompimento. | TAPI MVP 5; kick-off [42:26] | Coleta de dados via sensor | Alta | Planejado |
-| RF006 | O sistema deve registrar a retirada autorizada e a reaplicação do lacre sem gerar alerta de violação. | TAPI MVP 5; kick-off [1:17:20] | — | Alta | Planejado |
-| RF007 | O sistema deve medir o nível de bateria e enviá-lo em cada mensagem. | TAPI MVP 6 | Coleta de dados via sensor | Média | Planejado |
-| RF008 | O sistema deve conectar-se à rede Wi‑Fi e reconectar automaticamente quando a conexão cair. | Rubrica do protótipo | Conexão Wi‑Fi | Alta | Planejado |
-| RF009 | O sistema deve publicar status e eventos no broker MQTT, em JSON, no tópico padronizado do dispositivo. | TAPI MVP 6 | Formatação de dados para MQTT | Alta | Planejado |
-| RF010 | O sistema deve guardar os eventos gerados sem conexão e enviá-los na ordem em que ocorreram quando a conexão voltar. | TAPI MVP 5; kick-off [1:31:43] | — | Alta | Planejado |
-| RF011 | O sistema deve enviar um status periódico, semanal por padrão e configurável até diário. | TAPI MVP 4; kick-off [58:54] | — | Alta | Planejado |
-| RF012 | O sistema deve calcular os dias fora a partir da emissão da NF de remessa e emitir os alertas de prazo: atraso, quando passa do prazo previsto, e permanência, quando atinge o limiar (150 dias por padrão, configurável por ciclo). | TAPI MVP 4; kick-off [42:03, 54:30] | — | Alta | Planejado |
-| RF013 | O sistema deve cadastrar os dispositivos na plataforma, cada um com identificador e credencial próprios. | TAPI MVP 3 | Definição de devices na plataforma | Média | Planejado |
-| RF014 | O sistema deve autenticar os usuários do painel com credencial individual e perfil de acesso. | TAPI MVP 6 | Chave de identificação de usuário e acesso ao dashboard | Média | Planejado |
-| RF015 | O sistema deve listar os equipamentos fora com fornecedor, NF, responsável, data de saída, prazo previsto, dias fora, última localização válida e seu horário, última comunicação, bateria, estado do lacre e alertas. | TAPI MVP 6; kick-off (slide do fluxo proposto) | Representação gráfica dos dados coletados | Alta | Planejado |
-| RF016 | O sistema deve exibir gráficos e mapa com equipamentos por faixa de dias fora, alertas por tipo e última posição de cada equipamento. | TAPI MVP 6 | Representação gráfica dos dados coletados | Média | Planejado |
-| RF017 | O sistema deve registrar o tratamento de um alerta com responsável, data, decisão e comentário. | Fluxo básico; kick-off [36:09] | — | Média | Planejado |
-| RF018 | O sistema deve encerrar o ciclo somente com a NF de retorno lançada, a conferência registrada e o lacre fechado, e então liberar o dispositivo para outro equipamento. | Fluxo básico; kick-off [47:37] | — | Alta | Planejado |
-| RF019 | O sistema deve oferecer uma API autenticada e documentada para consulta dos dados por ferramentas de BI. | TAPI MVP 6 | — | Média | Planejado |
-| RF020 | O sistema deve enviar cada alerta por e-mail ao responsável do ciclo e ao e-mail do setor. | Kick-off [1:27:12] | — | Alta | Planejado |
-| RF021 | O sistema deve escalonar o alerta de prazo sem tratamento para o coordenador e depois para o diretor, conforme os dias que faltam para o vencimento. | Kick-off [36:09, 44:27] | — | Média | Planejado |
-| RF022 | O sistema deve emitir um alerta quando a última localização válida fica fora da cerca do endereço de destino da NF. | Kick-off [46:47] | — | Média | Planejado |
-| RF023 | O sistema deve registrar a chegada do equipamento à cerca da usina. | Kick-off [49:17, 1:02:39] | — | Média | Planejado |
-| RF024 | O sistema deve emitir um alerta quando o equipamento chegou à usina e a NF de retorno não foi lançada no prazo configurado. | Kick-off [47:37] | — | Média | Planejado |
-| RF025 | O sistema deve emitir um alerta quando um dispositivo passa do período esperado sem se comunicar. | Kick-off (slide do fluxo proposto) | — | Média | Planejado |
-| RF026 | O sistema deve registrar a prorrogação (retorno e nova remessa simbólicos) como novo ciclo do mesmo equipamento e dispositivo, com o prazo reiniciado. | Kick-off [37:04] | — | Média | Planejado |
-| RF027 | O sistema deve permitir atualizar o endereço esperado do ciclo quando o fornecedor muda de unidade ou terceiriza o reparo, sem gerar alerta de cerca. | Kick-off [1:00:37] | — | Baixa | Planejado |
-| RF028 | O sistema deve calcular e exibir a data limite legal do ciclo (270 dias com destino em GO, 360 dias fora de GO) a partir da emissão da NF de remessa. | Kick-off [15:31–17:21] | — | Média | Planejado |
+| ID    | Descrição | Origem | Prioridade | Status |
+|-------|-----------|--------|------------|--------|
+| RF001 | O sistema deve cadastrar o equipamento com identificador próprio, descrição e foto. | TAPI MVP 1 | Alta | Planejado |
+| RF002 | O sistema deve abrir um ciclo de manutenção externa com NF de remessa (número e data de emissão), fornecedor, responsável e prazo previsto de retorno. | TAPI MVP 3 | Alta | Planejado |
+| RF003 | O sistema deve vincular um dispositivo a um ciclo de manutenção aberto. | TAPI MVP 3 | Alta | Planejado |
+| RF004 | O sistema deve recusar o vínculo de um dispositivo que já está em um ciclo ativo. | Fluxo básico | Alta | Planejado |
+| RF005 | O sistema deve coletar a posição GNSS na rotina de envio e guardar a última localização válida com data e hora. | TAPI MVP 2 | Alta | Planejado |
+| RF006 | O sistema deve monitorar o lacre e detectar sua abertura ou rompimento. | TAPI MVP 5 | Alta | Planejado |
+| RF007 | O sistema deve registrar a retirada autorizada e a reaplicação do lacre sem gerar alerta de violação. | TAPI MVP 5 | Alta | Planejado |
+| RF008 | O sistema deve conectar-se à rede Wi‑Fi e reconectar automaticamente quando a conexão cair. | Avaliação do protótipo | Alta | Planejado |
+| RF009 | O sistema deve publicar status e eventos no broker MQTT, em JSON, no tópico do dispositivo. | TAPI MVP 6 | Alta | Planejado |
+| RF010 | O sistema deve guardar os eventos gerados sem conexão e enviá-los na ordem em que ocorreram quando a conexão voltar. | TAPI MVP 5 | Alta | Planejado |
+| RF011 | O sistema deve enviar um status periódico, semanal por padrão e configurável. | TAPI MVP 4 | Alta | Planejado |
+| RF012 | O sistema deve calcular os dias fora a partir da data de emissão da NF de remessa. | TAPI MVP 4; Kick-off com a Cerradinho (16/10/2026) | Alta | Planejado |
+| RF013 | O sistema deve emitir um alerta de atraso quando os dias fora passam do prazo previsto de retorno. | TAPI MVP 3 | Alta | Planejado |
+| RF014 | O sistema deve emitir um alerta de permanência quando os dias fora atingem o limiar do ciclo (150 dias por padrão, configurável). | TAPI MVP 4 | Alta | Planejado |
+| RF015 | O sistema deve listar os equipamentos fora com última localização válida, dias fora, prazo, bateria e estado do lacre. | TAPI MVP 6 | Alta | Planejado |
+| RF016 | O sistema deve encerrar o ciclo somente com a NF de retorno lançada e o lacre fechado. | Fluxo básico | Alta | Planejado |
+| RF017 | O sistema deve liberar o dispositivo do ciclo encerrado para um novo vínculo, preservando o histórico. | TAPI MVP 3; fluxo básico | Alta | Planejado |
+| RF018 | O sistema deve notificar o responsável do ciclo a cada alerta, com o e-mail como canal inicial. | Fluxo básico; Kick-off com a Cerradinho (16/10/2026) | Alta | Planejado |
+| RF019 | O sistema deve medir o nível de bateria e enviá-lo em cada mensagem. | TAPI MVP 6 | Média | Planejado |
+| RF020 | O sistema deve cadastrar os dispositivos na plataforma, cada um com identificador e credencial próprios. | TAPI MVP 3 | Média | Planejado |
+| RF021 | O sistema deve autenticar os usuários do painel com credencial individual e perfil de acesso. | TAPI MVP 6 | Média | Planejado |
+| RF022 | O sistema deve exibir gráficos e mapa com equipamentos por faixa de dias fora, alertas por tipo e última posição de cada equipamento. | TAPI MVP 6 | Média | Planejado |
+| RF023 | O sistema deve registrar o tratamento de um alerta com responsável, data e decisão. | Fluxo básico | Média | Planejado |
+| RF024 | O sistema deve oferecer uma API autenticada e documentada para consulta dos dados por ferramentas de BI. | TAPI MVP 6 | Média | Planejado |
+| RF025 | O sistema deve emitir um alerta quando um dispositivo passa do período esperado sem se comunicar. | Kick-off com a Cerradinho (16/10/2026) | Média | Planejado |
+
+Itens técnicos da avaliação: coleta de dados via sensor (RF005, RF006, RF019) · definição de devices na plataforma (RF003, RF020) · chave de identificação de usuário e acesso ao dashboard (RF021) · conexão Wi‑Fi (RF008) · formatação de dados para MQTT (RF009) · representação gráfica dos dados coletados (RF015, RF022).
 
 ### 3.3.2. Regras de Negócio (sprint 1, refinar até sprint 5)
 
