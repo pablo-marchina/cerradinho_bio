@@ -236,8 +236,8 @@ _Nesta seção, detalhe a especificação da solução, de acordo com o disposto
 
 | ID   | Descrição | RF associado |
 |------|-----------|--------------|
-| RN01 | ...       | RF001        |
-| RN02 | ...       | RF001        |
+| RN12 | Uma prorrogação (retorno e nova remessa simbólicos) abre um novo ciclo do mesmo equipamento e do mesmo dispositivo, e os dias fora passam a contar da emissão da nova NF de remessa. Origem: Kick-off com a Cerradinho (16/10/2026). | RF012, RF017 |
+| RN13 | A data limite legal do ciclo é de 270 dias para destino em GO e de 360 dias para destino fora de GO, contados da emissão da NF de remessa. Origem: Kick-off com a Cerradinho (16/10/2026). `PENDENTE DE VALIDAÇÃO` | RF012 |
 
 ### 3.3.3. Requisitos Não Funcionais — 8 Eixos ISO/IEC 25010 (sprints 2 a 5)
 
