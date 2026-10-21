@@ -9,7 +9,7 @@ Simulação no Wokwi do dispositivo de rastreamento de ativos em manutenção ex
 | Arquivo | Conteúdo |
 |---|---|
 | `diagram.json` | Circuito: ESP32 DevKit C v4, 4 LEDs com resistor de 220 Ω, 2 botões, 2 chaves deslizantes e 1 potenciômetro. |
-| `sketch.ino` | Firmware. Nesta versão (issue #6) é só um teste de ligação: cada entrada acende um LED e as leituras aparecem no Serial. A lógica do protótipo entra com as issues #13 e #14. |
+| `sketch.ino` | Firmware. Tem o relógio de dias simulados, o status semanal, os alertas de atraso e de permanência e o padrão dos LEDs (issue #13). Lacre, autorização, fila e rede entram com a issue #14. |
 
 ## Mapa de pinos
 
@@ -48,3 +48,17 @@ Executado em 19/out/2026 no projeto público. Evidência: `assets/wokwi/circuito
 | BTN_AUTORIZAR pressionado | LED amarelo aceso; `autorizar=0` | Passou |
 | BTN_CICLO pressionado | LED vermelho aceso; `ciclo=0` | Passou |
 | POT_BATERIA de um extremo ao outro | `bateria_adc` de 0 a ~4095 | Passou |
+
+## Tempo simulado, prazos e LEDs (issue #13)
+
+O relógio usa `millis()`, sem `delay()` no `loop()`: 1 segundo real equivale a 1 dia (`SEGUNDOS_POR_DIA = 1`). As constantes ficam no topo do `sketch.ino`.
+
+| Constante | Valor | O que controla |
+|---|---|---|
+| `INTERVALO_STATUS_DIAS` | 7 | `STATUS_SEMANAL` a cada 7 dias de ciclo |
+| `PRAZO_PREVISTO_DIAS` | 5 | Acima disso, `ALERTA_ATRASO` e amarelo piscando a 1 Hz |
+| `LIMIAR_PERMANENCIA_DIAS` | 150 | Ao atingir, `ALERTA_PERMANENCIA` e amarelo fixo |
+
+Cada alerta sai uma única vez por ciclo, e os dois podem coexistir. Ao ligar, o dispositivo publica um `STATUS` com `dias_fora=0`.
+
+Para o CT04 com limiar 10, troque `LIMIAR_PERMANENCIA_DIAS` para `10`, rode e depois volte para `150`.
