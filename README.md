@@ -49,6 +49,8 @@ Dentre os arquivos e pastas presentes na raiz do projeto, definem-se:
 
 - <b>src/firmware</b>: firmware ESP32 da modelagem inicial de localização, lacre e bateria simulada.
 
+- <b>src/firmware/prototipo_wokwi</b>: circuito principal integrado, configurações demo/semanal e guia de pinagem e diagnóstico.
+
 - <b>include</b>: configuração centralizada e funções de cálculo de distância.
 
 - <b>chips</b>: fontes do GPS/GNSS customizado para o Wokwi.
@@ -63,8 +65,10 @@ Dentre os arquivos e pastas presentes na raiz do projeto, definem-se:
 
 O firmware utiliza **ESP32 DevKit v1** (placa `esp32dev` no PlatformIO),
 framework **Arduino**, **Espressif32 6.12.0** e **TinyGPSPlus 1.0.3**.
-O circuito Wokwi tem GPS/GNSS customizado, chave para o sinal do lacre,
-potenciômetro para bateria simulada, Wi-Fi integrado e monitor serial.
+O circuito Wokwi principal fica em `src/firmware/prototipo_wokwi/`. Ele reúne
+GPS/GNSS customizado, chave para o sinal do lacre, potenciômetro para bateria
+simulada, quatro LEDs com resistores, dois botões, chave de rede simulada,
+Wi-Fi integrado e monitor serial. O lacre permanece no GPIO27; o LED vermelho usa GPIO23.
 
 1. Instale o [Visual Studio Code](https://code.visualstudio.com/).
 2. Abra a pasta raiz deste repositório (`g01`), onde está o `platformio.ini`.
@@ -72,7 +76,8 @@ potenciômetro para bateria simulada, Wi-Fi integrado e monitor serial.
 4. Execute os comandos abaixo em um terminal PowerShell na raiz.
 5. Use a licença Wokwi disponível no seu perfil. A ativação, se necessária, é
    manual; nenhuma licença ou token está incluído neste repositório.
-6. Após a compilação, execute **F1 → Wokwi: Start Simulator**.
+6. Após a compilação, use **F1 → Wokwi: Select Config File** e selecione
+   `src/firmware/prototipo_wokwi/wokwi.toml`. Execute **F1 → Wokwi: Start Simulator**.
 
 O setup reaproveita ferramentas instaladas e mantém dependências locais em
 `.tools/`. Para uma instalação nova, disponibilize Python 3.10+ e Node.js 22+.
@@ -91,8 +96,9 @@ preservada. O lacre gera eventos com debounce, independentemente da coleta.
 O heartbeat aparece a cada dois segundos, mesmo sem GPS ou internet.
 
 `include/config.h` concentra pinos e parâmetros; `src/firmware/main.cpp` contém
-o firmware. `diagram.json` e `wokwi.toml` abrem a demonstração. Selecione
-`wokwi.weekly.toml` em **Wokwi: Select Config File** para o intervalo real.
+o firmware principal, selecionado explicitamente pelo `build_src_filter`.
+O diagrama e os dois arquivos TOML ficam em `src/firmware/prototipo_wokwi/`.
+Selecione o `wokwi.weekly.toml` dessa pasta em **Wokwi: Select Config File** para o intervalo real.
 **Ctrl+Shift+B** compila ESP32 e GPS; **Cerradinho: validar tudo** compila os dois
 ambientes e executa os testes e o linter oficial. Salvar código não recompila.
 
@@ -104,7 +110,10 @@ alimentação, deep sleep e autonomia permanecem como etapas futuras.
 O roteiro de testes e as capturas estão na seção 3.4.1 da
 [documentação do projeto](document/documentacao.md).
 A pinagem e os parâmetros estão em [include/config.h](include/config.h),
-e as ligações do circuito, em [diagram.json](diagram.json).
+e as ligações do circuito, no [diagrama principal](src/firmware/prototipo_wokwi/diagram.json).
+Consulte o [guia do circuito integrado](src/firmware/prototipo_wokwi/README.md)
+para os testes dos novos controles. Botões e LEDs estão em diagnóstico de bancada;
+as regras de autorização, ciclo e alertas de prazo ainda precisam ser integradas.
 
 Posicione aqui um link para o Manual de Instruções. (Link do Template: https://docs.google.com/document/d/1HqNJ_Ex2HnDIw98rVrJIXhpvu9lmujeO/edit) (Sprint 4)
 

@@ -2,19 +2,52 @@
   "version": 1,
   "author": "Grupo Guará",
   "editor": "wokwi",
+  "serialMonitor": {
+    "display": "always",
+    "collapse": false
+  },
   "parts": [
     {
-      "type": "board-esp32-devkit-c-v4",
+      "type": "wokwi-esp32-devkit-v1",
       "id": "esp",
-      "top": 0,
+      "top": 60,
       "left": 0,
       "attrs": {}
     },
     {
+      "type": "chip-gps",
+      "id": "gps",
+      "top": 0,
+      "left": 410,
+      "attrs": {
+        "latitude": "-23.55",
+        "longitude": "-46.6333",
+        "fixValid": "1"
+      }
+    },
+    {
+      "type": "wokwi-slide-switch",
+      "id": "seal",
+      "top": 190,
+      "left": 410,
+      "attrs": {
+        "bounce": "0"
+      }
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "battery",
+      "top": 330,
+      "left": 410,
+      "attrs": {
+        "value": "800"
+      }
+    },
+    {
       "type": "wokwi-led",
       "id": "led_verde",
-      "top": -120,
-      "left": 200,
+      "top": -140,
+      "left": -160,
       "attrs": {
         "color": "green",
         "label": "verde (25)"
@@ -23,8 +56,8 @@
     {
       "type": "wokwi-resistor",
       "id": "r_verde",
-      "top": -40,
-      "left": 180,
+      "top": -60,
+      "left": -180,
       "rotate": 90,
       "attrs": {
         "value": "220"
@@ -33,8 +66,8 @@
     {
       "type": "wokwi-led",
       "id": "led_amarelo",
-      "top": -120,
-      "left": 260,
+      "top": -140,
+      "left": -50,
       "attrs": {
         "color": "yellow",
         "label": "amarelo (26)"
@@ -43,8 +76,8 @@
     {
       "type": "wokwi-resistor",
       "id": "r_amarelo",
-      "top": -40,
-      "left": 240,
+      "top": -60,
+      "left": -70,
       "rotate": 90,
       "attrs": {
         "value": "220"
@@ -53,18 +86,18 @@
     {
       "type": "wokwi-led",
       "id": "led_vermelho",
-      "top": -120,
-      "left": 320,
+      "top": -140,
+      "left": 60,
       "attrs": {
         "color": "red",
-        "label": "vermelho (27)"
+        "label": "vermelho (23)"
       }
     },
     {
       "type": "wokwi-resistor",
       "id": "r_vermelho",
-      "top": -40,
-      "left": 300,
+      "top": -60,
+      "left": 40,
       "rotate": 90,
       "attrs": {
         "value": "220"
@@ -73,8 +106,8 @@
     {
       "type": "wokwi-led",
       "id": "led_azul",
-      "top": -120,
-      "left": 380,
+      "top": -140,
+      "left": 170,
       "attrs": {
         "color": "blue",
         "label": "azul (14)"
@@ -83,8 +116,8 @@
     {
       "type": "wokwi-resistor",
       "id": "r_azul",
-      "top": -40,
-      "left": 360,
+      "top": -60,
+      "left": 150,
       "rotate": 90,
       "attrs": {
         "value": "220"
@@ -93,8 +126,8 @@
     {
       "type": "wokwi-pushbutton",
       "id": "btn_autorizar",
-      "top": 80,
-      "left": 220,
+      "top": 260,
+      "left": -280,
       "attrs": {
         "color": "green",
         "label": "BTN_AUTORIZAR (33)"
@@ -103,8 +136,8 @@
     {
       "type": "wokwi-pushbutton",
       "id": "btn_ciclo",
-      "top": 160,
-      "left": 220,
+      "top": 370,
+      "left": -280,
       "attrs": {
         "color": "blue",
         "label": "BTN_CICLO (13)"
@@ -112,47 +145,164 @@
     },
     {
       "type": "wokwi-slide-switch",
-      "id": "sw_lacre",
-      "top": 80,
-      "left": -160,
+      "id": "sw_rede",
+      "top": 150,
+      "left": -280,
       "attrs": {
-        "label": "SW_LACRE (32)"
+        "bounce": "0"
       }
     },
     {
       "type": "wokwi-slide-switch",
-      "id": "sw_rede",
-      "top": 160,
-      "left": -160,
+      "id": "sw_energia",
+      "top": 60,
+      "left": -280,
       "attrs": {
-        "label": "SW_REDE (18)"
+        "bounce": "0"
       }
     },
     {
-      "type": "wokwi-potentiometer",
-      "id": "pot_bateria",
-      "top": 260,
-      "left": -60,
+      "type": "wokwi-text",
+      "id": "powerLabel",
+      "top": 10,
+      "left": -280,
       "attrs": {
-        "label": "POT_BATERIA (34)"
+        "text": "ON/OFF | GPIO19 | esquerda = ligado | direita = desligado"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "title",
+      "top": -225,
+      "left": -280,
+      "attrs": {
+        "text": "GUARATRACKING | Circuito principal integrado"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "gpsLabel",
+      "top": -45,
+      "left": 410,
+      "attrs": {
+        "text": "GPS SIMULADO | TX -> RX2/GPIO16 | RX -> TX2/GPIO17"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "sealLabel",
+      "top": 140,
+      "left": 410,
+      "attrs": {
+        "text": "LACRE | GPIO27 | esquerda = integro | direita = violado"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "batteryLabel",
+      "top": 285,
+      "left": 410,
+      "attrs": {
+        "text": "BATERIA SIMULADA | GPIO34 | nivel, nao e fonte de energia"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "networkLabel",
+      "top": 95,
+      "left": -280,
+      "attrs": {
+        "text": "REDE SIMULADA | GPIO18 | esquerda = disponivel | direita = indisponivel"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "buttonLabel",
+      "top": 215,
+      "left": -280,
+      "attrs": {
+        "text": "BOTOES | LOW = pressionado | ciclo: toque = vinculo, 2 s = encerrar"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "notes",
+      "top": 485,
+      "left": -280,
+      "attrs": {
+        "text": "LEDs: verde = operando (pisca na retirada autorizada); amarelo = atraso (pisca) / permanencia (fixo)\nVermelho = violacao do lacre (pisca); azul = rede simulada indisponivel (pisca)\nSerial: NF = lanca NF de retorno; LIMIAR n = muda o limiar de permanencia\nWi-Fi real independente da chave. Sem transporte ao servidor.\nDemo: 1 s = 1 dia no ciclo, coleta GPS a cada 30 s. Nao valida consumo ou autonomia."
       }
     }
   ],
   "connections": [
     [
-      "esp:TX",
+      "esp:TX0",
       "$serialMonitor:RX",
       "",
       []
     ],
     [
-      "esp:RX",
+      "esp:RX0",
       "$serialMonitor:TX",
       "",
       []
     ],
     [
-      "esp:25",
+      "gps:VCC",
+      "esp:3V3",
+      "red",
+      []
+    ],
+    [
+      "gps:GND",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "gps:TX",
+      "esp:RX2",
+      "green",
+      []
+    ],
+    [
+      "gps:RX",
+      "esp:TX2",
+      "blue",
+      []
+    ],
+    [
+      "seal:1",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "seal:2",
+      "esp:D27",
+      "orange",
+      []
+    ],
+    [
+      "battery:VCC",
+      "esp:3V3",
+      "red",
+      []
+    ],
+    [
+      "battery:GND",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "battery:SIG",
+      "esp:D34",
+      "purple",
+      []
+    ],
+    [
+      "esp:D25",
       "r_verde:1",
       "green",
       []
@@ -165,12 +315,12 @@
     ],
     [
       "led_verde:C",
-      "esp:GND.2",
+      "esp:GND.1",
       "black",
       []
     ],
     [
-      "esp:26",
+      "esp:D26",
       "r_amarelo:1",
       "yellow",
       []
@@ -183,12 +333,12 @@
     ],
     [
       "led_amarelo:C",
-      "esp:GND.2",
+      "esp:GND.1",
       "black",
       []
     ],
     [
-      "esp:27",
+      "esp:D23",
       "r_vermelho:1",
       "red",
       []
@@ -201,12 +351,12 @@
     ],
     [
       "led_vermelho:C",
-      "esp:GND.2",
+      "esp:GND.1",
       "black",
       []
     ],
     [
-      "esp:14",
+      "esp:D14",
       "r_azul:1",
       "blue",
       []
@@ -219,12 +369,12 @@
     ],
     [
       "led_azul:C",
-      "esp:GND.2",
+      "esp:GND.1",
       "black",
       []
     ],
     [
-      "esp:33",
+      "esp:D33",
       "btn_autorizar:1.l",
       "orange",
       []
@@ -236,7 +386,7 @@
       []
     ],
     [
-      "esp:13",
+      "esp:D13",
       "btn_ciclo:1.l",
       "orange",
       []
@@ -248,19 +398,7 @@
       []
     ],
     [
-      "esp:32",
-      "sw_lacre:2",
-      "violet",
-      []
-    ],
-    [
-      "sw_lacre:1",
-      "esp:GND.1",
-      "black",
-      []
-    ],
-    [
-      "esp:18",
+      "esp:D18",
       "sw_rede:2",
       "violet",
       []
@@ -272,23 +410,16 @@
       []
     ],
     [
-      "pot_bateria:SIG",
-      "esp:34",
-      "cyan",
+      "esp:D19",
+      "sw_energia:2",
+      "gold",
       []
     ],
     [
-      "pot_bateria:VCC",
-      "esp:3V3",
-      "red",
-      []
-    ],
-    [
-      "pot_bateria:GND",
+      "sw_energia:1",
       "esp:GND.1",
       "black",
       []
     ]
-  ],
-  "dependencies": {}
+  ]
 }
