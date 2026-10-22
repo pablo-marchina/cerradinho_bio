@@ -19,7 +19,7 @@ while True:
         break
     except (serial.SerialException, OSError) as error:
         if time.monotonic() >= deadline:
-            raise SystemExit('Inicie Wokwi: Start Simulator com wokwi.toml. ' + str(error))
+            raise SystemExit('Selecione src/firmware/prototipo_wokwi/wokwi.toml e inicie Wokwi: Start Simulator. ' + str(error))
         time.sleep(0.25)
 print(f'Capturando por {args.seconds} s de relogio; log anexado em {path}', flush=True)
 with port, path.open('ab') as log:
