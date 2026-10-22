@@ -276,7 +276,9 @@ Izidio, analista de logística de 29 anos e engenheiro de produção, consolida 
 
 ### Conclusão
 
-As personas orientam a organização das informações e dos fluxos da solução conforme as necessidades de cada usuário. Seus cenários servirão de base para desenvolver a jornada do usuário e avaliar se as interações propostas facilitam o acompanhamento dos equipamentos e a identificação de pendências.
+A análise das personas evidencia que o acompanhamento dos equipamentos depende da articulação entre o controle operacional, o registro fiscal e a consolidação de dados. A localização do ativo precisa estar associada a informações sobre prazos, responsáveis e pendências, permitindo que cada área reconheça quando e como agir durante o ciclo de manutenção externa.
+
+Essa compreensão orientará a organização das informações na interface e o desenvolvimento da jornada do usuário. Os cenários definidos servirão de base para avaliar se os fluxos propostos facilitam as tarefas de cada perfil, desde o acompanhamento das remessas até o encerramento do ciclo e a consulta ao histórico.
 
 ### 3.2.2. Jornada do Usuário e Storyboard (sprint 2)	
 
