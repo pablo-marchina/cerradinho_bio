@@ -60,5 +60,8 @@ include/config.local.h
 !.vscode/extensions.json
 !.vscode/tasks.json
 
+# Anotações locais
+local-notes/
+
 # Pasta local de cada integrante
 /local
