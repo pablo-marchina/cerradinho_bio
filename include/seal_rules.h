@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-// Lacre e retirada autorizada (issue #14): RF006, RF007; RN05, RN06.
+// Lacre e retirada autorizada: RF006, RF007; RN05, RN06; CT05-CT07.
 
 enum {
   SEAL_EVENT_NONE = 0,
@@ -12,30 +12,32 @@ enum {
   SEAL_EVENT_CLOSED      // LACRE_FECHADO (fechou depois de uma violacao)
 };
 
+// Tempos em ms do relogio do ciclo (sim_clock.h), nao em dias truncados.
 typedef struct {
-  uint32_t window_days;
+  uint64_t window_ms;
   bool authorized;
-  uint32_t authorized_day;
+  uint64_t authorized_at_ms;
   bool removal_in_progress;
   bool violated;
 } SealState;
 
-static inline void seal_init(SealState *seal, uint32_t window_days) {
-  seal->window_days = window_days;
+static inline void seal_init(SealState *seal, uint64_t window_ms) {
+  seal->window_ms = window_ms;
   seal->authorized = false;
-  seal->authorized_day = 0;
+  seal->authorized_at_ms = 0;
   seal->removal_in_progress = false;
   seal->violated = false;
 }
 
-static inline void seal_authorize(SealState *seal, uint32_t day) {
+static inline void seal_authorize(SealState *seal, uint64_t now_ms) {
   seal->authorized = true;
-  seal->authorized_day = day;
+  seal->authorized_at_ms = now_ms;
 }
 
-// A autorizacao vale por window_days a partir do registro e e consumida na abertura.
-static inline int seal_opened(SealState *seal, uint32_t day) {
-  const bool valid = seal->authorized && day - seal->authorized_day <= seal->window_days;
+// A autorizacao vale window_ms a partir do instante do registro e e consumida na abertura.
+static inline int seal_opened(SealState *seal, uint64_t now_ms) {
+  const bool valid = seal->authorized && now_ms >= seal->authorized_at_ms &&
+                     now_ms - seal->authorized_at_ms <= seal->window_ms;
   seal->authorized = false;
   if (valid) {
     seal->removal_in_progress = true;

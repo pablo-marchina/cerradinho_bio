@@ -39,14 +39,16 @@ constexpr uint32_t HeartbeatMs = 2000;
 constexpr uint32_t SealDebounceMs = 60;
 constexpr uint32_t WifiRetryMs = 30000;
 constexpr double MovementThresholdM = 100.0;  // Hipotese inicial, validar em campo.
+// Registro local de diagnostico na NVS (q0..q15): amostras de GPS e seal_changed
+// (CT18-CT22). Separado da fila de eventos de negocio (event_queue.h, RN09).
 constexpr uint8_t QueueCapacity = 16;
-// Ciclo de manutencao (issue #13). No demo, 1 s real = 1 dia; valores de teste.
+// Ciclo de manutencao (CT02-CT04). No demo, 1 s real = 1 dia; valores de teste.
 constexpr uint32_t DayMs = DEMO_MODE ? 1000UL : 24UL * 60UL * 60UL * 1000UL;
 constexpr uint32_t StatusIntervalDays = 7;
 constexpr uint32_t ExpectedReturnDays = 5;     // PENDENTE DE VALIDACAO
 constexpr uint32_t StayThresholdDays = 150;    // CT04 roda com 10 e com 150
 constexpr uint32_t BlinkHalfPeriodMs = 500;    // 1 Hz
-// Lacre, autorizacao, fila, botoes e bateria (issue #14). Valores de teste.
+// Lacre, autorizacao, fila, botoes e bateria (CT05-CT16). Valores de teste.
 constexpr uint32_t AuthorizationWindowDays = 3;  // PENDENTE DE VALIDACAO
 constexpr uint32_t ButtonDebounceMs = 50;
 constexpr uint32_t LongPressMs = 2000;

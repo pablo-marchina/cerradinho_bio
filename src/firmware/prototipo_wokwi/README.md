@@ -5,8 +5,8 @@ customizado, lacre, bateria simulada, quatro LEDs com resistores de 220 Ω,
 dois botões, chave de rede simulada e chave ON/OFF. O diagrama anterior da raiz foi incorporado aqui.
 
 O firmware principal preserva a comparação de posições, o debounce do lacre e a
-fila NVS existentes, tem o ciclo da issue #13 (dias fora, status semanal e alertas de
-atraso e de permanência) e as regras da issue #14: retirada autorizada, violação do
+registro NVS de diagnóstico existentes, tem o ciclo (dias fora, status semanal e alertas de
+atraso e de permanência, CT02–CT04) e as regras dos CT05–CT16: retirada autorizada, violação do
 lacre, fila de eventos sem rede, debounce dos botões, bateria baixa, encerramento e
 vínculo de ciclo, além do registro de desligamento pela chave ON/OFF. JSON na serial
 e Wi-Fi conectado não representam envio confirmado a servidor ou broker.
@@ -33,8 +33,9 @@ da unidade física antes de integrar. Consumo e autonomia exigem ensaios físico
 | `wokwi.toml` | Simulação demo: firmware compilado na raiz, coleta a cada 30 s e serial RFC2217 na porta 4000. |
 | `wokwi.weekly.toml` | Mesmo circuito com coleta a cada sete dias reais. |
 | `../main.cpp` | Firmware principal compilado pelo PlatformIO. |
-| `../../../include/cycle_rules.h` | Regras do ciclo (issue #13), testadas em `tests/model_tests.c`. |
-| `../../../include/seal_rules.h`, `event_queue.h`, `battery_rules.h` | Regras de lacre, fila sem rede e bateria (issue #14), testadas em `tests/model_tests.c`. |
+| `../../../include/cycle_rules.h` | Regras do ciclo (CT02–CT04), testadas em `tests/model_tests.c`. |
+| `../../../include/seal_rules.h`, `event_queue.h`, `battery_rules.h` | Regras de lacre, fila sem rede e bateria (CT05–CT13), testadas em `tests/model_tests.c`. |
+| `../../../include/sim_clock.h` | Relógio de 64 bits do ciclo, que atravessa a volta do `millis()`, testado em `tests/model_tests.c`. |
 | `../../../include/config.h` | Pinagem e parâmetros centralizados do firmware principal. |
 | `sketch.ino` | Teste isolado de ligações, excluído da compilação principal. Conta caracteres do GPS, sem interpretar posição. |
 
@@ -121,13 +122,13 @@ Compilação e testes locais não comprovam consumo, autonomia ou entrega ao ser
 
 ## Evidências anteriores
 
-- `assets/wokwi/circuito.png`: circuito anterior da issue #6, sem o GPS integrado.
+- `assets/wokwi/circuito.png`: circuito anterior do teste de ligação, sem o GPS integrado.
 - Projeto público anterior: https://wokwi.com/projects/478276108359405569
 
 O projeto público e a captura anterior não foram atualizados por esta integração.
 O roteiro acima descreve resultados esperados; não é evidência de execução visual.
 
-## Teste de ligação (issue #6)
+## Teste de ligação
 
 Executado em 19/out/2026 no projeto público. Evidência: `assets/wokwi/circuito.png`.
 
@@ -140,11 +141,13 @@ Executado em 19/out/2026 no projeto público. Evidência: `assets/wokwi/circuito
 | BTN_CICLO pressionado | LED vermelho aceso; `ciclo=0` | Passou |
 | POT_BATERIA de um extremo ao outro | `bateria_adc` de 0 a ~4095 | Passou |
 
-## Tempo simulado, prazos e LEDs (issue #13)
+## Tempo simulado, prazos e LEDs (CT02–CT04)
 
 O ciclo fica em `include/cycle_rules.h` e é chamado pelo `main.cpp` a cada volta do
 `loop()`, sem `delay()`. No ambiente `demo`, 1 segundo real equivale a 1 dia
-(`Config::DayMs`); no `weekly`, o dia é real. As constantes ficam no `include/config.h`.
+(`Config::DayMs`); no `weekly`, o dia é real. Os dias vêm de um relógio de 64 bits
+(`include/sim_clock.h`) que acumula os intervalos do `millis()`, porque o contador de 32 bits
+dá a volta em ~49,7 dias. As constantes ficam no `include/config.h`.
 
 | Constante | Valor | O que controla |
 |---|---|---|
@@ -152,25 +155,29 @@ O ciclo fica em `include/cycle_rules.h` e é chamado pelo `main.cpp` a cada volt
 | `ExpectedReturnDays` | 5 | Acima disso, `ALERTA_ATRASO` e amarelo piscando a 1 Hz |
 | `StayThresholdDays` | 150 | Ao atingir, `ALERTA_PERMANENCIA` e amarelo fixo |
 
-Cada alerta sai uma única vez por ciclo, e os dois podem coexistir. Ao ligar, o
-dispositivo publica um `STATUS` com `dias_fora=0`. Os eventos usam o mesmo JSON dos
+Cada alerta sai uma única vez por ciclo, e os dois podem coexistir; mudar o limiar
+pelo comando `LIMIAR n` não rearma um alerta já emitido no ciclo (RN04). Ao ligar pela
+primeira vez, o dispositivo publica um `STATUS` com `dias_fora=0`; depois de um reinício,
+o `STATUS` traz o ciclo restaurado da NVS e `contexto_restaurado=true`. Em hardware real,
+apague a NVS antes de repetir um CT que parte do ciclo 1. Os eventos usam o mesmo JSON dos
 demais registros, com `ciclo_id`, `dias_fora`, `atraso` e `permanencia`, e o heartbeat
 mostra `dias_fora`.
 
 Para o CT04 com limiar 10, troque `StayThresholdDays` para `10`, recompile, rode e
 depois volte para `150`.
 
-## Lacre, autorização, fila, bateria e ON/OFF (issue #14)
+## Lacre, autorização, fila, bateria e ON/OFF (CT05–CT16, CT35)
 
 | Regra | Comportamento | Onde |
 |---|---|---|
 | Violação (RN05) | Lacre aberto sem autorização vigente gera `VIOLACAO_LACRE` na hora, marcado como crítico; vermelho pisca até o lacre fechar (`LACRE_FECHADO`) | `seal_rules.h` |
-| Retirada autorizada (RN06) | `BTN_AUTORIZAR` vale por `AuthorizationWindowDays` (3 dias = 3 s no demo) e é consumido na abertura: `RETIRADA_AUTORIZADA`, verde piscando e `LACRE_REAPLICADO` ao fechar | `seal_rules.h` |
-| Fila sem rede (RN09) | Com `SW_REDE` à direita, os eventos vão para a fila (8); cheia, sai o não crítico mais antigo. Ao reconectar, saem na ordem com `dia_ocorrencia` | `event_queue.h` |
+| Retirada autorizada (RN06) | `BTN_AUTORIZAR` vale por `AuthorizationWindowDays` (3 dias = 3 s no demo), medidos em ms desde o registro, e é consumido na abertura: `RETIRADA_AUTORIZADA`, verde piscando e `LACRE_REAPLICADO` ao fechar | `seal_rules.h` |
+| Fila sem rede (RN09) | Com `SW_REDE` à direita, os eventos vão para a fila (8), gravada na NVS (`p0`–`p7`); cheia, sai o não crítico mais antigo. Com as 8 posições ocupadas por violações, as seguintes entram num único resumo (quantidade, primeira e última ocorrência), também na NVS. Ao reconectar, saem na ordem com `dia_ocorrencia` e, por último, o `VIOLACAO_LACRE_RESUMO`, que é zerado após o envio; nenhuma violação é perdida (CT10) | `event_queue.h` |
 | Botões | Debounce de 50 ms e evento por borda; segurar não repete | `main.cpp` |
 | Bateria (RN10) | `BATERIA_BAIXA` uma vez abaixo de 20%, rearma acima de 25%; ADC = 0 gera `SENSOR_BATERIA_FALHA` | `battery_rules.h` |
 | Ciclo (RN01, RN11) | Toque curto com ciclo ativo: `VINCULO_RECUSADO`; segurar 2 s: `CICLO_ENCERRADO` só com lacre fechado e NF de retorno, senão `ENCERRAMENTO_RECUSADO` com `motivo`; com o ciclo encerrado, toque curto: `CICLO_INICIADO` | `main.cpp` |
-| ON/OFF | Desligar gera `DISPOSITIVO_DESLIGADO` e apaga os LEDs; religar gera `STATUS` | `main.cpp` |
+| ON/OFF (desligamento lógico) | Desligar gera `DISPOSITIVO_DESLIGADO`, apaga os LEDs e suspende leituras e publicações, sem cortar a energia do ESP32; o relógio do ciclo continua. Religar gera `STATUS` | `main.cpp` |
+| Reinício | Contexto do ciclo e do lacre (`ctx`) e fila de eventos voltam da NVS; o `STATUS` traz `contexto_restaurado`. Ligar com o lacre aberto gera `VIOLACAO_LACRE` | `main.cpp` |
 
-O `seal_changed` que aparece no Serial é o registro local de diagnóstico (NVS, CT18 e
+O `seal_changed` que aparece no Serial é o registro local de diagnóstico (NVS `q0`–`q15`, CT18 e
 CT21); os eventos de negócio são os de nome em maiúsculas.

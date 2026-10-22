@@ -7,6 +7,9 @@
 #include "../include/seal_rules.h"
 #include "../include/event_queue.h"
 #include "../include/battery_rules.h"
+#include "../include/sim_clock.h"
+
+#define DAY_MS (24ULL * 60ULL * 60ULL * 1000ULL)
 
 int main(void) {
   assert(valid_coordinates(0.0, 0.0));  // Zero nao e ausencia de fix.
@@ -41,7 +44,7 @@ int main(void) {
   make_gga(sentence, sizeof(sentence), NAN, 0, true, 0);
   assert(strstr(sentence, ",0,00,1.0,") != NULL);
 
-  // Ciclo (issue #13): status a cada 7 dias, alertas distintos e emitidos uma vez.
+  // Ciclo (CT02-CT04): status a cada 7 dias, alertas distintos e emitidos uma vez.
   for (uint32_t threshold = 10; threshold <= 150; threshold += 140) {
     CycleState cycle;
     cycle_start(&cycle, 1, 5, threshold, 7);
@@ -62,40 +65,132 @@ int main(void) {
     assert(cycle_is_late(&cycle) && cycle_in_stay(&cycle));
   }
 
-  // Lacre (issue #14): autorizacao vale 3 dias e e consumida; sem ela, violacao.
+  // Relogio (CT04 semanal): o millis() de 32 bits da volta em ~49,7 dias; o relogio
+  // acumulado atravessa a volta e o ciclo chega aos 150 dias reais.
+  {
+    SimClock clock;
+    sim_clock_init(&clock, 0xFFFFFF00u, 0);
+    assert(sim_clock_update(&clock, 0x00000100u) == 0x200);  // atravessou a volta
+    uint32_t millis_now = 0;
+    sim_clock_init(&clock, millis_now, 0);
+    CycleState cycle;
+    cycle_start(&cycle, 1, 5, 150, 7);
+    unsigned stay = 0, wraps = 0;
+    for (uint32_t hour = 1; hour <= 151 * 24; ++hour) {
+      const uint32_t before = millis_now;
+      millis_now += 60u * 60u * 1000u;  // uint32_t, como o millis()
+      if (millis_now < before) ++wraps;
+      const uint64_t elapsed = sim_clock_update(&clock, millis_now);
+      while (cycle.days_out < elapsed / DAY_MS) {
+        if (cycle_advance_day(&cycle) & CYCLE_EVENT_STAY) ++stay;
+      }
+    }
+    assert(wraps == 3 && cycle.days_out == 151 && stay == 1);
+    // Contexto restaurado da NVS: retoma a contagem a partir do valor salvo.
+    sim_clock_init(&clock, 12345u, 151 * DAY_MS);
+    assert(sim_clock_update(&clock, 12345u + 1000u) == 151 * DAY_MS + 1000u);
+  }
+
+  // LIMIAR (RN04): mudar o limiar nao rearma o alerta de permanencia ja emitido.
+  {
+    CycleState cycle;
+    cycle_start(&cycle, 1, 5, 10, 7);
+    unsigned stay = 0;
+    for (int day = 1; day <= 10; ++day) {
+      if (cycle_advance_day(&cycle) & CYCLE_EVENT_STAY) ++stay;
+    }
+    assert(stay == 1);
+    cycle_set_stay_threshold(&cycle, 20);
+    for (int day = 11; day <= 12; ++day) cycle_advance_day(&cycle);
+    cycle_set_stay_threshold(&cycle, 12);
+    for (int day = 13; day <= 30; ++day) {
+      if (cycle_advance_day(&cycle) & CYCLE_EVENT_STAY) ++stay;
+    }
+    assert(stay == 1 && cycle.stay_sent);
+    // Antes de emitir, baixar o limiar abaixo de dias_fora emite no dia seguinte, uma vez.
+    cycle_start(&cycle, 2, 5, 150, 7);
+    for (int day = 1; day <= 30; ++day) cycle_advance_day(&cycle);
+    cycle_set_stay_threshold(&cycle, 10);
+    assert(cycle_advance_day(&cycle) & CYCLE_EVENT_STAY);
+    assert(!(cycle_advance_day(&cycle) & CYCLE_EVENT_STAY));
+  }
+
+  // Lacre (CT05-CT07): autorizacao vale 3 dias desde o registro e e consumida.
   SealState seal;
-  seal_init(&seal, 3);
-  assert(seal_opened(&seal, 10) == SEAL_EVENT_VIOLATION && seal.violated);
+  seal_init(&seal, 3 * DAY_MS);
+  assert(seal_opened(&seal, 10 * DAY_MS) == SEAL_EVENT_VIOLATION && seal.violated);
   assert(seal_closed(&seal) == SEAL_EVENT_CLOSED && !seal.violated);
-  seal_authorize(&seal, 20);
-  assert(seal_opened(&seal, 23) == SEAL_EVENT_REMOVAL && seal.removal_in_progress);
+  seal_authorize(&seal, 20 * DAY_MS);
+  assert(seal_opened(&seal, 23 * DAY_MS) == SEAL_EVENT_REMOVAL && seal.removal_in_progress);
   assert(seal_closed(&seal) == SEAL_EVENT_RESEALED && !seal.removal_in_progress);
-  assert(seal_opened(&seal, 23) == SEAL_EVENT_VIOLATION);  // autorizacao ja usada
+  assert(seal_opened(&seal, 23 * DAY_MS) == SEAL_EVENT_VIOLATION);  // autorizacao ja usada
   seal_closed(&seal);
-  seal_authorize(&seal, 30);
-  assert(seal_opened(&seal, 34) == SEAL_EVENT_VIOLATION);  // passou de 3 dias
+  seal_authorize(&seal, 30 * DAY_MS);
+  assert(seal_opened(&seal, 34 * DAY_MS) == SEAL_EVENT_VIOLATION);  // passou de 3 dias
   assert(seal_closed(&seal) == SEAL_EVENT_CLOSED);
   assert(seal_closed(&seal) == SEAL_EVENT_NONE);
+  // Medido em ms: autorizar no fim do dia e abrir 3 dias e 1 ms depois e violacao
+  // (com dias truncados, isso passava e a janela chegava a quase 4 dias).
+  const uint64_t late_in_day = 40 * DAY_MS + DAY_MS - 1000;
+  seal_authorize(&seal, late_in_day);
+  assert(seal_opened(&seal, late_in_day + 3 * DAY_MS + 1) == SEAL_EVENT_VIOLATION);
+  seal_closed(&seal);
+  seal_authorize(&seal, late_in_day);
+  assert(seal_opened(&seal, late_in_day + 3 * DAY_MS) == SEAL_EVENT_REMOVAL);  // limite exato
+  seal_closed(&seal);
+  // Ligar com o lacre aberto: o firmware parte da referencia fechada e chama
+  // seal_opened na primeira leitura estavel; sem autorizacao, e violacao (CT05).
+  seal_init(&seal, 3 * DAY_MS);
+  assert(seal_opened(&seal, 0) == SEAL_EVENT_VIOLATION && seal.violated);
 
-  // Fila (issue #14): 8 eventos, cheia descarta o nao critico mais antigo.
+  // Fila (CT08-CT10): 8 eventos, cheia descarta o nao critico mais antigo.
   static EventQueue queue;
   queue_init(&queue);
   char text[16];
   for (int i = 0; i < EVENT_QUEUE_CAPACITY; ++i) {
     snprintf(text, sizeof(text), "e%d", i);
-    assert(queue_push(&queue, text, i == 1) == QUEUE_STORED);
+    assert(queue_push(&queue, text, i == 1, (uint64_t)i) == QUEUE_STORED);
   }
-  assert(queue_push(&queue, "e8", false) == QUEUE_STORED_DROPPED_OLDEST);
+  assert(queue_push(&queue, "e8", false, 8) == QUEUE_STORED_DROPPED_OLDEST);
   assert(queue.count == EVENT_QUEUE_CAPACITY);
   assert(strcmp(queue.text[0], "e1") == 0 && queue.critical[0]);  // e0 saiu, violacao ficou
   assert(strcmp(queue.text[EVENT_QUEUE_CAPACITY - 1], "e8") == 0);
   queue_init(&queue);
-  for (int i = 0; i < EVENT_QUEUE_CAPACITY; ++i) queue_push(&queue, "v", true);
-  assert(queue_push(&queue, "x", false) == QUEUE_REJECTED && queue.lost == 1);
+  for (int i = 0; i < EVENT_QUEUE_CAPACITY; ++i) queue_push(&queue, "v", true, 0);
+  assert(queue_push(&queue, "x", false, 0) == QUEUE_REJECTED && queue.lost == 1);
+  assert(queue.overflow_count == 0);
   queue_remove(&queue, 0);
   assert(queue.count == EVENT_QUEUE_CAPACITY - 1);
 
-  // Bateria (issue #14): alerta uma vez abaixo de 20%, rearma acima de 25%; ADC 0 e falha.
+  // CT10 so com violacoes: 12 violacoes sem rede = 8 individuais + resumo de 4 com a
+  // primeira e a ultima ocorrencia; nenhuma violacao perdida e o flush entrega tudo.
+  queue_init(&queue);
+  for (int i = 0; i < 12; ++i) {
+    snprintf(text, sizeof(text), "v%d", i);
+    const int result = queue_push(&queue, text, true, (uint64_t)(i + 1) * DAY_MS);
+    assert(result == (i < EVENT_QUEUE_CAPACITY ? QUEUE_STORED : QUEUE_SUMMARIZED));
+  }
+  assert(queue.count == EVENT_QUEUE_CAPACITY && queue.lost == 0);
+  assert(queue.overflow_count == 4);
+  assert(queue.overflow_first_ms == 9 * DAY_MS && queue.overflow_last_ms == 12 * DAY_MS);
+  assert(queue_push(&queue, "n", false, 13 * DAY_MS) == QUEUE_REJECTED && queue.lost == 1);
+  assert(queue.overflow_count == 4);  // nao critico nao entra no resumo
+  unsigned delivered = 0;
+  while (queue.count > 0) {  // flush: posicoes na ordem, depois o resumo
+    snprintf(text, sizeof(text), "v%u", delivered);
+    assert(strcmp(queue.text[0], text) == 0);
+    queue_remove(&queue, 0);
+    ++delivered;
+  }
+  delivered += queue.overflow_count;
+  queue_clear_summary(&queue);
+  assert(delivered == 12 && queue.overflow_count == 0 && queue.overflow_first_ms == 0);
+  // Depois do envio, o resumo recomeca do zero.
+  for (int i = 0; i < EVENT_QUEUE_CAPACITY + 1; ++i) queue_push(&queue, "v", true, 20 * DAY_MS + i);
+  assert(queue.overflow_count == 1 && queue.overflow_first_ms == 20 * DAY_MS + 8 &&
+         queue.overflow_last_ms == 20 * DAY_MS + 8);
+
+  // Bateria (CT12-CT13): alerta uma vez abaixo de 20%, rearma acima de 25%; ADC 0 e falha.
   BatteryState battery;
   battery_init(&battery, 20, 25);
   assert(battery_update(&battery, 3000, 73) == 0);
@@ -107,6 +202,6 @@ int main(void) {
   assert(battery_update(&battery, 700, 17) == BATTERY_EVENT_LOW);
   assert(battery_update(&battery, 0, 0) == BATTERY_EVENT_SENSOR_FAILURE);
   assert(battery_update(&battery, 0, 0) == 0);
-  puts("PASS: coordenadas, distancia, tolerancia, fronteiras NMEA, checksum, fix invalido e regras do ciclo, lacre, fila e bateria");
+  puts("PASS: coordenadas, distancia, tolerancia, fronteiras NMEA, checksum, fix invalido e regras do ciclo, relogio, limiar, lacre, fila com resumo e bateria");
   return 0;
 }

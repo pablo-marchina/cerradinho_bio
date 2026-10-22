@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-// Bateria (issue #14): RF019, RF027; RN10. Alerta abaixo de low_pct, rearma acima
+// Bateria: RF019, RF027; RN10; CT12-CT13. Alerta abaixo de low_pct, rearma acima
 // de recover_pct; leitura zero do ADC e falha do sensor, nao bateria vazia.
 
 enum {

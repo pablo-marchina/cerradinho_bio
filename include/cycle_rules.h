@@ -2,8 +2,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-// Regras do ciclo de manutencao externa (issue #13): dias fora, status
-// periodico e alertas de atraso e permanencia (RF011, RF013, RF014; RN04, RN07).
+// Regras do ciclo de manutencao externa: dias fora, status periodico e alertas
+// de atraso e permanencia (RF011, RF013, RF014; RN03, RN04, RN07; CT02-CT04).
 
 enum {
   CYCLE_EVENT_STATUS = 1u << 0,  // STATUS_SEMANAL
@@ -57,6 +57,12 @@ static inline unsigned cycle_advance_day(CycleState *cycle) {
     events |= CYCLE_EVENT_STAY;
   }
   return events;
+}
+
+// Muda o limiar sem rearmar o alerta ja emitido no ciclo (RN04): cada alerta sai
+// uma vez por ciclo, mesmo que o limiar suba e depois volte a ser atingido.
+static inline void cycle_set_stay_threshold(CycleState *cycle, uint32_t stay_threshold_days) {
+  cycle->stay_threshold_days = stay_threshold_days;
 }
 
 // Amarelo fixo na permanencia; piscando (blink_on alterna a 1 Hz) no atraso.

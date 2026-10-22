@@ -8,6 +8,7 @@
 #include "seal_rules.h"
 #include "event_queue.h"
 #include "battery_rules.h"
+#include "sim_clock.h"
 
 namespace {
 TinyGPSPlus gps;
@@ -24,8 +25,9 @@ bool sampleRequested = true;
 bool rawSeal = false, stableSeal = false;
 uint32_t sealChangedAt = 0;
 bool wasConnected = false;
+SimClock simClock;  // ms acumulados, sem a volta de ~49,7 dias do millis()
 CycleState cycle;
-uint32_t cycleStartedAt = 0;
+uint64_t cycleStartedAt = 0;
 bool cycleActive = false;
 bool returnInvoiceIssued = false;  // NF de retorno lancada (comando NF no Serial)
 uint32_t closedCycles = 0;
@@ -36,6 +38,7 @@ uint32_t lastBatteryCheck = 0;
 bool poweredOn = true;
 bool networkWasAvailable = true;
 String serialLine;
+bool contextDirty = false;  // ciclo/lacre mudou e precisa ir para a NVS
 
 // Botao com debounce e deteccao por borda: segurar nao repete o evento.
 struct Button {
@@ -47,8 +50,12 @@ struct Button {
 Button authorizeButton{Config::AuthorizeButtonPin, false, false, 0, 0, false};
 Button cycleButton{Config::CycleButtonPin, false, false, 0, 0, false};
 
-uint32_t simulatedDay(uint32_t now) {
-  return now / Config::DayMs;
+uint64_t clockMs() {
+  return simClock.elapsed_ms;
+}
+
+uint32_t simulatedDay(uint64_t clock) {
+  return (uint32_t)(clock / Config::DayMs);
 }
 
 bool simulatedNetworkAvailable() {
@@ -86,20 +93,21 @@ int simulatedBatteryPercent() {
 void enqueue(const String &record) {
   Serial.println(record);
   if (!storageReady) {
-    Serial.println("[fila] armazenamento indisponivel; registro apenas na serial");
+    Serial.println("[registro] armazenamento indisponivel; registro apenas na serial");
     return;
   }
   for (uint8_t index = 0; index < Config::QueueCapacity; ++index) {
     const String key = "q" + String(index);
     if (storage.isKey(key.c_str())) continue;
     if (storage.putString(key.c_str(), record) == record.length()) {
-      Serial.println("[fila] registro local pendente; servidor ainda nao configurado");
+      Serial.println("[registro] diagnostico gravado na NVS; servidor ainda nao configurado");
     } else {
-      Serial.println("[fila] falha ao gravar registro; registro disponivel na serial");
+      Serial.println("[registro] falha ao gravar diagnostico; registro disponivel na serial");
     }
     return;
   }
-  Serial.println("[fila] limite de 16 registros; antigos preservados, novo apenas na serial");
+  Serial.printf("[registro] limite de %u registros de diagnostico; antigos preservados, novo apenas na serial\r\n",
+                Config::QueueCapacity);
 }
 
 String baseRecord(const char *type) {
@@ -177,8 +185,97 @@ void readGps() {
   }
 }
 
+// Contexto do ciclo e do lacre na NVS: reinicio nao reabre o ciclo 1 nem apaga
+// o historico (RF016, RF017; RN09, RN11). A versao muda se o formato mudar; a
+// duracao do dia separa demo de weekly, para um nao restaurar o contexto do outro.
+struct StoredContext {
+  uint32_t version;
+  uint32_t dayMs;
+  uint64_t clockMs;
+  CycleState cycle;
+  uint64_t cycleStartedAt;
+  bool cycleActive;
+  bool returnInvoiceIssued;
+  uint32_t closedCycles;
+  SealState seal;
+  bool sealOpen;
+};
+constexpr uint32_t ContextVersion = 1;
+
+void saveContext() {
+  contextDirty = false;
+  if (!storageReady) return;
+  const StoredContext context{ContextVersion, Config::DayMs, clockMs(), cycle, cycleStartedAt,
+                              cycleActive, returnInvoiceIssued, closedCycles, seal, stableSeal};
+  if (storage.putBytes("ctx", &context, sizeof(context)) != sizeof(context)) {
+    Serial.println("[memoria] falha ao salvar o contexto do ciclo");
+  }
+}
+
+bool restoreContext(StoredContext &context) {
+  return storageReady && storage.isKey("ctx") &&
+         storage.getBytesLength("ctx") == sizeof(context) &&
+         storage.getBytes("ctx", &context, sizeof(context)) == sizeof(context) &&
+         context.version == ContextVersion && context.dayMs == Config::DayMs;
+}
+
+// Fila de eventos de negocio na NVS: chaves p0..p7 com o texto e "pmeta" com
+// quantidade, criticos e perdas. Regravada a cada mudanca da fila.
+struct StoredQueueMeta {
+  uint8_t count;
+  bool critical[EVENT_QUEUE_CAPACITY];
+  uint32_t lost;
+  uint32_t overflowCount;
+  uint64_t overflowFirstMs, overflowLastMs;
+};
+
+void savePending() {
+  if (!storageReady) return;
+  StoredQueueMeta meta{pending.count, {}, pending.lost, pending.overflow_count,
+                       pending.overflow_first_ms, pending.overflow_last_ms};
+  for (uint8_t i = 0; i < EVENT_QUEUE_CAPACITY; ++i) {
+    const String key = "p" + String(i);
+    if (i < pending.count) {
+      meta.critical[i] = pending.critical[i];
+      storage.putString(key.c_str(), pending.text[i]);
+    } else if (storage.isKey(key.c_str())) {
+      storage.remove(key.c_str());
+    }
+  }
+  if (storage.putBytes("pmeta", &meta, sizeof(meta)) != sizeof(meta)) {
+    Serial.println("[memoria] falha ao salvar a fila de eventos");
+  }
+}
+
+void restorePending() {
+  StoredQueueMeta meta{};
+  if (!storageReady || !storage.isKey("pmeta") ||
+      storage.getBytesLength("pmeta") != sizeof(meta) ||
+      storage.getBytes("pmeta", &meta, sizeof(meta)) != sizeof(meta) ||
+      meta.count > EVENT_QUEUE_CAPACITY) {
+    return;
+  }
+  for (uint8_t i = 0; i < meta.count; ++i) {
+    const String text = storage.getString(("p" + String(i)).c_str(), "");
+    if (text.length() == 0) break;  // entrada ausente: preserva so as anteriores
+    queue_push(&pending, text.c_str(), meta.critical[i], 0);
+  }
+  pending.lost = meta.lost;
+  pending.overflow_count = meta.overflowCount;
+  pending.overflow_first_ms = meta.overflowFirstMs;
+  pending.overflow_last_ms = meta.overflowLastMs;
+}
+
+bool hasPending() {
+  return pending.count > 0 || pending.overflow_count > 0;
+}
+
 void printPending() {
-  Serial.printf("[FILA] %u %s\r\n", pending.count, pending.count == 1 ? "pendente" : "pendentes");
+  Serial.printf("[FILA] %u %s", pending.count, pending.count == 1 ? "pendente" : "pendentes");
+  if (pending.overflow_count > 0) {
+    Serial.printf(" + resumo de %lu violacao(oes)", (unsigned long)pending.overflow_count);
+  }
+  Serial.print("\r\n");
 }
 
 // Com rede, o JSON sai no Serial (representa a mensagem MQTT). Sem rede, vai para a
@@ -188,7 +285,7 @@ void publishEvent(const char *type, bool critical = false, const String &extra =
   record += ",\"ciclo_id\":"; record += cycle.cycle_id;
   record += ",\"ciclo_ativo\":"; record += cycleActive ? "true" : "false";
   record += ",\"dias_fora\":"; record += cycle.days_out;
-  record += ",\"dia_ocorrencia\":"; record += simulatedDay(millis());
+  record += ",\"dia_ocorrencia\":"; record += simulatedDay(clockMs());
   record += ",\"atraso\":"; record += cycle_is_late(&cycle) ? "true" : "false";
   record += ",\"permanencia\":"; record += cycle_in_stay(&cycle) ? "true" : "false";
   record += ",\"critico\":"; record += critical ? "true" : "false";
@@ -198,26 +295,47 @@ void publishEvent(const char *type, bool critical = false, const String &extra =
     Serial.println(record);
     return;
   }
-  const int result = queue_push(&pending, record.c_str(), critical);
+  const int result = queue_push(&pending, record.c_str(), critical, clockMs());
+  if (result == QUEUE_SUMMARIZED) {
+    Serial.printf("[FILA] FILA_CHEIA: so ha violacoes; %s somado ao resumo (%lu no resumo)\r\n",
+                  type, (unsigned long)pending.overflow_count);
+    savePending();
+    printPending();
+    return;
+  }
   if (result == QUEUE_REJECTED) {
     Serial.printf("[FILA] FILA_CHEIA: so ha eventos criticos; %s nao coube (perdidos=%lu)\r\n",
                   type, (unsigned long)pending.lost);
+    savePending();
     return;
   }
   if (result == QUEUE_STORED_DROPPED_OLDEST) {
     Serial.println("[FILA] FILA_CHEIA: descartado o evento nao critico mais antigo");
   }
   Serial.printf("[FILA] guardado: %s\r\n", type);
+  savePending();
   printPending();
 }
 
 void flushPending() {
-  if (pending.count == 0) return;
+  if (!hasPending()) return;
   Serial.printf("[FILA] rede disponivel; reenviando %u evento(s) na ordem\r\n", pending.count);
   while (pending.count > 0) {
     Serial.println(pending.text[0]);
     queue_remove(&pending, 0);
   }
+  // As violacoes do resumo ocorreram depois das guardadas na fila: saem por ultimo.
+  if (pending.overflow_count > 0) {
+    String extra = ",\"quantidade\":";
+    extra += pending.overflow_count;
+    extra += ",\"dia_primeira\":"; extra += simulatedDay(pending.overflow_first_ms);
+    extra += ",\"dia_ultima\":"; extra += simulatedDay(pending.overflow_last_ms);
+    extra += ",\"primeira_ms\":"; extra += String((unsigned long long)pending.overflow_first_ms);
+    extra += ",\"ultima_ms\":"; extra += String((unsigned long long)pending.overflow_last_ms);
+    publishEvent("VIOLACAO_LACRE_RESUMO", true, extra);
+    queue_clear_summary(&pending);
+  }
+  savePending();
   printPending();
 }
 
@@ -227,19 +345,21 @@ void updateNetwork() {
   networkWasAvailable = available;
 }
 
-void startCycle(uint32_t now, uint32_t id) {
+void startCycle(uint64_t clock, uint32_t id) {
   cycle_start(&cycle, id, Config::ExpectedReturnDays, Config::StayThresholdDays,
               Config::StatusIntervalDays);
-  cycleStartedAt = now;
+  cycleStartedAt = clock;
   cycleActive = true;
   returnInvoiceIssued = false;
+  contextDirty = true;
 }
 
 // Avanca um dia por vez para nao pular status nem alerta se o loop atrasar.
-void updateCycle(uint32_t now) {
+void updateCycle(uint64_t clock) {
   if (!cycleActive) return;
-  const uint32_t days = (now - cycleStartedAt) / Config::DayMs;
+  const uint64_t days = (clock - cycleStartedAt) / Config::DayMs;
   while (cycle.days_out < days) {
+    contextDirty = true;
     const unsigned events = cycle_advance_day(&cycle);
     if (events & CYCLE_EVENT_STATUS) publishEvent("STATUS_SEMANAL");
     if (events & CYCLE_EVENT_LATE) publishEvent("ALERTA_ATRASO");
@@ -262,16 +382,17 @@ void requestClose() {
     publishEvent("CICLO_ENCERRADO", false, extra);
     cycleActive = false;
     cycle.days_out = 0;
+    contextDirty = true;
   }
 }
 
 // Um dispositivo so pode estar em um ciclo ativo por vez (RF003, RF004; RN01).
-void requestLink(uint32_t now) {
+void requestLink(uint64_t clock) {
   if (cycleActive) {
     publishEvent("VINCULO_RECUSADO", false, ",\"motivo\":\"ciclo_ativo\"");
     return;
   }
-  startCycle(now, cycle.cycle_id + 1);
+  startCycle(clock, cycle.cycle_id + 1);
   publishEvent("CICLO_INICIADO");
 }
 
@@ -290,9 +411,10 @@ bool updateButton(Button &button, uint32_t now) {
   return button.pressed;
 }
 
-void readButtons(uint32_t now) {
+void readButtons(uint32_t now, uint64_t clock) {
   if (updateButton(authorizeButton, now)) {
-    seal_authorize(&seal, simulatedDay(now));
+    seal_authorize(&seal, clock);
+    contextDirty = true;
     String extra = ",\"janela_dias\":";
     extra += Config::AuthorizationWindowDays;
     publishEvent("AUTORIZACAO_REGISTRADA", false, extra);
@@ -305,7 +427,7 @@ void readButtons(uint32_t now) {
     cycleButton.longFired = true;
     requestClose();
   }
-  if (wasPressed && !cycleButton.pressed && !cycleButton.longFired) requestLink(now);
+  if (wasPressed && !cycleButton.pressed && !cycleButton.longFired) requestLink(clock);
 }
 
 void readBattery(uint32_t now) {
@@ -326,12 +448,14 @@ void readCommands() {
     serialLine.toUpperCase();
     if (serialLine == "NF") {
       returnInvoiceIssued = true;
+      contextDirty = true;
       publishEvent("NF_RETORNO_LANCADA");
     } else if (serialLine.startsWith("LIMIAR ")) {
       const long days = serialLine.substring(7).toInt();
       if (days > 0) {
-        cycle.stay_threshold_days = days;
-        cycle.stay_sent = false;
+        // Nao rearma ALERTA_PERMANENCIA ja emitido neste ciclo (RN04).
+        cycle_set_stay_threshold(&cycle, days);
+        contextDirty = true;
         String extra = ",\"limiar_dias\":";
         extra += days;
         publishEvent("LIMIAR_ALTERADO", false, extra);
@@ -343,12 +467,15 @@ void readCommands() {
   }
 }
 
-void readSeal(uint32_t now) {
+// A referencia e o ultimo estado estavel salvo (fechado na primeira inicializacao):
+// ligar com o lacre aberto passa pelo mesmo caminho e gera a violacao.
+void readSeal(uint32_t now, uint64_t clock) {
   const bool value = digitalRead(Config::SealPin) == HIGH;
   if (value != rawSeal) { rawSeal = value; sealChangedAt = now; }
   if (rawSeal != stableSeal && now - sealChangedAt >= Config::SealDebounceMs) {
     stableSeal = rawSeal;
-    const int event = stableSeal ? seal_opened(&seal, simulatedDay(now)) : seal_closed(&seal);
+    contextDirty = true;
+    const int event = stableSeal ? seal_opened(&seal, clock) : seal_closed(&seal);
     String record = baseRecord("seal_changed");
     record += ",\"authorized_removal\":";
     record += seal.removal_in_progress ? "true" : "false";
@@ -382,7 +509,6 @@ void setup() {
   }
   pinMode(Config::BatteryPin, INPUT);
   analogReadResolution(12);
-  rawSeal = stableSeal = digitalRead(Config::SealPin) == HIGH;
   Serial2.begin(Config::GpsBaud, SERIAL_8N1, Config::GpsRx, Config::GpsTx);
   storageReady = storage.begin("tracker", false);
   double point[2] = {};
@@ -394,18 +520,43 @@ void setup() {
     havePrevious = true;
     // O ponto salvo e referencia historica, nao fix novo nem idade conhecida.
   }
-  Serial.printf("[memoria] NVS=%s; fila limitada a %u registros\r\n",
-                storageReady ? "ok" : "falhou", Config::QueueCapacity);
+  Serial.printf("[memoria] NVS=%s; diagnostico limitado a %u registros; fila de eventos de %u\r\n",
+                storageReady ? "ok" : "falhou", Config::QueueCapacity, EVENT_QUEUE_CAPACITY);
   WiFi.mode(WIFI_STA);
   WiFi.begin(TRACKER_WIFI_SSID, TRACKER_WIFI_PASSWORD);
   requestAt = lastSample = lastWifiRetry = millis();
-  seal_init(&seal, Config::AuthorizationWindowDays);
+  seal_init(&seal, (uint64_t)Config::AuthorizationWindowDays * Config::DayMs);
   queue_init(&pending);
+  restorePending();
   battery_init(&battery, Config::BatteryLowPct, Config::BatteryRecoverPct);
   networkWasAvailable = simulatedNetworkAvailable();
   poweredOn = powerSwitchOn();
-  startCycle(millis(), 1);
-  if (poweredOn) publishEvent("STATUS");
+  StoredContext context{};
+  const bool restored = restoreContext(context);
+  if (restored) {
+    sim_clock_init(&simClock, millis(), context.clockMs);
+    cycle = context.cycle;
+    cycleStartedAt = context.cycleStartedAt;
+    cycleActive = context.cycleActive;
+    returnInvoiceIssued = context.returnInvoiceIssued;
+    closedCycles = context.closedCycles;
+    seal = context.seal;
+    rawSeal = stableSeal = context.sealOpen;
+  } else {
+    sim_clock_init(&simClock, millis(), 0);
+    rawSeal = stableSeal = false;
+    startCycle(clockMs(), 1);
+  }
+  sealChangedAt = millis();
+  saveContext();
+  if (hasPending()) {
+    printPending();
+    // Fila restaurada com rede ja disponivel: reenvia sem esperar a chave mudar.
+    if (poweredOn && networkWasAvailable) flushPending();
+  }
+  if (poweredOn) {
+    publishEvent("STATUS", false, restored ? ",\"contexto_restaurado\":true" : ",\"contexto_restaurado\":false");
+  }
   updateLeds(millis());
   Serial.println("[boot] aguardando GPS; heartbeat aparece a cada 2 s");
   Serial.println("[transporte] JSON na serial + fila local; envio HTTP/MQTT pendente");
@@ -422,22 +573,28 @@ void setup() {
 
 void loop() {
   const uint32_t now = millis();
+  // O relogio do ciclo segue no desligamento logico da chave ON/OFF.
+  const uint64_t clock = sim_clock_update(&simClock, now);
   // Chave ON/OFF: desligar registra o evento e suspende o dispositivo.
   const bool on = powerSwitchOn();
   if (on != poweredOn) {
     if (!on) publishEvent("DISPOSITIVO_DESLIGADO");
     poweredOn = on;
-    if (on) publishEvent("STATUS");
+    if (on) {
+      if (simulatedNetworkAvailable()) flushPending();  // fila restaurada durante o desligamento
+      publishEvent("STATUS");
+    }
   }
   updateLeds(now);
   if (!poweredOn) return;
   readGps();
-  readSeal(now);
-  readButtons(now);
+  readSeal(now, clock);
+  readButtons(now, clock);
   readBattery(now);
   readCommands();
   updateNetwork();
-  updateCycle(now);
+  updateCycle(clock);
+  if (contextDirty) saveContext();
   const bool connected = WiFi.status() == WL_CONNECTED;
   if (connected != wasConnected) {
     Serial.printf("[wifi] %s\r\n", connected ? "conectado" : "desconectado");
