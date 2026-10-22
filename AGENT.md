@@ -146,10 +146,11 @@ Regras ao criar ou sugerir um card:
 ### Branches
 
 - A `main` é protegida contra force push e representa o que é entregue. Não commite direto nela: todo trabalho vai numa branch própria e entra por merge request.
-- Nome da branch: `tipo/NN-descricao-curta`, em minúsculas, sem acento, palavras separadas por hífen.
+- Nome da branch: `tipo/NN-descricao-curta-sprintN`, em minúsculas, sem acento, palavras separadas por hífen.
   - `tipo` é o mesmo dos commits (lista abaixo).
   - `NN` é o número da issue que a branch resolve, com dois dígitos quando for menor que 10.
-  - Exemplos: `docs/01-estrutura-skills`, `feat/12-alerta-permanencia`, `fix/27-leitura-lacre`, `test/31-ensaio-agua`.
+  - `sprintN` é obrigatório e identifica a sprint atual (a do Milestone do card), sem zero à esquerda: `sprint1`, `sprint2`... (como em `8-art-4-3-3-1-requisitos-funcionais-sprint1`).
+  - Exemplos: `docs/01-estrutura-skills-sprint1`, `feat/12-alerta-permanencia-sprint2`, `fix/27-leitura-lacre-sprint3`, `test/31-ensaio-agua-sprint4`.
 - Uma branch por issue. Se a tarefa crescer para outra issue, abra outra branch.
 
 ### Commits (Conventional Commits)
@@ -192,9 +193,13 @@ Corpo opcional explicando o porquê da mudança, não o como.
 - Preserve ESP32 DevKit v1, GPS/GNSS customizado, chave para lacre e potenciômetro
   para bateria simulada. Não acrescente acelerômetro. IR físico e modem continuam
   pendentes de definição.
-- Mantenha `src/firmware/main.cpp`, `include/config.h` e `diagram.json` coerentes:
+- O circuito principal e os arquivos `wokwi*.toml` ficam em `src/firmware/prototipo_wokwi/`.
+  Mantenha `src/firmware/main.cpp`, `include/config.h` e o `diagram.json` dessa pasta coerentes:
   GPS RX2/TX2 nos GPIO16/17, lacre no GPIO27 com pull-up e bateria no GPIO34/ADC1.
   UART0 e heartbeat são diagnóstico independente de GPS e internet.
+- LEDs verde/amarelo/vermelho/azul usam GPIO25/26/23/14; botões de autorização
+  e ciclo usam GPIO33/13; chave de rede simulada usa GPIO18. Preserve os resistores
+  de 220 ohms em série com os LEDs e a separação entre rede simulada e Wi-Fi real.
 - Compare posições válidas consecutivas. O primeiro ponto cria referência; falta
   de fix não vira coordenada zero nem apaga a referência. Preserve as chaves NVS
   e a fila local, sem afirmar envio ao servidor antes de transporte e confirmação.
