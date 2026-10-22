@@ -21,6 +21,18 @@ bool rawSeal = false, stableSeal = false;
 uint32_t sealChangedAt = 0;
 bool wasConnected = false;
 
+bool simulatedNetworkAvailable() {
+  return digitalRead(Config::NetworkSwitchPin) == LOW;
+}
+
+void updateDiagnosticLeds() {
+  // Indicadores de bancada; autorizacao e ciclo ainda nao alteram regras de negocio.
+  digitalWrite(Config::GreenLedPin, !stableSeal);
+  digitalWrite(Config::RedLedPin, stableSeal);
+  digitalWrite(Config::YellowLedPin, digitalRead(Config::AuthorizeButtonPin) == LOW);
+  digitalWrite(Config::BlueLedPin, !simulatedNetworkAvailable());
+}
+
 bool freshFix() {
   return gps.location.isValid() && gps.location.age() <= Config::FixMaxAgeMs &&
          gps.satellites.isValid() && gps.satellites.value() > 0 &&
@@ -68,6 +80,8 @@ String baseRecord(const char *type) {
   result += simulatedBatteryPercent();
   result += ",\"wifi_connected\":";
   result += WiFi.status() == WL_CONNECTED ? "true" : "false";
+  result += ",\"network_sim_available\":";
+  result += simulatedNetworkAvailable() ? "true" : "false";
   return result;
 }
 
@@ -144,9 +158,18 @@ void setup() {
                 DEMO_MODE ? "demo" : "semanal", Config::SampleIntervalMs / 1000UL,
                 Config::MovementThresholdM);
   pinMode(Config::SealPin, INPUT_PULLUP);
+  pinMode(Config::AuthorizeButtonPin, INPUT_PULLUP);
+  pinMode(Config::CycleButtonPin, INPUT_PULLUP);
+  pinMode(Config::NetworkSwitchPin, INPUT_PULLUP);
+  for (int pin : {Config::GreenLedPin, Config::YellowLedPin,
+                  Config::RedLedPin, Config::BlueLedPin}) {
+    pinMode(pin, OUTPUT);
+    digitalWrite(pin, LOW);
+  }
   pinMode(Config::BatteryPin, INPUT);
   analogReadResolution(12);
   rawSeal = stableSeal = digitalRead(Config::SealPin) == HIGH;
+  updateDiagnosticLeds();
   Serial2.begin(Config::GpsBaud, SERIAL_8N1, Config::GpsRx, Config::GpsTx);
   storageReady = storage.begin("tracker", false);
   double point[2] = {};
@@ -165,12 +188,14 @@ void setup() {
   requestAt = lastSample = lastWifiRetry = millis();
   Serial.println("[boot] aguardando GPS; heartbeat aparece a cada 2 s");
   Serial.println("[transporte] JSON na serial + fila local; envio HTTP/MQTT pendente");
+  Serial.println("[bancada] botoes em diagnostico; SW_REDE simula disponibilidade sem desligar o Wi-Fi");
 }
 
 void loop() {
   const uint32_t now = millis();
   readGps();
   readSeal(now);
+  updateDiagnosticLeds();
   const bool connected = WiFi.status() == WL_CONNECTED;
   if (connected != wasConnected) {
     Serial.printf("[wifi] %s\r\n", connected ? "conectado" : "desconectado");
@@ -188,11 +213,13 @@ void loop() {
   }
   if (now - lastHeartbeat >= Config::HeartbeatMs) {
     lastHeartbeat = now;
-    Serial.printf("[vivo] tempo=%lu s gps_chars=%lu fix=%s lacre=%s bateria_sim=%d%% wifi=%s\r\n",
+    Serial.printf("[vivo] tempo=%lu s gps_chars=%lu fix=%s lacre=%s bateria_sim=%d%% wifi=%s rede_sim=%s autorizar=%d ciclo=%d\r\n",
                   now / 1000UL, (unsigned long)gps.charsProcessed(),
                   freshFix() ? "valido" : "ausente",
                   stableSeal ? "violado" : "integro", simulatedBatteryPercent(),
-                  connected ? "on" : "off");
+                  connected ? "on" : "off", simulatedNetworkAvailable() ? "on" : "off",
+                  digitalRead(Config::AuthorizeButtonPin) == LOW,
+                  digitalRead(Config::CycleButtonPin) == LOW);
   }
   delay(5);
 }

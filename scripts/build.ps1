@@ -12,7 +12,7 @@ try {
     Invoke-Checked $pio @('run', '-e', $Environment)
     Write-Host "Compilacao pronta: $Environment."
     if ($Environment -eq 'weekly') {
-        Write-Host 'Selecione wokwi.weekly.toml com Wokwi: Select Config File antes de simular.'
+        Write-Host 'Selecione src/firmware/prototipo_wokwi/wokwi.weekly.toml com Wokwi: Select Config File antes de simular.'
     }
 } finally {
     $env:WASI_SDK_PATH = $previousSdk
