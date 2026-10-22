@@ -370,7 +370,33 @@ _A RTM consolida a rastreabilidade completa do sistema. Um elo quebrado invalida
 
 | Persona | RF    | RN   | Caso de Teste | Evidência        |
 |---------|-------|------|---------------|------------------|
-| ...     | RF001 | RN01 | CT02  | print, log, relatório de cobertura |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF001 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF002 | RN02 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF003 | RN01 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF004 | RN01 | CT15 | PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C4 Falha | RF005 | RN08 | Planejado — CT a definir na seção 3.4.2 | Planejado, sprint 2 |
+| P1 Geraldo — P1-C3 Lacre aberto | RF006 | RN05 | CT05, CT07 | PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C3 Lacre aberto | RF007 | RN06 | CT06, CT11 | PENDENTE DE EVIDÊNCIA |
+| P2 Clarice — P2-C4 Falha (associação direta) | RF008 | Não se aplica — sem RN específica | CT08, CT09 | PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C2 Acompanhamento | RF009 | Não se aplica — sem RN específica | CT01, CT02 | PENDENTE DE EVIDÊNCIA |
+| P2 Clarice — P2-C4 Falha | RF010 | RN09 | CT08, CT09, CT10 | PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C2 Acompanhamento | RF011 | RN07 | CT02 | PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C2 Acompanhamento; P2 Clarice — P2-C3 Prazo legal; P3 Izidio — P3-C2 ICMS por safra | RF012 | RN12, RN13 | CT03, CT04 | PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF013 | RN04 | CT03 | PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF014 | RN03, RN04 | CT04 | PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C2 Acompanhamento; P1-C4 Falha | RF015 | RN08 | Planejado — CT a definir | Planejado, sprint a definir |
+| P2 Clarice — P2-C2 Encerramento do ciclo; P3 Izidio — P3-C3 Falha | RF016 | RN11 | CT14, CT16 | PENDENTE DE EVIDÊNCIA |
+| P2 Clarice — P2-C2 Encerramento do ciclo; P3 Izidio — P3-C1 Histórico para o BI | RF017 | RN11, RN12 | CT14 | PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C2 Acompanhamento; P2 Clarice — P2-C1 Retorno sem aviso | RF018 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento (associação indireta) | RF019 | RN10 | CT12, CT13 | PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF020 | RN16 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento (associação transversal) | RF021 | RN15 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF022 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C3 Lacre aberto | RF023 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P3 Izidio — P3-C1 Histórico para o BI | RF024 | RN15 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C4 Falha | RF025 | RN14 | Planejado — CT a definir | Planejado, sprint a definir |
+| P2 Clarice — P2-C3 Prazo legal | RF026 | RN13 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento | RF027 | RN10 | CT12, CT13 | PENDENTE DE EVIDÊNCIA |
 
 
 ### 3.3.5. Arquitetura da Solução (sprint 3)
