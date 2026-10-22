@@ -429,14 +429,15 @@ O projeto público acima e a Figura 1 representam a versão anterior.
 
 Na Sprint 1 o dispositivo é simulado no Wokwi com um ESP32 DevKit. Cada entrada do circuito representa uma situação física do rastreador: o lacre (`SW_LACRE`), a disponibilidade de conexão (`SW_REDE`), a autorização de retirada (`BTN_AUTORIZAR`), o encerramento ou vínculo de ciclo (`BTN_CICLO`) e o nível da bateria (`POT_BATERIA`). Os LEDs representam estados para inspeção e o Monitor Serial mostra os registros JSON. Não há transporte implementado para servidor ou broker. A integração local inclui GNSS simulado; a validação do hardware GNSS permanece para a Sprint 2.
 
-Na integração atual, os botões têm leitura de diagnóstico: amarelo acompanha o
-botão de autorização e o botão de ciclo aparece no heartbeat. Verde indica lacre
-íntegro, vermelho indica violação e azul indica indisponibilidade da rede simulada.
-A chave de rede não desliga o Wi-Fi virtual; os estados são apresentados separadamente.
-As regras e os CTs a seguir descrevem o comportamento previsto para as próximas
-integrações de firmware; não comprovam execução dessas regras no circuito integrado.
+Na integração atual, o firmware principal já tem o ciclo da issue #13: conta os dias
+fora, envia o `STATUS` ao ligar e o `STATUS_SEMANAL` a cada 7 dias, e emite os alertas
+de atraso e de permanência. Verde indica lacre íntegro, amarelo pisca no atraso e fica
+fixo na permanência, vermelho pisca na violação e azul pisca com a rede simulada
+indisponível. Os botões continuam só com leitura de diagnóstico no heartbeat; a
+autorização, a fila e o debounce dos botões entram com a issue #14. A chave de rede
+não desliga o Wi-Fi virtual; os estados são apresentados separadamente.
 
-**Tempo e parâmetros atuais.** O firmware principal usa `demo` com coleta a cada 30 s ou `weekly` com sete dias. A escala `1 s = 1 dia` dos CT02–CT04 é uma proposta para a futura lógica de negócio; não está implementada no firmware atual. Hoje o intervalo é contado a partir da conclusão da coleta anterior, incluindo nova espera de fix quando necessária.
+**Tempo e parâmetros atuais.** O firmware principal usa `demo` com coleta a cada 30 s ou `weekly` com sete dias. No `demo`, o ciclo usa a escala `1 s = 1 dia` dos CT02–CT04 (`Config::DayMs`); no `weekly`, o dia é real. O intervalo de coleta é contado a partir da conclusão da coleta anterior, incluindo nova espera de fix quando necessária.
 
 | Parâmetro técnico atual | Valor / comportamento | Fonte |
 |---|---|---|
@@ -458,7 +459,7 @@ integrações de firmware; não comprovam execução dessas regras no circuito i
 | Capacidade da fila sem conexão | Atual: 16 eventos; dimensionamento final pendente | A proposta anterior de 8 não corresponde ao firmware atual |
 | Bateria baixa / recuperada | 20% / 25% | Valor de teste — `PENDENTE DE VALIDAÇÃO` |
 
-**LEDs simultâneos.** Hoje verde/vermelho indicam o estado estável do lacre, amarelo acompanha o botão de autorização e azul indica rede simulada indisponível. As piscadas e os significados de negócio dos CT01–CT16 são planejados.
+**LEDs simultâneos.** Cada LED representa um estado independente e podem acender juntos: verde e vermelho seguem o estado estável do lacre, amarelo segue o ciclo (piscando no atraso, fixo na permanência) e azul pisca com a rede simulada indisponível. O verde piscando da retirada autorizada entra com a issue #14.
 
 **Do simulador ao dispositivo real.** O alvo principal compila `src/firmware/main.cpp`. O `sketch.ino` da pasta do circuito é um teste independente de bancada. A migração física exige validar interfaces, alimentação, sensores e firmware; não é apenas trocar fontes de leitura.
 
@@ -476,7 +477,7 @@ integrações de firmware; não comprovam execução dessas regras no circuito i
 A versão inicial pública não inclui localização. O circuito principal local inclui
 GPS/GNSS customizado nos GPIO16/17; ele não modela recepção de satélites nem consumo real.
 
-**Situação dos CT01–CT16: planejados, não executados nesta revisão.** As colunas de saída descrevem expectativas da futura lógica de negócio. Seus RF/RN seguem as definições de 3.3.1/3.3.2; divergências com a implementação estão explicitadas em 3.3.2. CT17–CT23 caracterizam funções atuais. Os CT24–CT34 de evolução e validação física ficam no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md). Compilação e testes matemáticos isolados não comprovam aprovação destes cenários.
+**Situação dos CT01–CT16:** CT01 a CT04 estão implementados no firmware principal (issue #13) e verificados nos testes de lógica de `tests/model_tests.c`; a execução no Wokwi é registrada com os prints de cada CT. Os demais descrevem a lógica das próximas integrações. Seus RF/RN seguem as definições de 3.3.1/3.3.2; divergências com a implementação estão explicitadas em 3.3.2. CT17–CT23 caracterizam funções atuais. Os CT24–CT34 de evolução e validação física ficam no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md). Compilação e testes matemáticos isolados não comprovam aprovação destes cenários.
 
 ![Circuito no Wokwi com o Monitor Serial](../assets/wokwi/circuito.png)
 
@@ -486,7 +487,7 @@ Fonte: elaboração própria, captura do simulador Wokwi.
 
 **CT#** | **Bloco** | **Componente de entrada** | **Leitura da entrada** | **Componente de saída** | **Leitura da saída** | **Descrição**
 |----------|----------|----------|----------|----------|----------|----------|
-|CT01|Inicialização|SW_LACRE e SW_REDE|Lacre fechado e rede disponível ao ligar|LED verde; Serial|Verde fixo, demais apagados; JSON `STATUS` com `dias_fora=0`, `lacre="fechado"`|Esperado: Ao ligar com o lacre íntegro e conexão, o dispositivo indica operação normal e publica o primeiro status (RF009).|
+|CT01|Inicialização|SW_LACRE e SW_REDE|Lacre fechado e rede disponível ao ligar|LED verde; Serial|Verde fixo, demais apagados; JSON `STATUS` com `dias_fora=0`, `seal="intact"`|Esperado: Ao ligar com o lacre íntegro e conexão, o dispositivo indica operação normal e publica o primeiro status (RF009).|
 |CT02|Status periódico|Relógio simulado (1 s = 1 dia)|Dias 7 e 14 de ciclo|Serial|Um `STATUS_SEMANAL` no dia 7 e outro no dia 14, nenhum fora desses dias|Esperado: O status é enviado a cada 7 dias, como pede o TAPI (RF011, RF009; RN07).|
 |CT03|Prazo e atraso|Relógio simulado (1 s = 1 dia)|`dias_fora` passa do prazo previsto (5) e fica abaixo do limiar|LED amarelo; Serial|Amarelo piscando a 1 Hz; `ALERTA_ATRASO` emitido uma única vez|Esperado: O equipamento passou da data prevista de retorno, o que é diferente de permanência prolongada (RF013, RF012; RN04).|
 |CT04|Permanência|Relógio simulado (1 s = 1 dia)|`dias_fora` atinge o limiar (rodar com 10 e com 150)|LED amarelo; Serial|Amarelo fixo; `ALERTA_PERMANENCIA` emitido uma única vez em cada rodada|Esperado: Testa o limiar configurável com o valor de referência e um valor alternativo, como pede o MVP 4 do TAPI (RF014, RF012; RN03, RN04).|
@@ -509,7 +510,7 @@ Fonte: elaboração própria, captura do simulador Wokwi.
 
 | CT | Pré-condição e procedimento | Resultado esperado / medição | Limitação ou preparação |
 |---|---|---|---|
-| CT17 | Acionar lacre, autorização, ciclo e chave de rede individualmente; repetir com rede simulada indisponível e lacre aberto. | Verde/vermelho acompanham lacre estável; amarelo acompanha autorização; azul acompanha rede simulada. Heartbeat mostra ambos os botões e separa `wifi` de `rede_sim`. Nenhum botão autoriza retirada ou encerra ciclo no firmware atual. | Diagnóstico atual. Não interpretar LED como confirmação de servidor. |
+| CT17 | Acionar lacre, autorização, ciclo e chave de rede individualmente; repetir com rede simulada indisponível e lacre aberto. | Verde/vermelho acompanham lacre estável; azul acompanha rede simulada. Heartbeat mostra ambos os botões e separa `wifi` de `rede_sim`. Nenhum botão autoriza retirada ou encerra ciclo no firmware atual. | Diagnóstico atual. Não interpretar LED como confirmação de servidor. |
 | CT18 | Com captura temporal controlada, aplicar pulsos de 20 e 40 ms no lacre, depois 10 aberturas/fechamentos estáveis de 200 ms; repetir durante espera por fix e com rede indisponível. | Zero eventos nos pulsos curtos observados; um `seal_changed` por transição estável, sem repetição enquanto o nível é mantido. `authorized_removal=null`. Registrar `L_det = t_registro_local − t_estabilizacao_contato`, perdas e duplicações; ampliar para 30 estímulos por condição ao medir p95. | Exige injeção temporizada; cliques manuais não comprovam milissegundos. Debounce atual de 60 ms; limite máximo de latência pendente. |
 | CT19 | Rodada A: iniciar sem fix. Rodada B: obter posição válida, invalidar o fix e aguardar próxima coleta. Rodada C: interromper NMEA por mais de 3 s antes de solicitar nova coleta. | Sem fix recente, emitir `location_unavailable` após a espera configurada de 10 s, mais latência de processamento medida. Latitude/longitude atuais e `moved` são `null`; histórico é preservado quando disponível. O lacre continua respondendo durante a espera. | Rodada C exige controle da emissão UART no ensaio. Não aceitar só a passagem do tempo com NMEA válido chegando. A referência de comparação é a coleta válida anterior, distinta do último fix observado. |
 | CT20 | Com memória de teste sem referência e fix contínuo, coletar primeiro ponto; depois pontos sintéticos separados por aproximadamente 50 m e 150 m da respectiva coleta anterior. Observar ao menos três coletas em `demo`. | Primeiro ponto: `baseline_created=true`, distância e `moved` nulos. Nas seguintes, `moved=false` para 50 m e `true` para 150 m. Com fix disponível, intervalo de 30 s mais latência de processamento; registrar desvio. | Comparar coletas válidas consecutivas. Testar fronteira de 100 m em teste matemático separado, considerando arredondamento; não alegar sete dias medidos com demo de 30 s. |

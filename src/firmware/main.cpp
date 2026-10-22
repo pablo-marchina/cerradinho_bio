@@ -4,6 +4,7 @@
 #include <Preferences.h>
 #include "config.h"
 #include "tracking_math.h"
+#include "cycle_rules.h"
 
 namespace {
 TinyGPSPlus gps;
@@ -20,17 +21,21 @@ bool sampleRequested = true;
 bool rawSeal = false, stableSeal = false;
 uint32_t sealChangedAt = 0;
 bool wasConnected = false;
+CycleState cycle;
+uint32_t cycleStartedAt = 0;
 
 bool simulatedNetworkAvailable() {
   return digitalRead(Config::NetworkSwitchPin) == LOW;
 }
 
-void updateDiagnosticLeds() {
-  // Indicadores de bancada; autorizacao e ciclo ainda nao alteram regras de negocio.
+void updateLeds(uint32_t now) {
+  // Verde: lacre integro. Amarelo: piscando = atraso, fixo = permanencia.
+  // Vermelho: violacao. Azul: rede simulada indisponivel. Autorizacao entra na #14.
+  const bool blinkOn = (now / Config::BlinkHalfPeriodMs) % 2 == 0;
   digitalWrite(Config::GreenLedPin, !stableSeal);
-  digitalWrite(Config::RedLedPin, stableSeal);
-  digitalWrite(Config::YellowLedPin, digitalRead(Config::AuthorizeButtonPin) == LOW);
-  digitalWrite(Config::BlueLedPin, !simulatedNetworkAvailable());
+  digitalWrite(Config::YellowLedPin, cycle_yellow_led(&cycle, blinkOn));
+  digitalWrite(Config::RedLedPin, stableSeal && blinkOn);
+  digitalWrite(Config::BlueLedPin, !simulatedNetworkAvailable() && blinkOn);
 }
 
 bool freshFix() {
@@ -138,6 +143,27 @@ void readGps() {
   }
 }
 
+void publishCycleEvent(const char *type) {
+  String record = baseRecord(type);
+  record += ",\"ciclo_id\":"; record += cycle.cycle_id;
+  record += ",\"dias_fora\":"; record += cycle.days_out;
+  record += ",\"atraso\":"; record += cycle_is_late(&cycle) ? "true" : "false";
+  record += ",\"permanencia\":"; record += cycle_in_stay(&cycle) ? "true" : "false";
+  record += "}";
+  enqueue(record);
+}
+
+// Avanca um dia por vez para nao pular status nem alerta se o loop atrasar.
+void updateCycle(uint32_t now) {
+  const uint32_t days = (now - cycleStartedAt) / Config::DayMs;
+  while (cycle.days_out < days) {
+    const unsigned events = cycle_advance_day(&cycle);
+    if (events & CYCLE_EVENT_STATUS) publishCycleEvent("STATUS_SEMANAL");
+    if (events & CYCLE_EVENT_LATE) publishCycleEvent("ALERTA_ATRASO");
+    if (events & CYCLE_EVENT_STAY) publishCycleEvent("ALERTA_PERMANENCIA");
+  }
+}
+
 void readSeal(uint32_t now) {
   const bool value = digitalRead(Config::SealPin) == HIGH;
   if (value != rawSeal) { rawSeal = value; sealChangedAt = now; }
@@ -169,7 +195,6 @@ void setup() {
   pinMode(Config::BatteryPin, INPUT);
   analogReadResolution(12);
   rawSeal = stableSeal = digitalRead(Config::SealPin) == HIGH;
-  updateDiagnosticLeds();
   Serial2.begin(Config::GpsBaud, SERIAL_8N1, Config::GpsRx, Config::GpsTx);
   storageReady = storage.begin("tracker", false);
   double point[2] = {};
@@ -186,8 +211,17 @@ void setup() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(TRACKER_WIFI_SSID, TRACKER_WIFI_PASSWORD);
   requestAt = lastSample = lastWifiRetry = millis();
+  cycle_start(&cycle, 1, Config::ExpectedReturnDays, Config::StayThresholdDays,
+              Config::StatusIntervalDays);
+  cycleStartedAt = millis();
+  publishCycleEvent("STATUS");
+  updateLeds(cycleStartedAt);
   Serial.println("[boot] aguardando GPS; heartbeat aparece a cada 2 s");
   Serial.println("[transporte] JSON na serial + fila local; envio HTTP/MQTT pendente");
+  Serial.printf("[ciclo] 1 dia = %lu s; status a cada %lu dias; prazo %lu; limiar %lu\r\n",
+                Config::DayMs / 1000UL, (unsigned long)Config::StatusIntervalDays,
+                (unsigned long)Config::ExpectedReturnDays,
+                (unsigned long)Config::StayThresholdDays);
   Serial.println("[bancada] botoes em diagnostico; SW_REDE simula disponibilidade sem desligar o Wi-Fi");
 }
 
@@ -195,7 +229,8 @@ void loop() {
   const uint32_t now = millis();
   readGps();
   readSeal(now);
-  updateDiagnosticLeds();
+  updateCycle(now);
+  updateLeds(now);
   const bool connected = WiFi.status() == WL_CONNECTED;
   if (connected != wasConnected) {
     Serial.printf("[wifi] %s\r\n", connected ? "conectado" : "desconectado");
@@ -213,13 +248,13 @@ void loop() {
   }
   if (now - lastHeartbeat >= Config::HeartbeatMs) {
     lastHeartbeat = now;
-    Serial.printf("[vivo] tempo=%lu s gps_chars=%lu fix=%s lacre=%s bateria_sim=%d%% wifi=%s rede_sim=%s autorizar=%d ciclo=%d\r\n",
+    Serial.printf("[vivo] tempo=%lu s gps_chars=%lu fix=%s lacre=%s bateria_sim=%d%% wifi=%s rede_sim=%s autorizar=%d ciclo=%d dias_fora=%lu\r\n",
                   now / 1000UL, (unsigned long)gps.charsProcessed(),
                   freshFix() ? "valido" : "ausente",
                   stableSeal ? "violado" : "integro", simulatedBatteryPercent(),
                   connected ? "on" : "off", simulatedNetworkAvailable() ? "on" : "off",
                   digitalRead(Config::AuthorizeButtonPin) == LOW,
-                  digitalRead(Config::CycleButtonPin) == LOW);
+                  digitalRead(Config::CycleButtonPin) == LOW,
+                  (unsigned long)cycle.days_out);
   }
-  delay(5);
 }

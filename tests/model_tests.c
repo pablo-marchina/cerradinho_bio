@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../chips/nmea.h"
+#include "../include/cycle_rules.h"
 
 int main(void) {
   assert(valid_coordinates(0.0, 0.0));  // Zero nao e ausencia de fix.
@@ -36,6 +37,27 @@ int main(void) {
   assert(strstr(sentence, ",0,00,1.0,") != NULL);
   make_gga(sentence, sizeof(sentence), NAN, 0, true, 0);
   assert(strstr(sentence, ",0,00,1.0,") != NULL);
-  puts("PASS: coordenadas, distancia, tolerancia, fronteiras NMEA, checksum e fix invalido");
+
+  // Ciclo (issue #13): status a cada 7 dias, alertas distintos e emitidos uma vez.
+  for (uint32_t threshold = 10; threshold <= 150; threshold += 140) {
+    CycleState cycle;
+    cycle_start(&cycle, 1, 5, threshold, 7);
+    unsigned statuses = 0, late = 0, stay = 0;
+    uint32_t lateDay = 0, stayDay = 0;
+    for (uint32_t day = 1; day <= threshold + 20; ++day) {
+      unsigned events = cycle_advance_day(&cycle);
+      if (events & CYCLE_EVENT_STATUS) { ++statuses; assert(day % 7 == 0); }
+      if (events & CYCLE_EVENT_LATE) { ++late; lateDay = day; }
+      if (events & CYCLE_EVENT_STAY) { ++stay; stayDay = day; }
+      if (day == 5) assert(!cycle_yellow_led(&cycle, true));
+      if (day == 6) assert(cycle_yellow_led(&cycle, true) && !cycle_yellow_led(&cycle, false));
+      if (day == threshold) assert(cycle_yellow_led(&cycle, false));
+    }
+    assert(statuses == (threshold + 20) / 7);
+    assert(late == 1 && lateDay == 6);
+    assert(stay == 1 && stayDay == threshold);
+    assert(cycle_is_late(&cycle) && cycle_in_stay(&cycle));
+  }
+  puts("PASS: coordenadas, distancia, tolerancia, fronteiras NMEA, checksum, fix invalido e regras do ciclo");
   return 0;
 }

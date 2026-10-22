@@ -39,5 +39,11 @@ constexpr uint32_t SealDebounceMs = 60;
 constexpr uint32_t WifiRetryMs = 30000;
 constexpr double MovementThresholdM = 100.0;  // Hipotese inicial, validar em campo.
 constexpr uint8_t QueueCapacity = 16;
+// Ciclo de manutencao (issue #13). No demo, 1 s real = 1 dia; valores de teste.
+constexpr uint32_t DayMs = DEMO_MODE ? 1000UL : 24UL * 60UL * 60UL * 1000UL;
+constexpr uint32_t StatusIntervalDays = 7;
+constexpr uint32_t ExpectedReturnDays = 5;     // PENDENTE DE VALIDACAO
+constexpr uint32_t StayThresholdDays = 150;    // CT04 roda com 10 e com 150
+constexpr uint32_t BlinkHalfPeriodMs = 500;    // 1 Hz
 constexpr const char *DeviceId = "prototipo-001";
 }
