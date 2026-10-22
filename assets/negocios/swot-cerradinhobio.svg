@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Análise SWOT da CerradinhoBio</title>
+  <desc id="desc">Quadrante SWOT seguindo o modelo do Drive: forças no alto à esquerda, fraquezas no alto à direita, oportunidades abaixo à esquerda e ameaças abaixo à direita. Fatores internos e externos estão identificados.</desc>
+  <defs>
+    <style>
+      .heading { font: 700 23px Arial, sans-serif; fill: #17202b; letter-spacing: .4px; }
+      .label { font: 700 12px Arial, sans-serif; fill: #394451; letter-spacing: 1.4px; }
+      .body { font: 16px Arial, sans-serif; fill: #202a35; }
+      .center { font: 700 26px Arial, sans-serif; fill: #14191f; }
+      .center-sub { font: 18px Arial, sans-serif; fill: #14191f; }
+      .line { stroke: #34404a; stroke-width: 1.2; opacity: .7; }
+    </style>
+  </defs>
+  <rect width="1200" height="900" fill="#ffffff"/>
+  <rect x="0" y="0" width="600" height="450" fill="#fff0bd"/>
+  <rect x="600" y="0" width="600" height="450" fill="#a9dfdc"/>
+  <rect x="0" y="450" width="600" height="450" fill="#c6afd2"/>
+  <rect x="600" y="450" width="600" height="450" fill="#e0edac"/>
+  <line x1="0" y1="450" x2="1200" y2="450" class="line"/>
+  <line x1="600" y1="0" x2="600" y2="900" class="line"/>
+
+  <text x="52" y="56" class="label">FATORES INTERNOS</text>
+  <text x="52" y="96" class="heading">FORÇAS</text>
+  <text x="52" y="137" class="body"><tspan x="52">• Portfólio diversificado: etanol, açúcar,</tspan><tspan x="72" dy="22">bioeletricidade e coprodutos.</tspan></text>
+  <text x="52" y="195" class="body"><tspan x="52">• Processa cana e milho: 5,2 mi t e 1,5 mi t</tspan><tspan x="72" dy="22">respectivamente, na safra 2025/26.</tspan></text>
+  <text x="52" y="253" class="body"><tspan x="52">• Duas matérias-primas permitem flexibilidade</tspan><tspan x="72" dy="22">no mix de produção.</tspan></text>
+
+  <text x="648" y="56" class="label">FATORES INTERNOS</text>
+  <text x="648" y="96" class="heading">FRAQUEZAS</text>
+  <text x="648" y="137" class="body"><tspan x="648">• Operação intensiva em ativos demanda</tspan><tspan x="668" dy="22">capital para manutenção e expansão.</tspan></text>
+  <text x="648" y="195" class="body"><tspan x="648">• Receita ligada a mercados de commodities</tspan><tspan x="668" dy="22">limita o controle sobre os preços de venda.</tspan></text>
+  <text x="648" y="253" class="body"><tspan x="648">• No processo do TAPI, dados de localização,</tspan><tspan x="668" dy="22">prazo e retorno dependem de registros.</tspan></text>
+
+  <text x="52" y="510" class="label">FATORES EXTERNOS</text>
+  <text x="52" y="550" class="heading">OPORTUNIDADES</text>
+  <text x="52" y="592" class="body"><tspan x="52">• Expansão do etanol de milho e da demanda</tspan><tspan x="72" dy="22">por coprodutos para nutrição animal.</tspan></text>
+  <text x="52" y="650" class="body"><tspan x="52">• RenovaBio e Lei do Combustível do Futuro</tspan><tspan x="72" dy="22">abrem espaço para produtos de baixo carbono.</tspan></text>
+  <text x="52" y="708" class="body"><tspan x="52">• Digitalização e IoT podem apoiar a visibilidade</tspan><tspan x="72" dy="22">e a rastreabilidade dos ativos industriais.</tspan></text>
+
+  <text x="648" y="510" class="label">FATORES EXTERNOS</text>
+  <text x="648" y="550" class="heading">AMEAÇAS</text>
+  <text x="648" y="592" class="body"><tspan x="648">• Volatilidade de preços e oferta de cana, milho</tspan><tspan x="668" dy="22">e insumos pode pressionar custos.</tspan></text>
+  <text x="648" y="650" class="body"><tspan x="648">• Concorrentes de grande escala e nova capacidade</tspan><tspan x="668" dy="22">intensificam a disputa por eficiência e mercado.</tspan></text>
+  <text x="648" y="708" class="body"><tspan x="648">• Combustíveis alternativos, eletrificação e</tspan><tspan x="668" dy="22">mudanças regulatórias podem afetar a demanda.</tspan></text>
+
+  <polygon points="600,363 687,450 600,537 513,450" fill="#ffffff" stroke="#858585" stroke-width="3"/>
+  <text x="600" y="444" text-anchor="middle" class="center">SWOT</text>
+  <text x="600" y="472" text-anchor="middle" class="center-sub">CerradinhoBio</text>
+  <text x="52" y="846" class="label">Foco: equipamentos enviados à manutenção externa</text>
+  <text x="52" y="870" class="label">Fonte: elaboração própria; TAPI e fontes setoriais listadas na seção 3.1.1</text>
+</svg>

@@ -146,10 +146,11 @@ Regras ao criar ou sugerir um card:
 ### Branches
 
 - A `main` é protegida contra force push e representa o que é entregue. Não commite direto nela: todo trabalho vai numa branch própria e entra por merge request.
-- Nome da branch: `tipo/NN-descricao-curta`, em minúsculas, sem acento, palavras separadas por hífen.
+- Nome da branch: `tipo/NN-descricao-curta-sprintN`, em minúsculas, sem acento, palavras separadas por hífen.
   - `tipo` é o mesmo dos commits (lista abaixo).
   - `NN` é o número da issue que a branch resolve, com dois dígitos quando for menor que 10.
-  - Exemplos: `docs/01-estrutura-skills`, `feat/12-alerta-permanencia`, `fix/27-leitura-lacre`, `test/31-ensaio-agua`.
+  - `sprintN` é obrigatório e identifica a sprint atual (a do Milestone do card), sem zero à esquerda: `sprint1`, `sprint2`... (como em `8-art-4-3-3-1-requisitos-funcionais-sprint1`).
+  - Exemplos: `docs/01-estrutura-skills-sprint1`, `feat/12-alerta-permanencia-sprint2`, `fix/27-leitura-lacre-sprint3`, `test/31-ensaio-agua-sprint4`.
 - Uma branch por issue. Se a tarefa crescer para outra issue, abra outra branch.
 
 ### Commits (Conventional Commits)
