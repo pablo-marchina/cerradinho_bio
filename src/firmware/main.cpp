@@ -5,6 +5,9 @@
 #include "config.h"
 #include "tracking_math.h"
 #include "cycle_rules.h"
+#include "seal_rules.h"
+#include "event_queue.h"
+#include "battery_rules.h"
 
 namespace {
 TinyGPSPlus gps;
@@ -23,19 +26,50 @@ uint32_t sealChangedAt = 0;
 bool wasConnected = false;
 CycleState cycle;
 uint32_t cycleStartedAt = 0;
+bool cycleActive = false;
+bool returnInvoiceIssued = false;  // NF de retorno lancada (comando NF no Serial)
+uint32_t closedCycles = 0;
+SealState seal;
+EventQueue pending;
+BatteryState battery;
+uint32_t lastBatteryCheck = 0;
+bool poweredOn = true;
+bool networkWasAvailable = true;
+String serialLine;
+
+// Botao com debounce e deteccao por borda: segurar nao repete o evento.
+struct Button {
+  int pin;
+  bool raw, pressed;
+  uint32_t changedAt, pressedAt;
+  bool longFired;
+};
+Button authorizeButton{Config::AuthorizeButtonPin, false, false, 0, 0, false};
+Button cycleButton{Config::CycleButtonPin, false, false, 0, 0, false};
+
+uint32_t simulatedDay(uint32_t now) {
+  return now / Config::DayMs;
+}
 
 bool simulatedNetworkAvailable() {
   return digitalRead(Config::NetworkSwitchPin) == LOW;
 }
 
+bool powerSwitchOn() {
+  return digitalRead(Config::PowerSwitchPin) == LOW;
+}
+
 void updateLeds(uint32_t now) {
-  // Verde: lacre integro. Amarelo: piscando = atraso, fixo = permanencia.
-  // Vermelho: violacao. Azul: rede simulada indisponivel. Autorizacao entra na #14.
+  // Verde: operando, lacre integro (piscando = retirada autorizada em curso).
+  // Amarelo: piscando = atraso, fixo = permanencia. Vermelho: violacao do lacre.
+  // Azul: rede simulada indisponivel. Desligado: tudo apagado.
   const bool blinkOn = (now / Config::BlinkHalfPeriodMs) % 2 == 0;
-  digitalWrite(Config::GreenLedPin, !stableSeal);
-  digitalWrite(Config::YellowLedPin, cycle_yellow_led(&cycle, blinkOn));
-  digitalWrite(Config::RedLedPin, stableSeal && blinkOn);
-  digitalWrite(Config::BlueLedPin, !simulatedNetworkAvailable() && blinkOn);
+  const bool green = !seal.violated && (!seal.removal_in_progress || blinkOn);
+  digitalWrite(Config::GreenLedPin, poweredOn && green);
+  digitalWrite(Config::YellowLedPin,
+               poweredOn && cycleActive && cycle_yellow_led(&cycle, blinkOn));
+  digitalWrite(Config::RedLedPin, poweredOn && seal.violated && blinkOn);
+  digitalWrite(Config::BlueLedPin, poweredOn && !simulatedNetworkAvailable() && blinkOn);
 }
 
 bool freshFix() {
@@ -143,24 +177,169 @@ void readGps() {
   }
 }
 
-void publishCycleEvent(const char *type) {
+void printPending() {
+  Serial.printf("[FILA] %u %s\r\n", pending.count, pending.count == 1 ? "pendente" : "pendentes");
+}
+
+// Com rede, o JSON sai no Serial (representa a mensagem MQTT). Sem rede, vai para a
+// fila e sai na reconexao, na ordem e com o dia em que ocorreu (RF010; RN09).
+void publishEvent(const char *type, bool critical = false, const String &extra = "") {
   String record = baseRecord(type);
   record += ",\"ciclo_id\":"; record += cycle.cycle_id;
+  record += ",\"ciclo_ativo\":"; record += cycleActive ? "true" : "false";
   record += ",\"dias_fora\":"; record += cycle.days_out;
+  record += ",\"dia_ocorrencia\":"; record += simulatedDay(millis());
   record += ",\"atraso\":"; record += cycle_is_late(&cycle) ? "true" : "false";
   record += ",\"permanencia\":"; record += cycle_in_stay(&cycle) ? "true" : "false";
+  record += ",\"critico\":"; record += critical ? "true" : "false";
+  record += extra;
   record += "}";
-  enqueue(record);
+  if (simulatedNetworkAvailable()) {
+    Serial.println(record);
+    return;
+  }
+  const int result = queue_push(&pending, record.c_str(), critical);
+  if (result == QUEUE_REJECTED) {
+    Serial.printf("[FILA] FILA_CHEIA: so ha eventos criticos; %s nao coube (perdidos=%lu)\r\n",
+                  type, (unsigned long)pending.lost);
+    return;
+  }
+  if (result == QUEUE_STORED_DROPPED_OLDEST) {
+    Serial.println("[FILA] FILA_CHEIA: descartado o evento nao critico mais antigo");
+  }
+  Serial.printf("[FILA] guardado: %s\r\n", type);
+  printPending();
+}
+
+void flushPending() {
+  if (pending.count == 0) return;
+  Serial.printf("[FILA] rede disponivel; reenviando %u evento(s) na ordem\r\n", pending.count);
+  while (pending.count > 0) {
+    Serial.println(pending.text[0]);
+    queue_remove(&pending, 0);
+  }
+  printPending();
+}
+
+void updateNetwork() {
+  const bool available = simulatedNetworkAvailable();
+  if (available && !networkWasAvailable) flushPending();
+  networkWasAvailable = available;
+}
+
+void startCycle(uint32_t now, uint32_t id) {
+  cycle_start(&cycle, id, Config::ExpectedReturnDays, Config::StayThresholdDays,
+              Config::StatusIntervalDays);
+  cycleStartedAt = now;
+  cycleActive = true;
+  returnInvoiceIssued = false;
 }
 
 // Avanca um dia por vez para nao pular status nem alerta se o loop atrasar.
 void updateCycle(uint32_t now) {
+  if (!cycleActive) return;
   const uint32_t days = (now - cycleStartedAt) / Config::DayMs;
   while (cycle.days_out < days) {
     const unsigned events = cycle_advance_day(&cycle);
-    if (events & CYCLE_EVENT_STATUS) publishCycleEvent("STATUS_SEMANAL");
-    if (events & CYCLE_EVENT_LATE) publishCycleEvent("ALERTA_ATRASO");
-    if (events & CYCLE_EVENT_STAY) publishCycleEvent("ALERTA_PERMANENCIA");
+    if (events & CYCLE_EVENT_STATUS) publishEvent("STATUS_SEMANAL");
+    if (events & CYCLE_EVENT_LATE) publishEvent("ALERTA_ATRASO");
+    if (events & CYCLE_EVENT_STAY) publishEvent("ALERTA_PERMANENCIA");
+  }
+}
+
+// Encerrar exige lacre fechado e NF de retorno; o historico e preservado (RF016; RN11).
+void requestClose() {
+  if (!cycleActive) {
+    publishEvent("ENCERRAMENTO_RECUSADO", false, ",\"motivo\":\"sem_ciclo_ativo\"");
+  } else if (stableSeal) {
+    publishEvent("ENCERRAMENTO_RECUSADO", false, ",\"motivo\":\"lacre_aberto\"");
+  } else if (!returnInvoiceIssued) {
+    publishEvent("ENCERRAMENTO_RECUSADO", false, ",\"motivo\":\"nf_retorno_ausente\"");
+  } else {
+    ++closedCycles;
+    String extra = ",\"ciclos_encerrados\":";
+    extra += closedCycles;
+    publishEvent("CICLO_ENCERRADO", false, extra);
+    cycleActive = false;
+    cycle.days_out = 0;
+  }
+}
+
+// Um dispositivo so pode estar em um ciclo ativo por vez (RF003, RF004; RN01).
+void requestLink(uint32_t now) {
+  if (cycleActive) {
+    publishEvent("VINCULO_RECUSADO", false, ",\"motivo\":\"ciclo_ativo\"");
+    return;
+  }
+  startCycle(now, cycle.cycle_id + 1);
+  publishEvent("CICLO_INICIADO");
+}
+
+// Retorna true na borda de pressao (apos debounce).
+bool updateButton(Button &button, uint32_t now) {
+  const bool value = digitalRead(button.pin) == LOW;
+  if (value != button.raw) { button.raw = value; button.changedAt = now; }
+  if (button.raw == button.pressed || now - button.changedAt < Config::ButtonDebounceMs) {
+    return false;
+  }
+  button.pressed = button.raw;
+  if (button.pressed) {
+    button.pressedAt = now;
+    button.longFired = false;
+  }
+  return button.pressed;
+}
+
+void readButtons(uint32_t now) {
+  if (updateButton(authorizeButton, now)) {
+    seal_authorize(&seal, simulatedDay(now));
+    String extra = ",\"janela_dias\":";
+    extra += Config::AuthorizationWindowDays;
+    publishEvent("AUTORIZACAO_REGISTRADA", false, extra);
+  }
+  const bool wasPressed = cycleButton.pressed;
+  updateButton(cycleButton, now);
+  // Segurar 2 s encerra; toque curto pede novo vinculo.
+  if (cycleButton.pressed && !cycleButton.longFired &&
+      now - cycleButton.pressedAt >= Config::LongPressMs) {
+    cycleButton.longFired = true;
+    requestClose();
+  }
+  if (wasPressed && !cycleButton.pressed && !cycleButton.longFired) requestLink(now);
+}
+
+void readBattery(uint32_t now) {
+  if (now - lastBatteryCheck < Config::BatteryCheckMs) return;
+  lastBatteryCheck = now;
+  const int raw = analogRead(Config::BatteryPin);
+  const unsigned events = battery_update(&battery, raw, simulatedBatteryPercent());
+  if (events & BATTERY_EVENT_SENSOR_FAILURE) publishEvent("SENSOR_BATERIA_FALHA");
+  if (events & BATTERY_EVENT_LOW) publishEvent("BATERIA_BAIXA");
+}
+
+// Comandos no Monitor Serial: NF (lanca a NF de retorno) e LIMIAR n (RN03).
+void readCommands() {
+  while (Serial.available()) {
+    const char c = Serial.read();
+    if (c != '\n' && c != '\r') { serialLine += c; continue; }
+    serialLine.trim();
+    serialLine.toUpperCase();
+    if (serialLine == "NF") {
+      returnInvoiceIssued = true;
+      publishEvent("NF_RETORNO_LANCADA");
+    } else if (serialLine.startsWith("LIMIAR ")) {
+      const long days = serialLine.substring(7).toInt();
+      if (days > 0) {
+        cycle.stay_threshold_days = days;
+        cycle.stay_sent = false;
+        String extra = ",\"limiar_dias\":";
+        extra += days;
+        publishEvent("LIMIAR_ALTERADO", false, extra);
+      }
+    } else if (serialLine.length() > 0) {
+      Serial.println("[comando] use NF ou LIMIAR n");
+    }
+    serialLine = "";
   }
 }
 
@@ -169,9 +348,17 @@ void readSeal(uint32_t now) {
   if (value != rawSeal) { rawSeal = value; sealChangedAt = now; }
   if (rawSeal != stableSeal && now - sealChangedAt >= Config::SealDebounceMs) {
     stableSeal = rawSeal;
+    const int event = stableSeal ? seal_opened(&seal, simulatedDay(now)) : seal_closed(&seal);
     String record = baseRecord("seal_changed");
-    record += ",\"authorized_removal\":null}";
+    record += ",\"authorized_removal\":";
+    record += seal.removal_in_progress ? "true" : "false";
+    record += "}";
     enqueue(record);
+    // Violacao e critica e sai na hora, fora da rotina periodica (RF006; RN05).
+    if (event == SEAL_EVENT_VIOLATION) publishEvent("VIOLACAO_LACRE", true);
+    if (event == SEAL_EVENT_REMOVAL) publishEvent("RETIRADA_AUTORIZADA");
+    if (event == SEAL_EVENT_RESEALED) publishEvent("LACRE_REAPLICADO");
+    if (event == SEAL_EVENT_CLOSED) publishEvent("LACRE_FECHADO");
   }
 }
 }
@@ -187,6 +374,7 @@ void setup() {
   pinMode(Config::AuthorizeButtonPin, INPUT_PULLUP);
   pinMode(Config::CycleButtonPin, INPUT_PULLUP);
   pinMode(Config::NetworkSwitchPin, INPUT_PULLUP);
+  pinMode(Config::PowerSwitchPin, INPUT_PULLUP);
   for (int pin : {Config::GreenLedPin, Config::YellowLedPin,
                   Config::RedLedPin, Config::BlueLedPin}) {
     pinMode(pin, OUTPUT);
@@ -211,26 +399,45 @@ void setup() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(TRACKER_WIFI_SSID, TRACKER_WIFI_PASSWORD);
   requestAt = lastSample = lastWifiRetry = millis();
-  cycle_start(&cycle, 1, Config::ExpectedReturnDays, Config::StayThresholdDays,
-              Config::StatusIntervalDays);
-  cycleStartedAt = millis();
-  publishCycleEvent("STATUS");
-  updateLeds(cycleStartedAt);
+  seal_init(&seal, Config::AuthorizationWindowDays);
+  queue_init(&pending);
+  battery_init(&battery, Config::BatteryLowPct, Config::BatteryRecoverPct);
+  networkWasAvailable = simulatedNetworkAvailable();
+  poweredOn = powerSwitchOn();
+  startCycle(millis(), 1);
+  if (poweredOn) publishEvent("STATUS");
+  updateLeds(millis());
   Serial.println("[boot] aguardando GPS; heartbeat aparece a cada 2 s");
   Serial.println("[transporte] JSON na serial + fila local; envio HTTP/MQTT pendente");
   Serial.printf("[ciclo] 1 dia = %lu s; status a cada %lu dias; prazo %lu; limiar %lu\r\n",
                 Config::DayMs / 1000UL, (unsigned long)Config::StatusIntervalDays,
                 (unsigned long)Config::ExpectedReturnDays,
                 (unsigned long)Config::StayThresholdDays);
-  Serial.println("[bancada] botoes em diagnostico; SW_REDE simula disponibilidade sem desligar o Wi-Fi");
+  Serial.printf("[regras] janela de autorizacao %lu dias; fila sem rede de %u eventos; bateria %u%%/%u%%\r\n",
+                (unsigned long)Config::AuthorizationWindowDays, EVENT_QUEUE_CAPACITY,
+                Config::BatteryLowPct, Config::BatteryRecoverPct);
+  Serial.println("[comandos] NF = lanca NF de retorno; LIMIAR n = muda o limiar de permanencia");
+  Serial.println("[bancada] SW_REDE simula disponibilidade sem desligar o Wi-Fi; SW_ENERGIA liga/desliga");
 }
 
 void loop() {
   const uint32_t now = millis();
+  // Chave ON/OFF: desligar registra o evento e suspende o dispositivo.
+  const bool on = powerSwitchOn();
+  if (on != poweredOn) {
+    if (!on) publishEvent("DISPOSITIVO_DESLIGADO");
+    poweredOn = on;
+    if (on) publishEvent("STATUS");
+  }
+  updateLeds(now);
+  if (!poweredOn) return;
   readGps();
   readSeal(now);
+  readButtons(now);
+  readBattery(now);
+  readCommands();
+  updateNetwork();
   updateCycle(now);
-  updateLeds(now);
   const bool connected = WiFi.status() == WL_CONNECTED;
   if (connected != wasConnected) {
     Serial.printf("[wifi] %s\r\n", connected ? "conectado" : "desconectado");
@@ -248,13 +455,13 @@ void loop() {
   }
   if (now - lastHeartbeat >= Config::HeartbeatMs) {
     lastHeartbeat = now;
-    Serial.printf("[vivo] tempo=%lu s gps_chars=%lu fix=%s lacre=%s bateria_sim=%d%% wifi=%s rede_sim=%s autorizar=%d ciclo=%d dias_fora=%lu\r\n",
+    Serial.printf("[vivo] tempo=%lu s gps_chars=%lu fix=%s lacre=%s bateria_sim=%d%% wifi=%s rede_sim=%s autorizar=%d ciclo=%d dias_fora=%lu fila=%u\r\n",
                   now / 1000UL, (unsigned long)gps.charsProcessed(),
                   freshFix() ? "valido" : "ausente",
                   stableSeal ? "violado" : "integro", simulatedBatteryPercent(),
                   connected ? "on" : "off", simulatedNetworkAvailable() ? "on" : "off",
                   digitalRead(Config::AuthorizeButtonPin) == LOW,
                   digitalRead(Config::CycleButtonPin) == LOW,
-                  (unsigned long)cycle.days_out);
+                  (unsigned long)cycle.days_out, pending.count);
   }
 }

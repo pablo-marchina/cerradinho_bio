@@ -328,9 +328,9 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 |---|---|
 | RN05 — envio da violação fora da rotina periódica | Preservar registro local independente de GNSS/rede. Entrega ao servidor ainda não implementada; manter limites de latência pendentes com o parceiro. “Na hora” não define SLA nem garante entrega sem conexão. |
 | RN08 — data/hora GNSS e HDOP máximo de 2,0 | O firmware atual verifica validade, idade e satélites, mas não aplica esse limite de HDOP nem persiste data/hora absoluta. Registrar adequação futura do driver LC76G-PA; limite de HDOP ainda pendente. |
-| RN09 — fila de 8 com prioridade para críticos | Preservar os 16 registros atuais e o CT21. Os 8 eventos são um valor proposto na regra. Prioridade, reenvio e saturação quando todos forem críticos ainda precisam ser definidos/implementados; fila finita não garante retenção ilimitada. |
-| RN10 — leitura zero considerada falha | Preservar o CT23: no potenciômetro atual, zero é mínimo válido. Diagnóstico físico de falha depende do circuito, do CT13 e do CT30 previsto no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md). |
-| RN11 — encerramento exige lacre fechado e NF de retorno | Incorporar a condição aos CT14/CT16 planejados. O botão atual continua apenas em diagnóstico. |
+| RN09 — fila de 8 com prioridade para críticos | Implementada na fila de eventos sem rede (8 eventos, descarte do não crítico mais antigo, reenvio na ordem com `dia_ocorrencia`). Com a fila só de violações, o evento novo não cabe e é contado em `perdidos`; política para esse caso `PENDENTE DE VALIDAÇÃO`. O registro local de 16 entradas na NVS (CT21) continua separado. |
+| RN10 — leitura zero considerada falha | Implementada: ADC = 0 gera `SENSOR_BATERIA_FALHA` e nenhum `BATERIA_BAIXA` (CT13). No dispositivo físico, o diagnóstico elétrico do divisor ainda depende do CT30 previsto no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md). |
+| RN11 — encerramento exige lacre fechado e NF de retorno | Implementada no `BTN_CICLO` (segurar 2 s). No simulador, a NF de retorno é lançada pelo comando `NF` no Monitor Serial, que representa o lançamento na plataforma. |
 
 ### 3.3.3. Requisitos Não Funcionais — 8 Eixos ISO/IEC 25010 (sprints 2 a 5)
 
@@ -433,9 +433,10 @@ Na integração atual, o firmware principal já tem o ciclo da issue #13: conta 
 fora, envia o `STATUS` ao ligar e o `STATUS_SEMANAL` a cada 7 dias, e emite os alertas
 de atraso e de permanência. Verde indica lacre íntegro, amarelo pisca no atraso e fica
 fixo na permanência, vermelho pisca na violação e azul pisca com a rede simulada
-indisponível. Os botões continuam só com leitura de diagnóstico no heartbeat; a
-autorização, a fila e o debounce dos botões entram com a issue #14. A chave de rede
-não desliga o Wi-Fi virtual; os estados são apresentados separadamente.
+indisponível. Com a issue #14, o firmware também trata o lacre com retirada autorizada,
+a fila de eventos sem rede, o debounce dos botões, o alerta de bateria e o encerramento
+e o vínculo de ciclo, e a chave ON/OFF (`SW_ENERGIA`, GPIO19) registra o desligamento.
+A chave de rede não desliga o Wi-Fi virtual; os estados são apresentados separadamente.
 
 **Tempo e parâmetros atuais.** O firmware principal usa `demo` com coleta a cada 30 s ou `weekly` com sete dias. No `demo`, o ciclo usa a escala `1 s = 1 dia` dos CT02–CT04 (`Config::DayMs`); no `weekly`, o dia é real. O intervalo de coleta é contado a partir da conclusão da coleta anterior, incluindo nova espera de fix quando necessária.
 
@@ -443,8 +444,9 @@ não desliga o Wi-Fi virtual; os estados são apresentados separadamente.
 |---|---|---|
 | Intervalo de coleta | 30 s (`demo`) / 7 dias (`weekly`) | `Config::SampleIntervalMs` |
 | Espera máxima por fix / idade máxima do fix | 10 s / 3 s | `Config::GpsWaitMs` / `Config::FixMaxAgeMs` |
-| Debounce do lacre | 60 ms; botões ainda em diagnóstico | `Config::SealDebounceMs` |
-| Fila local | 16 registros; antigos preservados, novo apenas na Serial se cheia | `Config::QueueCapacity` e `enqueue()` |
+| Debounce do lacre / dos botões | 60 ms / 50 ms, com detecção por borda | `Config::SealDebounceMs` / `Config::ButtonDebounceMs` |
+| Registro local na NVS | 16 registros; antigos preservados, novo apenas na Serial se cheia | `Config::QueueCapacity` e `enqueue()` |
+| Fila de eventos sem rede | 8 eventos; cheia, descarta o não crítico mais antigo; reenvio na ordem ao reconectar | `EVENT_QUEUE_CAPACITY` em `include/event_queue.h` |
 | Movimento entre coletas válidas | Distância estritamente maior que 100 m | `Config::MovementThresholdM` |
 | Heartbeat / tentativa de reconexão Wi-Fi | 2 s / 30 s quando desconectado | `Config::HeartbeatMs` / `Config::WifiRetryMs` |
 
@@ -456,10 +458,10 @@ não desliga o Wi-Fi virtual; os estados são apresentados separadamente.
 | Limiar de permanência | 150 dias (também testado com 10) | TAPI ("150 dias como referência inicial"; MVP 4 pede outros limiares) |
 | Prazo previsto de retorno | 5 dias | Valor de teste — `PENDENTE DE VALIDAÇÃO` |
 | Janela de autorização de retirada | 3 dias | Valor de teste — `PENDENTE DE VALIDAÇÃO` |
-| Capacidade da fila sem conexão | Atual: 16 eventos; dimensionamento final pendente | A proposta anterior de 8 não corresponde ao firmware atual |
+| Capacidade da fila sem conexão | 8 eventos | Valor de teste — `PENDENTE DE VALIDAÇÃO` (RN09) |
 | Bateria baixa / recuperada | 20% / 25% | Valor de teste — `PENDENTE DE VALIDAÇÃO` |
 
-**LEDs simultâneos.** Cada LED representa um estado independente e podem acender juntos: verde e vermelho seguem o estado estável do lacre, amarelo segue o ciclo (piscando no atraso, fixo na permanência) e azul pisca com a rede simulada indisponível. O verde piscando da retirada autorizada entra com a issue #14.
+**LEDs simultâneos.** Cada LED representa um estado independente e podem acender juntos: verde e vermelho seguem o estado estável do lacre, amarelo segue o ciclo (piscando no atraso, fixo na permanência) e azul pisca com a rede simulada indisponível. O verde pisca durante a retirada autorizada, e todos os LEDs apagam com a chave ON/OFF desligada.
 
 **Do simulador ao dispositivo real.** O alvo principal compila `src/firmware/main.cpp`. O `sketch.ino` da pasta do circuito é um teste independente de bancada. A migração física exige validar interfaces, alimentação, sensores e firmware; não é apenas trocar fontes de leitura.
 
@@ -468,6 +470,7 @@ não desliga o Wi-Fi virtual; os estados são apresentados separadamente.
 | ESP32 DevKit | Microcontrolador do rastreador |
 | SW_LACRE (chave deslizante) | Sensor do lacre (laço de continuidade ou reed switch) |
 | BTN_AUTORIZAR (botão) | Autorização de retirada registrada pelo responsável (no produto, vinda da plataforma) |
+| SW_ENERGIA (chave deslizante) | Botão ON/OFF entre a bateria e o ESP32 |
 | BTN_CICLO (botão) | Encerramento do ciclo ou novo vínculo, feitos na conferência de retorno |
 | POT_BATERIA (potenciômetro) | Percentual sintético; medição física, calibração e diagnóstico do divisor ainda pendentes |
 | SW_REDE (chave deslizante) | Disponibilidade simulada, independente do Wi-Fi; hoje não interrompe transporte nem esvazia fila |
@@ -477,7 +480,7 @@ não desliga o Wi-Fi virtual; os estados são apresentados separadamente.
 A versão inicial pública não inclui localização. O circuito principal local inclui
 GPS/GNSS customizado nos GPIO16/17; ele não modela recepção de satélites nem consumo real.
 
-**Situação dos CT01–CT16:** CT01 a CT04 estão implementados no firmware principal (issue #13) e verificados nos testes de lógica de `tests/model_tests.c`; a execução no Wokwi é registrada com os prints de cada CT. Os demais descrevem a lógica das próximas integrações. Seus RF/RN seguem as definições de 3.3.1/3.3.2; divergências com a implementação estão explicitadas em 3.3.2. CT17–CT23 caracterizam funções atuais. Os CT24–CT34 de evolução e validação física ficam no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md). Compilação e testes matemáticos isolados não comprovam aprovação destes cenários.
+**Situação dos CT01–CT16 e do CT35:** todos estão implementados no firmware principal (issues #13 e #14), e as regras de ciclo, lacre, fila e bateria são verificadas nos testes de lógica de `tests/model_tests.c`. A execução no Wokwi é registrada com os prints de cada CT. Seus RF/RN seguem as definições de 3.3.1/3.3.2; divergências com a implementação estão explicitadas em 3.3.2. CT17–CT23 caracterizam funções atuais. Os CT24–CT34 de evolução e validação física ficam no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md). Compilação e testes matemáticos isolados não comprovam aprovação destes cenários.
 
 ![Circuito no Wokwi com o Monitor Serial](../assets/wokwi/circuito.png)
 
@@ -496,13 +499,14 @@ Fonte: elaboração própria, captura do simulador Wokwi.
 |CT07|Autorização expirada|BTN_AUTORIZAR e SW_LACRE|Botão pressionado; lacre aberto depois de mais de 3 dias|LED vermelho; Serial|Mesmo resultado do CT05: `VIOLACAO_LACRE`|Esperado: Autorização vencida não libera a abertura (RF006; RN05, RN06).|
 |CT08|Sem conexão|SW_REDE e SW_LACRE|Rede indisponível; lacre aberto sem autorização|LEDs azul e vermelho; Serial|Azul e vermelho piscando; nada publicado; `VIOLACAO_LACRE` guardada na fila; Serial mostra `[FILA] 1 pendente`|Esperado: Sem conexão, o evento crítico deve ficar guardado para envio posterior dentro da capacidade disponível; saturação é tratada no CT10 (RF010, RF008; RN05, RN09).|
 |CT09|Reconexão|SW_REDE|Rede volta a ficar disponível|LED azul; Serial|Eventos pendentes publicados na ordem, com o dia original de ocorrência; azul apaga|Esperado: Ao reconectar, registros confirmados pelo servidor são removidos sem perder o horário de ocorrência (RF010, RF008; RN09).|
-|CT10|Fila cheia (evolução)|SW_REDE e entradas que geram eventos|Exceder a capacidade configurada; repetir com fila mista e só críticos|Serial e memória|Prioridade e descarte conforme política aprovada; contador de perdas e saturação explícitos|Planejado. Definir capacidade e política quando todos forem críticos; não prometer retenção ilimitada. O comportamento atual de 16 registros é caracterizado no CT21 (RF010; RN09).|
-|CT11|Ruído de botão|BTN_AUTORIZAR|Pressões rápidas (ruído de contato) e depois o botão segurado por 3 s|Serial|Um único evento por pressão real (debounce do botão a definir; os 60 ms atuais se aplicam ao lacre, detecção por borda); segurar não repete o evento|Esperado: Leituras falsas do botão não geram autorizações em duplicidade (RF007).|
+|CT10|Fila cheia|SW_REDE e entradas que geram eventos|Rede indisponível; mais de 8 eventos gerados, com uma violação entre eles|Serial|`FILA_CHEIA`; descarta o evento não crítico mais antigo; a violação continua na fila|Esperado: Com a fila no limite, só eventos não críticos são descartados. Com a fila só de violações, o evento novo é contado em `perdidos` (RF010; RN09).|
+|CT11|Ruído de botão|BTN_AUTORIZAR|Pressões rápidas (ruído de contato) e depois o botão segurado por 3 s|Serial|Um único `AUTORIZACAO_REGISTRADA` por pressão real (debounce de 50 ms, detecção por borda); segurar não repete o evento|Esperado: Leituras falsas do botão não geram autorizações em duplicidade (RF007).|
 |CT12|Bateria|POT_BATERIA|Nível abaixo de 20%, depois acima de 25%|Serial|`BATERIA_BAIXA` uma única vez; não repete até voltar a 25% (histerese)|Esperado: O alerta de bateria não fica oscilando perto do limite (RF019, RF027; RN10).|
-|CT13|Falha do sensor de bateria (evolução)|Circuito físico de medição com diagnóstico|Injetar abertura/curto conforme interface definida|Serial|Distinguir falha somente quando houver evidência elétrica independente|Planejado, depende de hardware. ADC = 0 isoladamente não distingue desconexão de nível mínimo. O potenciômetro atual produz 0% válido no mínimo; verificar no CT23 (RF019, RF027; RN10).|
-|CT14|Encerramento|BTN_CICLO e SW_LACRE|NF de retorno lançada; lacre fechado; botão segurado por 2 s|Serial|`CICLO_ENCERRADO`; `dias_fora` zera; `ciclo_id` sobe; contador de ciclos preservado|Esperado: Encerrar o ciclo libera o dispositivo sem apagar o histórico (RF016, RF017; RN11).|
+|CT13|Falha do sensor de bateria|POT_BATERIA|Potenciômetro no mínimo (ADC = 0, representa divisor desconectado)|Serial|`SENSOR_BATERIA_FALHA`; nenhum `BATERIA_BAIXA` falso|Esperado: Leitura impossível é tratada como falha do sensor, não como bateria vazia. No dispositivo físico, o diagnóstico elétrico fica para o CT30 (RF019, RF027; RN10).|
+|CT14|Encerramento|BTN_CICLO, SW_LACRE e comando `NF`|NF de retorno lançada (`NF` no Serial); lacre fechado; botão segurado por 2 s|Serial|`CICLO_ENCERRADO` com `ciclos_encerrados` somando um; `dias_fora` zera; um toque curto depois abre o `CICLO_INICIADO` com o `ciclo_id` seguinte|Esperado: Encerrar o ciclo libera o dispositivo sem apagar o histórico (RF016, RF017; RN11).|
 |CT15|Vínculo simultâneo|BTN_CICLO|Ciclo ativo; toque curto (tentativa de novo vínculo)|Serial|`VINCULO_RECUSADO`; o ciclo atual continua igual|Esperado: Impede vínculos simultâneos indevidos, como pede o TAPI (RF004; RN01).|
-|CT16|Encerramento recusado|BTN_CICLO e SW_LACRE|Rodada A: lacre aberto e NF lançada. Rodada B: lacre fechado e NF ausente; solicitar encerramento em ambas|Serial|`ENCERRAMENTO_RECUSADO`; o ciclo continua ativo|Esperado: O ciclo só pode ser encerrado com o lacre fechado e a NF de retorno lançada (RF016; RN11).|
+|CT16|Encerramento recusado|BTN_CICLO, SW_LACRE e comando `NF`|Rodada A: lacre aberto e NF lançada. Rodada B: lacre fechado e NF ausente; segurar o botão por 2 s em ambas|Serial|`ENCERRAMENTO_RECUSADO` com `motivo` `lacre_aberto` (A) ou `nf_retorno_ausente` (B); o ciclo continua ativo|Esperado: O ciclo só pode ser encerrado com o lacre fechado e a NF de retorno lançada (RF016; RN11).|
+|CT35|Desligamento|SW_ENERGIA|Chave ON/OFF para a direita e depois de volta para a esquerda|LEDs; Serial|Ao desligar, `DISPOSITIVO_DESLIGADO` e todos os LEDs apagados; ao religar, novo `STATUS` e LEDs de volta ao estado do ciclo|Esperado: O desligamento fica registrado, porque pode indicar tentativa de burlar o rastreio. Numerado como CT35 porque os CT24 a CT34 estão reservados no planejamento de energia e GNSS.|
 
 #### Casos aplicáveis ao firmware integrado atual
 
@@ -516,7 +520,7 @@ Fonte: elaboração própria, captura do simulador Wokwi.
 | CT20 | Com memória de teste sem referência e fix contínuo, coletar primeiro ponto; depois pontos sintéticos separados por aproximadamente 50 m e 150 m da respectiva coleta anterior. Observar ao menos três coletas em `demo`. | Primeiro ponto: `baseline_created=true`, distância e `moved` nulos. Nas seguintes, `moved=false` para 50 m e `true` para 150 m. Com fix disponível, intervalo de 30 s mais latência de processamento; registrar desvio. | Comparar coletas válidas consecutivas. Testar fronteira de 100 m em teste matemático separado, considerando arredondamento; não alegar sete dias medidos com demo de 30 s. |
 | CT21 | Iniciar fila vazia em memória de teste; gerar 17 registros, contando também coletas automáticas. Inspecionar chaves `q0` a `q15`; alternar a chave de rede. | Os primeiros 16 ocupam a fila; o 17º aparece na Serial com aviso de limite e não substitui os anteriores. A chave de rede não esvazia a fila. Medir quantos registros ficaram somente na Serial. | Caracteriza a limitação atual; confirmação de entrega, prioridade e reenvio continuam pendentes. Inspeção de NVS exige ferramenta/instrumentação de teste; capacidade final e prioridade ainda pendentes. |
 | CT22 | Salvar posição A e registros conhecidos; reiniciar preservando flash/NVS. Sem novo fix, observar saída; depois coletar B. | Referência A e fila permanecem. Histórico após reinício sem idade conhecida apresenta `last_valid_age_ms=null`; novo ponto B compara com A. `uptime_ms` reinicia e não deve ser tratado como horário absoluto. | Confirmar preservação de flash no ambiente usado; se indisponível no simulador, executar em hardware. Sem acesso à NVS, não aprovar retenção da fila apenas pelo JSON da posição. |
-| CT23 | Mover potenciômetro ao mínimo, meio e máximo; observar heartbeat/JSON. | Percentual sintético permanece entre 0 e 100 e acompanha a entrada; zero representa mínimo válido. Não emitir conclusão de bateria desconectada, autonomia ou tensão física com esses dados. | ADC e percentual simulados não são medição de estado de carga de uma bateria real. |
+| CT23 | Mover potenciômetro ao mínimo, meio e máximo; observar heartbeat/JSON. | Percentual sintético permanece entre 0 e 100 e acompanha a entrada; o mínimo absoluto (ADC = 0) gera `SENSOR_BATERIA_FALHA`, conforme a RN10 e o CT13. Não emitir conclusão de bateria desconectada, autonomia ou tensão física com esses dados. | ADC e percentual simulados não são medição de estado de carga de uma bateria real. |
 
 **Registro de execução a preencher para cada CT:** data; responsável; versão e alterações locais; configuração; ambiente; pré-condições; estímulos e quantidade de repetições; resultado medido; critério utilizado; situação (`NÃO EXECUTADO`, `BLOQUEADO`, `APROVADO` ou `REPROVADO`); evidência; limitações. Fotos do simulador podem ficar em `assets/wokwi/CTnn.png`; medições e logs anonimizados devem acompanhar o registro, sem usar relatórios internos como evidência. Não criar arquivos de evidência vazios nem marcar teste aprovado antes da execução.
 

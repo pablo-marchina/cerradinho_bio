@@ -32,8 +32,8 @@ assert len(parts) == len(diagram['parts']), 'IDs duplicados no circuito'
 for name, kind in [('esp', 'wokwi-esp32-devkit-v1'), ('gps', 'chip-gps'),
                    ('seal', 'wokwi-slide-switch'), ('battery', 'wokwi-potentiometer')]:
     assert parts[name]['type'] == kind, f'Componente divergente: {name}'
-hardware_ids = {'esp', 'gps', 'seal', 'battery', 'sw_rede', 'btn_autorizar', 'btn_ciclo'}
-for name, kind in [('sw_rede', 'wokwi-slide-switch'),
+hardware_ids = {'esp', 'gps', 'seal', 'battery', 'sw_rede', 'sw_energia', 'btn_autorizar', 'btn_ciclo'}
+for name, kind in [('sw_rede', 'wokwi-slide-switch'), ('sw_energia', 'wokwi-slide-switch'),
                    ('btn_autorizar', 'wokwi-pushbutton'), ('btn_ciclo', 'wokwi-pushbutton')]:
     assert parts[name]['type'] == kind, f'Componente divergente: {name}'
 for color in ('verde', 'amarelo', 'vermelho', 'azul'):
@@ -55,6 +55,7 @@ for source, target in (
     ('btn_autorizar:1.l', 'esp:D33'), ('btn_autorizar:2.r', 'esp:GND.1'),
     ('btn_ciclo:1.l', 'esp:D13'), ('btn_ciclo:2.r', 'esp:GND.1'),
     ('sw_rede:2', 'esp:D18'), ('sw_rede:1', 'esp:GND.1'),
+    ('sw_energia:2', 'esp:D19'), ('sw_energia:1', 'esp:GND.1'),
 ):
     assert frozenset((source, target)) in connections, f'Ligacao ausente: {source} -> {target}'
 for color, pin in [('verde', 25), ('amarelo', 26), ('vermelho', 23), ('azul', 14)]:
@@ -66,10 +67,12 @@ assert {'TX', 'RX', 'VCC', 'GND'} <= set(chip['pins'])
 assert {c['id'] for c in chip['controls']} == set(parts['gps']['attrs'])
 assert not any('seal:3' in c for c in connections), 'Lacre violado deve ficar aberto'
 assert not any('sw_rede:3' in c for c in connections), 'Rede indisponivel deve ficar aberta'
+assert not any('sw_energia:3' in c for c in connections), 'Desligado deve ficar aberto'
 config = (root / 'include/config.h').read_text(encoding='utf-8')
 pins = [('GpsRx', 16), ('GpsTx', 17), ('SealPin', 27), ('BatteryPin', 34),
         ('GreenLedPin', 25), ('YellowLedPin', 26), ('RedLedPin', 23), ('BlueLedPin', 14),
-        ('AuthorizeButtonPin', 33), ('CycleButtonPin', 13), ('NetworkSwitchPin', 18)]
+        ('AuthorizeButtonPin', 33), ('CycleButtonPin', 13), ('NetworkSwitchPin', 18),
+        ('PowerSwitchPin', 19)]
 assert len({pin for _, pin in pins}) == len(pins), 'GPIO compartilhado entre funcoes'
 for name, pin in pins:
     assert re.search(rf'\b{name}\s*=\s*{pin}\s*;', config), f'Pino divergente: {name}'
@@ -77,7 +80,7 @@ for name, value in [('GpsBaud', 9600), ('ConsoleBaud', 115200), ('HeartbeatMs', 
     assert re.search(rf'\b{name}\s*=\s*{value}\s*;', config), f'Configuracao divergente: {name}'
 source = (root / 'src/firmware/main.cpp').read_text(encoding='utf-8')
 assert 'pinMode(Config::SealPin, INPUT_PULLUP)' in source
-for name in ('AuthorizeButtonPin', 'CycleButtonPin', 'NetworkSwitchPin'):
+for name in ('AuthorizeButtonPin', 'CycleButtonPin', 'NetworkSwitchPin', 'PowerSwitchPin'):
     assert f'pinMode(Config::{name}, INPUT_PULLUP)' in source
 gps_source = (root / 'chips/gps.chip.c').read_text(encoding='utf-8')
 assert re.search(r'\.baud_rate\s*=\s*9600\b', gps_source)

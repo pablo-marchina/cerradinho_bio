@@ -28,6 +28,7 @@ constexpr int BlueLedPin = 14;
 constexpr int AuthorizeButtonPin = 33;
 constexpr int CycleButtonPin = 13;
 constexpr int NetworkSwitchPin = 18;
+constexpr int PowerSwitchPin = 19;  // ON/OFF: esquerda = ligado, direita = desligado.
 constexpr uint32_t GpsBaud = 9600;
 constexpr uint32_t ConsoleBaud = 115200;
 constexpr uint32_t WeekMs = 7UL * 24UL * 60UL * 60UL * 1000UL;
@@ -45,5 +46,12 @@ constexpr uint32_t StatusIntervalDays = 7;
 constexpr uint32_t ExpectedReturnDays = 5;     // PENDENTE DE VALIDACAO
 constexpr uint32_t StayThresholdDays = 150;    // CT04 roda com 10 e com 150
 constexpr uint32_t BlinkHalfPeriodMs = 500;    // 1 Hz
+// Lacre, autorizacao, fila, botoes e bateria (issue #14). Valores de teste.
+constexpr uint32_t AuthorizationWindowDays = 3;  // PENDENTE DE VALIDACAO
+constexpr uint32_t ButtonDebounceMs = 50;
+constexpr uint32_t LongPressMs = 2000;
+constexpr uint8_t BatteryLowPct = 20;            // PENDENTE DE VALIDACAO
+constexpr uint8_t BatteryRecoverPct = 25;        // PENDENTE DE VALIDACAO
+constexpr uint32_t BatteryCheckMs = 200;
 constexpr const char *DeviceId = "prototipo-001";
 }

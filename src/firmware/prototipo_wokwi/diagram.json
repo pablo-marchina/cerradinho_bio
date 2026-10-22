@@ -153,6 +153,24 @@
       }
     },
     {
+      "type": "wokwi-slide-switch",
+      "id": "sw_energia",
+      "top": 60,
+      "left": -280,
+      "attrs": {
+        "bounce": "0"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "powerLabel",
+      "top": 10,
+      "left": -280,
+      "attrs": {
+        "text": "ON/OFF | GPIO19 | esquerda = ligado | direita = desligado"
+      }
+    },
+    {
       "type": "wokwi-text",
       "id": "title",
       "top": -225,
@@ -203,7 +221,7 @@
       "top": 215,
       "left": -280,
       "attrs": {
-        "text": "BOTOES | leituras de bancada, LOW = pressionado"
+        "text": "BOTOES | LOW = pressionado | ciclo: toque = vinculo, 2 s = encerrar"
       }
     },
     {
@@ -212,7 +230,7 @@
       "top": 485,
       "left": -280,
       "attrs": {
-        "text": "LEDs de diagnostico: verde = lacre integro; vermelho = violado\nAmarelo = botao autorizar; azul = rede simulada indisponivel\nBTN_CICLO aparece no monitor serial. Autorizacao e ciclo: logica pendente.\nWi-Fi real independente da chave. Sem transporte ao servidor.\nDemo: 30 s; weekly: 7 dias. Nao valida consumo ou autonomia."
+        "text": "LEDs: verde = operando (pisca na retirada autorizada); amarelo = atraso (pisca) / permanencia (fixo)\nVermelho = violacao do lacre (pisca); azul = rede simulada indisponivel (pisca)\nSerial: NF = lanca NF de retorno; LIMIAR n = muda o limiar de permanencia\nWi-Fi real independente da chave. Sem transporte ao servidor.\nDemo: 1 s = 1 dia no ciclo, coleta GPS a cada 30 s. Nao valida consumo ou autonomia."
       }
     }
   ],
@@ -387,6 +405,18 @@
     ],
     [
       "sw_rede:1",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "esp:D19",
+      "sw_energia:2",
+      "gold",
+      []
+    ],
+    [
+      "sw_energia:1",
       "esp:GND.1",
       "black",
       []

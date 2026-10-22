@@ -2,12 +2,13 @@
 
 Esta pasta reúne o circuito principal integrado: ESP32 DevKit v1, GPS/GNSS
 customizado, lacre, bateria simulada, quatro LEDs com resistores de 220 Ω,
-dois botões e chave de rede simulada. O diagrama anterior da raiz foi incorporado aqui.
+dois botões, chave de rede simulada e chave ON/OFF. O diagrama anterior da raiz foi incorporado aqui.
 
 O firmware principal preserva a comparação de posições, o debounce do lacre e a
-fila NVS existentes e tem o ciclo da issue #13: dias fora, status semanal e alertas
-de atraso e de permanência. Os botões continuam em diagnóstico de bancada; as regras
-de autorização, fila e debounce dos botões entram com a issue #14. JSON na serial
+fila NVS existentes, tem o ciclo da issue #13 (dias fora, status semanal e alertas de
+atraso e de permanência) e as regras da issue #14: retirada autorizada, violação do
+lacre, fila de eventos sem rede, debounce dos botões, bateria baixa, encerramento e
+vínculo de ciclo, além do registro de desligamento pela chave ON/OFF. JSON na serial
 e Wi-Fi conectado não representam envio confirmado a servidor ou broker.
 
 ## Módulo GNSS de referência
@@ -33,6 +34,7 @@ da unidade física antes de integrar. Consumo e autonomia exigem ensaios físico
 | `wokwi.weekly.toml` | Mesmo circuito com coleta a cada sete dias reais. |
 | `../main.cpp` | Firmware principal compilado pelo PlatformIO. |
 | `../../../include/cycle_rules.h` | Regras do ciclo (issue #13), testadas em `tests/model_tests.c`. |
+| `../../../include/seal_rules.h`, `event_queue.h`, `battery_rules.h` | Regras de lacre, fila sem rede e bateria (issue #14), testadas em `tests/model_tests.c`. |
 | `../../../include/config.h` | Pinagem e parâmetros centralizados do firmware principal. |
 | `sketch.ino` | Teste isolado de ligações, excluído da compilação principal. Conta caracteres do GPS, sem interpretar posição. |
 
@@ -44,13 +46,14 @@ da unidade física antes de integrar. Consumo e autonomia exigem ensaios físico
 | GPS RX ← ESP TX2 | GPIO 17 | UART2 TX, 9600 baud | Reservado; o modelo não interpreta comandos |
 | Lacre (`seal`) | GPIO 27 | `INPUT_PULLUP` | Esquerda = íntegro/LOW; direita = violado/HIGH |
 | Bateria (`battery`) | GPIO 34 (ADC1) | analógico | Nível sintético de 0 a 100%, sem alimentação real |
-| LED verde | GPIO 25 | saída | Lacre íntegro |
+| LED verde | GPIO 25 | saída | Operando, lacre íntegro; piscando = retirada autorizada em curso |
 | LED amarelo | GPIO 26 | saída | Piscando a 1 Hz = atraso; fixo = permanência acima do limiar |
 | LED vermelho | GPIO 23 | saída | Piscando = lacre violado; GPIO27 permanece exclusivo do lacre |
 | LED azul | GPIO 14 | saída | Piscando = rede simulada indisponível |
 | SW_REDE (`sw_rede`) | GPIO 18 | `INPUT_PULLUP` | Esquerda = disponível/LOW; direita = indisponível/HIGH |
-| BTN_AUTORIZAR (`btn_autorizar`) | GPIO 33 | `INPUT_PULLUP` | Leitura no heartbeat, sem alterar o lacre |
-| BTN_CICLO (`btn_ciclo`) | GPIO 13 | `INPUT_PULLUP` | Leitura no heartbeat, sem alterar o ciclo |
+| SW_ENERGIA (`sw_energia`) | GPIO 19 | `INPUT_PULLUP` | ON/OFF: esquerda = ligado/LOW; direita = desligado/HIGH |
+| BTN_AUTORIZAR (`btn_autorizar`) | GPIO 33 | `INPUT_PULLUP` | Registra a autorização de retirada, válida por 3 dias |
+| BTN_CICLO (`btn_ciclo`) | GPIO 13 | `INPUT_PULLUP` | Toque curto = novo vínculo; segurar 2 s = encerrar o ciclo |
 
 GPS e potenciômetro têm VCC em 3V3 e GND comum. Cada saída de LED passa por um
 resistor de 220 Ω até o ânodo; o cátodo vai ao GND. Botões ligam contatos de grupos
@@ -86,16 +89,17 @@ evitando compilar o `sketch.ino` de teste junto com o firmware principal.
 |---|---|
 | Iniciar com as chaves à esquerda | Verde aceso; vermelho e azul apagados; `STATUS` com `dias_fora=0`; heartbeat a cada 2 s |
 | Mover o lacre à direita | Verde apaga e vermelho pisca após debounce; evento `seal_changed` |
-| Pressionar BTN_AUTORIZAR | Heartbeat mostra `autorizar=1` enquanto pressionado |
-| Pressionar BTN_CICLO | Heartbeat mostra `ciclo=1` enquanto pressionado; não modifica NVS |
+| Pressionar BTN_AUTORIZAR | `AUTORIZACAO_REGISTRADA`; abrir o lacre em até 3 s gera `RETIRADA_AUTORIZADA` e verde piscando |
+| Pressionar BTN_CICLO | Toque curto com ciclo ativo: `VINCULO_RECUSADO`; segurar 2 s: encerramento (exige lacre fechado e `NF` no Serial) |
+| Mover SW_ENERGIA à direita | `DISPOSITIVO_DESLIGADO` e LEDs apagados; de volta à esquerda, novo `STATUS` |
 | Mover SW_REDE à direita | Azul pisca e `rede_sim=off`; Wi-Fi real continua com diagnóstico independente |
 | Girar o potenciômetro | `bateria_sim` muda no heartbeat |
 | GPS com fix válido | `gps_chars` aumenta; posição é coletada e comparada com a última referência válida |
 | GPS com `fixValid=0` | Reporta falta de fix e preserva a referência anterior |
 
 Pressione os botões durante um heartbeat para conferir sua leitura periódica.
-O amarelo agora segue o ciclo (issue #13); a integração de debounce e eventos de
-autorização/ciclo dos botões continua pendente (issue #14). O modo semanal não valida autonomia.
+Comandos no Monitor Serial: `NF` lança a NF de retorno (representa o lançamento na
+plataforma) e `LIMIAR n` muda o limiar de permanência do ciclo (RN03). O modo semanal não valida autonomia.
 
 ## Validação da integração — 21/10/2026
 
@@ -155,3 +159,18 @@ mostra `dias_fora`.
 
 Para o CT04 com limiar 10, troque `StayThresholdDays` para `10`, recompile, rode e
 depois volte para `150`.
+
+## Lacre, autorização, fila, bateria e ON/OFF (issue #14)
+
+| Regra | Comportamento | Onde |
+|---|---|---|
+| Violação (RN05) | Lacre aberto sem autorização vigente gera `VIOLACAO_LACRE` na hora, marcado como crítico; vermelho pisca até o lacre fechar (`LACRE_FECHADO`) | `seal_rules.h` |
+| Retirada autorizada (RN06) | `BTN_AUTORIZAR` vale por `AuthorizationWindowDays` (3 dias = 3 s no demo) e é consumido na abertura: `RETIRADA_AUTORIZADA`, verde piscando e `LACRE_REAPLICADO` ao fechar | `seal_rules.h` |
+| Fila sem rede (RN09) | Com `SW_REDE` à direita, os eventos vão para a fila (8); cheia, sai o não crítico mais antigo. Ao reconectar, saem na ordem com `dia_ocorrencia` | `event_queue.h` |
+| Botões | Debounce de 50 ms e evento por borda; segurar não repete | `main.cpp` |
+| Bateria (RN10) | `BATERIA_BAIXA` uma vez abaixo de 20%, rearma acima de 25%; ADC = 0 gera `SENSOR_BATERIA_FALHA` | `battery_rules.h` |
+| Ciclo (RN01, RN11) | Toque curto com ciclo ativo: `VINCULO_RECUSADO`; segurar 2 s: `CICLO_ENCERRADO` só com lacre fechado e NF de retorno, senão `ENCERRAMENTO_RECUSADO` com `motivo`; com o ciclo encerrado, toque curto: `CICLO_INICIADO` | `main.cpp` |
+| ON/OFF | Desligar gera `DISPOSITIVO_DESLIGADO` e apaga os LEDs; religar gera `STATUS` | `main.cpp` |
+
+O `seal_changed` que aparece no Serial é o registro local de diagnóstico (NVS, CT18 e
+CT21); os eventos de negócio são os de nome em maiúsculas.
