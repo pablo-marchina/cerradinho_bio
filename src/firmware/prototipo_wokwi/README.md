@@ -18,8 +18,8 @@ usar o mesmo driver GNSS do dispositivo físico, incluindo os comandos PAIR usad
 entrada/saída de backup e falhas de aquisição. A placa e a versão de firmware
 do módulo ainda precisam ser definidas.
 
-O contrato de simulação e os CT26/CT28 estão na
-[documentação do projeto](../../../document/documentacao.md).
+O contrato de simulação e os CT26/CT28 estão no
+[planejamento de energia e GNSS](../../../document/outros/planejamento-energia-gnss.md).
 Os 9600 baud da configuração atual descrevem o simulador; conferir a configuração
 da unidade física antes de integrar. Consumo e autonomia exigem ensaios físicos.
 
