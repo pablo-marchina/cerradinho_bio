@@ -373,17 +373,37 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 
 ### 3.3.4. Matriz de Rastreabilidade (RTM) (sprints 1 a 5)
 
-Rastreabilidade dos cenários da Sprint 1, vinculada aos RF e RN de negócio. A matriz não indica testes executados nem cobre integralmente os 27 RFs: prorrogação, prazo legal, ausência de comunicação e autenticação da plataforma/dispositivo ainda precisam de cobertura específica. Os CT01–CT16 descrevem comportamento planejado; CT17–CT23 caracterizam o firmware integrado atual.
+| Persona | RF    | RN   | Caso de Teste | Evidência        |
+|---------|-------|------|---------------|------------------|
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF001 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF002 | RN02 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF003 | RN01 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF004 | RN01 | CT15 | `assets/wokwi/CT15.png` — PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C4 Falha | RF005 | RN08 | CT19, CT20, CT22 | `assets/wokwi/CT19.png`, `assets/wokwi/CT20.png`, `assets/wokwi/CT22.png` — PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C3 Lacre aberto | RF006 | RN05 | CT05, CT07, CT18 | `assets/wokwi/CT05.png`, `assets/wokwi/CT07.png`, `assets/wokwi/CT18.png` — PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C3 Lacre aberto | RF007 | RN06 | CT06, CT11 | `assets/wokwi/CT06.png`, `assets/wokwi/CT11.png` — PENDENTE DE EVIDÊNCIA |
+| P2 Clarice — P2-C4 Falha (associação direta) | RF008 | Não se aplica — sem RN específica | CT08, CT09 | `assets/wokwi/CT08.png`, `assets/wokwi/CT09.png` — PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C2 Acompanhamento | RF009 | Não se aplica — sem RN específica | CT01, CT02 | `assets/wokwi/CT01.png`, `assets/wokwi/CT02.png` — PENDENTE DE EVIDÊNCIA |
+| P2 Clarice — P2-C4 Falha | RF010 | RN09 | CT08, CT09, CT10, CT21, CT22 | `assets/wokwi/CT08.png`, `assets/wokwi/CT09.png`, `assets/wokwi/CT10.png`, `assets/wokwi/CT21.png`, `assets/wokwi/CT22.png` — PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C2 Acompanhamento | RF011 | RN07 | CT02 | `assets/wokwi/CT02.png` — PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C2 Acompanhamento; P2 Clarice — P2-C3 Prazo legal; P3 Izidio — P3-C2 ICMS por safra | RF012 | RN12, RN13 | CT03, CT04 | `assets/wokwi/CT03.png`, `assets/wokwi/CT04.png` — PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF013 | RN04 | CT03 | `assets/wokwi/CT03.png` — PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF014 | RN03, RN04 | CT04 | `assets/wokwi/CT04.png` — PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C2 Acompanhamento; P1-C4 Falha | RF015 | RN08 | CT19, CT20, CT22 | `assets/wokwi/CT19.png`, `assets/wokwi/CT20.png`, `assets/wokwi/CT22.png` — PENDENTE DE EVIDÊNCIA |
+| P2 Clarice — P2-C2 Encerramento do ciclo; P3 Izidio — P3-C3 Falha | RF016 | RN11 | CT14, CT16 | `assets/wokwi/CT14.png`, `assets/wokwi/CT16.png` — PENDENTE DE EVIDÊNCIA |
+| P2 Clarice — P2-C2 Encerramento do ciclo; P3 Izidio — P3-C1 Histórico para o BI | RF017 | RN11, RN12 | CT14 | `assets/wokwi/CT14.png` — PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C2 Acompanhamento; P2 Clarice — P2-C1 Retorno sem aviso | RF018 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento (associação indireta) | RF019 | RN10 | CT12, CT13, CT23 | `assets/wokwi/CT12.png`, `assets/wokwi/CT13.png`, `assets/wokwi/CT23.png` — PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF020 | RN16 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento (associação transversal) | RF021 | RN15 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF022 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C3 Lacre aberto | RF023 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P3 Izidio — P3-C1 Histórico para o BI | RF024 | RN15 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C4 Falha | RF025 | RN14 | Planejado — CT a definir | Planejado, sprint a definir |
+| P2 Clarice — P2-C3 Prazo legal | RF026 | RN13 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento | RF027 | RN10 | CT12, CT13, CT23 | `assets/wokwi/CT12.png`, `assets/wokwi/CT13.png`, `assets/wokwi/CT23.png` — PENDENTE DE EVIDÊNCIA |
 
-| Necessidade | RF | RN de negócio | Casos de teste | Evidência a produzir |
-|---|---|---|---|---|
-| Detecção do lacre independente de GNSS/rede | RF006, RF009, RF010 | RN05, RN09 | CT05, CT08, CT18 | Estímulos e eventos com tempos, perdas e duplicações. |
-| Última localização válida identificável | RF005, RF015 | RN08 | CT19, CT20, CT22 | JSON, referência antes/depois e condições de fix. |
-| Eventos preservados sem rede | RF010 | RN09 | CT09, CT10, CT21, CT22 | Fila antes/depois; CT21 caracteriza a capacidade atual, sem comprovar reenvio. |
-| Autorização de retirada | RF007 | RN05, RN06 | CT06, CT07, CT11 | Estímulos e decisões da futura lógica de autorização. |
-| Ciclos e prazos | RF004, RF011–RF014, RF016, RF017 | RN01, RN03, RN04, RN07, RN11 | CT02–CT04, CT14–CT16 | Estado do ciclo e eventos nos limites de tempo. |
-| Diagnóstico do circuito | Transversal | Transversal | CT01, CT17–CT23 | Versão, configuração, estímulos e logs. |
-| Leitura e diagnóstico de bateria | RF019, RF027 | RN10 | CT12, CT13, CT23 | Leituras sintéticas; CT13 depende de interface física com diagnóstico. |
+**Casos de teste transversais:** CT17 (`assets/wokwi/CT17.png` — PENDENTE DE EVIDÊNCIA) e CT35 (`assets/wokwi/CT35.png` — PENDENTE DE EVIDÊNCIA) verificam aspectos transversais e, por isso, não são atribuídos a um RF ou a uma RN específicos nesta matriz.
 
 A proposta de RNFs, a máquina de estados de energia e os CT24–CT34 estão no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md), para revisão nas próximas sprints.
 
