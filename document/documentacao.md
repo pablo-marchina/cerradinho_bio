@@ -99,6 +99,7 @@ _A entrega deve ser realizada no formato de quadrante (template), semelhante ao 
 #### 3.1.3.1 Qual é o problema a ser resolvido
 
 #### 3.1.3.2 Qual a solução proposta (visão de negócios)
+Uma TAG reutilizável com lacre e uma plataforma reúnem equipamento, fornecedor, nota fiscal, prazo, localização válida e histórico. A API disponibiliza os dados dos ciclos — saída, prazo, situação e retorno — para consulta por ferramentas de BI. [6]
 
 #### 3.1.3.3 Como a solução proposta deverá ser utilizada
 
@@ -108,11 +109,23 @@ _A entrega deve ser realizada no formato de quadrante (template), semelhante ao 
 	
 ### 3.1.4. Value Proposition Canvas (sprint 1)	
 
-O [Value Proposition Canvas no Framekit](https://framekit.malafisor-es.workers.dev/) foi preenchido como um único canvas para a solução GuaráTracking. O perfil do cliente reúne as tarefas, dores e ganhos relacionados aos papéis de PCM (P1) e Fiscal (P2), com base no TAPI e no kick-off; o mapa de valor representa uma única proposta: TAG reutilizável com lacre e plataforma de consulta, histórico e alertas. O parceiro informou R$ 602.969 em complemento de ICMS na safra 2024/25; a parcela eventualmente relacionada a atrasos de manutenção externa ainda precisa ser apurada. O canvas não presume redução de perdas, atrasos ou ICMS.
+O canvas apresenta uma proposta única do GuaráTracking para PCM (P1), Fiscal (P2) e Logística (P3) da CerradinhoBio. O perfil considera o TAPI [6] e o kick-off de 16/10/2026 [23]. A solução combina TAG reutilizável com lacre, painel, histórico e API para consulta dos ciclos e alimentação do BI. Os ganhos são hipóteses a medir no piloto.
 
-![Value Proposition Canvas único do GuaráTracking para PCM e Fiscal, exportado diretamente do Framekit.](../assets/negocios/value-proposition-canvas.png)
+![Value Proposition Canvas do GuaráTracking, com mapa de valor e perfil de PCM, Fiscal e Logística.](../assets/negocios/value-proposition-canvas.png)
 
-**Encaixe da proposta.** O cadastro do responsável e do ciclo (AD1) e a consulta consolidada (CG1) respondem ao controle disperso e manual (D1), atendendo ao ganho de localizar sem ligações (G1). A última posição e o endereço (AD2), a separação entre prazo e permanência total (AD3) e a sinalização de falta de comunicação (AD6) tratam a incerteza sobre localização e prazo (D2); os alertas configuráveis (CG2) apoiam agir antes do vencimento (G2). O histórico por fornecedor (CG3) e o histórico útil à gestão (G4) dão contexto para avaliar atrasos e priorizar ações (D3), sem determinar sozinhos a escolha da oficina. Para a Fiscal, o estado de retorno aguardando baixa (AD5) responde à divergência entre retorno físico e lançamento da NF (D4) e apoia o fechamento correto do ciclo (G3). O complemento de ICMS informado no kick-off contextualiza a dor financeira (D5), mas sua parcela eventualmente ligada à manutenção externa não foi apurada; AD3 permite acompanhar prazos, sem garantir evitar incidência fiscal. A conectividade incerta (D6) é explicitada por AD6, sem tratar dados desatualizados como posição atual. O alerta e registro do lacre (AD4) correspondem à dor de abertura sem registro (D7). A TAG reutilizável e o histórico (PS1, CG4) apoiam ciclos sucessivos. A cobertura, a efetividade dos alertas e eventuais ganhos serão avaliados no piloto.
+*Figura — Value Proposition Canvas do GuaráTracking para PCM, Fiscal e Logística.*
+
+*Fonte: template “Value Proposition Canvas - template png”, pasta de templates de negócios do Inteli [22]; conteúdo: Grupo G01 (2026).*
+
+| Dor do cliente | Resposta do GuaráTracking | Ganho relacionado |
+|---|---|---|
+| D1 Controle espalhado e manual | Cadastro do ciclo (AD1) e consulta consolidada (CG1) | G1 Localizar e consultar sem ligar |
+| D2 Localização e prazo incertos | Última posição (AD2), prazo separado da permanência (AD3) e alertas (CG2) | G2 Agir antes do vencimento |
+| D3 Difícil decidir diante do atraso | Histórico por fornecedor (CG4) | G4 Histórico útil à gestão |
+| D4 Retorno sem baixa fiscal | Retorno aguardando baixa (AD4) e baixa ligada à NF (CG3) | G3 Fechar o retorno corretamente |
+| D5 Complemento de ICMS de R$ 602.969 por prazo vencido, informado no kick-off para 2024/25; parcela ligada à manutenção externa não apurada [23] | Acompanhamento dos prazos (AD3), sem garantia de evitar incidência fiscal | G2 Agir antes do vencimento |
+| D6 Lacre aberto sem registro | Alerta e registro do lacre (AD5) | G3 Fechar o retorno corretamente |
+| D7 Dados espalhados entre SAP e planilhas | Dados do ciclo estruturados (AD6) e consulta pela API (CG5) | G5 Dados consolidados para o BI |
 
 ### 3.1.5. Matriz de Riscos (sprint 1)	
 
@@ -183,6 +196,7 @@ _Nesta seção, detalhe a especificação da solução, de acordo com o disposto
 |-------|-----------|------------|--------------|
 | RF001 | ...       | Alta       | Implementado |
 | RF002 | ...       | Média      | Planejado    |
+| RF003 | Disponibilizar por API os dados de saída, prazo, situação e retorno dos ciclos para consumo por ferramenta de BI. | Média | Planejado |
 
 ### 3.3.2. Regras de Negócio (sprint 1, refinar até sprint 5)
 
@@ -381,3 +395,5 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 19. RAÍZEN. *Raízen e produtores de cana-de-açúcar debatem perspectivas para o ano-safra no Fórum de Mercado*. Disponível em: https://www.raizen.com.br/sala-de-imprensa/raizen-e-produtores-de-cana-de-acucar-debatem-perspectivas-para-o-ano-safra-no-forum-de-mercado. Acesso em: 20 out. 2026.
 20. SÃO MARTINHO. *Formulário de Referência 2025*. Disponível em: https://ri.saomartinho.com.br/Download.aspx?Arquivo=zp29unVyAKR4rxhHtOgKfQ%3D%3D&IdCanal=3kK+JHozjxal5isJwnwwEA%3D%3D&linguagem=pt. Acesso em: 20 out. 2026.
 21. INTELI. *5 forças template.jpeg*. Pasta de templates de negócios do projeto, 2022. Disponível em: https://drive.google.com/file/d/1Kr8A2GRrTDUFi5JslJQd7LWVOwyn8E_c/view. Acesso em: 20 out. 2026.
+22. INTELI. *Value Proposition Canvas - template png*. Pasta de templates de negócios do projeto, 2022. Disponível em: https://drive.google.com/file/d/1vom1OaLU4NgDpoQ9vIaJ2lpS2YoGcUjM/view. Acesso em: 22 out. 2026.
+23. CERRADINHO. *Kick-off do projeto de rastreamento de ativos com o parceiro*. Reunião de alinhamento, 16 out. 2026.
