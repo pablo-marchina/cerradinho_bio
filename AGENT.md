@@ -136,6 +136,7 @@ Regras ao criar ou sugerir um card:
 ## 6. Boas práticas para agentes
 
 - Não invente dados do parceiro (quantidade de remessas, prazos reais, fornecedores). Se a informação não estiver no repositório, marque como pendente ou pergunte ao grupo.
+- Antes de trabalhar num artefato, leia o enunciado e os critérios de avaliação dele em `document/outros/ArtefatosSolicitados.md` e confira quais itens do nível mais alto a tarefa precisa atender.
 - Prefira mudanças pequenas e focadas, alinhadas a um card.
 - Não faça commit, push ou merge sem pedido explícito de um integrante do grupo.
 - Commits e branches seguem a seção 7 (Conventional Commits ligados a uma issue).
