@@ -295,8 +295,6 @@ _Coloque aqui seu Storyboard (seguindo as instruções na descrição do artefat
 
 ## 3.3. Solução Técnica	
 
-_Nesta seção, detalhe a especificação da solução, de acordo com o disposto nas subseções._
-
 ### 3.3.1. Requisitos Funcionais (sprint 1, refinar e atualizar até sprint 5)
 
 Os requisitos abaixo saem do TAPI (MVP 1 a 7 e fluxo básico), da avaliação do protótipo e do kick-off com a Cerradinho (16/10/2026). A prioridade segue o que o parceiro chamou de indispensável no kick-off: alerta de lacre, alerta de prazo e geolocalização. Um RF só passa a `Simulado no Wokwi` depois que o caso de teste correspondente (seção 3.4.1) é executado e passa. Os IDs estão congelados: um RF removido não libera o número, e um RF novo entra no fim da lista.
