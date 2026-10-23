@@ -377,12 +377,13 @@ void requestClose() {
     publishEvent("ENCERRAMENTO_RECUSADO", false, ",\"motivo\":\"nf_retorno_ausente\"");
   } else {
     ++closedCycles;
-    String extra = ",\"ciclos_encerrados\":";
-    extra += closedCycles;
-    publishEvent("CICLO_ENCERRADO", false, extra);
     cycleActive = false;
     cycle.days_out = 0;
     contextDirty = true;
+    String extra = ",\"ciclos_encerrados\":";
+    extra += closedCycles;
+    // O evento deve retratar o estado ja encerrado, inclusive quando fica na fila.
+    publishEvent("CICLO_ENCERRADO", false, extra);
   }
 }
 
