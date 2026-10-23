@@ -195,7 +195,7 @@ A solução acompanha equipamentos da CerradinhoBio em manutenção externa.
 
 #### 3.1.6.2 Tratamento de dados
 
-O tratamento seguirá a LGPD. Correspondência com o rascunho de RF do Luis: **PENDENTE DE VALIDAÇÃO**.
+O tratamento seguirá a LGPD. Os dados pessoais previstos nos requisitos da seção 3.3.1 incluem os responsáveis por ciclos e pelo tratamento de alertas (RF002, RF023), o e-mail usado nas notificações (RF018), as credenciais individuais e o identificador interno `usuario_id` (RF021). O painel e a API só respondem a usuários autenticados (RN15).
 
 #### 3.1.6.3 Dados coletados
 
@@ -309,8 +309,6 @@ _Coloque aqui seu Storyboard (seguindo as instruções na descrição do artefat
 
 ## 3.3. Solução Técnica	
 
-_Nesta seção, detalhe a especificação da solução, de acordo com o disposto nas subseções._
-
 ### 3.3.1. Requisitos Funcionais (sprint 1, refinar e atualizar até sprint 5)
 
 Os requisitos abaixo saem do TAPI (MVP 1 a 7 e fluxo básico), da avaliação do protótipo e do kick-off com a Cerradinho (16/10/2026). A prioridade segue o que o parceiro chamou de indispensável no kick-off: alerta de lacre, alerta de prazo e geolocalização. Um RF só passa a `Simulado no Wokwi` depois que o caso de teste correspondente (seção 3.4.1) é executado e passa. Os IDs estão congelados: um RF removido não libera o número, e um RF novo entra no fim da lista.
@@ -337,9 +335,9 @@ Os requisitos abaixo saem do TAPI (MVP 1 a 7 e fluxo básico), da avaliação do
 | RF018 | O sistema deve notificar o responsável do ciclo a cada alerta, com o e-mail como canal inicial. | Fluxo básico; Kick-off com a Cerradinho (16/10/2026) | Alta | Planejado |
 | RF019 | O sistema deve medir o nível de bateria e enviá-lo em cada mensagem. | TAPI MVP 6 | Média | Planejado |
 | RF020 | O sistema deve cadastrar os dispositivos na plataforma, cada um com identificador e credencial próprios. | TAPI MVP 3 | Média | Planejado |
-| RF021 | O sistema deve autenticar os usuários do painel com credencial individual e perfil de acesso. | TAPI MVP 6 | Média | Planejado |
+| RF021 | O sistema deve atribuir a cada usuário um `usuario_id` único e permanente, gerado pela plataforma, vinculado à sua credencial individual e ao seu perfil de acesso, e autenticar esse usuário para acessar o painel. | TAPI MVP 6 | Média | Planejado |
 | RF022 | O sistema deve exibir gráficos e mapa com equipamentos por faixa de dias fora, alertas por tipo e última posição de cada equipamento. | TAPI MVP 6 | Média | Planejado |
-| RF023 | O sistema deve registrar o tratamento de um alerta com responsável, data e decisão. | Fluxo básico | Média | Planejado |
+| RF023 | O sistema deve atribuir cada alerta ao responsável pelo ciclo e permitir que esse responsável, após autenticação, registre a ciência e o tratamento com decisão, data e justificativa. | Fluxo básico | Média | Planejado |
 | RF024 | O sistema deve oferecer uma API autenticada e documentada para consulta dos dados por ferramentas de BI. | TAPI MVP 6 | Média | Planejado |
 | RF025 | O sistema deve emitir um alerta quando um dispositivo passa do período esperado sem se comunicar. | Kick-off com a Cerradinho (16/10/2026) | Média | Planejado |
 | RF026 | O sistema deve emitir um alerta quando os dias fora atingem a data limite legal do ciclo. | Kick-off com a Cerradinho (16/10/2026) | Média | Planejado |
@@ -349,7 +347,7 @@ Itens técnicos da avaliação: coleta de dados via sensor (RF005, RF006, RF019)
 
 ### 3.3.2. Regras de Negócio (sprint 1, refinar até sprint 5)
 
-As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e vêm das mesmas fontes: TAPI e kick-off com a Cerradinho (16/10/2026), além do regulamento do ICMS de Goiás no caso do prazo legal. Os valores marcados como `PENDENTE DE VALIDAÇÃO` são valores de teste usados no protótipo da seção 3.4.1 e serão definidos com o parceiro. Os casos de teste da 3.4.1 indicam qual RN verificam.
+As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e vêm das mesmas fontes: TAPI e kick-off com a Cerradinho (16/10/2026), além do regulamento do ICMS de Goiás no caso do prazo legal. Valores marcados como `PENDENTE DE VALIDAÇÃO` são propostas preliminares que dependem de confirmação do parceiro; quando usados em casos de teste da seção 3.4.1, não representam aprovação do parceiro. Os casos de teste da 3.4.1 indicam qual RN verificam.
 
 | ID   | Descrição | Origem | RF associado |
 |------|-----------|--------|--------------|
@@ -369,10 +367,12 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 | RN14 | Um dispositivo é considerado sem comunicação quando passa de dois intervalos de status periódico sem enviar nenhuma mensagem (14 dias com o padrão de 7 dias); o alerta é emitido uma vez e só volta a ser emitido depois de uma nova comunicação. Dois intervalos: `PENDENTE DE VALIDAÇÃO` | Kick-off com a Cerradinho (16/10/2026) | RF025 |
 | RN15 | O painel e a API só respondem a usuário autenticado; sem credencial válida, o acesso é negado e nenhum dado é exibido. | TAPI MVP 6 | RF021, RF024 |
 | RN16 | Mensagem de dispositivo não cadastrado ou com credencial inválida é rejeitada e não altera nenhum ciclo. | TAPI MVP 3 | RF020 |
+| RN17 | Cada usuário possui um `usuario_id` único, gerado pela plataforma e não reutilizado nem alterado após o cadastro. A credencial e o perfil de acesso são vinculados a esse identificador; o `usuario_id` identifica o usuário nos registros de auditoria sem expor sua credencial. | RF021; especificação preliminar do projeto | RF021, RF023 |
+| RN18 | Cada alerta é atribuído ao responsável do ciclo. Esse responsável deve registrar, após autenticação, a ciência e uma decisão de tratamento com justificativa em até 1 dia útil após a emissão. O prazo de 1 dia útil é `PENDENTE DE VALIDAÇÃO` com a Cerradinho. O registro inclui o `usuario_id` do responsável e data/hora, é preservado no histórico e não substitui registros anteriores; alertas sem tratamento dentro do prazo permanecem pendentes e são destacados no painel. | RF018, RF023; Fluxo básico. Prazo de 1 dia útil: `PENDENTE DE VALIDAÇÃO` com a Cerradinho | RF018, RF021, RF023 |
 
-**Compatibilidade entre requisitos e circuito atual.** RF001–RF027 e RN01–RN16 seguem a `develop`. A integração preserva o circuito e o firmware locais; as diferenças abaixo não representam requisitos já atendidos.
+**Compatibilidade entre as regras de negócio e o protótipo atual.** A tabela abaixo mostra como o firmware da seção 3.4.1 trata as regras que ele já cobre; as diferenças indicadas não representam requisitos já atendidos.
 
-| Regra da develop | Situação atual / tratamento na integração |
+| Regra | Situação no protótipo atual |
 |---|---|
 | RN05 — envio da violação fora da rotina periódica | Preservar registro local independente de GNSS/rede. Entrega ao servidor ainda não implementada; manter limites de latência pendentes com o parceiro. “Na hora” não define SLA nem garante entrega sem conexão. |
 | RN08 — data/hora GNSS e HDOP máximo de 2,0 | O firmware atual verifica validade, idade e satélites, mas não aplica esse limite de HDOP nem persiste data/hora absoluta. Registrar adequação futura do driver LC76G-PA; limite de HDOP ainda pendente. |
@@ -400,15 +400,15 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 
 | Persona | RF    | RN   | Caso de Teste | Evidência        |
 |---------|-------|------|---------------|------------------|
-| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF001 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF001 | Não se aplica — o cadastro do equipamento não tem restrição própria; as restrições começam na abertura do ciclo (RN02) | Planejado — CT a definir | Planejado, sprint a definir |
 | P1 Geraldo — P1-C1 Saída com TAG e lacre | RF002 | RN02 | Planejado — CT a definir | Planejado, sprint a definir |
 | P1 Geraldo — P1-C1 Saída com TAG e lacre | RF003 | RN01 | Planejado — CT a definir | Planejado, sprint a definir |
 | P1 Geraldo — P1-C1 Saída com TAG e lacre | RF004 | RN01 | CT15 | `assets/wokwi/CT15.png` — PENDENTE DE EVIDÊNCIA |
 | P1 Geraldo — P1-C4 Falha | RF005 | RN08 | CT19, CT20, CT22 | `assets/wokwi/CT19.png`, `assets/wokwi/CT20.png`, `assets/wokwi/CT22.png` — PENDENTE DE EVIDÊNCIA |
 | P1 Geraldo — P1-C3 Lacre aberto | RF006 | RN05 | CT05, CT07, CT18 | `assets/wokwi/CT05.png`, `assets/wokwi/CT07.png`, `assets/wokwi/CT18.png` — PENDENTE DE EVIDÊNCIA |
 | P1 Geraldo — P1-C3 Lacre aberto | RF007 | RN06 | CT06, CT11 | `assets/wokwi/CT06.png`, `assets/wokwi/CT11.png` — PENDENTE DE EVIDÊNCIA |
-| P2 Clarice — P2-C4 Falha (associação direta) | RF008 | Não se aplica — sem RN específica | CT08, CT09 | `assets/wokwi/CT08.png`, `assets/wokwi/CT09.png` — PENDENTE DE EVIDÊNCIA |
-| P1 Geraldo — P1-C2 Acompanhamento | RF009 | Não se aplica — sem RN específica | CT01, CT02 | `assets/wokwi/CT01.png`, `assets/wokwi/CT02.png` — PENDENTE DE EVIDÊNCIA |
+| P2 Clarice — P2-C4 Falha (associação direta) | RF008 | Não se aplica — requisito técnico de conectividade; o comportamento sem conexão é regido pela RN09 (RF010) | CT08, CT09 | `assets/wokwi/CT08.png`, `assets/wokwi/CT09.png` — PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C2 Acompanhamento | RF009 | Não se aplica — define formato e canal de envio; quando cada mensagem sai é regido pela RN05 e pela RN07 | CT01, CT02 | `assets/wokwi/CT01.png`, `assets/wokwi/CT02.png` — PENDENTE DE EVIDÊNCIA |
 | P2 Clarice — P2-C4 Falha | RF010 | RN09 | CT08, CT09, CT10, CT21, CT22 | `assets/wokwi/CT08.png`, `assets/wokwi/CT09.png`, `assets/wokwi/CT10.png`, `assets/wokwi/CT21.png`, `assets/wokwi/CT22.png` — PENDENTE DE EVIDÊNCIA |
 | P1 Geraldo — P1-C2 Acompanhamento | RF011 | RN07 | CT02 | `assets/wokwi/CT02.png` — PENDENTE DE EVIDÊNCIA |
 | P1 Geraldo — P1-C2 Acompanhamento; P2 Clarice — P2-C3 Prazo legal; P3 Izidio — P3-C2 ICMS por safra | RF012 | RN12, RN13 | CT03, CT04 | `assets/wokwi/CT03.png`, `assets/wokwi/CT04.png` — PENDENTE DE EVIDÊNCIA |
@@ -417,12 +417,12 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 | P1 Geraldo — P1-C2 Acompanhamento; P1-C4 Falha | RF015 | RN08 | CT19, CT20, CT22 | `assets/wokwi/CT19.png`, `assets/wokwi/CT20.png`, `assets/wokwi/CT22.png` — PENDENTE DE EVIDÊNCIA |
 | P2 Clarice — P2-C2 Encerramento do ciclo; P3 Izidio — P3-C3 Falha | RF016 | RN11 | CT14, CT16 | `assets/wokwi/CT14.png`, `assets/wokwi/CT16.png` — PENDENTE DE EVIDÊNCIA |
 | P2 Clarice — P2-C2 Encerramento do ciclo; P3 Izidio — P3-C1 Histórico para o BI | RF017 | RN11, RN12 | CT14 | `assets/wokwi/CT14.png` — PENDENTE DE EVIDÊNCIA |
-| P1 Geraldo — P1-C2 Acompanhamento; P2 Clarice — P2-C1 Retorno sem aviso | RF018 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento; P2 Clarice — P2-C1 Retorno sem aviso | RF018 | Não se aplica — define o canal da notificação; a emissão dos alertas é regida pelas RN04, RN05, RN10, RN13 e RN14, e o prazo de tratamento pela RN18 | Planejado — CT a definir | Planejado, sprint a definir |
 | P1 Geraldo — P1-C2 Acompanhamento (associação indireta) | RF019 | RN10 | CT12, CT13, CT23 | `assets/wokwi/CT12.png`, `assets/wokwi/CT13.png`, `assets/wokwi/CT23.png` — PENDENTE DE EVIDÊNCIA |
 | P1 Geraldo — P1-C1 Saída com TAG e lacre | RF020 | RN16 | Planejado — CT a definir | Planejado, sprint a definir |
-| P1 Geraldo — P1-C2 Acompanhamento (associação transversal) | RF021 | RN15 | Planejado — CT a definir | Planejado, sprint a definir |
-| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF022 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
-| P1 Geraldo — P1-C3 Lacre aberto | RF023 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento (associação transversal) | RF021 | RN15, RN17 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF022 | Não se aplica — requisito de apresentação dos dados; o acesso ao painel é regido pela RN15 (RF021) | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento; P1 Geraldo — P1-C3 Lacre aberto | RF023 | RN18 | Planejado — CT a definir | Planejado, sprint a definir |
 | P3 Izidio — P3-C1 Histórico para o BI | RF024 | RN15 | Planejado — CT a definir | Planejado, sprint a definir |
 | P1 Geraldo — P1-C4 Falha | RF025 | RN14 | Planejado — CT a definir | Planejado, sprint a definir |
 | P2 Clarice — P2-C3 Prazo legal | RF026 | RN13 | Planejado — CT a definir | Planejado, sprint a definir |
@@ -486,7 +486,7 @@ _Nesta seção, detalhe os resultados obtidos com a implementação, de acordo c
 
 **Link do protótipo:** https://wokwi.com/projects/478276108359405569
 
-**Circuito principal integrado (21/10/2026):** o arquivo local de referência é
+**Circuito principal (21/10/2026):** o arquivo de referência no repositório é
 [`src/firmware/prototipo_wokwi/diagram.json`](../src/firmware/prototipo_wokwi/diagram.json),
 com ESP32 DevKit v1, GPS/GNSS customizado, lacre no GPIO27, potenciômetro no GPIO34,
 LEDs verde/amarelo/vermelho/azul nos GPIO25/26/23/14, botões nos GPIO33/13 e chave

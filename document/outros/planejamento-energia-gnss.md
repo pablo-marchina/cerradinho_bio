@@ -82,7 +82,7 @@ Os critérios mensuráveis propostos ficam nesta seção; os procedimentos futur
 
 ### 3.3. Rastreabilidade do planejamento
 
-Rastreabilidade técnica proposta, vinculada aos RF e RN de negócio incorporados da `develop`. A matriz não indica testes executados nem cobre integralmente os 27 RFs: prorrogação, prazo legal, ausência de comunicação e autenticação da plataforma/dispositivo ainda precisam de cobertura específica além dos cenários embarcados abaixo.
+Rastreabilidade técnica proposta, vinculada aos RF e RN de negócio das seções 3.3.1 e 3.3.2 da [documentação](../documentacao.md). A matriz não indica testes executados nem cobre integralmente os 27 RFs: prorrogação, prazo legal, ausência de comunicação e autenticação da plataforma/dispositivo ainda precisam de cobertura específica além dos cenários embarcados abaixo.
 
 | Necessidade | RF | RN de negócio | Regra técnica proposta | RNF | Casos de teste | Evidência a produzir |
 |---|---|---|---|---|---|---|
