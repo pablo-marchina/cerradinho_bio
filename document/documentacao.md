@@ -375,15 +375,39 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 
 A Matriz de Rastreabilidade (RTM) relaciona os requisitos funcionais (RF) e as regras de negócio (RN) aos casos de teste e às evidências de verificação. Ela permite identificar a cobertura de cada requisito e acompanhar as pendências de validação.
 
-| Necessidade | RF | RN de negócio | Casos de teste | Evidência registrada / pendência |
-|---|---|---|---|---|
-| Detecção do lacre independente de GNSS/rede | RF006, RF009, RF010 | RN05, RN09 | CT05, CT08, CT18 | [Violação local](../assets/wokwi/CT05-evento.png) e [armazenamento sem rede](../assets/wokwi/CT08.png) observados. CT18 **REPROVADO**: perdeu transições estáveis de 200 ms sem rede. CT19 confirmou resposta do lacre durante espera por fix; resultados e logs na 3.4.1. Publicação MQTT de RF009 não comprovada. |
-| Última localização válida identificável | RF005, RF015 | RN08 | CT19, CT20, CT22 | CT19/CT20 aprovados no Wokwi em 23/10/2026. CT22 preservou a referência e as filas, mas foi **REPROVADO no ambiente** porque `uptime_ms` não reiniciou; confirmação em hardware pendente. Ver 3.4.1. |
-| Eventos preservados sem rede | RF010 | RN09 | CT09, CT10, CT21, CT22 | [CT09](../assets/wokwi/CT09.png): reenvio Serial em ordem, mas bloqueado para confirmação do servidor. [CT10](../assets/wokwi/CT10.png): prioridade e resumo observados no simulador. CT21 confirmou retenção dos 16 diagnósticos ao alternar a rede. CT22 preservou as chaves NVS após reinício de CPU, mas não passou no critério de `uptime_ms`; retenção após corte físico de energia permanece pendente. |
-| Autorização de retirada | RF007 | RN05, RN06 | CT06, CT07, CT11 | [Retirada/reaplicação](../assets/wokwi/CT06.png), [expiração](../assets/wokwi/CT07.png) e [ausência de repetição ao segurar](../assets/wokwi/CT11-pressao-mantida.png) verificadas; fronteira exata de debounce não medida. |
-| Ciclos e prazos | RF004, RF011–RF014, RF016, RF017 | RN01, RN03, RN04, RN07, RN11 | CT02–CT04, CT14–CT16 | Status dos dias 7/14, atraso, permanência 10/150, vínculo e recusas registrados. [CT14 corrigido](../assets/wokwi/CT14-corrigido.png) aprovado no reteste de 23/10/2026; histórico após corte de energia não verificado. Dias acelerados não validam contagem por NF real. |
-| Diagnóstico do circuito | Transversal | Transversal | CT01, CT17–CT23, CT35 | [Inicialização](../assets/wokwi/CT01.png) e [desligamento lógico](../assets/wokwi/CT35-desligado.png) registrados. CT17–CT23 executados em 23/10/2026; CT18 e CT22 reprovados, demais aprovados funcionalmente no simulador. Configurações, medições e logs na 3.4.1. |
-| Leitura e diagnóstico de bateria | RF019, RF027 | RN10 | CT12, CT13, CT23 | [Histerese](../assets/wokwi/CT12.png) e [entrada zero](../assets/wokwi/CT13-isolado.png) verificadas com leituras sintéticas. CT23 aprovado com níveis sintéticos 0/50/100%, sem alerta falso; diagnóstico elétrico físico permanece pendente. |
+| Persona | RF    | RN   | Caso de Teste | Evidência        |
+|---------|-------|------|---------------|------------------|
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF001 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF002 | RN02 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF003 | RN01 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF004 | RN01 | CT15 | [CT15](../assets/wokwi/CT15.png) |
+| P1 Geraldo — P1-C4 Falha | RF005 | RN08 | CT19, CT20, CT22 | [CT19](../assets/wokwi/CT19.png) e [CT20](../assets/wokwi/CT20.png) — APROVADOS no simulador; [CT22](../assets/wokwi/CT22.png) — **REPROVADO no ambiente**: referência e NVS retidas, mas `uptime_ms` não reiniciou ([log](../assets/wokwi/CT22.serial.txt)) |
+| P1 Geraldo — P1-C3 Lacre aberto | RF006 | RN05 | CT05, CT07, CT18 | [CT05](../assets/wokwi/CT05-evento.png), [CT07](../assets/wokwi/CT07.png); [CT18](../assets/wokwi/CT18-original.png) — **REPROVADO**: quatro de 20 transições estáveis de 200 ms perdidas sem rede ([log original](../assets/wokwi/CT18-original.serial.txt)) |
+| P1 Geraldo — P1-C3 Lacre aberto | RF007 | RN06 | CT06, CT11 | [CT06](../assets/wokwi/CT06-retirada.png), [CT11](../assets/wokwi/CT11.png) |
+| P2 Clarice — P2-C4 Falha (associação direta) | RF008 | Não se aplica — sem RN específica | CT08, CT09 | [CT08](../assets/wokwi/CT08.png), [CT09](../assets/wokwi/CT09.png) (BLOQUEADO para confirmação do servidor) |
+| P1 Geraldo — P1-C2 Acompanhamento | RF009 | Não se aplica — sem RN específica | CT01, CT02 | [CT01](../assets/wokwi/CT01.png), [CT02](../assets/wokwi/CT02.png) — diagnóstico e saída Serial observados; publicação MQTT não comprovada |
+| P2 Clarice — P2-C4 Falha | RF010 | RN09 | CT08, CT09, CT10, CT21, CT22 | [CT08](../assets/wokwi/CT08.png), [CT09](../assets/wokwi/CT09.png) (BLOQUEADO para confirmação do servidor), [CT10](../assets/wokwi/CT10.png); [CT21](../assets/wokwi/CT21.png) — APROVADO no limite de 16 diagnósticos NVS ([log](../assets/wokwi/CT21.serial.txt)); [CT22](../assets/wokwi/CT22.png) — **REPROVADO no ambiente** no critério de reinício de `uptime_ms`, com retenção das filas verificada ([log](../assets/wokwi/CT22.serial.txt)) |
+| P1 Geraldo — P1-C2 Acompanhamento | RF011 | RN07 | CT02 | [CT02](../assets/wokwi/CT02.png) |
+| P1 Geraldo — P1-C2 Acompanhamento; P2 Clarice — P2-C3 Prazo legal; P3 Izidio — P3-C2 ICMS por safra | RF012 | RN12, RN13 | CT03, CT04 | [CT03](../assets/wokwi/CT03.png), [CT04](../assets/wokwi/CT04.png) |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF013 | RN04 | CT03 | [CT03](../assets/wokwi/CT03.png) |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF014 | RN03, RN04 | CT04 | [CT04](../assets/wokwi/CT04.png) |
+| P1 Geraldo — P1-C2 Acompanhamento; P1-C4 Falha | RF015 | RN08 | CT19, CT20, CT22 | [CT19](../assets/wokwi/CT19.png) e [CT20](../assets/wokwi/CT20.png) — APROVADOS no simulador; [CT22](../assets/wokwi/CT22.png) — **REPROVADO no ambiente**: referência e NVS retidas, mas `uptime_ms` não reiniciou ([log](../assets/wokwi/CT22.serial.txt)) |
+| P2 Clarice — P2-C2 Encerramento do ciclo; P3 Izidio — P3-C3 Falha | RF016 | RN11 | CT14, CT16 | [CT14 corrigido](../assets/wokwi/CT14-corrigido.png) — APROVADO com dois encerramentos, ciclo inativo e dias zero ([log do reteste de 23/10](../assets/wokwi/CT14-2026-10-23.serial.txt)); CT16 APROVADO nas recusas por [lacre aberto](../assets/wokwi/CT16-corrigido-lacre-aberto.png) e [NF ausente](../assets/wokwi/CT16-corrigido-nf-ausente.png) |
+| P2 Clarice — P2-C2 Encerramento do ciclo; P3 Izidio — P3-C1 Histórico para o BI | RF017 | RN11, RN12 | CT14 | [CT14 corrigido](../assets/wokwi/CT14-corrigido.png) — APROVADO: [reutilização no ciclo 2](../assets/wokwi/CT14-corrigido-reutilizado.png) e contador de encerramentos 1/2 ([log do reteste de 23/10](../assets/wokwi/CT14-2026-10-23.serial.txt)); histórico após corte físico de energia ainda pendente |
+| P1 Geraldo — P1-C2 Acompanhamento; P2 Clarice — P2-C1 Retorno sem aviso | RF018 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento (associação indireta) | RF019 | RN10 | CT12, CT13, CT23 | [CT12](../assets/wokwi/CT12.png), [CT13](../assets/wokwi/CT13-isolado.png); [CT23](../assets/wokwi/CT23.png) — APROVADO com percentuais sintéticos 0/50/100%, uma falha do sensor em zero e nenhum alerta falso de bateria baixa ([log CT17/CT23](../assets/wokwi/CT17-CT23.serial.txt)) |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF020 | RN16 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento (associação transversal) | RF021 | RN15 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF022 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C3 Lacre aberto | RF023 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P3 Izidio — P3-C1 Histórico para o BI | RF024 | RN15 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C4 Falha | RF025 | RN14 | Planejado — CT a definir | Planejado, sprint a definir |
+| P2 Clarice — P2-C3 Prazo legal | RF026 | RN13 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento | RF027 | RN10 | CT12, CT13, CT23 | [CT12](../assets/wokwi/CT12.png), [CT13](../assets/wokwi/CT13-isolado.png); [CT23](../assets/wokwi/CT23.png) — APROVADO com percentuais sintéticos 0/50/100%, uma falha do sensor em zero e nenhum alerta falso de bateria baixa ([log CT17/CT23](../assets/wokwi/CT17-CT23.serial.txt)) |
+
+**Casos de teste transversais:** [CT17](../assets/wokwi/CT17.png) (APROVADO no simulador, [log](../assets/wokwi/CT17-CT23.serial.txt)) e CT35 ([desligado](../assets/wokwi/CT35-desligado.png), [religado](../assets/wokwi/CT35.png)) verificam aspectos transversais e, por isso, não são atribuídos a um RF ou a uma RN específicos nesta matriz.
+
+Os resultados dos CT17–CT23 correspondem às execuções de 23/10/2026 descritas na seção 3.4.1, com capturas, logs, configuração e limitações. As aprovações são funcionais no simulador; CT18 e CT22 permanecem reprovados, e CT09 depende da confirmação de entrega pelo servidor.
 
 A proposta de RNFs, a máquina de estados de energia e os CT24–CT34 estão no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md), para revisão nas próximas sprints.
 
@@ -709,7 +733,7 @@ Capturas complementares: [Rodada adicional](../assets/wokwi/CT13.png).
 </details>
 
 <details>
-<summary>CT14 — Encerramento e reutilização — APROVADO no reteste</summary>
+<summary>CT14 — Encerramento e reutilização — APROVADO</summary>
 
 ![CT14: Encerramento corrigido com ciclo inativo, dias zero e contador incrementado.](../assets/wokwi/CT14-corrigido.png)
 
