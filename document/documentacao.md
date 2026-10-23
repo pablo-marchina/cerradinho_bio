@@ -373,17 +373,39 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 
 ### 3.3.4. Matriz de Rastreabilidade (RTM) (sprints 1 a 5)
 
-Rastreabilidade dos cenários da Sprint 1, vinculada aos RF e RN de negócio. As execuções dos CT01–CT16 e CT35 têm resultados e capturas na seção 3.4.1 e no [registro consolidado](../assets/wokwi/REGISTRO-COMPLEMENTAR-2026-10-22.md). A cobertura é funcional e simulada: CT09 está **BLOQUEADO** para confirmação pelo servidor e CT14 está **REPROVADO** na consistência do JSON. CT17–CT23 permanecem planejados. A matriz não cobre integralmente os 27 RFs; prorrogação, prazo legal, ausência de comunicação e autenticação ainda precisam de casos específicos.
+Rastreabilidade dos cenários da Sprint 1, vinculada aos RF e RN de negócio. As execuções dos CT01–CT16 e CT35 têm resultados e capturas na seção 3.4.1 e no [registro consolidado](../assets/wokwi/REGISTRO-COMPLEMENTAR-2026-10-22.md); a coluna Evidência aponta para a captura principal de cada CT. A cobertura é funcional e simulada: CT09 está **BLOQUEADO** para confirmação pelo servidor e CT14 está **REPROVADO** na consistência do JSON. CT17–CT23 ainda não foram executados.
 
-| Necessidade | RF | RN de negócio | Casos de teste | Evidência registrada / pendência |
-|---|---|---|---|---|
-| Detecção do lacre independente de GNSS/rede | RF006, RF009, RF010 | RN05, RN09 | CT05, CT08, CT18 | [Violação local](../assets/wokwi/CT05-evento.png) e [armazenamento sem rede](../assets/wokwi/CT08.png) observados. CT18 não executado: faltam medição de latência e ensaio durante ausência de fix. Publicação MQTT de RF009 não comprovada. |
-| Última localização válida identificável | RF005, RF015 | RN08 | CT19, CT20, CT22 | Casos não executados nesta rodada; produzir JSON antes/depois, condições de fix e verificação de retenção. |
-| Eventos preservados sem rede | RF010 | RN09 | CT09, CT10, CT21, CT22 | [CT09](../assets/wokwi/CT09.png): reenvio Serial em ordem, mas bloqueado para confirmação do servidor. [CT10](../assets/wokwi/CT10.png): prioridade e resumo observados no simulador. CT21/CT22 não executados; retenção após corte de energia não comprovada. |
-| Autorização de retirada | RF007 | RN05, RN06 | CT06, CT07, CT11 | [Retirada/reaplicação](../assets/wokwi/CT06.png), [expiração](../assets/wokwi/CT07.png) e [ausência de repetição ao segurar](../assets/wokwi/CT11-pressao-mantida.png) verificadas; fronteira exata de debounce não medida. |
-| Ciclos e prazos | RF004, RF011–RF014, RF016, RF017 | RN01, RN03, RN04, RN07, RN11 | CT02–CT04, CT14–CT16 | Status dos dias 7/14, atraso, permanência 10/150, vínculo e recusas registrados. [CT14](../assets/wokwi/CT14.png) reprovado no JSON; histórico após corte de energia não verificado. Dias acelerados não validam contagem por NF real. |
-| Diagnóstico do circuito | Transversal | Transversal | CT01, CT17–CT23, CT35 | [Inicialização](../assets/wokwi/CT01.png) e [desligamento lógico](../assets/wokwi/CT35-desligado.png) registrados. CT17–CT23 não executados nesta rodada; configurações e logs na 3.4.1. |
-| Leitura e diagnóstico de bateria | RF019, RF027 | RN10 | CT12, CT13, CT23 | [Histerese](../assets/wokwi/CT12.png) e [entrada zero](../assets/wokwi/CT13-isolado.png) verificadas com leituras sintéticas. CT23 não executado como ensaio próprio; diagnóstico elétrico físico permanece pendente. |
+| Persona | RF    | RN   | Caso de Teste | Evidência        |
+|---------|-------|------|---------------|------------------|
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF001 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF002 | RN02 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF003 | RN01 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF004 | RN01 | CT15 | [CT15](../assets/wokwi/CT15.png) |
+| P1 Geraldo — P1-C4 Falha | RF005 | RN08 | CT19, CT20, CT22 | CT19, CT20, CT22 — NÃO EXECUTADOS |
+| P1 Geraldo — P1-C3 Lacre aberto | RF006 | RN05 | CT05, CT07, CT18 | [CT05](../assets/wokwi/CT05-evento.png), [CT07](../assets/wokwi/CT07.png); CT18 — NÃO EXECUTADO |
+| P1 Geraldo — P1-C3 Lacre aberto | RF007 | RN06 | CT06, CT11 | [CT06](../assets/wokwi/CT06-retirada.png), [CT11](../assets/wokwi/CT11.png) |
+| P2 Clarice — P2-C4 Falha (associação direta) | RF008 | Não se aplica — sem RN específica | CT08, CT09 | [CT08](../assets/wokwi/CT08.png), [CT09](../assets/wokwi/CT09.png) (BLOQUEADO para confirmação do servidor) |
+| P1 Geraldo — P1-C2 Acompanhamento | RF009 | Não se aplica — sem RN específica | CT01, CT02 | [CT01](../assets/wokwi/CT01.png), [CT02](../assets/wokwi/CT02.png) |
+| P2 Clarice — P2-C4 Falha | RF010 | RN09 | CT08, CT09, CT10, CT21, CT22 | [CT08](../assets/wokwi/CT08.png), [CT09](../assets/wokwi/CT09.png) (BLOQUEADO para confirmação do servidor), [CT10](../assets/wokwi/CT10.png); CT21, CT22 — NÃO EXECUTADOS |
+| P1 Geraldo — P1-C2 Acompanhamento | RF011 | RN07 | CT02 | [CT02](../assets/wokwi/CT02.png) |
+| P1 Geraldo — P1-C2 Acompanhamento; P2 Clarice — P2-C3 Prazo legal; P3 Izidio — P3-C2 ICMS por safra | RF012 | RN12, RN13 | CT03, CT04 | [CT03](../assets/wokwi/CT03.png), [CT04](../assets/wokwi/CT04.png) |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF013 | RN04 | CT03 | [CT03](../assets/wokwi/CT03.png) |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF014 | RN03, RN04 | CT04 | [CT04](../assets/wokwi/CT04.png) |
+| P1 Geraldo — P1-C2 Acompanhamento; P1-C4 Falha | RF015 | RN08 | CT19, CT20, CT22 | CT19, CT20, CT22 — NÃO EXECUTADOS |
+| P2 Clarice — P2-C2 Encerramento do ciclo; P3 Izidio — P3-C3 Falha | RF016 | RN11 | CT14, CT16 | [CT14](../assets/wokwi/CT14.png) (REPROVADO na consistência do JSON), [CT16](../assets/wokwi/CT16.png) |
+| P2 Clarice — P2-C2 Encerramento do ciclo; P3 Izidio — P3-C1 Histórico para o BI | RF017 | RN11, RN12 | CT14 | [CT14](../assets/wokwi/CT14.png) (REPROVADO na consistência do JSON) |
+| P1 Geraldo — P1-C2 Acompanhamento; P2 Clarice — P2-C1 Retorno sem aviso | RF018 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento (associação indireta) | RF019 | RN10 | CT12, CT13, CT23 | [CT12](../assets/wokwi/CT12.png), [CT13](../assets/wokwi/CT13-isolado.png); CT23 — NÃO EXECUTADO |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF020 | RN16 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento (associação transversal) | RF021 | RN15 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF022 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C3 Lacre aberto | RF023 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P3 Izidio — P3-C1 Histórico para o BI | RF024 | RN15 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C4 Falha | RF025 | RN14 | Planejado — CT a definir | Planejado, sprint a definir |
+| P2 Clarice — P2-C3 Prazo legal | RF026 | RN13 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento | RF027 | RN10 | CT12, CT13, CT23 | [CT12](../assets/wokwi/CT12.png), [CT13](../assets/wokwi/CT13-isolado.png); CT23 — NÃO EXECUTADO |
+
+**Casos de teste transversais:** CT17 (NÃO EXECUTADO) e CT35 ([desligado](../assets/wokwi/CT35-desligado.png), [religado](../assets/wokwi/CT35.png)) verificam aspectos transversais e, por isso, não são atribuídos a um RF ou a uma RN específicos nesta matriz.
 
 A proposta de RNFs, a máquina de estados de energia e os CT24–CT34 estão no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md), para revisão nas próximas sprints.
 
