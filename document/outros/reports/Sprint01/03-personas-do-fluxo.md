@@ -40,6 +40,8 @@ As três primeiras (Geraldo, Clarice e Izidio) são as personas do Artefato 2. H
 
 **Campos que não vêm do kick-off.** O parceiro descreveu papéis, ferramentas, dores e necessidades, mas não falou de idade, formação nem de familiaridade com tecnologia. Por isso **demografia e letramento digital estão marcados como hipótese** e foram inferidos do papel e das ferramentas citadas; precisam de validação com o parceiro. Os cenários são do grupo, escritos a partir do fluxo e das falas, e usam apenas o que o produto planeja fazer.
 
+**Como ler os IDs dos cenários.** Cada cenário tem um ID no formato `Pn-Cm`: `P` é a persona e `C` é o cenário. **P1 é Geraldo, P2 é Clarice e P3 é Izidio**; `P1-C2` é o segundo cenário do Geraldo. O último cenário de cada persona descreve uma falha (por exemplo, equipamento sem posição válida) e os IDs são os que a matriz de rastreabilidade cita.
+
 **Escala de letramento digital (1 a 5).**
 
 | Nível | Critério |
@@ -50,7 +52,7 @@ As três primeiras (Geraldo, Clarice e Izidio) são as personas do Artefato 2. H
 | 4 | Navega bem em vários sistemas, filtra, cruza dados e emite relatórios. |
 | 5 | Integra sistemas, automatiza rotinas ou consome dados por API. |
 
-### 3.1 Persona principal: Geraldo, analista de PCM
+### 3.1 Persona principal (P1): Geraldo, analista de PCM
 
 | | |
 |---|---|
@@ -73,7 +75,7 @@ As três primeiras (Geraldo, Clarice e Izidio) são as personas do Artefato 2. H
 - **P1-C3, lacre aberto:** recebe o alerta imediato de lacre aberto; confere se foi retirada autorizada pelo fornecedor ou violação e registra o tratamento.
 - **P1-C4, falha:** o equipamento fica sem posição válida ou o alerta parece falso; Geraldo vê a última posição válida e o horário e decide se aciona o fornecedor.
 
-### 3.2 Persona secundária: Clarice, analista fiscal
+### 3.2 Persona secundária (P2): Clarice, analista fiscal
 
 | | |
 |---|---|
@@ -96,7 +98,7 @@ As três primeiras (Geraldo, Clarice e Izidio) são as personas do Artefato 2. H
 - **P2-C3, prazo legal:** recebe o alerta de que o prazo de 270 ou 360 dias está perto de vencer e decide por prorrogação ou retorno simbólico antes do complemento de ICMS.
 - **P2-C4, falha:** o aviso de retorno não chega por falta de conexão; o evento fica guardado e sai depois, e o ciclo continua aberto até o lançamento.
 
-### 3.3 Persona de inteligência: Izidio, analista de logística (acompanhamento de remessas)
+### 3.3 Persona de inteligência (P3): Izidio, analista de logística (acompanhamento de remessas)
 
 | | |
 |---|---|

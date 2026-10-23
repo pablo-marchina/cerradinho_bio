@@ -1,0 +1,425 @@
+{
+  "version": 1,
+  "author": "Grupo Guará",
+  "editor": "wokwi",
+  "serialMonitor": {
+    "display": "always",
+    "collapse": false
+  },
+  "parts": [
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp",
+      "top": 60,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "chip-gps",
+      "id": "gps",
+      "top": 0,
+      "left": 410,
+      "attrs": {
+        "latitude": "-23.55",
+        "longitude": "-46.6333",
+        "fixValid": "1"
+      }
+    },
+    {
+      "type": "wokwi-slide-switch",
+      "id": "seal",
+      "top": 190,
+      "left": 410,
+      "attrs": {
+        "bounce": "0"
+      }
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "battery",
+      "top": 330,
+      "left": 410,
+      "attrs": {
+        "value": "800"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_verde",
+      "top": -140,
+      "left": -160,
+      "attrs": {
+        "color": "green",
+        "label": "verde (25)"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_verde",
+      "top": -60,
+      "left": -180,
+      "rotate": 90,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_amarelo",
+      "top": -140,
+      "left": -50,
+      "attrs": {
+        "color": "yellow",
+        "label": "amarelo (26)"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_amarelo",
+      "top": -60,
+      "left": -70,
+      "rotate": 90,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_vermelho",
+      "top": -140,
+      "left": 60,
+      "attrs": {
+        "color": "red",
+        "label": "vermelho (23)"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_vermelho",
+      "top": -60,
+      "left": 40,
+      "rotate": 90,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_azul",
+      "top": -140,
+      "left": 170,
+      "attrs": {
+        "color": "blue",
+        "label": "azul (14)"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_azul",
+      "top": -60,
+      "left": 150,
+      "rotate": 90,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn_autorizar",
+      "top": 260,
+      "left": -280,
+      "attrs": {
+        "color": "green",
+        "label": "BTN_AUTORIZAR (33)"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn_ciclo",
+      "top": 370,
+      "left": -280,
+      "attrs": {
+        "color": "blue",
+        "label": "BTN_CICLO (13)"
+      }
+    },
+    {
+      "type": "wokwi-slide-switch",
+      "id": "sw_rede",
+      "top": 150,
+      "left": -280,
+      "attrs": {
+        "bounce": "0"
+      }
+    },
+    {
+      "type": "wokwi-slide-switch",
+      "id": "sw_energia",
+      "top": 60,
+      "left": -280,
+      "attrs": {
+        "bounce": "0"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "powerLabel",
+      "top": 10,
+      "left": -280,
+      "attrs": {
+        "text": "ON/OFF | GPIO19 | esquerda = ligado | direita = desligado"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "title",
+      "top": -225,
+      "left": -280,
+      "attrs": {
+        "text": "GUARATRACKING | Circuito principal integrado"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "gpsLabel",
+      "top": -45,
+      "left": 410,
+      "attrs": {
+        "text": "GPS SIMULADO | TX -> RX2/GPIO16 | RX -> TX2/GPIO17"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "sealLabel",
+      "top": 140,
+      "left": 410,
+      "attrs": {
+        "text": "LACRE | GPIO27 | esquerda = integro | direita = violado"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "batteryLabel",
+      "top": 285,
+      "left": 410,
+      "attrs": {
+        "text": "BATERIA SIMULADA | GPIO34 | nivel, nao e fonte de energia"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "networkLabel",
+      "top": 95,
+      "left": -280,
+      "attrs": {
+        "text": "REDE SIMULADA | GPIO18 | esquerda = disponivel | direita = indisponivel"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "buttonLabel",
+      "top": 215,
+      "left": -280,
+      "attrs": {
+        "text": "BOTOES | LOW = pressionado | ciclo: toque = vinculo, 2 s = encerrar"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "notes",
+      "top": 485,
+      "left": -280,
+      "attrs": {
+        "text": "LEDs: verde = operando (pisca na retirada autorizada); amarelo = atraso (pisca) / permanencia (fixo)\nVermelho = violacao do lacre (pisca); azul = rede simulada indisponivel (pisca)\nSerial: NF = lanca NF de retorno; LIMIAR n = muda o limiar de permanencia\nWi-Fi real independente da chave. Sem transporte ao servidor.\nDemo: 1 s = 1 dia no ciclo, coleta GPS a cada 30 s. Nao valida consumo ou autonomia."
+      }
+    }
+  ],
+  "connections": [
+    [
+      "esp:TX0",
+      "$serialMonitor:RX",
+      "",
+      []
+    ],
+    [
+      "esp:RX0",
+      "$serialMonitor:TX",
+      "",
+      []
+    ],
+    [
+      "gps:VCC",
+      "esp:3V3",
+      "red",
+      []
+    ],
+    [
+      "gps:GND",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "gps:TX",
+      "esp:RX2",
+      "green",
+      []
+    ],
+    [
+      "gps:RX",
+      "esp:TX2",
+      "blue",
+      []
+    ],
+    [
+      "seal:1",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "seal:2",
+      "esp:D27",
+      "orange",
+      []
+    ],
+    [
+      "battery:VCC",
+      "esp:3V3",
+      "red",
+      []
+    ],
+    [
+      "battery:GND",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "battery:SIG",
+      "esp:D34",
+      "purple",
+      []
+    ],
+    [
+      "esp:D25",
+      "r_verde:1",
+      "green",
+      []
+    ],
+    [
+      "r_verde:2",
+      "led_verde:A",
+      "green",
+      []
+    ],
+    [
+      "led_verde:C",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "esp:D26",
+      "r_amarelo:1",
+      "yellow",
+      []
+    ],
+    [
+      "r_amarelo:2",
+      "led_amarelo:A",
+      "yellow",
+      []
+    ],
+    [
+      "led_amarelo:C",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "esp:D23",
+      "r_vermelho:1",
+      "red",
+      []
+    ],
+    [
+      "r_vermelho:2",
+      "led_vermelho:A",
+      "red",
+      []
+    ],
+    [
+      "led_vermelho:C",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "esp:D14",
+      "r_azul:1",
+      "blue",
+      []
+    ],
+    [
+      "r_azul:2",
+      "led_azul:A",
+      "blue",
+      []
+    ],
+    [
+      "led_azul:C",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "esp:D33",
+      "btn_autorizar:1.l",
+      "orange",
+      []
+    ],
+    [
+      "btn_autorizar:2.r",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "esp:D13",
+      "btn_ciclo:1.l",
+      "orange",
+      []
+    ],
+    [
+      "btn_ciclo:2.r",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "esp:D18",
+      "sw_rede:2",
+      "violet",
+      []
+    ],
+    [
+      "sw_rede:1",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "esp:D19",
+      "sw_energia:2",
+      "gold",
+      []
+    ],
+    [
+      "sw_energia:1",
+      "esp:GND.1",
+      "black",
+      []
+    ]
+  ]
+}

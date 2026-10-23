@@ -1,0 +1,20 @@
+%%{init: {"theme":"base","look":"classic","state":{"look":"classic","layout":"dagre","padding":16,"nodeSpacing":30,"rankSpacing":35},"themeCSS":".label, .nodeLabel, .edgeLabel, text { font-family: Arial, sans-serif !important; }","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"16px","primaryColor":"#eff6ff","primaryTextColor":"#17365d","primaryBorderColor":"#6b93bd","lineColor":"#536b80","edgeLabelBackground":"#ffffff","background":"#ffffff"}}}%%
+stateDiagram-v2
+    direction LR
+    accTitle: Estados propostos para gerenciamento de energia
+    accDescr: Preparar tarefas, executar tarefas, preparar a suspensão e permanecer suspenso até despertar por temporizador ou lacre. Falhas e condições de saída são descritas nas tabelas do planejamento.
+    state "Preparando tarefas" as Preparar
+    state "Executando tarefas" as Executar
+    state "Preparando suspensão" as Encerrar
+    state "Suspenso" as Suspenso
+
+    [*] --> Preparar
+    Preparar --> Executar: Contexto pronto
+    Executar --> Encerrar: Tarefas encerradas
+    Encerrar --> Suspenso: Suspensão permitida
+    Suspenso --> Preparar: Temporizador ou lacre
+
+    classDef ativo fill:#eff6ff,color:#17365d,stroke:#6b93bd,stroke-width:1.5px
+    classDef repouso fill:#e7f5ef,color:#155b45,stroke:#46997b,stroke-width:1.5px
+    class Preparar,Executar,Encerrar ativo
+    class Suspenso repouso
