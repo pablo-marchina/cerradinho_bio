@@ -470,7 +470,7 @@ _Nesta seção, detalhe os resultados obtidos com a implementação, de acordo c
 
 **Link do protótipo:** https://wokwi.com/projects/478276108359405569
 
-**Circuito principal integrado (21/10/2026):** o arquivo local de referência é
+**Circuito principal (21/10/2026):** o arquivo de referência no repositório é
 [`src/firmware/prototipo_wokwi/diagram.json`](../src/firmware/prototipo_wokwi/diagram.json),
 com ESP32 DevKit v1, GPS/GNSS customizado, lacre no GPIO27, potenciômetro no GPIO34,
 LEDs verde/amarelo/vermelho/azul nos GPIO25/26/23/14, botões nos GPIO33/13 e chave
