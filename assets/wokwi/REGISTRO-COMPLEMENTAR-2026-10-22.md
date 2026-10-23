@@ -147,3 +147,7 @@ Pendências e acompanhamento após a execução:
 Estado final da bancada: simulador pausado em aproximadamente 132,3 s da última rodada; ciclo 1 ativo, lacre fechado, rede simulada disponível, bateria 78%, fila zero; capturadores Serial encerrados. O estado final descrito no registro anterior corresponde àquela execução anterior e foi sucedido por esta rodada.
 
 Nenhum commit, push ou MR foi realizado. As evidências estão disponíveis no diretório `assets/wokwi/` para revisão.
+
+## Adendo — reteste do CT14
+
+Depois deste registro, `requestClose()` em `src/firmware/main.cpp` passou a encerrar o ciclo antes de publicar `CICLO_ENCERRADO` (commit `7777594`). O [log de confirmação da falha](CT14-reteste.serial.txt), feito antes da correção, repete `ciclo_ativo=true`; ele também traz a recusa por NF ausente da [captura de reteste do CT16](CT16-reteste-nf-ausente.png). O [log do reteste](CT14-corrigido.serial.txt), feito com a correção, mostra `CICLO_ENCERRADO` com `ciclo_ativo=false` e `dias_fora=0`. O CT14 passa a **APROVADO no reteste**; a reprovação da primeira execução continua registrada acima. O reteste não repetiu a reutilização, cuja lógica não mudou.
