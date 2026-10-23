@@ -157,7 +157,7 @@ A matriz orienta prioridades. Escalas: probabilidade 10%–90%; impacto muito ba
 <div align="center">
   <p><strong>Figura 1 — Matriz de riscos do projeto</strong></p>
   <img
-    src="..\assets\negocios\Matriz de Risco - Guará.png"
+    src="../assets/negocios/matriz_riscos.png"
     alt="Matriz de riscos do projeto"
     width="100%"
   >
