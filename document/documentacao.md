@@ -148,7 +148,23 @@ O ensaio deve incluir retirada autorizada do lacre, indisponibilidade de conexã
 	
 ### 3.1.4. Value Proposition Canvas (sprint 1)	
 
-_O Canvas da proposta de valor deve ser feito considerando a solução que vocês estão desenvolvendo. Usar o template disponível no drive da turma._     
+O canvas apresenta uma proposta única do GuaráTracking para PCM (P1), Fiscal (P2) e Logística (P3) da CerradinhoBio. O perfil considera o TAPI [6] e o *kick-off* de 16/10/2026 [34]. A solução combina TAG reutilizável com lacre, painel, histórico e API para consulta dos ciclos e alimentação do BI. Os ganhos são hipóteses a medir no piloto.
+
+![Value Proposition Canvas do GuaráTracking, com mapa de valor e perfil de PCM, Fiscal e Logística.](../assets/negocios/value-proposition-canvas.png)
+
+*Figura — Value Proposition Canvas do GuaráTracking para PCM, Fiscal e Logística.*
+
+*Fonte: template “Value Proposition Canvas - template png”, pasta de templates de negócios do Inteli [33]; conteúdo: Grupo G01 (2026).*
+
+| Dor do cliente | Resposta do GuaráTracking | Ganho relacionado |
+|---|---|---|
+| D1 Controle espalhado e manual | Cadastro do ciclo (AD1) e consulta consolidada (CG1) | G1 Localizar e consultar sem ligar |
+| D2 Localização e prazo incertos | Última posição (AD2), prazo separado da permanência (AD3) e alertas (CG2) | G2 Agir antes do vencimento |
+| D3 Difícil decidir diante do atraso | Histórico por fornecedor (CG4) | G4 Histórico útil à gestão |
+| D4 Retorno sem baixa fiscal | Retorno aguardando baixa (AD4) e baixa ligada à NF (CG3) | G3 Fechar o retorno corretamente |
+| D5 Complemento de ICMS de R$ 602.969 por prazo vencido, informado no *kick-off* para 2024/25; parcela ligada à manutenção externa não apurada [34] | Acompanhamento dos prazos (AD3), sem garantia de evitar incidência fiscal | G2 Agir antes do vencimento |
+| D6 Lacre aberto sem registro | Alerta e registro do lacre (AD5) | G3 Fechar o retorno corretamente |
+| D7 Dados espalhados entre SAP e planilhas | Dados do ciclo estruturados (AD6) e consulta pela API (CG5) | G5 Dados consolidados para o BI |
 
 ### 3.1.5. Matriz de Riscos (sprint 1)
 
@@ -663,3 +679,5 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 30. ANTHROPIC. *Claude*, modelo Opus 5.5. Assistente de IA usado na diagramação e nas ilustrações dos cards das personas. Disponível em: https://claude.ai. Acesso em: 23 out. 2026.
 31. PEXELS. *Licença*. Disponível em: https://www.pexels.com/pt-br/licenca/. Acesso em: 23 out. 2026.
 32. OPENAI. *ChatGPT*. Assistente de IA usado para gerar a foto do rosto da persona Clarice. Disponível em: https://chatgpt.com. Acesso em: 23 out. 2026.
+33. INTELI. *Value Proposition Canvas - template png*. Pasta de templates de negócios do projeto, 2022. Disponível em: https://drive.google.com/file/d/1vom1OaLU4NgDpoQ9vIaJ2lpS2YoGcUjM/view. Acesso em: 22 out. 2026.
+34. CERRADINHO. *Kick-off do projeto de rastreamento de ativos com o parceiro*. Reunião de alinhamento, 16 out. 2026.
