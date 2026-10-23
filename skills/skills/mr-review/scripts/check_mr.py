@@ -3,18 +3,24 @@ publica o comentário de revisão.
 
 Uso (de dentro de skills/skills/mr-review):
     python scripts/check_mr.py check --iid 24 [--json]
+    python scripts/check_mr.py drafts --iid 24
     python scripts/check_mr.py note --iid 24 --body-file revisao.md [--path document/documentacao.md --line 120]
     python scripts/check_mr.py note --iid 24 --body-file revisao-v2.md --note-id 493338
 
 `check` só lê. `note` é o único comando que escreve: publica um comentário geral, com --path e --line
 um comentário na linha nova do diff, ou, com --note-id, reescreve um comentário já postado. Nenhum comando aprova nem faz merge.
 O token vem do GITLAB_TOKEN pela classe Api da skill issue-manager e nunca é impresso.
+
+Rascunhos ficam fora do repositório, em <temp>/mr-review/<iid>/ (no Windows, a pasta temporária é a %TEMP%):
+`drafts` cria e mostra essa pasta, e um --body-file sem caminho absoluto é procurado nela. Arquivo dentro
+do repositório é recusado, porque aparece como mudança no VS Code e acaba entrando em commit.
 """
 import argparse
 import json
 import os
 import re
 import sys
+import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -32,6 +38,8 @@ ID_CITED = re.compile(r'\b(R[FN]\d{2,3}|CT\d{2,3})\b')
 ID_DEFINED = re.compile(r'^\|\s*(R[FN]\d{2,3}|CT\d{2,3})\s*\|', re.M)
 DOC = 'document/documentacao.md'
 INTELI = '@sou.inteli.edu.br'
+DRAFTS = os.path.join(tempfile.gettempdir(), 'mr-review')
+REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..'))
 IN_REVIEW = {'Waiting Review', 'Review'}
 
 
@@ -203,8 +211,22 @@ def check(api, iid):
     return info, out
 
 
+def draft_dir(iid):
+    path = os.path.join(DRAFTS, str(iid))
+    os.makedirs(path, exist_ok=True)
+    return path
+
+
+def draft_file(iid, name):
+    """Caminho do rascunho: absoluto como veio, relativo dentro da pasta temporária do MR; nunca no repositório."""
+    path = os.path.abspath(name if os.path.isabs(name) else os.path.join(draft_dir(iid), name))
+    if os.path.commonpath([path, REPO]) == REPO:
+        sys.exit(f'recusado: {path} está dentro do repositório; salve o rascunho em {draft_dir(iid)}')
+    return path
+
+
 def note(api, args):
-    body = open(args.body_file, encoding='utf-8').read()
+    body = open(draft_file(args.iid, args.body_file), encoding='utf-8').read()
     if AI.search(body):
         sys.exit('recusado: o comentário tem coautoria ou link de conversa de IA')
     if args.note_id:
@@ -226,16 +248,18 @@ def note(api, args):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('command', choices=['check', 'note'])
+    ap.add_argument('command', choices=['check', 'note', 'drafts'])
     ap.add_argument('--iid', type=int, required=True)
     ap.add_argument('--project', default=DEFAULT_PROJECT)
     ap.add_argument('--json', action='store_true')
-    ap.add_argument('--body-file', help='note: arquivo com o texto do comentário')
+    ap.add_argument('--body-file', help='note: rascunho do comentário; nome solto é procurado na pasta de drafts')
     ap.add_argument('--path', help='note: arquivo do diff para comentário na linha')
     ap.add_argument('--line', type=int, help='note: número da linha nova no arquivo')
     ap.add_argument('--note-id', type=int, help='note: reescreve esta nota em vez de criar outra')
     args = ap.parse_args()
     sys.stdout.reconfigure(encoding='utf-8')
+    if args.command == 'drafts':
+        return print(draft_dir(args.iid))
     api = Api(args.project)
     if args.command == 'note':
         if not args.body_file:

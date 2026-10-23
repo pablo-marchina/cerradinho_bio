@@ -65,3 +65,6 @@ local-notes/
 
 # Pasta local de cada integrante
 /local
+
+# Rascunhos de revisão e arquivos temporários de agentes de IA (ficam fora do repositório)
+.claude-tmp/

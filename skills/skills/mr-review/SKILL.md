@@ -23,12 +23,13 @@ Projeto `graduacao/2026-2b/t24/g01` em `https://git.inteli.edu.br`. Os MRs vão 
 4. **Revise o conteúdo** com o checklist do tipo de entrega em [references/checklist.md](references/checklist.md). Para seção da documentação, siga também [references/conteudo-documentacao.md](references/conteudo-documentacao.md). Se o card, o Adalove ou o `AGENT.md` definirem limite de tamanho para a seção, conte as palavras:
    `python scripts/count_words.py ../../../document/documentacao.md --section 3.1.4 --ref <source_branch> --limit <N>`
 5. **Quando o MR afirmar fatos sobre o parceiro, confira na fonte antes de comentar.** Se o texto diz quem faz cada etapa, valores, prazos ou sistemas, confira nos relatórios do kick-off, no TAPI ou nas personas (3.2.1) antes de apontar erro ou acerto. MR de código, de formatação ou de processo normalmente não precisa disso. Se você não achar a informação, escreva como pergunta e não como erro. Na revisão do MR !20, uma tarefa foi atribuída à logística por intuição, mas o kick-off dizia que ela era do PCM, e o comentário teve de ser corrigido.
-6. **Redija o parecer** no formato de [references/formato-comentario.md](references/formato-comentario.md) e salve fora do repositório. Quando o problema for de forma ou de tamanho, inclua a seção reescrita como proposta, já com a nova contagem de palavras.
-7. **Mostre o rascunho a quem pediu a revisão** e publique só com OK:
+6. **Redija o parecer** no formato de [references/formato-comentario.md](references/formato-comentario.md) e salve na pasta de rascunhos do MR, fora do repositório (regra 11). `python scripts/check_mr.py drafts --iid M` cria e mostra a pasta: `%TEMP%\mr-review\M\` no Windows, `tempfile.gettempdir()/mr-review/M` em Python. Diffs baixados e anotações da revisão vão para o mesmo lugar. Quando o problema for de forma ou de tamanho, inclua a seção reescrita como proposta, já com a nova contagem de palavras.
+7. **Mostre o rascunho a quem pediu a revisão** e publique só com OK. O `--body-file` com nome solto é lido da pasta de rascunhos do MR, e um arquivo dentro do repositório é recusado:
    - comentário geral: `python scripts/check_mr.py note --iid M --body-file parecer.md`
    - comentário numa linha: `python scripts/check_mr.py note --iid M --body-file c1.md --path document/documentacao.md --line 120` (linha do arquivo novo)
    - reescrever um comentário já postado: `python scripts/check_mr.py note --iid M --body-file parecer-v2.md --note-id 493338`
 8. **Card:** com o MR aberto em revisão, o card fica em `Waiting Review`, com tempo gasto e estimativa. Se o script apontar outra coluna, avise o dono do card ou, com o OK dele, corrija pela `issue-manager`.
+9. **Limpe.** Com os comentários publicados, a pasta `%TEMP%\mr-review\M\` pode ser apagada: o que vale está no GitLab.
 
 ## Segunda rodada ("Revisão atualizada")
 
@@ -46,3 +47,4 @@ Leia os comentários anteriores (`GET /merge_requests/:iid/notes`) e os commits 
 8. **Escopo:** commit ou arquivo de outra issue no MR é apontamento. Peça para separar ou para integrar antes o MR da outra issue.
 9. **Diga onde e por quê.** Cada apontamento leva a seção ou o arquivo e a linha, por que é um problema e o que fazer.
 10. **Arquivo de apoio grande vai como anexo**, não colado no comentário. Se ele for a fonte de uma figura (por exemplo, o JSON do Framekit), sugira que o autor commite o arquivo em `assets/` junto com a imagem.
+11. **Nada da revisão fica dentro do repositório.** Rascunhos de comentário, diffs baixados, imagens e anotações vão para `%TEMP%\mr-review\<iid>\`, nunca para a pasta do projeto (nem pasta oculta de rascunhos, nem `skills/`). Arquivo dentro do repositório aparece como mudança no VS Code de quem está trabalhando e acaba entrando em commit.
