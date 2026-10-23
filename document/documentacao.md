@@ -161,8 +161,20 @@ O *Value Proposition Canvas* apresenta o mapa de valor do GuaráTracking e o per
 
 ### 3.1.7. Bill of Material (BOM) (sprint 1)
 
+O orçamento considera o item de hardware explicitamente identificado na documentação técnica da sprint: o módulo GNSS Quectel LC76G (PA). O preço é uma referência consultada em 22 out. 2026 e convertida pela cotação PTAX de venda do dólar na mesma data; não inclui frete, tributos de importação ou encargos de compra. A consulta ao distribuidor indicava estoque zerado, portanto o valor não representa disponibilidade para aquisição imediata. [24, 25]
 
+| Categoria | Item / perfil | Quantidade | Horas por pessoa | Valor unitário | Subtotal |
+|---|---|---:|---:|---:|---:|
+| Material | Módulo GNSS Quectel LC76G (PA), código LC76GPATA | 1 | — | R$ 247,38 | R$ 247,38 |
+| Mão de obra | Engenheiro da computação (referência CBO 2122-10) | 3 | 80 | R$ 68,47/h | R$ 16.432,80 |
+| Mão de obra | Cientista da computação (referência CBO 2031-05) | 2 | 80 | R$ 54,95/h | R$ 8.792,00 |
+| Mão de obra | Analista de sistemas de informação (CBO 2124-05) | 1 | 80 | R$ 40,28/h | R$ 3.222,40 |
+| Mão de obra | Engenheiro de software (CBO 2122-15) | 1 | 80 | R$ 70,73/h | R$ 5.658,40 |
+| **Total de materiais** |  |  |  |  | **R$ 247,38** |
+| **Total de mão de obra** |  | **7** | **560** |  | **R$ 34.105,60** |
+| **Total estimado** | Materiais + mão de obra |  |  |  | **R$ 34.352,98** |
 
+**Premissas da mão de obra:** 40 dias de trabalho, 2 horas por dia para cada integrante (80 horas por pessoa). Os valores horários são referências salariais médias por ocupação, usando os CBOs indicados como aproximação dos cargos solicitados; não são cotações de contratação. O cálculo não inclui encargos trabalhistas, benefícios, tributos, administração ou margem de fornecedor. O total de materiais cobre apenas o componente identificado na fonte da sprint; itens sem especificação e cotação confirmadas ficam fora do subtotal até validação da BOM. [26–29]
 
 ## 3.2. Domínio de Fundamentos de Experiência de Usuário 
 
@@ -391,3 +403,9 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 21. INTELI. *5 forças template.jpeg*. Pasta de templates de negócios do projeto, 2022. Disponível em: https://drive.google.com/file/d/1Kr8A2GRrTDUFi5JslJQd7LWVOwyn8E_c/view. Acesso em: 20 out. 2026.
 22. INTELI. *Value Proposition Canvas - template png*. Pasta de templates de negócios do projeto, 2022. Disponível em: https://drive.google.com/file/d/1vom1OaLU4NgDpoQ9vIaJ2lpS2YoGcUjM/view. Acesso em: 22 out. 2026.
 23. CERRADINHO. *Kick-off do projeto de rastreamento de ativos com o parceiro*. Reunião de alinhamento, 16 out. 2026.
+24. DIGIKEY. *Quectel LC76GPATA*. Preço de referência US$ 49,10 e consulta de estoque. Disponível em: https://www.digikey.com.br/en/products/detail/quectel/LC76GPATA/26239330. Acesso em: 22 out. 2026.
+25. BANCO CENTRAL DO BRASIL. *Cotações e boletins — dólar dos Estados Unidos, PTAX de venda*. Cotação de 22 out. 2026: R$ 5,0383 por US$ 1. Disponível em: https://ptax.bcb.gov.br/ptax_internet/consultarUltimaCotacaoDolar.do. Acesso em: 22 out. 2026.
+26. PORTAL SALÁRIO. *Engenheiro de hardware computacional — CBO 2122-10*. Base salarial do Novo CAGED; valor horário de referência: R$ 68,47. Disponível em: https://www.salario.com.br/profissao/engenheiro-de-hardware-computacional-cbo-212210/. Acesso em: 23 out. 2026.
+27. PORTAL SALÁRIO. *Pesquisador em ciências da computação e informática — CBO 2031-05*. Base salarial do Novo CAGED; valor horário de referência: R$ 54,95. Disponível em: https://www.salario.com.br/profissao/pesquisador-em-ciencias-da-computacao-e-informatica-cbo-203105/. Acesso em: 23 out. 2026.
+28. PORTAL SALÁRIO. *Analista de sistemas — CBO 2124-05*. Base salarial do Novo CAGED; valor horário de referência: R$ 40,28. Disponível em: https://www.salario.com.br/profissao/analista-de-sistemas-informatica-cbo-212405/. Acesso em: 23 out. 2026.
+29. PORTAL SALÁRIO. *Engenheiro de software computacional básico — CBO 2122-15*. Base salarial do Novo CAGED; valor horário de referência: R$ 70,73. Disponível em: https://www.salario.com.br/profissao/engenheiro-de-software-computacional-basico-cbo-212215/. Acesso em: 23 out. 2026.
