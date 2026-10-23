@@ -152,12 +152,12 @@ _O Canvas da proposta de valor deve ser feito considerando a solução que você
 
 ### 3.1.5. Matriz de Riscos (sprint 1)
 
-A matriz prioriza riscos e oportunidades. O template adota 10%–90% e impacto muito baixo–muito alto. Classificações vêm do TAPI, do *kick-off* ou de hipóteses técnicas. O alerta é configurável em 150 dias; prazos fiscais são 270 dias em Goiás e 360 fora, sem relação com autonomia.
+A matriz orienta prioridades. Escalas: probabilidade 10%–90%; impacto muito baixo–muito alto. Classificações vêm do TAPI, *kick-off* ou hipóteses. Alerta: 150 dias; prazos fiscais: 270 dias em Goiás e 360 fora, sem relação com autonomia.
 
 <div align="center">
   <p><strong>Figura 1 — Matriz de riscos do projeto</strong></p>
   <img
-    src="..\assets\Matriz de Risco - Guará.png"
+    src="../assets/negocios/matriz_riscos.png"
     alt="Matriz de riscos do projeto"
     width="100%"
   >
@@ -168,17 +168,22 @@ A matriz prioriza riscos e oportunidades. O template adota 10%–90% e impacto m
 |---|---|---:|---:|---|---|---|
 | R01 | Nova NF não vinculada à TAG → falso vencimento. | 50% | Moderado | *Kick-off*: retorno simbólico renova o prazo. | Mitigar: associar a NF ao ciclo. | Software/Fiscal |
 | R02 | Metal/galpões atenuam GNSS → perda de localização. | 70% | Muito alto | Hipótese: Sistema Global de Navegação por Satélite sofre atenuação. | Mitigar: guardar posição e testar antenas. | Hardware |
-| R03 | Ensaio curto de bancada → autonomia anual incerta. | 70% | Alto | TAPI: ciclos chegam a um ano. | Mitigar: medir corrente e projetar consumo. | Hardware |
-| R04 | Sem Wi-Fi, NB-IoT ou LTE-M → eventos retidos. | 90% | Alto | TAPI: oficinas/rodovias podem não ter cobertura. | Mitigar: armazenar e comparar redes. | Conectividade |
-| R05 | Ruído no sensor ou abertura autorizada do lacre → falso alerta de violação. | 50% | Alto | *Kick-off*: o lacre pode ser retirado legitimamente durante o reparo. | Mitigar: aplicar *debounce* e registrar autorização prévia. | Firmware |
+| R03 | Ensaio curto de bancada → autonomia anual incerta. | 70% | Alto | TAPI: ciclos chegam a um ano. | Mitigar: projetar autonomia pelo consumo. | Hardware |
+| R04 | Sem Wi-Fi, NB-IoT ou LTE-M → eventos retidos. | 90% | Alto | TAPI: cobertura incerta em oficinas/rodovias. | Mitigar: armazenar e comparar redes. | Conectividade |
+| R05 | Ruído no sensor ou abertura autorizada do lacre → falso alerta. | 50% | Alto | *Kick-off*: retiradas legítimas ocorrem no reparo. | Mitigar: *debounce* e autorização prévia. | Firmware |
 | R06 | Fixação inadequada → dano ou reparo prejudicado. | 50% | Muito alto | TAPI: formatos variam. | Evitar: fixação removível. | Hardware |
 | R07 | Água ou lavagem → falha eletrônica. | 70% | Muito alto | TAPI: exposição prevista. | Mitigar: vedação e ensaio. | Hardware |
 | R08 | Conectividade cara → escala inviável. | 50% | Alto | TAPI: custo orienta a escolha. | Mitigar: comparar tecnologias e planos. | Produto |
-| R09 | Fornecedores indisponíveis → piloto limitado. | 50% | Moderado | Hipótese: testes dependem de terceiros. | Mitigar: agendar e simular. | Projeto |
+| R09 | Fornecedores indisponíveis → piloto limitado. | 50% | Moderado | Hipótese: dependência de terceiros. | Mitigar: agendar e simular. | Projeto |
 | R10 | Dado restrito publicado → exposição indevida. | 30% | Muito alto | TAPI: localizações e notas são restritas. | Evitar: dados fictícios e revisão. | Dados/LGPD |
-| R11 | Retorno físico sem NF registrada → remessa fiscal segue aberta. | 70% | Muito alto | *Kick-off*: encerramento exige registros físico e fiscal. | Mitigar: cerca e confirmação fiscal. | Processos/Logística |
+| R11 | Retorno sem NF registrada → remessa fiscal aberta. | 70% | Muito alto | *Kick-off*: encerramento requer registros físico e fiscal. | Mitigar: cerca e confirmação fiscal. | Processos/Logística |
 
-**Oportunidades:** O01 — rastreador reutilizável reduz custo/ciclo (70%; alto; modularizar; Produto). O02 — histórico permite avaliar prazo e desempenho das oficinas (70%; alto; criar indicador para seleção e negociação; Produto/BI).
+**Oportunidades**
+
+| ID | Oportunidade | Prob. | Impacto | Tratamento | Responsável |
+|---|---|---:|---|---|---|
+| O01 | Rastreador reutilizável reduz custo por ciclo. | 70% | Alto | Explorar modularidade. | Produto |
+| O02 | Histórico permite avaliar prazo e desempenho das oficinas. | 70% | Alto | Criar indicador para seleção e negociação. | Produto/BI |
 
 ### 3.1.6. Política de Privacidade de acordo com a LGPD (sprint 1)	
 
@@ -275,6 +280,12 @@ Clarice representa a analista fiscal responsável pela emissão das notas fiscai
 ![Persona 3, Izidio, analista de logística, 29 anos, engenheiro de produção, com dores, necessidades, objetivos, cenários P3-C1 a P3-C3 e letramento digital 4 de 5](../assets/personas/persona-03-izidio.png)
 
 Izidio, analista de logística de 29 anos e engenheiro de produção, consolida o que saiu e o que voltou para a diretoria e acompanha o custo de ICMS por safra, trabalhando com SAP, planilhas, BI e e-mail ou Teams (letramento digital 4 de 5). O problema é que os dados vivem espalhados entre o SAP e as planilhas de cada área, de modo que ele não consegue dizer, em um instante, quantas remessas saíram na safra; para compensar, e movido por um senso de dono, acaba cobrando oficinas e prazos à mão, uma tarefa operacional que não é da sua área e que o afasta da otimização logística que deveria ser o seu foco. Por isso ele precisa de uma API que alimente o BI automaticamente, de um histórico de ciclos com datas de saída, previsão e retorno e de permanência e atraso calculados separadamente, e espera, com isso, mostrar à diretoria a evolução do ICMS por safra e manter na base todo item que não voltou, mesmo quando o ICMS já foi pago. Para a plataforma, isso reforça a prioridade de uma API robusta e de dados confiáveis, em lugar de telas operacionais, e a regra de tratar como pendente, nunca como encerrado, o ciclo sem retorno lançado, para que o número que chega à diretoria seja o que realmente aconteceu.
+
+#### Conclusão
+
+As personas indicam que a solução deve apresentar informações e ações adequadas às responsabilidades de cada usuário. Para Geraldo, isso significa priorizar a consulta dos equipamentos sob sua responsabilidade, os prazos, a última localização válida e os alertas que exigem intervenção. Para Clarice, o foco está na associação entre equipamento e documentos e na identificação de retornos pendentes de lançamento. Para Izidio, a necessidade é acessar históricos consistentes para consolidar dados e analisar o acompanhamento das remessas.
+
+Essas diferenças orientam o GuaráTracking a combinar uma visão operacional dos equipamentos com o controle das pendências de cada ciclo e a disponibilização de dados para BI. A interface deve facilitar a identificação do que precisa de atenção e de quem deve agir, enquanto o histórico deve preservar a relação entre saída, acompanhamento e retorno. Assim, o rastreamento apoia decisões e a continuidade do processo entre as áreas.
 
 ### 3.2.2. Jornada do Usuário e Storyboard (sprint 2)	
 
