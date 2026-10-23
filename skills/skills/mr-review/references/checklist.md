@@ -15,7 +15,7 @@ Use junto com a saída do `check_mr.py`. Os itens vêm dos problemas que mais se
 
 ## Documentação (`document/documentacao.md`)
 
-- [ ] Atende à avaliação da seção (rubrica do Adalove ou orientação da professora) e usa o template oficial quando ele for pedido. Diga no texto qual template foi usado.
+- [ ] Atende à avaliação da seção (rubrica do Adalove ou orientação da professora) e usa o template oficial quando ele for pedido, citado como fonte. Detalhes, limite de tamanho (quando houver) e lógica de cada framework em [conteudo-documentacao.md](conteudo-documentacao.md).
 - [ ] Nenhum report de `document/outros/reports/` usado como justificativa ou evidência (seção 4 do `AGENT.md`). A fonte real (reunião com data, TAPI, artigo, norma, teste) está escrita no próprio texto.
 - [ ] Toda figura tem legenda `*Figura — ...*` e `Fonte: ...` logo abaixo. O texto alternativo descreve o que a imagem mostra.
 - [ ] Referências citadas no padrão do grupo (citação numérica ou autor-data), com as URLs na lista de referências e não soltas no corpo.

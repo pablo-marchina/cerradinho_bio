@@ -4,9 +4,10 @@ publica o comentário de revisão.
 Uso (de dentro de skills/skills/mr-review):
     python scripts/check_mr.py check --iid 24 [--json]
     python scripts/check_mr.py note --iid 24 --body-file revisao.md [--path document/documentacao.md --line 120]
+    python scripts/check_mr.py note --iid 24 --body-file revisao-v2.md --note-id 493338
 
-`check` só lê. `note` é o único comando que escreve: publica um comentário geral ou, com --path e --line,
-um comentário na linha nova do diff. Nenhum comando aprova nem faz merge.
+`check` só lê. `note` é o único comando que escreve: publica um comentário geral, com --path e --line
+um comentário na linha nova do diff, ou, com --note-id, reescreve um comentário já postado. Nenhum comando aprova nem faz merge.
 O token vem do GITLAB_TOKEN pela classe Api da skill issue-manager e nunca é impresso.
 """
 import argparse
@@ -206,6 +207,10 @@ def note(api, args):
     body = open(args.body_file, encoding='utf-8').read()
     if AI.search(body):
         sys.exit('recusado: o comentário tem coautoria ou link de conversa de IA')
+    if args.note_id:
+        r = api.call('PUT', f'/merge_requests/{args.iid}/notes/{args.note_id}', {'body': body})
+        print(f"nota {r['id']} reescrita")
+        return
     if args.path and args.line:
         refs = api.call('GET', f'/merge_requests/{args.iid}')['diff_refs']
         position = {'position_type': 'text', 'base_sha': refs['base_sha'], 'start_sha': refs['start_sha'],
@@ -228,6 +233,7 @@ def main():
     ap.add_argument('--body-file', help='note: arquivo com o texto do comentário')
     ap.add_argument('--path', help='note: arquivo do diff para comentário na linha')
     ap.add_argument('--line', type=int, help='note: número da linha nova no arquivo')
+    ap.add_argument('--note-id', type=int, help='note: reescreve esta nota em vez de criar outra')
     args = ap.parse_args()
     sys.stdout.reconfigure(encoding='utf-8')
     api = Api(args.project)
