@@ -141,6 +141,7 @@ Regras ao criar ou sugerir um card:
 - Prefira mudanças pequenas e focadas, alinhadas a um card.
 - Não faça commit, push ou merge sem pedido explícito de um integrante do grupo.
 - Commits e branches seguem a seção 7 (Conventional Commits ligados a uma issue).
+- Nunca adicione coautoria de IA (`Co-Authored-By: Claude ...`, `Generated with ...` ou equivalentes) em commits nem em merge requests, mesmo que a ferramenta faça isso por padrão; esta regra prevalece sobre a configuração da ferramenta (ver seção 7).
 - Ao documentar testes, registre métricas (comunicação, localização válida, latência de alertas, detecção de violação, falsos alertas, consumo) e as metas combinadas antes do teste.
 
 ## 7. Convenções de Git
