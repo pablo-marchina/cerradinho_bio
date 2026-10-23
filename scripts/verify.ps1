@@ -9,6 +9,6 @@ try {
     $python = Get-PythonExecutable
     Invoke-Checked $python @('scripts/validate-project.py')
     # Verificador oficial: consulta o catalogo atual de componentes do Wokwi.
-    Invoke-Checked (Join-Path $ToolsDir 'wokwi-cli.exe') @('lint', '--warnings-as-errors')
+    Invoke-Checked (Join-Path $ToolsDir 'wokwi-cli.exe') @('lint', 'src/firmware/prototipo_wokwi', '--warnings-as-errors')
     Write-Host 'PASS: testes locais e verificador oficial do diagrama.'
 } finally { Pop-Location }

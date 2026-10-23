@@ -81,6 +81,7 @@ São **restritos**: cadastros de ativos e fornecedores, notas fiscais, localiza�
 
 - A `documentacao.md` segue a ordem do template do Inteli. Cada seção indica em qual sprint deve ser entregue; preencha a seção certa e **remova os trechos em itálico** de orientação quando a seção estiver concluída.
 - Imagens usadas na documentação ficam em `assets/` e são referenciadas com caminho relativo (ex.: `../assets/arquivo.png`), sempre com legenda e fonte.
+- Os documentos de entrega (`documentacao.md`, `TemplateManual.md`, `README.md` e os de `document/outros/` fora de `reports/`) não falam do processo interno do grupo: nada de branches (`develop` ou nomes de branch), issues, cards, merge requests, commits, rascunhos de integrantes, "integração" entre branches ou "arquivo local". Descreva o projeto como o leitor o vê na `main`. Se a nota for útil para o grupo, use um comentário HTML (`<!-- ... -->`), que o GitLab não renderiza.
 - Os arquivos `placeholder.md` devem ser apagados quando a pasta tiver conteúdo real.
 - Ao criar uma nova pasta em `src/`, atualize a seção "Estrutura de pastas" do `README.md`.
 - O repositório é hospedado no GitLab do Inteli (`git.inteli.edu.br`).
@@ -136,9 +137,11 @@ Regras ao criar ou sugerir um card:
 ## 6. Boas práticas para agentes
 
 - Não invente dados do parceiro (quantidade de remessas, prazos reais, fornecedores). Se a informação não estiver no repositório, marque como pendente ou pergunte ao grupo.
+- Antes de trabalhar num artefato, leia o enunciado e os critérios de avaliação dele em `document/outros/ArtefatosSolicitados.md` e confira quais itens do nível mais alto a tarefa precisa atender.
 - Prefira mudanças pequenas e focadas, alinhadas a um card.
 - Não faça commit, push ou merge sem pedido explícito de um integrante do grupo.
 - Commits e branches seguem a seção 7 (Conventional Commits ligados a uma issue).
+- Nunca adicione coautoria de IA (`Co-Authored-By: Claude ...`, `Generated with ...` ou equivalentes) em commits nem em merge requests, mesmo que a ferramenta faça isso por padrão; esta regra prevalece sobre a configuração da ferramenta (ver seção 7).
 - Ao documentar testes, registre métricas (comunicação, localização válida, latência de alertas, detecção de violação, falsos alertas, consumo) e as metas combinadas antes do teste.
 
 ## 7. Convenções de Git
@@ -146,10 +149,11 @@ Regras ao criar ou sugerir um card:
 ### Branches
 
 - A `main` é protegida contra force push e representa o que é entregue. Não commite direto nela: todo trabalho vai numa branch própria e entra por merge request.
-- Nome da branch: `tipo/NN-descricao-curta`, em minúsculas, sem acento, palavras separadas por hífen.
+- Nome da branch: `tipo/NN-descricao-curta-sprintN`, em minúsculas, sem acento, palavras separadas por hífen.
   - `tipo` é o mesmo dos commits (lista abaixo).
   - `NN` é o número da issue que a branch resolve, com dois dígitos quando for menor que 10.
-  - Exemplos: `docs/01-estrutura-skills`, `feat/12-alerta-permanencia`, `fix/27-leitura-lacre`, `test/31-ensaio-agua`.
+  - `sprintN` é obrigatório e identifica a sprint atual (a do Milestone do card), sem zero à esquerda: `sprint1`, `sprint2`... (como em `8-art-4-3-3-1-requisitos-funcionais-sprint1`).
+  - Exemplos: `docs/01-estrutura-skills-sprint1`, `feat/12-alerta-permanencia-sprint2`, `fix/27-leitura-lacre-sprint3`, `test/31-ensaio-agua-sprint4`.
 - Uma branch por issue. Se a tarefa crescer para outra issue, abra outra branch.
 
 ### Commits (Conventional Commits)
@@ -192,9 +196,13 @@ Corpo opcional explicando o porquê da mudança, não o como.
 - Preserve ESP32 DevKit v1, GPS/GNSS customizado, chave para lacre e potenciômetro
   para bateria simulada. Não acrescente acelerômetro. IR físico e modem continuam
   pendentes de definição.
-- Mantenha `src/firmware/main.cpp`, `include/config.h` e `diagram.json` coerentes:
+- O circuito principal e os arquivos `wokwi*.toml` ficam em `src/firmware/prototipo_wokwi/`.
+  Mantenha `src/firmware/main.cpp`, `include/config.h` e o `diagram.json` dessa pasta coerentes:
   GPS RX2/TX2 nos GPIO16/17, lacre no GPIO27 com pull-up e bateria no GPIO34/ADC1.
   UART0 e heartbeat são diagnóstico independente de GPS e internet.
+- LEDs verde/amarelo/vermelho/azul usam GPIO25/26/23/14; botões de autorização
+  e ciclo usam GPIO33/13; chave de rede simulada usa GPIO18. Preserve os resistores
+  de 220 ohms em série com os LEDs e a separação entre rede simulada e Wi-Fi real.
 - Compare posições válidas consecutivas. O primeiro ponto cria referência; falta
   de fix não vira coordenada zero nem apaga a referência. Preserve as chaves NVS
   e a fila local, sem afirmar envio ao servidor antes de transporte e confirmação.
