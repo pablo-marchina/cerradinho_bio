@@ -12,7 +12,7 @@
     {"id": "imvk91ka5ge5c", "code": "D2", "group": "pains", "title": "Localização e prazo incertos", "description": "Não se sabe onde o equipamento está nem quanto falta para vencer.", "link": ""},
     {"id": "imvk91ka5akyz", "code": "D3", "group": "pains", "title": "Difícil decidir diante do atraso", "description": "Sem histórico do fornecedor, a decisão é no escuro.", "link": ""},
     {"id": "imvk91ka5lxoa", "code": "D4", "group": "pains", "title": "Retorno sem baixa fiscal", "description": "Equipamento volta, mas a NF de retorno não é lançada.", "link": ""},
-    {"id": "imvk91ka586uy", "code": "D5", "group": "pains", "title": "ICMS vencido: R$ 602.969", "description": "Valor informado no kick-off para a safra 2024/25; parcela ligada à manutenção externa ainda não apurada.", "link": ""},
+    {"id": "imvk91ka586uy", "code": "D5", "group": "pains", "title": "Complemento de ICMS por prazo vencido", "description": "Impacto na safra 2024/25 (kick-off); parcela ligada à manutenção externa ainda não apurada.", "link": ""},
     {"id": "imvk91ka582bv", "code": "D6", "group": "pains", "title": "Lacre aberto sem registro", "description": "Não há como saber se o equipamento foi aberto fora do combinado.", "link": ""},
     {"id": "imvk91ka5xy71", "code": "D7", "group": "pains", "title": "Dados espalhados entre SAP e planilhas", "description": "Dificulta consolidar as remessas e reportar à diretoria.", "link": ""},
     {"id": "imvk91ka56jy1", "code": "G1", "group": "gains", "title": "Localizar e consultar sem ligar", "description": "", "link": ""},
