@@ -195,7 +195,7 @@ A solução acompanha equipamentos da CerradinhoBio em manutenção externa.
 
 #### 3.1.6.2 Tratamento de dados
 
-O tratamento seguirá a LGPD. Correspondência com o rascunho de RF do Luis: **PENDENTE DE VALIDAÇÃO**.
+O tratamento seguirá a LGPD. Os dados pessoais previstos nos requisitos da seção 3.3.1 são os dos usuários da Cerradinho: o responsável de cada ciclo e de cada tratamento de alerta (RF002, RF023), o e-mail usado nas notificações (RF018) e a credencial individual de acesso ao painel (RF021). O painel e a API só respondem a usuário autenticado (RN15).
 
 #### 3.1.6.3 Dados coletados
 
