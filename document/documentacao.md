@@ -394,7 +394,7 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 | RN08 — data/hora GNSS e HDOP máximo de 2,0 | O firmware atual verifica validade, idade e satélites, mas não aplica esse limite de HDOP nem persiste data/hora absoluta. Registrar adequação futura do driver LC76G-PA; limite de HDOP ainda pendente. |
 | RN09 — fila de 8 com prioridade para críticos | Implementada na fila de eventos sem rede (8 eventos, descarte do não crítico mais antigo, reenvio na ordem com `dia_ocorrencia`). Com a fila só de violações, a 9ª violação em diante entra num único registro de resumo (`VIOLACAO_LACRE_RESUMO`, com quantidade e primeira/última ocorrência), persistido na NVS e enviado depois das 8 no reenvio; nenhuma violação é perdida. Só eventos não críticos que não cabem são contados em `perdidos`. A política de agregação deve ser confirmada com o parceiro. O registro local de 16 entradas na NVS (CT21) continua separado. |
 | RN10 — leitura zero considerada falha | Implementada: ADC = 0 gera `SENSOR_BATERIA_FALHA` e nenhum `BATERIA_BAIXA` (CT13). No dispositivo físico, o diagnóstico elétrico do divisor ainda depende do CT30 previsto no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md). |
-| RN11 — encerramento exige lacre fechado e NF de retorno | Implementada no `BTN_CICLO` (segurar 2 s). No simulador, a NF de retorno é lançada pelo comando `NF` no Monitor Serial, que representa o lançamento na plataforma. |
+| RN11 — encerramento exige lacre fechado e NF de retorno | As duas recusas foram verificadas no CT16. No simulador, `NF` no Serial representa o lançamento da NF de retorno e segurar `BTN_CICLO` por 2 s solicita o encerramento. No reteste de 23/10/2026, o CT14 confirmou JSON com ciclo inativo e dias zero, reutilização e contador acumulado. A persistência do histórico após corte de energia não foi verificada. |
 
 ### 3.3.3. Requisitos Não Funcionais — 8 Eixos ISO/IEC 25010 (sprints 2 a 5)
 
@@ -414,27 +414,29 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 
 ### 3.3.4. Matriz de Rastreabilidade (RTM) (sprints 1 a 5)
 
+A Matriz de Rastreabilidade (RTM) relaciona os requisitos funcionais (RF) e as regras de negócio (RN) aos casos de teste e às evidências de verificação. Ela permite identificar a cobertura de cada requisito e acompanhar as pendências de validação.
+
 | Persona | RF    | RN   | Caso de Teste | Evidência        |
 |---------|-------|------|---------------|------------------|
 | P1 Geraldo — P1-C1 Saída com TAG e lacre | RF001 | Não se aplica — o cadastro do equipamento não tem restrição própria; as restrições começam na abertura do ciclo (RN02) | Planejado — CT a definir | Planejado, sprint a definir |
 | P1 Geraldo — P1-C1 Saída com TAG e lacre | RF002 | RN02 | Planejado — CT a definir | Planejado, sprint a definir |
 | P1 Geraldo — P1-C1 Saída com TAG e lacre | RF003 | RN01 | Planejado — CT a definir | Planejado, sprint a definir |
-| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF004 | RN01 | CT15 | `assets/wokwi/CT15.png` — PENDENTE DE EVIDÊNCIA |
-| P1 Geraldo — P1-C4 Falha | RF005 | RN08 | CT19, CT20, CT22 | `assets/wokwi/CT19.png`, `assets/wokwi/CT20.png`, `assets/wokwi/CT22.png` — PENDENTE DE EVIDÊNCIA |
-| P1 Geraldo — P1-C3 Lacre aberto | RF006 | RN05 | CT05, CT07, CT18 | `assets/wokwi/CT05.png`, `assets/wokwi/CT07.png`, `assets/wokwi/CT18.png` — PENDENTE DE EVIDÊNCIA |
-| P1 Geraldo — P1-C3 Lacre aberto | RF007 | RN06 | CT06, CT11 | `assets/wokwi/CT06.png`, `assets/wokwi/CT11.png` — PENDENTE DE EVIDÊNCIA |
-| P2 Clarice — P2-C4 Falha (associação direta) | RF008 | Não se aplica — requisito técnico de conectividade; o comportamento sem conexão é regido pela RN09 (RF010) | CT08, CT09 | `assets/wokwi/CT08.png`, `assets/wokwi/CT09.png` — PENDENTE DE EVIDÊNCIA |
-| P1 Geraldo — P1-C2 Acompanhamento | RF009 | Não se aplica — define formato e canal de envio; quando cada mensagem sai é regido pela RN05 e pela RN07 | CT01, CT02 | `assets/wokwi/CT01.png`, `assets/wokwi/CT02.png` — PENDENTE DE EVIDÊNCIA |
-| P2 Clarice — P2-C4 Falha | RF010 | RN09 | CT08, CT09, CT10, CT21, CT22 | `assets/wokwi/CT08.png`, `assets/wokwi/CT09.png`, `assets/wokwi/CT10.png`, `assets/wokwi/CT21.png`, `assets/wokwi/CT22.png` — PENDENTE DE EVIDÊNCIA |
-| P1 Geraldo — P1-C2 Acompanhamento | RF011 | RN07 | CT02 | `assets/wokwi/CT02.png` — PENDENTE DE EVIDÊNCIA |
-| P1 Geraldo — P1-C2 Acompanhamento; P2 Clarice — P2-C3 Prazo legal; P3 Izidio — P3-C2 ICMS por safra | RF012 | RN12, RN13 | CT03, CT04 | `assets/wokwi/CT03.png`, `assets/wokwi/CT04.png` — PENDENTE DE EVIDÊNCIA |
-| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF013 | RN04 | CT03 | `assets/wokwi/CT03.png` — PENDENTE DE EVIDÊNCIA |
-| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF014 | RN03, RN04 | CT04 | `assets/wokwi/CT04.png` — PENDENTE DE EVIDÊNCIA |
-| P1 Geraldo — P1-C2 Acompanhamento; P1-C4 Falha | RF015 | RN08 | CT19, CT20, CT22 | `assets/wokwi/CT19.png`, `assets/wokwi/CT20.png`, `assets/wokwi/CT22.png` — PENDENTE DE EVIDÊNCIA |
-| P2 Clarice — P2-C2 Encerramento do ciclo; P3 Izidio — P3-C3 Falha | RF016 | RN11 | CT14, CT16 | `assets/wokwi/CT14.png`, `assets/wokwi/CT16.png` — PENDENTE DE EVIDÊNCIA |
-| P2 Clarice — P2-C2 Encerramento do ciclo; P3 Izidio — P3-C1 Histórico para o BI | RF017 | RN11, RN12 | CT14 | `assets/wokwi/CT14.png` — PENDENTE DE EVIDÊNCIA |
-| P1 Geraldo — P1-C2 Acompanhamento; P2 Clarice — P2-C1 Retorno sem aviso | RF018 | Não se aplica — define o canal da notificação; a emissão dos alertas é regida pelas RN04, RN05, RN10, RN13 e RN14, e o prazo de tratamento pela RN18 | Planejado — CT a definir | Planejado, sprint a definir |
-| P1 Geraldo — P1-C2 Acompanhamento (associação indireta) | RF019 | RN10 | CT12, CT13, CT23 | `assets/wokwi/CT12.png`, `assets/wokwi/CT13.png`, `assets/wokwi/CT23.png` — PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF004 | RN01 | CT15 | [CT15](../assets/wokwi/CT15.png) |
+| P1 Geraldo — P1-C4 Falha | RF005 | RN08 | CT19, CT20, CT22 | [CT19](../assets/wokwi/CT19.png) e [CT20](../assets/wokwi/CT20.png) — APROVADOS no simulador; [CT22](../assets/wokwi/CT22.png) — **REPROVADO no ambiente**: referência e NVS retidas, mas `uptime_ms` não reiniciou ([log](../assets/wokwi/CT22.serial.txt)) |
+| P1 Geraldo — P1-C3 Lacre aberto | RF006 | RN05 | CT05, CT07, CT18 | [CT05](../assets/wokwi/CT05-evento.png), [CT07](../assets/wokwi/CT07.png); [CT18](../assets/wokwi/CT18-original.png) — **REPROVADO**: quatro de 20 transições estáveis de 200 ms perdidas sem rede ([log original](../assets/wokwi/CT18-original.serial.txt)) |
+| P1 Geraldo — P1-C3 Lacre aberto | RF007 | RN06 | CT06, CT11 | [CT06](../assets/wokwi/CT06-retirada.png), [CT11](../assets/wokwi/CT11.png) |
+| P2 Clarice — P2-C4 Falha (associação direta) | RF008 | Não se aplica — sem RN específica | CT08, CT09 | [CT08](../assets/wokwi/CT08.png), [CT09](../assets/wokwi/CT09.png) (BLOQUEADO para confirmação do servidor) |
+| P1 Geraldo — P1-C2 Acompanhamento | RF009 | Não se aplica — sem RN específica | CT01, CT02 | [CT01](../assets/wokwi/CT01.png), [CT02](../assets/wokwi/CT02.png) — diagnóstico e saída Serial observados; publicação MQTT não comprovada |
+| P2 Clarice — P2-C4 Falha | RF010 | RN09 | CT08, CT09, CT10, CT21, CT22 | [CT08](../assets/wokwi/CT08.png), [CT09](../assets/wokwi/CT09.png) (BLOQUEADO para confirmação do servidor), [CT10](../assets/wokwi/CT10.png); [CT21](../assets/wokwi/CT21.png) — APROVADO no limite de 16 diagnósticos NVS ([log](../assets/wokwi/CT21.serial.txt)); [CT22](../assets/wokwi/CT22.png) — **REPROVADO no ambiente** no critério de reinício de `uptime_ms`, com retenção das filas verificada ([log](../assets/wokwi/CT22.serial.txt)) |
+| P1 Geraldo — P1-C2 Acompanhamento | RF011 | RN07 | CT02 | [CT02](../assets/wokwi/CT02.png) |
+| P1 Geraldo — P1-C2 Acompanhamento; P2 Clarice — P2-C3 Prazo legal; P3 Izidio — P3-C2 ICMS por safra | RF012 | RN12, RN13 | CT03, CT04 | [CT03](../assets/wokwi/CT03.png), [CT04](../assets/wokwi/CT04.png) |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF013 | RN04 | CT03 | [CT03](../assets/wokwi/CT03.png) |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF014 | RN03, RN04 | CT04 | [CT04](../assets/wokwi/CT04.png) |
+| P1 Geraldo — P1-C2 Acompanhamento; P1-C4 Falha | RF015 | RN08 | CT19, CT20, CT22 | [CT19](../assets/wokwi/CT19.png) e [CT20](../assets/wokwi/CT20.png) — APROVADOS no simulador; [CT22](../assets/wokwi/CT22.png) — **REPROVADO no ambiente**: referência e NVS retidas, mas `uptime_ms` não reiniciou ([log](../assets/wokwi/CT22.serial.txt)) |
+| P2 Clarice — P2-C2 Encerramento do ciclo; P3 Izidio — P3-C3 Falha | RF016 | RN11 | CT14, CT16 | [CT14 corrigido](../assets/wokwi/CT14-corrigido.png) — APROVADO com dois encerramentos, ciclo inativo e dias zero ([log do reteste de 23/10](../assets/wokwi/CT14-2026-10-23.serial.txt)); CT16 APROVADO nas recusas por [lacre aberto](../assets/wokwi/CT16-corrigido-lacre-aberto.png) e [NF ausente](../assets/wokwi/CT16-corrigido-nf-ausente.png) |
+| P2 Clarice — P2-C2 Encerramento do ciclo; P3 Izidio — P3-C1 Histórico para o BI | RF017 | RN11, RN12 | CT14 | [CT14 corrigido](../assets/wokwi/CT14-corrigido.png) — APROVADO: [reutilização no ciclo 2](../assets/wokwi/CT14-corrigido-reutilizado.png) e contador de encerramentos 1/2 ([log do reteste de 23/10](../assets/wokwi/CT14-2026-10-23.serial.txt)); histórico após corte físico de energia ainda pendente |
+| P1 Geraldo — P1-C2 Acompanhamento; P2 Clarice — P2-C1 Retorno sem aviso | RF018 | Não se aplica — sem RN específica | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C2 Acompanhamento (associação indireta) | RF019 | RN10 | CT12, CT13, CT23 | [CT12](../assets/wokwi/CT12.png), [CT13](../assets/wokwi/CT13-isolado.png); [CT23](../assets/wokwi/CT23.png) — APROVADO com percentuais sintéticos 0/50/100%, uma falha do sensor em zero e nenhum alerta falso de bateria baixa ([log CT17/CT23](../assets/wokwi/CT17-CT23.serial.txt)) |
 | P1 Geraldo — P1-C1 Saída com TAG e lacre | RF020 | RN16 | Planejado — CT a definir | Planejado, sprint a definir |
 | P1 Geraldo — P1-C2 Acompanhamento (associação transversal) | RF021 | RN15, RN17 | Planejado — CT a definir | Planejado, sprint a definir |
 | P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF022 | Não se aplica — requisito de apresentação dos dados; o acesso ao painel é regido pela RN15 (RF021) | Planejado — CT a definir | Planejado, sprint a definir |
@@ -442,9 +444,11 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 | P3 Izidio — P3-C1 Histórico para o BI | RF024 | RN15 | Planejado — CT a definir | Planejado, sprint a definir |
 | P1 Geraldo — P1-C4 Falha | RF025 | RN14 | Planejado — CT a definir | Planejado, sprint a definir |
 | P2 Clarice — P2-C3 Prazo legal | RF026 | RN13 | Planejado — CT a definir | Planejado, sprint a definir |
-| P1 Geraldo — P1-C2 Acompanhamento | RF027 | RN10 | CT12, CT13, CT23 | `assets/wokwi/CT12.png`, `assets/wokwi/CT13.png`, `assets/wokwi/CT23.png` — PENDENTE DE EVIDÊNCIA |
+| P1 Geraldo — P1-C2 Acompanhamento | RF027 | RN10 | CT12, CT13, CT23 | [CT12](../assets/wokwi/CT12.png), [CT13](../assets/wokwi/CT13-isolado.png); [CT23](../assets/wokwi/CT23.png) — APROVADO com percentuais sintéticos 0/50/100%, uma falha do sensor em zero e nenhum alerta falso de bateria baixa ([log CT17/CT23](../assets/wokwi/CT17-CT23.serial.txt)) |
 
-**Casos de teste transversais:** CT17 (`assets/wokwi/CT17.png` — PENDENTE DE EVIDÊNCIA) e CT35 (`assets/wokwi/CT35.png` — PENDENTE DE EVIDÊNCIA) verificam aspectos transversais e, por isso, não são atribuídos a um RF ou a uma RN específicos nesta matriz.
+**Casos de teste transversais:** [CT17](../assets/wokwi/CT17.png) (APROVADO no simulador, [log](../assets/wokwi/CT17-CT23.serial.txt)) e CT35 ([desligado](../assets/wokwi/CT35-desligado.png), [religado](../assets/wokwi/CT35.png)) verificam aspectos transversais e, por isso, não são atribuídos a um RF ou a uma RN específicos nesta matriz.
+
+Os resultados dos CT17–CT23 correspondem às execuções de 23/10/2026 descritas na seção 3.4.1, com capturas, logs, configuração e limitações. As aprovações são funcionais no simulador; CT18 e CT22 permanecem reprovados, e CT09 depende da confirmação de entrega pelo servidor.
 
 A proposta de RNFs, a máquina de estados de energia e os CT24–CT34 estão no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md), para revisão nas próximas sprints.
 
@@ -509,7 +513,7 @@ LEDs verde/amarelo/vermelho/azul nos GPIO25/26/23/14, botões nos GPIO33/13 e ch
 de rede no GPIO18. O [guia do circuito](../src/firmware/prototipo_wokwi/README.md)
 contém a pinagem e o roteiro de diagnóstico. As configurações `wokwi.toml` e
 `wokwi.weekly.toml` ficam nessa mesma pasta e são selecionadas por **Wokwi: Select Config File**.
-O projeto público acima e a Figura 1 representam a versão anterior.
+O projeto público acima representa a versão anterior; a Figura 1 e as evidências dos CTs abaixo mostram o circuito local integrado usado nas execuções de 22/10/2026.
 
 Na Sprint 1 o dispositivo é simulado no Wokwi com um ESP32 DevKit. Cada entrada do circuito representa uma situação física do rastreador: o lacre (`SW_LACRE`), a disponibilidade de conexão (`SW_REDE`), a autorização de retirada (`BTN_AUTORIZAR`), o encerramento ou vínculo de ciclo (`BTN_CICLO`) e o nível da bateria (`POT_BATERIA`). Os LEDs representam estados para inspeção e o Monitor Serial mostra os registros JSON. Não há transporte implementado para servidor ou broker. A integração local inclui GNSS simulado; a validação do hardware GNSS permanece para a Sprint 2.
 
@@ -536,7 +540,7 @@ A chave de rede não desliga o Wi-Fi virtual; os estados são apresentados separ
 | Movimento entre coletas válidas | Distância estritamente maior que 100 m | `Config::MovementThresholdM` |
 | Heartbeat / tentativa de reconexão Wi-Fi | 2 s / 30 s quando desconectado | `Config::HeartbeatMs` / `Config::WifiRetryMs` |
 
-**Valores propostos para testes de negócio.** Nos cenários de ciclo, a contagem de dias fora parte da emissão da NF de remessa, conforme RF012; não corresponde ao `uptime_ms` atual. A tabela seguinte não substitui a configuração atual. O TAPI fixa a referência de 150 dias para permanência e o status semanal; as demais metas dependem do parceiro. Tempo de chegada da autorização e possibilidade de autorização antecipada continuam **PENDENTE DE VALIDAÇÃO**.
+**Valores propostos para testes de negócio.** O RF012 exige contar os dias fora desde a emissão da NF de remessa. No protótipo atual, a contagem parte do início do ciclo e usa tempo acelerado no `demo`; os ensaios não validam leitura de uma NF real nem data/hora absoluta. A tabela seguinte informa os valores usados nos testes de negócio. O TAPI fixa a referência de 150 dias para permanência e o status semanal; as demais metas dependem do parceiro. Tempo de chegada da autorização e possibilidade de autorização antecipada continuam **PENDENTE DE VALIDAÇÃO**.
 
 | Parâmetro | Valor de teste | Origem |
 |---|---|---|
@@ -556,23 +560,21 @@ A chave de rede não desliga o Wi-Fi virtual; os estados são apresentados separ
 | ESP32 DevKit | Microcontrolador do rastreador |
 | SW_LACRE (chave deslizante) | Sensor do lacre (laço de continuidade ou reed switch) |
 | BTN_AUTORIZAR (botão) | Autorização de retirada registrada pelo responsável (no produto, vinda da plataforma) |
-| SW_ENERGIA (chave deslizante) | Botão ON/OFF entre a bateria e o ESP32 |
+| SW_ENERGIA (chave deslizante) | Desligamento lógico no simulador; corte físico entre bateria e ESP32 ainda a validar |
 | BTN_CICLO (botão) | Encerramento do ciclo ou novo vínculo, feitos na conferência de retorno |
 | POT_BATERIA (potenciômetro) | Percentual sintético; medição física, calibração e diagnóstico do divisor ainda pendentes |
-| SW_REDE (chave deslizante) | Disponibilidade simulada, independente do Wi-Fi; hoje não interrompe transporte nem esvazia fila |
+| SW_REDE (chave deslizante) | Disponibilidade simulada, independente do Wi-Fi; sem rede, guarda eventos de negócio; ao reconectar, reenvia pela Serial e esvazia a fila, sem confirmação de servidor |
 | LEDs | Diagnóstico local; política futura de indicação e duração depende da implementação |
 | Monitor Serial (JSON) | Registro local; não comprova publicação MQTT ou recebimento pela plataforma |
 
 A versão inicial pública não inclui localização. O circuito principal local inclui
 GPS/GNSS customizado nos GPIO16/17; ele não modela recepção de satélites nem consumo real.
 
-**Situação dos CT01–CT16 e do CT35:** todos estão implementados no firmware principal, e as regras de ciclo, lacre, fila e bateria são verificadas nos testes de lógica de `tests/model_tests.c`. A execução no Wokwi é registrada com os prints de cada CT. Seus RF/RN seguem as definições de 3.3.1/3.3.2; divergências com a implementação estão explicitadas em 3.3.2. CT17–CT23 caracterizam funções atuais. Os CT24–CT34 de evolução e validação física ficam no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md). Compilação e testes matemáticos isolados não comprovam aprovação destes cenários.
+**Situação dos CT01–CT16 e do CT35:** executados no Wokwi em 22/10/2026, com resultados resumidos abaixo, prints e logs externos. A aprovação indicada se limita ao comportamento funcional observado no simulador. O CT09 permanece **BLOQUEADO** para confirmação de entrega pelo servidor; o CT14 foi corrigido e **APROVADO no reteste de 23/10/2026**, com confirmação das duas recusas do CT16 na mesma versão. As medições exatas de 1 Hz e das fronteiras de debounce não foram realizadas. Os RF/RN e IDs foram preservados, sem alterar o esperado para aprovar falhas. CT17–CT23 foram executados em 23/10/2026, com resultados na tabela complementar abaixo, e CT24–CT34 permanecem reservados no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md). Testes de lógica em `tests/model_tests.c` são evidência separada da execução no Wokwi e da validação física.
 
-![Circuito no Wokwi com o Monitor Serial](../assets/wokwi/circuito.png)
+![CT01: circuito integrado com verde aceso e STATUS de inicialização no Monitor Serial](../assets/wokwi/CT01.png)
 
-*Figura 1 — Circuito anterior do protótipo no Wokwi, com o Monitor Serial aberto, antes da integração local do GPS.*
-
-Fonte: elaboração própria, captura do simulador Wokwi.
+*Figura 1 — CT01: inicialização do circuito integrado no Wokwi, com lacre íntegro e dias fora iguais a zero. Fonte: captura real do simulador Wokwi for VS Code, realizada nesta sessão de testes em 22/10/2026.*
 
 **CT#** | **Bloco** | **Componente de entrada** | **Leitura da entrada** | **Componente de saída** | **Leitura da saída** | **Descrição**
 |----------|----------|----------|----------|----------|----------|----------|
@@ -587,16 +589,239 @@ Fonte: elaboração própria, captura do simulador Wokwi.
 |CT09|Reconexão|SW_REDE|Rede volta a ficar disponível|LED azul; Serial|Eventos pendentes publicados na ordem, com o dia original de ocorrência; azul apaga|Esperado: Ao reconectar, registros confirmados pelo servidor são removidos sem perder o horário de ocorrência (RF010, RF008; RN09).|
 |CT10|Fila cheia|SW_REDE, SW_LACRE e entradas que geram eventos|Rodada A: rede indisponível; mais de 8 eventos gerados, com uma violação entre eles. Rodada B: rede indisponível; 12 violações seguidas; depois religar a rede|Serial|A: `FILA_CHEIA`; descarta o evento não crítico mais antigo; a violação continua na fila. B: as 8 primeiras violações ficam na fila e as 4 seguintes entram no resumo (`[FILA] 8 pendentes + resumo de 4 violacao(oes)`); ao religar, saem as 8 na ordem e depois um `VIOLACAO_LACRE_RESUMO` com `quantidade=4`, `dia_primeira` e `dia_ultima`; o resumo é zerado|Esperado: Com a fila no limite, só eventos não críticos são descartados e nenhuma violação é perdida; as excedentes são agregadas num único registro (RF010; RN09).|
 |CT11|Ruído de botão|BTN_AUTORIZAR|Pressões rápidas (ruído de contato) e depois o botão segurado por 3 s|Serial|Um único `AUTORIZACAO_REGISTRADA` por pressão real (debounce de 50 ms, detecção por borda); segurar não repete o evento|Esperado: Leituras falsas do botão não geram autorizações em duplicidade (RF007).|
-|CT12|Bateria|POT_BATERIA|Nível abaixo de 20%, depois acima de 25%|Serial|`BATERIA_BAIXA` uma única vez; não repete até voltar a 25% (histerese)|Esperado: O alerta de bateria não fica oscilando perto do limite (RF019, RF027; RN10).|
+|CT12|Bateria|POT_BATERIA|Nível abaixo de 20%, depois acima de 25%|Serial|`BATERIA_BAIXA` uma única vez; só rearma depois de superar 25%, conforme RN10 (histerese)|Esperado: O alerta de bateria não fica oscilando perto do limite (RF019, RF027; RN10).|
 |CT13|Falha do sensor de bateria|POT_BATERIA|Potenciômetro no mínimo (ADC = 0, representa divisor desconectado)|Serial|`SENSOR_BATERIA_FALHA`; nenhum `BATERIA_BAIXA` falso|Esperado: Leitura impossível é tratada como falha do sensor, não como bateria vazia. No dispositivo físico, o diagnóstico elétrico fica para o CT30 (RF019, RF027; RN10).|
 |CT14|Encerramento|BTN_CICLO, SW_LACRE e comando `NF`|NF de retorno lançada (`NF` no Serial); lacre fechado; botão segurado por 2 s|Serial|`CICLO_ENCERRADO` com `ciclos_encerrados` somando um; `dias_fora` zera; um toque curto depois abre o `CICLO_INICIADO` com o `ciclo_id` seguinte|Esperado: Encerrar o ciclo libera o dispositivo sem apagar o histórico (RF016, RF017; RN11).|
 |CT15|Vínculo simultâneo|BTN_CICLO|Ciclo ativo; toque curto (tentativa de novo vínculo)|Serial|`VINCULO_RECUSADO`; o ciclo atual continua igual|Esperado: Impede vínculos simultâneos indevidos, como pede o TAPI (RF004; RN01).|
 |CT16|Encerramento recusado|BTN_CICLO, SW_LACRE e comando `NF`|Rodada A: lacre aberto e NF lançada. Rodada B: lacre fechado e NF ausente; segurar o botão por 2 s em ambas|Serial|`ENCERRAMENTO_RECUSADO` com `motivo` `lacre_aberto` (A) ou `nf_retorno_ausente` (B); o ciclo continua ativo|Esperado: O ciclo só pode ser encerrado com o lacre fechado e a NF de retorno lançada (RF016; RN11).|
 |CT35|Desligamento|SW_ENERGIA|Chave ON/OFF para a direita e depois de volta para a esquerda|LEDs; Serial|Ao desligar, `DISPOSITIVO_DESLIGADO` e todos os LEDs apagados; ao religar, novo `STATUS` e LEDs de volta ao estado do ciclo|Esperado: O desligamento fica registrado, porque pode indicar tentativa de burlar o rastreio. É um desligamento lógico: o ESP32 continua alimentado, para de ler entradas e de publicar, e o relógio do ciclo continua contando; o corte real de energia fica para o protótipo físico. Numerado como CT35 porque os CT24 a CT34 estão reservados no planejamento de energia e GNSS.|
 
-#### Casos aplicáveis ao firmware integrado atual
+#### Resultados da execução da Sprint 1 — 22 e 23/10/2026
 
-**Situação: planejados; nenhuma execução destes CTs foi realizada nesta revisão documental.** Usar o circuito local e o ambiente `demo`, registrar as alterações locais e as constantes efetivas. Começar com memória de teste conhecida quando exigido, preservando qualquer dado anterior. Registrar versão do firmware, log Serial completo e estímulos; inspecionar NVS quando o critério exigir conteúdo persistido. Uma mensagem de log sozinha não comprova retenção após falta de energia.
+**Ambiente e configuração.** Wokwi for VS Code 4.0.1; circuito `src/firmware/prototipo_wokwi/diagram.json`; firmware `demo`; 1 s simulado = 1 dia; prazo de retorno 5 dias; autorização 3 dias; fila de 8 eventos; limiares de permanência 150 e 10 em ciclos distintos. Rede simulada independente do Wi-Fi. Operação e captura automatizadas por Codex, a pedido do grupo; entradas acionadas na interface real e comandos `NF`/`LIMIAR` enviados pela Serial local, sem ajustar variáveis internas para aprovar os testes.
+
+| Rodada | Versão do firmware | SHA-256 do binário demo |
+|---|---|---|
+| CT01–CT16 e CT35, 22/10/2026 | `7317dd9`, sem alterações locais de firmware durante os ensaios | `E3A60385B943E5B5230535E85D1F9F7426F529F241CB59B9B8A5FCA669AB6F49` |
+| Reteste CT14/CT16, 23/10/2026 | `7777594`, com estado do ciclo atualizado antes de publicar o encerramento | `103531CD7BE0D802035A2A6687D21DC33297BBB741177B91772ECCEC6AA6E601` |
+
+**Critério e evidências.** Os resultados abaixo usam os critérios dos CTs, RFs e RNs desta seção. As aprovações se limitam ao comportamento funcional observado no simulador. As capturas mostram estados da execução; contagens, ordem e não repetição foram conferidas nos logs vinculados.
+
+| CT | Situação | Resultado observado | Evidência e log |
+|---|---|---|---|
+| CT01 | APROVADO no simulador | `STATUS` com lacre íntegro e dias zero; somente verde aceso. Wi-Fi conectou depois do primeiro JSON; não comprova publicação MQTT. | [Print](../assets/wokwi/CT01.png) · [Log A][serial-a] |
+| CT02 | APROVADO no simulador | Um `STATUS_SEMANAL` no dia 7 e outro no dia 14, sem emissão intermediária. | [Dia 7](../assets/wokwi/CT02.png) · [Dia 14](../assets/wokwi/CT02-dia14.png) · [Log B][serial-b] |
+| CT03 | APROVADO no alerta funcional | Um único `ALERTA_ATRASO`, no dia 6. Amarelo observado piscando; frequência exata de 1 Hz não medida. | [Print](../assets/wokwi/CT03.png) · [Log B][serial-b] |
+| CT04 | APROVADO no simulador | Um `ALERTA_PERMANENCIA` no dia 150 e outro no dia 10, em ciclos distintos. | [150 dias](../assets/wokwi/CT04.png) · [10 dias](../assets/wokwi/CT04-limiar10.png) · [Log 150][serial-150] · [Log ciclo 2][serial-ciclos] |
+| CT05 | APROVADO na detecção local | Abertura sem autorização válida gerou violação crítica fora da rotina semanal; vermelho observado piscando. | [Print](../assets/wokwi/CT05-evento.png) · [Log B][serial-b] |
+| CT06 | APROVADO no simulador | Retirada autorizada 337 ms após autorização, sem violação nessa retirada; fechamento gerou `LACRE_REAPLICADO`. | [Retirada](../assets/wokwi/CT06-retirada.png) · [Reaplicação](../assets/wokwi/CT06.png) · [Log B][serial-b] |
+| CT07 | APROVADO no simulador | Abertura depois de vencer a janela gerou `VIOLACAO_LACRE`, sem `RETIRADA_AUTORIZADA`. | [Print](../assets/wokwi/CT07.png) · [Log A][serial-a] |
+| CT08 | APROVADO no armazenamento simulado | Sem rede simulada, violação guardada; fila com um pendente e LEDs vermelho/azul acesos. | [Print](../assets/wokwi/CT08.png) · [Log B][serial-b] |
+| CT09 | **BLOQUEADO** para aprovação integral | Dois eventos reenviados pela Serial, na ordem e com dias originais; fila zero. Falta confirmação do servidor exigida pelo CT. | [Antes](../assets/wokwi/CT09-antes.png) · [Depois](../assets/wokwi/CT09.png) · [Log B][serial-b] |
+| CT10 | APROVADO na fila/reenvio simulado | A: violação preservada e não críticos mais antigos descartados. B: oito violações individuais e resumo de quatro, depois fila zero. | [Rodada A](../assets/wokwi/CT10-A-violacao-preservada.png) · [Resumo B](../assets/wokwi/CT10.png) · [Log da fila][serial-fila] |
+| CT11 | APROVADO nos estímulos aplicados | Três pressões curtas geraram três autorizações; uma pressão mantida gerou somente uma. Fronteira exata de 50 ms não medida. | [Evento](../assets/wokwi/CT11.png) · [Pressão mantida](../assets/wokwi/CT11-pressao-mantida.png) · [Log A][serial-a] |
+| CT12 | APROVADO no simulador | Sequência 17% → 22% → 17% → 31% → 17% gerou somente dois alertas, confirmando rearme acima de 25%. | [Print](../assets/wokwi/CT12.png) · [Log A][serial-a] |
+| CT13 | APROVADO no diagnóstico simulado | Partindo de 78%, entrada zero gerou uma falha do sensor e nenhum `BATERIA_BAIXA`. | [Print isolado](../assets/wokwi/CT13-isolado.png) · [Log C][serial-c] |
+| CT14 | **APROVADO no reteste de 23/10/2026** | Dois encerramentos com `ciclo_ativo=false`, `dias_fora=0` e contadores 1/2. Toque curto após o primeiro iniciou o ciclo 2 com dias zero; o lacre permaneceu fechado durante todo o primeiro ciclo. | [Encerramento corrigido](../assets/wokwi/CT14-corrigido.png) · [Reutilização](../assets/wokwi/CT14-corrigido-reutilizado.png) · [Segundo encerramento](../assets/wokwi/CT14-corrigido-segundo-ciclo.png) · [Log do reteste][serial-reteste] |
+| CT15 | APROVADO no simulador | Novo vínculo recusado com `motivo=ciclo_ativo`; ciclo 1 permaneceu ativo. | [Print](../assets/wokwi/CT15.png) · [Log B][serial-b] |
+| CT16 | APROVADO nas duas recusas | Recusou lacre aberto com NF e lacre fechado sem NF, mantendo o ciclo ativo; ambas as condições foram confirmadas novamente na versão corrigida. | [Lacre aberto](../assets/wokwi/CT16-corrigido-lacre-aberto.png) · [NF ausente](../assets/wokwi/CT16-corrigido-nf-ausente.png) · [Log do reteste][serial-reteste] |
+| CT35 | APROVADO no desligamento lógico observado | Desligamento registrado, LEDs apagados e 26,535 s simulados sem novas mensagens; novo `STATUS` e LEDs restaurados ao religar. | [Desligado](../assets/wokwi/CT35-desligado.png) · [Religado](../assets/wokwi/CT35.png) · [Log A][serial-a] |
+
+**Correção e validação do CT14.** A falha original era publicar `CICLO_ENCERRADO` antes de desativar o ciclo e zerar os dias. A ordem foi corrigida, sem alterar o critério esperado. No reteste de 23/10/2026, os encerramentos em `uptime_ms=91417` e `215814` trouxeram ciclo inativo, dias zero e contadores 1 e 2; a reutilização em `118236` iniciou o ciclo 2 com dias zero. As recusas do CT16 por NF ausente (`132328`) e lacre aberto com NF (`176792`) mantiveram o ciclo ativo. Os ambientes `demo`/`weekly` compilaram e `scripts/verify.ps1` passou. Capturas e logs anteriores foram preservados como histórico.
+
+**Limitações e pendências.** CT09 depende de transporte e confirmação do servidor: a saída na Serial e o esvaziamento da fila não comprovam entrega. Não foram validados precisão de 1 Hz/debounce, retenção após corte de energia, autonomia, diagnóstico elétrico da bateria ou contagem de dias por NF real. CT04 tem logs por intervalo: a rodada de 150 dias foi gravada aproximadamente do dia 84 até depois do limiar; o log do ciclo 2 cobre o limiar 10. No primeiro `STATUS` após religar no CT35, os dias ainda eram os anteriores ao desligamento; os registros seguintes atualizaram a contagem para incluir o intervalo desligado.
+
+Os limites exatos de bateria em 20% e 25% e os demais novos cenários de falha combinada continuam pendentes, com numeração a partir do CT36; CT24–CT34 permanecem reservados. Abrir e fechar o lacre enquanto o dispositivo está desligado não foi ensaiado nesta rodada e continua como discussão de regra com o grupo.
+
+Os logs ficam em `assets/wokwi/`, acessíveis pelos links de cada CT. O Log A contém dois boots; as contagens usam o segundo, a partir do segundo `ets Jul 29 2019`. O log do reteste de 23/10 começa na confirmação de NF do ciclo 1 e segue até depois do segundo encerramento. Os blocos a seguir exibem as capturas sem reproduzir a Serial inteira no documento; o CT01 já aparece na Figura 1.
+
+[serial-a]: ../assets/wokwi/CT01-CT07-CT11-CT12-CT35-execucao.serial.txt
+[serial-b]: ../assets/wokwi/CT02-CT03-CT05-CT06-CT08-CT09-CT15-execucao.serial.txt
+[serial-c]: ../assets/wokwi/CT13-isolado.serial.txt
+[serial-150]: ../assets/wokwi/CT04-limiar150.serial.txt
+[serial-ciclos]: ../assets/wokwi/CT04-CT14-CT16-execucao.serial.txt
+[serial-fila]: ../assets/wokwi/CT10-execucao.serial.txt
+[serial-reteste]: ../assets/wokwi/CT14-2026-10-23.serial.txt
+
+<details>
+<summary>CT02 — Status periódico</summary>
+
+![CT02: Status semanal do dia 7; o dia 14 está na captura complementar.](../assets/wokwi/CT02.png)
+
+*Figura 3.4.1-CT02 — Status semanal do dia 7; o dia 14 está na captura complementar. Fonte: captura real do simulador Wokwi for VS Code, 22/10/2026.*
+
+Capturas complementares: [Dia 14](../assets/wokwi/CT02-dia14.png).
+
+</details>
+
+<details>
+<summary>CT03 — Prazo e atraso</summary>
+
+![CT03: Alerta de atraso no dia 6, antes do status semanal.](../assets/wokwi/CT03.png)
+
+*Figura 3.4.1-CT03 — Alerta de atraso no dia 6, antes do status semanal. Fonte: captura real do simulador Wokwi for VS Code, 22/10/2026.*
+
+</details>
+
+<details>
+<summary>CT04 — Permanência em 150 e 10 dias</summary>
+
+![CT04: Alerta de permanência com limiar de 150 dias.](../assets/wokwi/CT04.png)
+
+*Figura 3.4.1-CT04 — Alerta de permanência com limiar de 150 dias. Fonte: captura real do simulador Wokwi for VS Code, 22/10/2026.*
+
+Capturas complementares: [Limiar 10](../assets/wokwi/CT04-limiar10.png) · [Confirmação de configuração](../assets/wokwi/CT04-configuracao.serial.txt).
+
+</details>
+
+<details>
+<summary>CT05 — Violação do lacre</summary>
+
+![CT05: Violação crítica registrada e LED vermelho aceso.](../assets/wokwi/CT05-evento.png)
+
+*Figura 3.4.1-CT05 — Violação crítica registrada e LED vermelho aceso. Fonte: captura real do simulador Wokwi for VS Code, 22/10/2026.*
+
+Capturas complementares: [Estado posterior, em outra fase do piscar](../assets/wokwi/CT05.png).
+
+</details>
+
+<details>
+<summary>CT06 — Retirada autorizada e reaplicação</summary>
+
+![CT06: Retirada autorizada dentro da janela de três dias simulados.](../assets/wokwi/CT06-retirada.png)
+
+*Figura 3.4.1-CT06 — Retirada autorizada dentro da janela de três dias simulados. Fonte: captura real do simulador Wokwi for VS Code, 22/10/2026.*
+
+Capturas complementares: [Reaplicação do lacre](../assets/wokwi/CT06.png).
+
+</details>
+
+<details>
+<summary>CT07 — Autorização expirada</summary>
+
+![CT07: Violação após a autorização vencer.](../assets/wokwi/CT07.png)
+
+*Figura 3.4.1-CT07 — Violação após a autorização vencer. Fonte: captura real do simulador Wokwi for VS Code, 22/10/2026.*
+
+</details>
+
+<details>
+<summary>CT08 — Evento sem conexão</summary>
+
+![CT08: Violação guardada com um evento pendente e LEDs azul/vermelho acesos.](../assets/wokwi/CT08.png)
+
+*Figura 3.4.1-CT08 — Violação guardada com um evento pendente e LEDs azul/vermelho acesos. Fonte: captura real do simulador Wokwi for VS Code, 22/10/2026.*
+
+</details>
+
+<details>
+<summary>CT09 — Reconexão — BLOQUEADO para confirmação do servidor</summary>
+
+![CT09: Reenvio local ordenado e fila zero; não comprova confirmação do servidor.](../assets/wokwi/CT09.png)
+
+*Figura 3.4.1-CT09 — Reenvio local ordenado e fila zero; não comprova confirmação do servidor. Fonte: captura real do simulador Wokwi for VS Code, 22/10/2026.*
+
+Capturas complementares: [Dois eventos pendentes antes de reconectar](../assets/wokwi/CT09-antes.png).
+
+</details>
+
+<details>
+<summary>CT10 — Fila cheia — rodadas A e B</summary>
+
+Pré-condição das duas rodadas: ciclo inativo, fila inicialmente vazia, lacre fechado e rede indisponível, evitando status periódicos na contagem. Na rodada A, uma violação e dez alterações `LIMIAR 201` a `210` provocaram três descartes dos não críticos mais antigos; a violação e os eventos 204–210 foram reenviados. Na B, doze aberturas sem autorização, separadas por onze fechamentos estáveis, produziram oito violações individuais e resumo de quatro; ambos foram esvaziados ao reconectar. Houve uma interrupção do capturador entre o armazenamento inicial da violação A e os dez comandos; os intervalos ausentes não foram reconstruídos.
+
+![CT10: Resumo de quatro violações enviado após oito individuais, com fila esvaziada.](../assets/wokwi/CT10.png)
+
+*Figura 3.4.1-CT10 — Resumo de quatro violações enviado após oito individuais, com fila esvaziada. Fonte: captura real do simulador Wokwi for VS Code, 22/10/2026.*
+
+Capturas complementares: [A: fila cheia](../assets/wokwi/CT10-A-cheia.png) · [A: violação preservada](../assets/wokwi/CT10-A-violacao-preservada.png) · [A: fila zero](../assets/wokwi/CT10-A-fila-vazia.png) · [B: início do resumo](../assets/wokwi/CT10-B-resumo-iniciado.png) · [B: oito mais quatro pendentes](../assets/wokwi/CT10-B-cheia-resumo4.png).
+
+</details>
+
+<details>
+<summary>CT11 — Ruído e pressão mantida do botão</summary>
+
+Foram aplicadas três pressões curtas e uma mantida, com o bounce padrão do Wokwi. A pressão mantida apareceu nos heartbeats de 62 a 88 s sem repetir a autorização. A fronteira de 50 ms não foi medida.
+
+![CT11: Uma autorização registrada na pressão mantida, sem repetição nos heartbeats seguintes.](../assets/wokwi/CT11.png)
+
+*Figura 3.4.1-CT11 — Uma autorização registrada na pressão mantida, sem repetição nos heartbeats seguintes. Fonte: captura real do simulador Wokwi for VS Code, 22/10/2026.*
+
+Capturas complementares: [Botão mantido pressionado](../assets/wokwi/CT11-pressao-mantida.png).
+
+</details>
+
+<details>
+<summary>CT12 — Bateria baixa e histerese</summary>
+
+![CT12: Segundo alerta somente após recuperação acima de 25% e nova queda.](../assets/wokwi/CT12.png)
+
+*Figura 3.4.1-CT12 — Segundo alerta somente após recuperação acima de 25% e nova queda. Fonte: captura real do simulador Wokwi for VS Code, 22/10/2026.*
+
+Capturas complementares: [Primeiro alerta](../assets/wokwi/CT12-primeiro-alerta.png) · [22%](../assets/wokwi/CT12-recuperacao-insuficiente.png) · [Nova queda sem repetição](../assets/wokwi/CT12-sem-repeticao.png) · [Recuperação em 31%](../assets/wokwi/CT12-recuperacao.png).
+
+</details>
+
+<details>
+<summary>CT13 — Falha do sensor de bateria</summary>
+
+![CT13: Entrada zero depois de bateria saudável gera falha do sensor, sem alerta falso de bateria baixa.](../assets/wokwi/CT13-isolado.png)
+
+*Figura 3.4.1-CT13 — Entrada zero depois de bateria saudável gera falha do sensor, sem alerta falso de bateria baixa. Fonte: captura real do simulador Wokwi for VS Code, 22/10/2026.*
+
+Capturas complementares: [Rodada adicional](../assets/wokwi/CT13.png).
+
+</details>
+
+<details>
+<summary>CT14 — Encerramento e reutilização — APROVADO</summary>
+
+![CT14: Encerramento corrigido com ciclo inativo, dias zero e contador incrementado.](../assets/wokwi/CT14-corrigido.png)
+
+*Figura 3.4.1-CT14 — Encerramento corrigido: `ciclo_ativo=false`, `dias_fora=0` e contador 1. Fonte: captura real do simulador Wokwi for VS Code, 23/10/2026.*
+
+Capturas complementares: [Ciclo 2 iniciado com dias zero](../assets/wokwi/CT14-corrigido-reutilizado.png) · [Segundo encerramento com contador 2](../assets/wokwi/CT14-corrigido-segundo-ciclo.png). A [captura anterior à correção](../assets/wokwi/CT14.png) foi preservada como histórico e não representa o resultado do reteste.
+
+</details>
+
+<details>
+<summary>CT15 — Recusa de vínculo simultâneo</summary>
+
+![CT15: Vínculo recusado enquanto o ciclo atual está ativo.](../assets/wokwi/CT15.png)
+
+*Figura 3.4.1-CT15 — Vínculo recusado enquanto o ciclo atual está ativo. Fonte: captura real do simulador Wokwi for VS Code, 22/10/2026.*
+
+</details>
+
+<details>
+<summary>CT16 — Encerramento recusado — rodadas A e B</summary>
+
+![CT16: Recusa com lacre aberto e NF lançada na versão corrigida.](../assets/wokwi/CT16-corrigido-lacre-aberto.png)
+
+*Figura 3.4.1-CT16 — Recusa por lacre aberto, mesmo com NF de retorno lançada, na versão corrigida. Fonte: captura real do simulador Wokwi for VS Code, 23/10/2026.*
+
+Captura complementar: [Recusa por NF ausente com lacre fechado](../assets/wokwi/CT16-corrigido-nf-ausente.png).
+
+</details>
+
+<details>
+<summary>CT35 — Desligamento lógico e religamento</summary>
+
+![CT35: Desligamento registrado e quatro LEDs apagados.](../assets/wokwi/CT35-desligado.png)
+
+*Figura 3.4.1-CT35 — Desligamento registrado e quatro LEDs apagados. Fonte: captura real do simulador Wokwi for VS Code, 22/10/2026.*
+
+Capturas complementares: [Novo STATUS e LEDs restaurados ao religar](../assets/wokwi/CT35.png).
+
+</details>
+
+#### CT17–CT23 — ensaios complementares: execução de 23/10/2026
+
+**Situação:** CT17, CT19, CT20, CT21 e CT23 **APROVADOS no simulador**; CT18 e CT22 **REPROVADOS**, mantendo os critérios esperados da tabela. Execução por automação local no Wokwi for VS Code 4.0.1, em 23/10/2026. O resultado caracteriza comportamento funcional simulado.
+
+**Configuração e reprodução:** base `7777594`, ESP32 DevKit v1, ambiente `demo`, dia de 1 s, coleta de 30 s, espera GNSS de 10 s, validade de fix de 3 s e debounce do lacre de 60 ms. CT17/CT23 e a contraprova do CT18 usam o binário original (SHA-256 `103531CD7BE0D802035A2A6687D21DC33297BBB741177B91772ECCEC6AA6E601`). CT18–CT22 também usam a [instrumentação isolada de ensaio](../tests/wokwi-complementares/README.md), que inclui a lógica de produção sem mudanças e acrescenta leitura NVS, reinício e diagnóstico pelo GPIO32; SHA-256 do binário instrumentado: `2AC42AA1EB4208ECC696E74FBE4D0A3EF2DCFBA6964FEC661D918F2344A0F8AA`. O gerador fornece pulsos digitais e NMEA nos mesmos GPIOs do circuito principal; constantes e esperados não foram ajustados. Os diagramas são gerados separadamente pelo roteiro, preservando o circuito de produção.
+
+Os logs completos ficam em arquivos externos, vinculados nos resultados. A NVS começa vazia em cada rodada nova; o CT22 reinicia a CPU na mesma instância para manter a flash. As sondas leem `q0..q15`, `p0..p7`, `pmeta`, `ctx` e `previous` diretamente com `Preferences`. Mensagens `[ensaio]` identificam a instrumentação e não são eventos de negócio.
 
 | CT | Pré-condição e procedimento | Resultado esperado / medição | Limitação ou preparação |
 |---|---|---|---|
@@ -608,7 +833,96 @@ Fonte: elaboração própria, captura do simulador Wokwi.
 | CT22 | Salvar posição A e registros conhecidos, com ciclo ativo há alguns dias e eventos na fila sem rede; reiniciar preservando flash/NVS. Sem novo fix, observar saída; depois coletar B. | Referência A, registro de diagnóstico, fila de eventos, `ciclo_id`, `dias_fora` e estado do lacre permanecem; `STATUS` com `contexto_restaurado=true`. Histórico após reinício sem idade conhecida apresenta `last_valid_age_ms=null`; novo ponto B compara com A. `uptime_ms` reinicia e não deve ser tratado como horário absoluto. | Confirmar preservação de flash no ambiente usado; se indisponível no simulador, executar em hardware. Sem acesso à NVS, não aprovar retenção da fila apenas pelo JSON da posição. |
 | CT23 | Mover potenciômetro ao mínimo, meio e máximo; observar heartbeat/JSON. | Percentual sintético permanece entre 0 e 100 e acompanha a entrada; o mínimo absoluto (ADC = 0) gera `SENSOR_BATERIA_FALHA`, conforme a RN10 e o CT13. Não emitir conclusão de bateria desconectada, autonomia ou tensão física com esses dados. | ADC e percentual simulados não são medição de estado de carga de uma bateria real. |
 
-**Registro de execução a preencher para cada CT:** data; responsável; versão e alterações locais; configuração; ambiente; pré-condições; estímulos e quantidade de repetições; resultado medido; critério utilizado; situação (`NÃO EXECUTADO`, `BLOQUEADO`, `APROVADO` ou `REPROVADO`); evidência; limitações. Fotos do simulador podem ficar em `assets/wokwi/CTnn.png`; medições e logs anonimizados devem acompanhar o registro, sem usar relatórios internos como evidência. Não criar arquivos de evidência vazios nem marcar teste aprovado antes da execução.
+**Resultados medidos e evidências**
+
+| CT | Situação | Resultado observado | Evidência / log completo |
+|---|---|---|---|
+| CT17 | APROVADO | Leituras brutas dos dois botões, autorização/retirada, recusa de encerramento, rede indisponível com Wi-Fi conectado, fila e desligamento/religamento observados. LEDs acompanharam os estados; frequência exata não medida. | [Print](../assets/wokwi/CT17.png) · [Serial](../assets/wokwi/CT17-CT23.serial.txt) |
+| CT18 | **REPROVADO** | Pulsos de 20/40 ms ignorados. Binário original: 20/20 transições com rede e 16/20 sem rede (4 perdas); sem duplicação observada. Rodada instrumentada: 20/20 e 14/20, respectivamente. | [Original](../assets/wokwi/CT18-original.png) · [Serial original](../assets/wokwi/CT18-original.serial.txt) · [Serial instrumentada](../assets/wokwi/CT18.serial.txt) |
+| CT19 | APROVADO | Três saídas sem fix em 11.630/81.630/151.630 ms, com latitude/longitude/`moved` nulos; histórico preservado nas duas últimas. NMEA interrompido de 120 a 160 s, contador parado em 7.788 caracteres. Seis transições do lacre detectadas durante as três esperas. | [Print](../assets/wokwi/CT19.png) · [Serial](../assets/wokwi/CT19.serial.txt) |
+| CT20 | APROVADO | Primeiro ponto criou referência. Depois, 50,04 m → `moved=false` e 150,11 m → `true`; coletas em 2.068/32.067/62.067 ms, intervalos de 29.999/30.000 ms (desvios −1/0 ms de 30 s). | [Print](../assets/wokwi/CT20.png) · [Serial](../assets/wokwi/CT20.serial.txt) |
+| CT21 | APROVADO | NVS inicialmente vazia; 17 registros gerados (1 coleta + 16 transições). `q0..q15` iguais aos primeiros 16 JSON, preservados nas sondas de 21/28 s após alternar a rede; 1 registro somente na Serial e 1 aviso de limite. | [Print NVS](../assets/wokwi/CT21.png) · [Serial](../assets/wokwi/CT21.serial.txt) |
+| CT22 | **REPROVADO no ambiente** | `q0..q2` e `p0..p3` conhecidos antes do reset reapareceram sem alterações; referência A, lacre aberto e ciclo 1 retidos, `STATUS` restaurado com 42 dias. Sem fix: idade histórica nula; B comparou com A (150,11 m). Porém `uptime_ms` continuou crescente após o reinício (novo `STATUS` em 46.419 ms), contrariando o esperado. | [Sem fix após reset](../assets/wokwi/CT22.png) · [B](../assets/wokwi/CT22-ponto-B.png) · [Serial](../assets/wokwi/CT22.serial.txt) |
+| CT23 | APROVADO | Entrada mínima/meio/máxima resultou em 0/50/100%; todos os percentuais entre 0 e 100. Zero gerou 1 `SENSOR_BATERIA_FALHA`, sem `BATERIA_BAIXA` falso na rodada. | [Print](../assets/wokwi/CT23.png) · [Serial](../assets/wokwi/CT17-CT23.serial.txt) |
+
+**Medições e pendências:** no CT18 instrumentado, a latência entre a borda e o primeiro byte do JSON foi de 60,523 a 64,926 ms com rede disponível (20 transições). A associação temporal da sonda ficou inválida em parte da rodada sem rede; os valores dessa condição foram descartados, sem editar o log bruto. A contagem foi conferida também no binário original. Não se calculou p95: faltam 30 estímulos por condição e um limite de latência acordado. A retirada autorizada positiva está na execução do CT17; as aberturas do CT18 ocorreram sem autorização.
+
+No CT22, o log registra `SW_CPU_RESET` seguido de `TG1WDT_SYS_RESET`; a retenção NVS foi verificada, mas o relógio de uptime não reiniciou no Wokwi. A causa e o comportamento em hardware permanecem pendentes; não foi alterado o esperado para aprovar o caso. As falhas dos CT18/CT22 exigem investigação e reteste. Corte físico de energia, entrega ao servidor e validação elétrica continuam fora do que estas capturas comprovam.
+
+<details>
+<summary>CT17 — Diagnóstico das entradas e estados</summary>
+
+![CT17: Rede simulada indisponível, Wi-Fi conectado e lacre violado.](../assets/wokwi/CT17.png)
+
+*Figura 3.4.1-CT17 — Rede simulada indisponível, Wi-Fi conectado e lacre violado. Fonte: captura real do simulador Wokwi for VS Code, 23/10/2026.*
+
+Capturas complementares: [Autorização](../assets/wokwi/CT17-autorizacao.png) · [Retirada autorizada](../assets/wokwi/CT17-retirada-autorizada.png) · [Botão de ciclo](../assets/wokwi/CT17-ciclo.png) · [Autorização sem rede](../assets/wokwi/CT17-autorizacao-sem-rede.png) · [Desligado](../assets/wokwi/CT17-desligado.png) · [Religado](../assets/wokwi/CT17-religado.png).
+
+</details>
+
+<details>
+<summary>CT18 — Transições cronometradas — REPROVADO</summary>
+
+![CT18: Contraprova com o binário original e rede indisponível.](../assets/wokwi/CT18-original.png)
+
+*Figura 3.4.1-CT18 — Contraprova com o binário original e rede indisponível. Fonte: captura real do simulador Wokwi for VS Code, 23/10/2026.*
+
+Capturas complementares: [Rodada instrumentada](../assets/wokwi/CT18.png).
+
+</details>
+
+<details>
+<summary>CT19 — Ausência de fix e interrupção NMEA</summary>
+
+![CT19: Coleta sem NMEA com coordenadas atuais nulas e histórico preservado.](../assets/wokwi/CT19.png)
+
+*Figura 3.4.1-CT19 — Coleta sem NMEA com coordenadas atuais nulas e histórico preservado. Fonte: captura real do simulador Wokwi for VS Code, 23/10/2026.*
+
+Capturas complementares: [Fix inválido com NMEA ativo](../assets/wokwi/CT19-fix-invalido.png).
+
+</details>
+
+<details>
+<summary>CT20 — Comparação entre coletas válidas</summary>
+
+![CT20: Deslocamento consecutivo de 150,11 m com moved=true.](../assets/wokwi/CT20.png)
+
+*Figura 3.4.1-CT20 — Deslocamento consecutivo de 150,11 m com moved=true. Fonte: captura real do simulador Wokwi for VS Code, 23/10/2026.*
+
+Capturas complementares: [Deslocamento de 50,04 m com moved=false](../assets/wokwi/CT20-50m.png).
+
+</details>
+
+<details>
+<summary>CT21 — Limite de diagnóstico na NVS</summary>
+
+![CT21: q15 preservada na inspeção posterior à alternância da rede.](../assets/wokwi/CT21.png)
+
+*Figura 3.4.1-CT21 — q15 preservada na inspeção posterior à alternância da rede. Fonte: captura real do simulador Wokwi for VS Code, 23/10/2026.*
+
+</details>
+
+<details>
+<summary>CT22 — Retenção no reinício — REPROVADO no ambiente</summary>
+
+![CT22: Histórico restaurado sem fix novo e com idade desconhecida nula.](../assets/wokwi/CT22.png)
+
+*Figura 3.4.1-CT22 — Histórico restaurado sem fix novo e com idade desconhecida nula. Fonte: captura real do simulador Wokwi for VS Code, 23/10/2026.*
+
+Capturas complementares: [Ponto B comparado com A após reinício](../assets/wokwi/CT22-ponto-B.png).
+
+</details>
+
+<details>
+<summary>CT23 — Faixa da entrada de bateria simulada</summary>
+
+![CT23: Potenciômetro no máximo com leitura sintética de 100%.](../assets/wokwi/CT23.png)
+
+*Figura 3.4.1-CT23 — Potenciômetro no máximo com leitura sintética de 100%. Fonte: captura real do simulador Wokwi for VS Code, 23/10/2026.*
+
+Capturas complementares: [Mínimo e falha do sensor](../assets/wokwi/CT23-minimo.png) · [Meio em 50%](../assets/wokwi/CT23-meio.png).
+
+</details>
 
 **Próximas sprints.** As seções seguintes mantêm as orientações e os exemplos originais do template. Seus exemplos de CT não são resultados de execução. A proposta de evolução do circuito e os CT24–CT34 estão no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md).
 

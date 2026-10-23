@@ -1,0 +1,3 @@
+{"device_id":"prototipo-001","type":"LIMIAR_ALTERADO","uptime_ms":57902,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":56,"dia_ocorrencia":56,"atraso":true,"permanencia":false,"critico":false,"limiar_dias":150}
+[vivo] tempo=58 s gps_chars=3696 fix=valido lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 dias_fora=56 fila=0
+[vivo] tempo=60 s gps_chars=3828 fix=valido lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 dias_fora=58 fila=0
