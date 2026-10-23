@@ -1,7 +1,5 @@
 # Documentação IoTDoc - Módulo 4 - Inteli
 
-**_Os trechos em itálico servem apenas como guia para o preenchimento da seção. Por esse motivo, não devem fazer parte da documentação final_**
-
 ## Nome do Grupo
 
 #### Nomes dos integrantes do grupo
@@ -25,7 +23,7 @@
 
 # <a name="c1"></a>1. Introdução (sprint 1)
 
-A CerradinhoBio é uma companhia brasileira de capital aberto, com ações negociadas na B3, e integra o Grupo Cerradinho [3]. Atua em bioenergia a partir de cana-de-açúcar e milho: produz etanol, energia elétrica renovável gerada com biomassa, açúcar VHP e coprodutos do milho, como DDGS, WDG e óleo [4]. Suas operações estão em Chapadão do Céu (GO), onde ficam o negócio de cana e uma unidade de etanol de milho, e em Maracaju (MS), que também abriga uma unidade de etanol de milho [2]. Na safra 2025/26, a companhia registrou receita líquida consolidada de R$ 4,288 bilhões [1] e processou 5,2 milhões de toneladas de cana e 1,5 milhão de toneladas de milho; a capacidade instalada da fábrica de açúcar é de 550 mil toneladas por ano [2]. Como referência de porte de pessoal, a companhia informava cerca de 3.800 empregos diretos e indiretos em sua apresentação institucional publicada durante a safra 2024/25 [5]. A empresa se posiciona entre os maiores complexos industriais sucroenergéticos do Brasil [3] e entre os maiores produtores de etanol do país [4].
+A CerradinhoBio é uma companhia brasileira de capital aberto, integrante do Grupo Cerradinho, que atua em bioenergia e produtos agrícolas renováveis [3]. Produz etanol de cana e de milho, açúcar VHP, bioeletricidade e coprodutos destinados à nutrição animal [4]. Suas operações estão em Chapadão do Céu (GO) e Maracaju (MS) [2]. Na safra 2025/26, registrou receita líquida de R$ 4,288 bilhões e processou 5,2 milhões de toneladas de cana e 1,5 milhão de toneladas de milho; a fábrica de açúcar tem capacidade instalada de 550 mil toneladas anuais [1, 2]. Na safra 2024/25, informou cerca de 3.800 empregos diretos e indiretos [5]. A empresa se posiciona entre os maiores produtores de etanol do país, com operações industriais de grande escala e portfólio diversificado [3, 4].
 
 **Problema do projeto.** O acompanhamento de equipamentos enviados à manutenção externa depende de registros e contatos entre áreas e fornecedores. A dificuldade de consolidar localização, nota fiscal de remessa, prazo previsto e data de retorno reduz a visibilidade dos ativos em terceiros e exige cobranças manuais. Permanência total e atraso em relação ao prazo combinado são informações distintas e precisam ser analisadas separadamente.
 
@@ -51,76 +49,88 @@ _Descreva as etapas da metodologia RM-ODP que foram utilizadas para o desenvolvi
 
 ## 3.1. Domínio de Fundamentos de Negócio
 
-_Link para os templates de negócios: https://drive.google.com/drive/folders/1lTqisJ_gxxtc5J5aXM8ula2kQ4MsII_M?usp=sharing_
-
 ### 3.1.1. Contexto da Indústria (sprint 1)	
 
 **Parceiro:** CerradinhoBio
-**Setor analisado:** bioenergia e indústria sucroenergética brasileira, incluindo etanol de cana e de milho, açúcar, bioeletricidade e coprodutos.
+**Setor:** bioenergia e indústria sucroenergética (etanol, açúcar, bioeletricidade e coprodutos).
 
 #### Concorrência
 
-A CerradinhoBio compete com grupos integrados de açúcar, etanol e bioenergia e, no segmento de etanol de milho, com produtores especializados. Entre os principais concorrentes estão a **Raízen**, a **São Martinho** e a **bp bioenergy** (antiga joint venture BP Bunge Bioenergia, adquirida integralmente pela bp em 2024). Para comparar a escala no segmento de cana, as empresas divulgam capacidade anual de moagem de aproximadamente 105 milhões de toneladas para a Raízen e 32 milhões para a bp bioenergy; a São Martinho projeta capacidade plena de 24 milhões de toneladas na safra 2026/27. No etanol de milho, a **FS** informa capacidade anual de 2,6 bilhões de litros e a **Inpasa** reporta 5,8 bilhões após a expansão de suas unidades. São indicadores de capacidade na mesma unidade de medida dentro de cada matéria-prima, mas publicados em períodos diferentes; não representam produção realizada no mesmo ano nem participação de mercado. [7, 9–12, 19–20]
+Concorrentes incluem **Raízen**, **São Martinho** e **bp bioenergy** na cana, além de **FS** e **Inpasa** no milho. Escala, região e matéria-prima variam; capacidades de safras distintas não representam produção ou participação de mercado. [7, 9–12, 19–20]
 
 #### Modelo de negócio
 
-A CerradinhoBio opera um modelo B2B integrado e intensivo em ativos: transforma cana-de-açúcar e milho em etanol, açúcar VHP, bioeletricidade e coprodutos de milho destinados principalmente à nutrição animal, comercializados para distribuidores de combustíveis, clientes industriais e de alimentos para animais, compradores de açúcar e agentes do setor elétrico. A diversificação entre matérias-primas e produtos permite ajustar o mix de produção às condições de mercado; a venda de coprodutos também ajuda a compensar parte do custo do milho. A companhia participa ainda do mercado de créditos de descarbonização (CBIOs) por meio de sua produção certificada no RenovaBio. O desempenho depende de escala e eficiência agrícola e industrial, logística de matéria-prima e produtos, capital para manutenção e expansão e exposição à sazonalidade e à volatilidade dos preços de commodities. Na safra 2025/26, a empresa informou processamento de 5,2 milhões de toneladas de cana e 1,5 milhão de toneladas de milho, além de produção equivalente de 865 mil m³ de etanol hidratado, dos quais 687 milhões de litros vieram do milho. [2, 4, 8, 14]
+O modelo B2B transforma cana e milho em etanol, açúcar, energia e coprodutos vendidos a distribuidores, indústrias e setor elétrico. A diversificação e os CBIOs ampliam receitas; eficiência, logística e preços de commodities afetam o desempenho. [2, 4, 8, 14]
 
 #### Tendências
 
-O setor amplia a produção de etanol de milho, que complementa a oferta de cana e aproveita a disponibilidade de grãos e a demanda por coprodutos; a EPE registrou produção total brasileira de etanol de 36,2 bilhões de litros em 2025, com expansão do milho compensando a queda da cana. O RenovaBio e os CBIOs mantêm um mecanismo de incentivo à descarbonização, enquanto a Lei do Combustível do Futuro cria oportunidades e novas exigências para biometano e combustível sustentável de aviação (SAF): para operadores aéreos, a redução mínima de emissões começa em 1% em 2027 e cresce gradualmente até 10% em 2037. Outra frente é digitalizar a manutenção e a gestão de ativos industriais — por exemplo, consolidar registros, localização, prazos e alertas — para dar mais visibilidade à operação e apoiar decisões com dados; os benefícios dependem da qualidade da implantação e da atuação dos responsáveis. [13–17]
+O etanol de milho complementa a cana. RenovaBio, SAF e biometano impulsionam a descarbonização; a Lei do Combustível do Futuro prevê metas para a aviação a partir de 2027. Digitalizar a manutenção pode consolidar registros e apoiar decisões. [13–17]
 
 #### Cinco Forças de Porter — perspectiva da CerradinhoBio
 
-Escala qualitativa: **baixa**, **média** ou **alta**. A intensidade indica quanto a força tende a pressionar a atratividade e a rentabilidade da CerradinhoBio no setor, consideradas as condições descritas abaixo. A figura foi preenchida sobre o template oficial de cinco forças disponibilizado para o projeto. [18, 21]
+Escala: **baixa**, **média** ou **alta**, conforme a pressão sobre a atratividade do setor. [18]
 
 ![Cinco Forças de Porter para a CerradinhoBio, no formato do template oficial do Inteli](../assets/negocios/cinco_forcas.png)
-*Figura — Cinco Forças de Porter, preenchidas pela perspectiva da CerradinhoBio.*  
-*Fonte: template [“5 forças template.jpeg”](https://drive.google.com/file/d/1Kr8A2GRrTDUFi5JslJQd7LWVOwyn8E_c/view), pasta de templates de negócios do Inteli; conteúdo e adaptação: Grupo G01 (2026). [21]*
+*Figura — Cinco Forças da CerradinhoBio. Fonte: Grupo G01 (2026), adaptado do template Inteli [21].*
 
 | Força | Intensidade | Justificativa do ponto de vista da CerradinhoBio |
 |---|---|---|
-| **Rivalidade entre concorrentes** | **Alta** | Há grandes grupos de cana com escala e portfólios diversificados e produtores de milho em rápida expansão. Etanol e açúcar são produtos amplamente negociados e sujeitos a preços de mercado; isso limita a diferenciação puramente pelo produto e intensifica a disputa por eficiência agrícola e industrial, matéria-prima, logística e contratos de venda. A flexibilidade entre cana, milho, açúcar, energia e coprodutos pode ajudar a CerradinhoBio a responder a ciclos de preço, mas exige disciplina de custos e investimento. |
-| **Poder de barganha dos fornecedores** | **Médio** | O milho, a cana adquirida de terceiros onde aplicável, fertilizantes, combustíveis, peças e equipamentos especializados podem pressionar custos, especialmente diante de sazonalidade, distância logística ou fornecedores concentrados. Em contrapartida, há alternativas de fornecimento para vários insumos, contratos e possibilidade de integração/produção agrícola própria; a operação com duas matérias-primas também reduz a dependência de uma única cadeia. O poder varia por insumo, região e safra, portanto recomenda-se acompanhar concentração e custo posto na usina por categoria. |
-| **Poder de barganha dos compradores** | **Média** | Parte relevante da produção é vendida em mercados de commodities e passa por distribuidores, tradings e compradores industriais com escala, capacidade de comparar fornecedores e negociar grandes volumes. Isso limita a influência individual do produtor sobre o preço. A diversificação entre etanol, açúcar, energia, coprodutos e CBIOs amplia os canais de receita e reduz a dependência de um único comprador, embora cada mercado tenha sua própria concentração, especificação e dinâmica contratual. |
-| **Ameaça de novos entrantes** | **Média** | Uma nova usina de cana ou biorrefinaria de milho exige capital elevado, escala, acesso confiável à matéria-prima, logística, licenciamento, tecnologia e tempo de implantação e ramp-up, o que cria barreiras importantes. Ainda assim, empresas do agronegócio e investidores podem financiar unidades novas, especialmente no milho, onde grãos e infraestrutura regional favorecem projetos. A entrada de novos grupos pode elevar a ameaça; ampliações realizadas por empresas já atuantes não são novos entrantes e reforçam principalmente a rivalidade entre concorrentes. |
-| **Ameaça de produtos substitutos** | **Média** | Gasolina e outros combustíveis podem competir com o etanol no transporte; eletrificação, eficiência energética e outras rotas de baixo carbono podem reduzir demanda de longo prazo. Para açúcar, existem adoçantes alternativos; para energia e coprodutos, há outras fontes e ingredientes. Por outro lado, a mistura obrigatória de etanol na gasolina, a frota flex, as metas de descarbonização e a versatilidade do portfólio ajudam a sustentar mercados atuais e a abrir novas aplicações, como SAF e biometano. |
+| **Rivalidade entre concorrentes** | **Alta** | Escala e commodities pressionam custos e contratos. |
+| **Poder dos fornecedores** | **Médio** | Insumos elevam custos; contratos e duas matérias-primas reduzem dependência. |
+| **Poder dos compradores** | **Média** | Distribuidores negociam preço e volume; diversificação amplia canais. |
+| **Novos entrantes** | **Média** | Capital e licenças criam barreiras; há projetos de milho. |
+| **Produtos substitutos** | **Média** | Gasolina e eletrificação competem; mistura obrigatória sustenta o etanol. |
 
 #### Síntese estratégica
 
-O ambiente competitivo é mais pressionado pela rivalidade e pelo poder dos compradores, pois escala, custos e preços de commodities têm peso elevado. Para a CerradinhoBio, as prioridades estratégicas são preservar eficiência e confiabilidade dos ativos, proteger o abastecimento de cana e milho, ampliar a flexibilidade de mix e desenvolver canais de maior valor para coprodutos e combustíveis de baixo carbono. A digitalização da manutenção pode apoiar a disponibilidade e a gestão patrimonial; no projeto de rastreamento, sua contribuição específica é aumentar a visibilidade de equipamentos em manutenção externa, sem pressupor redução de prazo ou perdas antes de medir os resultados do piloto. [6]
+Rivalidade e poder dos compradores pressionam custos. Eficiência e abastecimento diversificado são prioridades. O GuaráTracking amplia a visibilidade dos ativos em manutenção; efeitos serão medidos no piloto. [6]
 
 ### 3.1.2. Análise SWOT (sprint 1)	
 
-_A entrega deve ser realizada no formato de quadrante (template), semelhante ao template disponibilizado. Em forças e fraquezas considerar aspectos internos e em oportunidades e ameaças, aspectos externos. Essa análise deve ser feita com relação ao parceiro, por exemplo a Rede Gazeta._   
+|  |  |
+|---|---|
+| **Forças (internas):** portfólio diversificado de matérias-primas e produtos, escala e flexibilidade de mix. [2–4] | **Fraquezas (internas):** operação intensiva em ativos, com demanda de capital, manutenção e logística; exposição à sazonalidade e a commodities. [2, 4] |
+| **Oportunidades (externas):** crescimento do etanol de milho, RenovaBio e demanda por SAF e biometano. [13–17] | **Ameaças (externas):** concorrentes de grande escala, volatilidade de insumos e substitutos como gasolina e eletrificação. [7, 9–17] |
 
 ### 3.1.3. Descrição da Solução a ser Desenvolvida (sprint 1)	
 
-#### 3.1.3.1 Qual é o problema a ser resolvido
+#### 3.1.3.1 Problema a resolver
+Registros e contatos dispersos dificultam acompanhar localização, NF, prazo e retorno dos equipamentos em manutenção externa e exigem consultas manuais. [6]
 
-#### 3.1.3.2 Qual a solução proposta (visão de negócios)
+#### 3.1.3.2 Solução proposta (visão de negócios)
+Uma TAG reutilizável com lacre e uma plataforma reúnem equipamento, fornecedor, NF, prazo, última localização válida e histórico. A solução separa permanência total de atraso, registra eventos do lacre e permite consultar os ciclos pela interface e por API, para alimentar ferramentas de BI. [6]
 
-#### 3.1.3.3 Como a solução proposta deverá ser utilizada
+#### 3.1.3.3 Uso previsto
+Na saída, o responsável registra equipamento, fornecedor, NF e prazo e vincula a TAG lacrada. Durante o reparo, acompanha posição, ciclo e alertas. No retorno, registra conferência e baixa, encerra o ciclo e libera a TAG preservando o histórico. [6]
 
-#### 3.1.3.4 Quais os benefícios trazidos pela solução proposta
+#### 3.1.3.4 Benefícios
+A centralização pode reduzir buscas manuais, antecipar cobranças, vincular ativo e documento fiscal, preservar histórico por fornecedor e apoiar análises gerenciais. Os ganhos serão avaliados no piloto. [6]
 
-#### 3.1.3.5 Qual será o critério de sucesso e qual medida será utilizada para o avaliar
+#### 3.1.3.5 Critério de sucesso e medida
+
+Sucesso significa completar saída, acompanhamento e retorno, mantendo vínculo com NF e histórico após reutilizar a TAG. Mediremos completude dos ciclos, atualizações recebidas na frequência definida, acerto dos alertas, consultas manuais por ciclo e registro de retorno. Metas e linha de base serão definidas com o parceiro antes do piloto. [6]
 	
 ### 3.1.4. Value Proposition Canvas (sprint 1)	
 
-O [Value Proposition Canvas no Framekit](https://framekit.malafisor-es.workers.dev/) foi preenchido como um único canvas para a solução GuaráTracking. O perfil do cliente reúne as tarefas, dores e ganhos relacionados aos papéis de PCM (P1) e Fiscal (P2), com base no TAPI e no kick-off; o mapa de valor representa uma única proposta: TAG reutilizável com lacre e plataforma de consulta, histórico e alertas. O parceiro informou R$ 602.969 em complemento de ICMS na safra 2024/25; a parcela eventualmente relacionada a atrasos de manutenção externa ainda precisa ser apurada. O canvas não presume redução de perdas, atrasos ou ICMS.
+O *Value Proposition Canvas* apresenta o mapa de valor do GuaráTracking e o perfil de PCM (P1), Fiscal (P2) e Logística (P3) da CerradinhoBio, descritos na seção 3.2.1. A síntese considera o TAPI [6] e o *kick-off* com o parceiro em 16/10/2026 [23]. A solução combina TAG reutilizável com lacre, painel, histórico e API para consulta dos ciclos e alimentação do BI. Os ganhos são hipóteses a medir no piloto.
 
-![Value Proposition Canvas único do GuaráTracking para PCM e Fiscal, exportado diretamente do Framekit.](../assets/negocios/value-proposition-canvas.png)
+![Value Proposition Canvas do GuaráTracking com o mapa de valor e o perfil de PCM, Fiscal e Logística.](../assets/negocios/value-proposition-canvas.png)
+*Figura — Value Proposition Canvas do GuaráTracking para PCM, Fiscal e Logística.*
+*Fonte: template “Value Proposition Canvas - template png”, pasta de templates de negócios do Inteli [22]; conteúdo: Grupo G01 (2026).*
 
-**Encaixe da proposta.** O cadastro do responsável e do ciclo (AD1) e a consulta consolidada (CG1) respondem ao controle disperso e manual (D1), atendendo ao ganho de localizar sem ligações (G1). A última posição e o endereço (AD2), a separação entre prazo e permanência total (AD3) e a sinalização de falta de comunicação (AD6) tratam a incerteza sobre localização e prazo (D2); os alertas configuráveis (CG2) apoiam agir antes do vencimento (G2). O histórico por fornecedor (CG3) e o histórico útil à gestão (G4) dão contexto para avaliar atrasos e priorizar ações (D3), sem determinar sozinhos a escolha da oficina. Para a Fiscal, o estado de retorno aguardando baixa (AD5) responde à divergência entre retorno físico e lançamento da NF (D4) e apoia o fechamento correto do ciclo (G3). O complemento de ICMS informado no kick-off contextualiza a dor financeira (D5), mas sua parcela eventualmente ligada à manutenção externa não foi apurada; AD3 permite acompanhar prazos, sem garantir evitar incidência fiscal. A conectividade incerta (D6) é explicitada por AD6, sem tratar dados desatualizados como posição atual. O alerta e registro do lacre (AD4) correspondem à dor de abertura sem registro (D7). A TAG reutilizável e o histórico (PS1, CG4) apoiam ciclos sucessivos. A cobertura, a efetividade dos alertas e eventuais ganhos serão avaliados no piloto.
+| Dor do cliente | Resposta do GuaráTracking | Ganho |
+|---|---|---|
+| D1 Controle espalhado e manual | Cadastro do ciclo (AD1) e consulta consolidada (CG1) | G1 Localizar e consultar sem ligar |
+| D2 Localização e prazo incertos | Última posição (AD2), prazo separado da permanência (AD3) e alertas (CG2) | G2 Agir antes do vencimento |
+| D3 Difícil decidir diante do atraso | Histórico por fornecedor (CG4) | G4 Histórico útil à gestão |
+| D4 Retorno sem baixa fiscal | Estado “retorno aguardando baixa” (AD4) e baixa ligada à NF (CG3) | G3 Fechar o retorno corretamente |
+| D5 Complemento de ICMS por prazo vencido na safra 2024/25; parcela ligada à manutenção externa não apurada [23] | Acompanhamento dos prazos (AD3) | G2 Agir antes do vencimento |
+| D6 Lacre aberto sem registro | Alerta e registro do lacre (AD5) | G3 Fechar o retorno corretamente |
+| D7 Dados espalhados entre SAP e planilhas | Dados do ciclo estruturados (AD6) e consulta pela API (CG5) | G5 Dados consolidados para o BI |
 
 ### 3.1.5. Matriz de Riscos (sprint 1)	
 
-_A Matriz de Risco deve ser desenhada considerando o projeto que os alunos estão criando. Deve ser entregue no template disponível no drive da turma. Os alunos devem enumerar os riscos, distribuí-los na matriz e justificar suas decisões._     
-
 ### 3.1.6. Política de Privacidade de acordo com a LGPD (sprint 1)	
-
-_A Política de privacidade para o projeto de acordo com a LGPD deve ser escrita considerando o projeto que os alunos estão criando. Os pontos a seguir precisam ser apresentados. O aluno pode utilizar  o Gerador de Política de Privacidade (https://www.nuvemshop.com.br/ferramentas/gerador-politica-de-privacidade), criado pela Nuvemshop e, de acordo com a empresa, já adaptado a LGPD para ter uma prévia e ajustar de acordo com o seu projeto._
 
 #### 3.1.6.1 Informações gerais sobre a empresa / organização
 
@@ -130,7 +140,7 @@ _A Política de privacidade para o projeto de acordo com a LGPD deve ser escrita
 
 #### 3.1.6.4 Onde os dados são coletados 
 
-#### 3.1.6.5 Para quais finalidades os dados serão utilizadas
+#### 3.1.6.5 Para quais finalidades os dados serão utilizados
 
 #### 3.1.6.6 Onde os dados ficam armazenados 
 
@@ -150,7 +160,6 @@ _A Política de privacidade para o projeto de acordo com a LGPD deve ser escrita
 
 
 ### 3.1.7. Bill of Material (BOM) (sprint 1)
-_BOM (Bill of Material) pode ser definido como uma lista completa de materiais, que detalha todos os itens necessários para construir, fabricar ou reparar um produto. Deve-se preencher o template fornecido.
 
 
 
@@ -158,8 +167,6 @@ _BOM (Bill of Material) pode ser definido como uma lista completa de materiais, 
 ## 3.2. Domínio de Fundamentos de Experiência de Usuário 
 
 ### 3.2.1. Personas (sprint 1)	
-
-#### Introdução às personas
 
 #### Introdução às personas
 
@@ -183,6 +190,7 @@ _Nesta seção, detalhe a especificação da solução, de acordo com o disposto
 |-------|-----------|------------|--------------|
 | RF001 | ...       | Alta       | Implementado |
 | RF002 | ...       | Média      | Planejado    |
+| RF003 | Disponibilizar por API os dados de saída, prazo e retorno dos ciclos para consumo por ferramenta de BI. | Média | Planejado |
 
 ### 3.3.2. Regras de Negócio (sprint 1, refinar até sprint 5)
 
@@ -381,3 +389,5 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 19. RAÍZEN. *Raízen e produtores de cana-de-açúcar debatem perspectivas para o ano-safra no Fórum de Mercado*. Disponível em: https://www.raizen.com.br/sala-de-imprensa/raizen-e-produtores-de-cana-de-acucar-debatem-perspectivas-para-o-ano-safra-no-forum-de-mercado. Acesso em: 20 out. 2026.
 20. SÃO MARTINHO. *Formulário de Referência 2025*. Disponível em: https://ri.saomartinho.com.br/Download.aspx?Arquivo=zp29unVyAKR4rxhHtOgKfQ%3D%3D&IdCanal=3kK+JHozjxal5isJwnwwEA%3D%3D&linguagem=pt. Acesso em: 20 out. 2026.
 21. INTELI. *5 forças template.jpeg*. Pasta de templates de negócios do projeto, 2022. Disponível em: https://drive.google.com/file/d/1Kr8A2GRrTDUFi5JslJQd7LWVOwyn8E_c/view. Acesso em: 20 out. 2026.
+22. INTELI. *Value Proposition Canvas - template png*. Pasta de templates de negócios do projeto, 2022. Disponível em: https://drive.google.com/file/d/1vom1OaLU4NgDpoQ9vIaJ2lpS2YoGcUjM/view. Acesso em: 22 out. 2026.
+23. CERRADINHO. *Kick-off do projeto de rastreamento de ativos com o parceiro*. Reunião de alinhamento, 16 out. 2026.
