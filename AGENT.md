@@ -81,6 +81,7 @@ São **restritos**: cadastros de ativos e fornecedores, notas fiscais, localiza�
 
 - A `documentacao.md` segue a ordem do template do Inteli. Cada seção indica em qual sprint deve ser entregue; preencha a seção certa e **remova os trechos em itálico** de orientação quando a seção estiver concluída.
 - Imagens usadas na documentação ficam em `assets/` e são referenciadas com caminho relativo (ex.: `../assets/arquivo.png`), sempre com legenda e fonte.
+- Os documentos de entrega (`documentacao.md`, `TemplateManual.md`, `README.md` e os de `document/outros/` fora de `reports/`) não falam do processo interno do grupo: nada de branches (`develop` ou nomes de branch), issues, cards, merge requests, commits, rascunhos de integrantes, "integração" entre branches ou "arquivo local". Descreva o projeto como o leitor o vê na `main`. Se a nota for útil para o grupo, use um comentário HTML (`<!-- ... -->`), que o GitLab não renderiza.
 - Os arquivos `placeholder.md` devem ser apagados quando a pasta tiver conteúdo real.
 - Ao criar uma nova pasta em `src/`, atualize a seção "Estrutura de pastas" do `README.md`.
 - O repositório é hospedado no GitLab do Inteli (`git.inteli.edu.br`).
