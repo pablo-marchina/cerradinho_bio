@@ -5,6 +5,7 @@ import shutil
 
 base = Path(__file__).resolve().parent
 root = base.parent.parent
+(root / 'build').mkdir(exist_ok=True)
 shutil.copyfile(root / 'chips/wokwi-api.h', base / 'wokwi-api.h')
 shutil.copyfile(base / 'estimulos.chip.json', root / 'build/estimulos.chip.json')
 original = json.loads((root / 'src/firmware/prototipo_wokwi/diagram.json').read_text(encoding='utf-8'))
