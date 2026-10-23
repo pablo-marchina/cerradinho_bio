@@ -49,107 +49,88 @@ _Descreva as etapas da metodologia RM-ODP que foram utilizadas para o desenvolvi
 
 ## 3.1. Domínio de Fundamentos de Negócio
 
-### 3.1.1. Contexto da Indústria (sprint 1)	
+### 3.1.1. Contexto da Indústria (sprint 1)
 
-**Parceiro:** CerradinhoBio
-**Setor:** bioenergia e indústria sucroenergética (etanol, açúcar, bioeletricidade e coprodutos).
+**Parceiro:** CerradinhoBio. **Setor:** bioenergia sucroenergética e etanol de milho.
 
 #### Concorrência
 
-A CerradinhoBio compete com grupos integrados de açúcar, etanol e bioenergia e, no segmento de etanol de milho, com produtores especializados. Entre os principais concorrentes estão a **Raízen** [19], a **São Martinho** [20] e a **bp bioenergy** [10] (antiga joint venture BP Bunge Bioenergia, adquirida integralmente pela bp em 2024). Para comparar a escala no segmento de cana, as empresas divulgam capacidade anual de moagem de aproximadamente 105 milhões de toneladas para a Raízen [19] e 32 milhões para a bp bioenergy [10]; a São Martinho projeta capacidade plena de 24 milhões de toneladas na safra 2026/27 [20]. No etanol de milho, a **FS** [11] informa capacidade anual de 2,6 bilhões de litros e a **Inpasa** [12] reporta 5,8 bilhões após a expansão de suas unidades. São indicadores de capacidade publicados em períodos diferentes; não representam produção realizada no mesmo ano nem participação de mercado.
+Na cana, concorrem Raízen [7, 19], São Martinho [9, 20] e bp bioenergy [10]; no milho, FS [11] e Inpasa [12]. Capacidades divulgadas: Raízen 105, bp 32 e São Martinho 24 milhões t/ano; FS 2,6 e Inpasa 5,8 bilhões l/ano. Safras diferentes impedem inferir participação.
 
 #### Modelo de negócio
 
-A CerradinhoBio opera um modelo B2B integrado e intensivo em ativos: transforma cana-de-açúcar e milho em etanol, açúcar VHP, bioeletricidade e coprodutos de milho destinados principalmente à nutrição animal [4], comercializados para distribuidores de combustíveis, clientes industriais e de alimentos para animais, compradores de açúcar e agentes do setor elétrico. A diversificação entre matérias-primas e produtos permite ajustar o mix de produção às condições de mercado; a venda de coprodutos também ajuda a compensar parte do custo do milho. A companhia participa ainda do mercado de créditos de descarbonização (CBIOs) por meio de sua produção certificada no RenovaBio [14]. O desempenho depende de escala e eficiência agrícola e industrial, logística de matéria-prima e produtos, capital para manutenção e expansão e exposição à sazonalidade e à volatilidade dos preços de commodities. Na safra 2025/26, a empresa informou processamento de 5,2 milhões de toneladas de cana e 1,5 milhão de toneladas de milho, além de produção equivalente de 865 mil m³ de etanol hidratado, dos quais 687 milhões de litros vieram do milho [2].
+A CerradinhoBio opera no modelo B2B integrado: transforma cana e milho em etanol, açúcar, bioeletricidade e coprodutos vendidos a distribuidores, indústrias e setor elétrico [4]. Diversificação e CBIOs ampliam receitas; eficiência, logística e preços de commodities afetam resultados [14].
 
 #### Tendências
 
-O setor amplia a produção de etanol de milho, que complementa a oferta de cana e aproveita a disponibilidade de grãos e a demanda por coprodutos; a EPE [13] registrou produção total brasileira de etanol de 36,2 bilhões de litros em 2025, com expansão do milho compensando a queda da cana. O RenovaBio [14] e os CBIOs mantêm um mecanismo de incentivo à descarbonização, enquanto a Lei do Combustível do Futuro [15] cria oportunidades e novas exigências para biometano e combustível sustentável de aviação (SAF): para operadores aéreos, a redução mínima de emissões começa em 1% em 2027 e cresce gradualmente até 10% em 2037 (ANP — SAF [16] e ANP — biometano [17]). Outra frente é digitalizar a manutenção e a gestão de ativos industriais — por exemplo, consolidar registros, localização, prazos e alertas — para dar mais visibilidade à operação e apoiar decisões com dados; os benefícios dependem da qualidade da implantação e da atuação dos responsáveis.
+O etanol de milho cresce e complementa a cana; a EPE registrou 36,2 bilhões de litros de etanol no Brasil em 2025 [13]. RenovaBio e Lei do Combustível do Futuro impulsionam biometano e SAF, com metas de aviação a partir de 2027 [14–17]. A digitalização pode ampliar a visibilidade de ativos e apoiar decisões.
 
-#### Cinco Forças de Porter — perspectiva da CerradinhoBio
+#### Cinco Forças de Porter — CerradinhoBio
 
-Escala qualitativa: **baixa**, **média** ou **alta**. A intensidade indica quanto a força tende a pressionar a atratividade e a rentabilidade da CerradinhoBio no setor, consideradas as condições descritas abaixo. A análise segue o referencial das cinco forças de Porter [18] e a figura foi preenchida sobre o template oficial de cinco forças do Inteli [21].
+A intensidade indica a pressão sobre a atratividade do setor: baixa, média ou alta. Análise baseada em Porter [18] e no template do Inteli [21].
 
-![Cinco Forças de Porter para a CerradinhoBio, no formato do template oficial do Inteli](../assets/negocios/cinco_forcas.png)
+![Cinco Forças de Porter para a CerradinhoBio](../assets/negocios/cinco_forcas.png)
 
-*Figura — Cinco Forças de Porter, preenchidas pela perspectiva da CerradinhoBio. Fonte: template oficial de negócios do Inteli [21]; conteúdo e adaptação: Grupo G01 (2026).*
+*Figura 3.1.1.1 — Cinco Forças. Fonte: template do Inteli [21]; Grupo G01 (2026).*
 
-| Força | Intensidade | Justificativa do ponto de vista da CerradinhoBio |
+| Força | Intensidade | Justificativa |
 |---|---|---|
-| **Rivalidade entre concorrentes** | **Alta** | Escala e commodities pressionam custos e contratos. |
-| **Poder dos fornecedores** | **Médio** | Insumos elevam custos; contratos e duas matérias-primas reduzem dependência. |
-| **Poder dos compradores** | **Média** | Distribuidores negociam preço e volume; diversificação amplia canais. |
-| **Novos entrantes** | **Média** | Capital e licenças criam barreiras; há projetos de milho. |
-| **Produtos substitutos** | **Média** | Gasolina e eletrificação competem; mistura obrigatória sustenta o etanol. |
+| Rivalidade | Alta | Escala e commodities pressionam custos. |
+| Fornecedores | Média | Insumos pesam; contratos e duas matérias-primas reduzem dependência. |
+| Compradores | Média | Distribuidores negociam preço e volume. |
+| Novos entrantes | Média | Capital e licenças criam barreiras. |
+| Substitutos | Média | Gasolina e eletrificação competem com o etanol. |
 
-#### Síntese estratégica
-
-O ambiente competitivo é mais pressionado pela rivalidade e pelo poder dos compradores, pois escala, custos e preços de commodities têm peso elevado. Para a CerradinhoBio, as prioridades estratégicas são preservar eficiência e confiabilidade dos ativos, proteger o abastecimento de cana e milho, ampliar a flexibilidade de mix e desenvolver canais de maior valor para coprodutos e combustíveis de baixo carbono. A digitalização da manutenção pode apoiar a disponibilidade e a gestão patrimonial; no projeto de rastreamento, sua contribuição específica é aumentar a visibilidade de equipamentos em manutenção externa, sem pressupor redução de prazo ou perdas antes de medir os resultados do piloto [6].
+**Síntese:** eficiência, abastecimento diversificado e confiabilidade dos ativos são prioridades. O GuaráTracking pode dar visibilidade à manutenção externa; seus efeitos serão medidos no piloto [6].
 
 ### 3.1.2. Análise SWOT (sprint 1)	
 
 ![Análise SWOT da CerradinhoBio](../assets/negocios/swot.png)
 
-*Figura 3.1.2 — Análise SWOT da CerradinhoBio, com foco em equipamentos enviados à manutenção externa. Fonte: elaboração própria, com base no TAPI do projeto [6], nos dados de produção da CerradinhoBio [2], em seus produtos [4] e nas fontes setoriais vinculadas na seção 3.1.1.*
+*Figura 3.1.2.1 — Análise SWOT da CerradinhoBio, com foco em equipamentos enviados à manutenção externa. Fonte: template de negócios do Inteli [43]; conteúdo: Grupo G01 (2026), com base no TAPI [6] e em dados públicos da CerradinhoBio [2, 4].*
 
 **Escopo:** análise da CerradinhoBio, com foco nas condições do negócio e na gestão de equipamentos enviados para manutenção externa. Forças e fraquezas representam fatores internos; oportunidades e ameaças, fatores externos. A síntese considera o contexto da indústria descrito na seção 3.1.1 e o TAPI do projeto.
 
 **Leitura para o projeto:** o portfólio diversificado e a escala de processamento da CerradinhoBio oferecem contexto favorável para testar uma rotina de rastreabilidade reutilizável. A dependência de registros e contatos entre áreas e fornecedores é uma fragilidade do processo de manutenção externa descrito no TAPI, a validar com o parceiro. A expansão do etanol e as políticas de descarbonização abrem oportunidades para a companhia; concorrência em escala, volatilidade de insumos e substitutos energéticos compõem ameaças externas. **PENDENTE DE VALIDAÇÃO:** quantificar a dor operacional (volume de remessas, tempo fora, atrasos e esforço de consulta) com os dados da última safra, ainda a serem disponibilizados conforme o TAPI.
 
-### 3.1.3. Descrição da Solução a ser Desenvolvida (sprint 1)	
+### 3.1.3. Descrição da Solução a ser Desenvolvida (sprint 1)
 
 #### 3.1.3.1 Problema a resolver
-Registros e contatos dispersos dificultam acompanhar localização, NF, prazo e retorno dos equipamentos em manutenção externa e exigem consultas manuais. [6]
 
-Quando um equipamento da CerradinhoBio é enviado a um fornecedor externo para manutenção, as informações sobre localização, nota fiscal de remessa, prazo previsto e retorno dependem de registros e contatos entre áreas e fornecedor. Sem uma visão consolidada, a Gestão Patrimonial, a Controladoria e a Manutenção podem ter dificuldade para saber onde está cada ativo, há quanto tempo está fora e se o prazo combinado foi ultrapassado, além de precisar fazer consultas e cobranças manuais. O TAPI identifica essa necessidade [6]. **PENDENTE DE VALIDAÇÃO:** demonstrar a dimensão da dor — volume de remessas, permanência, atrasos e casos críticos — com dados da última safra a serem disponibilizados pelo parceiro; não se presume redução de perdas ou de prazo antes dessa análise.
+Registros e contatos dispersos dificultam localizar equipamentos em manutenção externa, verificar NF, prazo e retorno e exigem consultas manuais [6].
 
-#### 3.1.3.2 Qual a solução proposta (visão de negócios)
+#### 3.1.3.2 Solução proposta (visão de negócios)
 
-Propor um processo de rastreabilidade para equipamentos em manutenção externa, apoiado por dispositivos reutilizáveis e por um registro digital de cada ciclo [6]. A solução reunirá equipamento, fornecedor, responsável, nota fiscal, saída, prazo previsto, retornos de localização, comunicação, bateria, estado do lacre e alertas em uma consulta centralizada, com API para disponibilizar os dados ao BI. O piloto deverá validar a utilidade operacional e a viabilidade técnica e econômica antes de qualquer decisão de expansão. A tecnologia de localização e comunicação será escolhida após comparação de alternativas; a solução não pressupõe rastreamento contínuo ou posicionamento indoor preciso.
+O GuaráTracking combina dispositivo reutilizável com lacre e cadastro digital por ciclo. Reúne equipamento, fornecedor, responsável, NF, prazo, última localização válida, estado do lacre e alertas; disponibiliza histórico e dados para consulta e BI. O piloto avaliará utilidade e viabilidade antes de eventual expansão. Não pressupõe rastreamento contínuo nem localização precisa em ambientes internos.
 
-#### 3.1.3.3 Como a solução proposta deverá ser utilizada
+#### 3.1.3.3 Uso previsto
 
-1. **Solicitação e aprovação:** a área responsável solicita o envio do equipamento à manutenção externa e registra a aprovação conforme o processo da CerradinhoBio.
-2. **Cadastro do ciclo:** o operador registra equipamento, fornecedor, responsável, nota fiscal de remessa e prazo previsto de retorno.
-3. **Vínculo e lacre:** associa um dispositivo disponível ao equipamento, confere a fixação e registra a identificação do lacre. O sistema mantém um único vínculo ativo por dispositivo e preserva os ciclos anteriores.
-4. **Saída e acompanhamento:** na saída, registra a data e inicia o ciclo. Durante a permanência externa, consulta a última localização válida, sua data e hora, a última comunicação, a bateria, o estado do lacre e os dias fora. As atualizações serão periódicas, com frequência semanal configurável como referência do piloto.
-5. **Alertas e tratamento:** o sistema sinaliza, separadamente, o vencimento do prazo previsto, a permanência acima do limiar configurado (150 dias como referência inicial), a falta de comunicação, bateria baixa e violação ou retirada do lacre. O responsável verifica o caso, toma as providências e registra o tratamento. Uma retirada necessária ao reparo deve seguir fluxo de autorização, registro e reinstalação com novo lacre. Sem conexão, os eventos ficam armazenados para envio posterior; alertas fora da rotina dependem de conectividade.
-6. **Retorno e liberação:** no retorno, o operador confere o equipamento, registra a data e encerra o ciclo. Depois da conferência e retirada do dispositivo, libera-o para outro equipamento sem apagar o histórico.
+Na saída, cadastrar equipamento, fornecedor, responsável, NF e prazo e instalar o dispositivo lacrado. Durante o reparo, consultar posições periódicas e tratar alertas; registrar retiradas autorizadas e eventos sem conexão. No retorno, conferir, dar baixa, encerrar e liberar o dispositivo, preservando o histórico. Papéis serão validados com o parceiro.
 
-Os papéis de cadastro, aprovação, instalação, autorização de retirada, tratamento de alertas e conferência do retorno devem ser confirmados com o parceiro.
+#### 3.1.3.4 Benefícios
 
-#### 3.1.3.4 Quais os benefícios trazidos pela solução proposta
+A solução pode centralizar dados, reduzir buscas e apoiar decisões. Os ganhos dependem do tratamento dos alertas e serão medidos no piloto.
 
-- Visão consolidada dos equipamentos que estão fora, seus fornecedores, documentos associados, prazos e última localização válida.
-- Mais facilidade para identificar itens atrasados ou acima do limiar de permanência e direcionar a consulta ao responsável adequado.
-- Histórico rastreável de saídas, localizações, alertas, retiradas autorizadas, retornos e reutilização dos dispositivos.
-- Menos dependência de consultas manuais para responder onde está um equipamento e qual é sua situação, benefício a medir no piloto.
-- Base de dados via API para análise em BI e evidências para decidir se a solução deve evoluir.
-- Reutilização dos dispositivos entre ciclos, condicionada à integridade, autonomia e viabilidade de operação demonstradas.
+#### 3.1.3.5 Critério de sucesso e medida
 
-Redução do tempo de manutenção, de perdas ou de custos e ganhos ambientais são resultados potenciais, não garantidos pelo protótipo; dependem da resposta às informações e deverão ser avaliados com dados.
+Sucesso é completar o ciclo em cinco dispositivos reais ou representativos, reutilizá-los sem vínculos duplicados e fornecer dados úteis. As metas abaixo serão validadas com a CerradinhoBio.
 
-#### 3.1.3.5 Qual será o critério de sucesso e qual medida será utilizada para o avaliar
-
-**Critério de sucesso:** demonstrar, no piloto, o ciclo completo de rastreabilidade de equipamentos, com dados consultáveis e históricos preservados, localização periódica útil, alertas tratados por responsáveis definidos e reutilização sem vínculo simultâneo indevido. O TAPI prevê pelo menos cinco equipamentos reais ou representativos e exige que as metas sejam acordadas antes dos testes. Os valores abaixo são **propostas para validação com a CerradinhoBio antes do início dos ensaios**, não resultados já obtidos.
-
-| Indicador proposto | Medida e meta inicial proposta |
+| Indicador | Medida e meta proposta |
 |---|---|
-| Localização atualizada | Percentual de tentativas semanais programadas que geram uma localização externa válida: **≥ 90%**, em percurso e condições de teste previamente definidos. Registrar também o percentual de ciclos ativos com posição válida nos últimos sete dias. |
-| Consulta do ativo | Tempo entre a busca pelo identificador do equipamento e a exibição da situação completa: **≤ 2 minutos em pelo menos 90%** das consultas de teste. |
-| Alerta de violação | Tempo entre a violação detectada e a disponibilização do alerta: **≤ 15 minutos em cenário com conexão**. Em cenário sem conexão, confirmar o armazenamento e o envio após o restabelecimento, registrando a latência observada. |
-| Falsos alertas | Alertas sem evento correspondente divididos pelo total de alertas avaliados: **≤ 5%** no conjunto de ensaios acordado. |
-| Integridade do ciclo | Ciclos de saída e retorno com equipamento, fornecedor, referência documental, datas e vínculo do dispositivo corretamente registrados: **100% dos ciclos de teste**; nenhuma associação ativa duplicada após reutilização. |
+| Localização | ≥90% das atualizações semanais geram posição externa válida. |
+| Consulta | Situação completa em até 2 min em 90% das buscas. |
+| Alertas | Falsos alertas ≤5%; violação notificada em até 15 min com conexão. |
+| Integridade | 100% dos ciclos completos, sem vínculo duplicado; testar limiar de 150 dias com datas simuladas. |
 
-O ensaio deve incluir retirada autorizada do lacre, indisponibilidade de conexão, retorno e liberação do dispositivo. A permanência de 150 dias e outros limiares pode ser verificada com datas simuladas, mas ensaios curtos não comprovam autonomia real por 150 dias. O relatório deverá separar valores medidos, estimativas e limitações, e apresentar os resultados também por percurso ou condição de cobertura para evitar que uma média esconda pontos sem localização.
-	
+Ensaios curtos não comprovam autonomia de 150 dias; separar medidas de estimativas.
+
 ### 3.1.4. Value Proposition Canvas (sprint 1)	
 
-O canvas apresenta uma proposta única do GuaráTracking para PCM (P1), Fiscal (P2) e Logística (P3) da CerradinhoBio. O perfil considera o TAPI [6] e o *kick-off* de 16/10/2026 [34]. A solução combina TAG reutilizável com lacre, painel, histórico e API para consulta dos ciclos e alimentação do BI. Os ganhos são hipóteses a medir no piloto.
+Canvas do GuaráTracking para PCM, Fiscal e Logística (P1–P3), com base no TAPI [6] e no *kick-off* de 16/10/2026 [34]. Os ganhos são hipóteses a medir no piloto.
 
 ![Value Proposition Canvas do GuaráTracking, com mapa de valor e perfil de PCM, Fiscal e Logística.](../assets/negocios/value-proposition-canvas.png)
 
-*Figura — Value Proposition Canvas do GuaráTracking para PCM, Fiscal e Logística.*
+*Figura 3.1.4.1 — Value Proposition Canvas do GuaráTracking para PCM, Fiscal e Logística.*
 
 *Fonte: template “Value Proposition Canvas - template png”, pasta de templates de negócios do Inteli [33]; conteúdo: Grupo G01 (2026).*
 
@@ -165,112 +146,125 @@ O canvas apresenta uma proposta única do GuaráTracking para PCM (P1), Fiscal (
 
 ### 3.1.5. Matriz de Riscos (sprint 1)
 
-A matriz orienta prioridades. Escalas: probabilidade 10%–90%; impacto muito baixo–muito alto. Classificações vêm do TAPI, *kick-off* ou hipóteses. Alerta: 150 dias; prazos fiscais: 270 dias em Goiás e 360 fora, sem relação com autonomia.
+A matriz prioriza riscos do projeto. Probabilidade: 10%–90%; impacto: muito baixo–muito alto. Posições são estimativas.
 
 <div align="center">
-  <p><strong>Figura 1 — Matriz de riscos do projeto</strong></p>
+  <p><strong>Figura 3.1.5.1 — Matriz de riscos do projeto</strong></p>
   <img
     src="../assets/negocios/matriz_riscos.png"
     alt="Matriz de riscos do projeto"
     width="100%"
   >
-  <p><em>Fonte: Elaborado pelos autores (2026).</em></p>
+  <p><em>Fonte: elaboração do Grupo G01 (2026), com base no template da disciplina.</em></p>
 </div>
 
 | ID | Causa e efeito | Prob. | Impacto | Justificativa | Resposta | Responsável |
 |---|---|---:|---:|---|---|---|
-| R01 | Nova NF não vinculada à TAG → falso vencimento. | 50% | Moderado | *Kick-off*: retorno simbólico renova o prazo. | Mitigar: associar a NF ao ciclo. | Software/Fiscal |
-| R02 | Metal/galpões atenuam GNSS → perda de localização. | 70% | Muito alto | Hipótese: Sistema Global de Navegação por Satélite sofre atenuação. | Mitigar: guardar posição e testar antenas. | Hardware |
-| R03 | Ensaio curto de bancada → autonomia anual incerta. | 70% | Alto | TAPI: ciclos chegam a um ano. | Mitigar: projetar autonomia pelo consumo. | Hardware |
-| R04 | Sem Wi-Fi, NB-IoT ou LTE-M → eventos retidos. | 90% | Alto | TAPI: cobertura incerta em oficinas/rodovias. | Mitigar: armazenar e comparar redes. | Conectividade |
-| R05 | Ruído no sensor ou abertura autorizada do lacre → falso alerta. | 50% | Alto | *Kick-off*: retiradas legítimas ocorrem no reparo. | Mitigar: *debounce* e autorização prévia. | Firmware |
-| R06 | Fixação inadequada → dano ou reparo prejudicado. | 50% | Muito alto | TAPI: formatos variam. | Evitar: fixação removível. | Hardware |
-| R07 | Água ou lavagem → falha eletrônica. | 70% | Muito alto | TAPI: exposição prevista. | Mitigar: vedação e ensaio. | Hardware |
-| R08 | Conectividade cara → escala inviável. | 50% | Alto | TAPI: custo orienta a escolha. | Mitigar: comparar tecnologias e planos. | Produto |
-| R09 | Fornecedores indisponíveis → piloto limitado. | 50% | Moderado | Hipótese: dependência de terceiros. | Mitigar: agendar e simular. | Projeto |
-| R10 | Dado restrito publicado → exposição indevida. | 30% | Muito alto | TAPI: localizações e notas são restritas. | Evitar: dados fictícios e revisão. | Dados/LGPD |
-| R11 | Retorno sem NF registrada → remessa fiscal aberta. | 70% | Muito alto | *Kick-off*: encerramento requer registros físico e fiscal. | Mitigar: cerca e confirmação fiscal. | Processos/Logística |
+| R01 | NF não vinculada → alerta falso. | 50% | Moderado | Kick-off prevê prorrogação. | Vincular nova NF. | Software/Fiscal |
+| R02 | Metal/galpão → perda de GNSS. | 70% | Muito alto | Hipótese técnica. | Testar antenas; manter posição válida. | Hardware |
+| R03 | Ensaio curto → autonomia incerta. | 70% | Alto | Ciclos podem durar um ano [6]. | Estimar pelo consumo. | Hardware |
+| R04 | Sem rede → eventos retidos. | 90% | Alto | Cobertura externa incerta [6]. | Armazenar e comparar redes. | Conectividade |
+| R05 | Ruído ou abertura autorizada → falso alerta. | 50% | Alto | Retirada ocorre no reparo. | Debounce e autorização. | Firmware |
+| R06 | Fixação inadequada → dano. | 50% | Muito alto | Formatos variam [6]. | Usar fixação removível. | Hardware |
+| R07 | Água/lavagem → falha. | 70% | Muito alto | Exposição prevista [6]. | Vedar e ensaiar. | Hardware |
+| R08 | Conectividade cara → inviabilidade. | 50% | Alto | Custo afeta a escolha. | Comparar planos. | Produto |
+| R09 | Fornecedor indisponível → piloto limitado. | 50% | Moderado | Dependência externa. | Agendar e simular. | Projeto |
+| R10 | Dado restrito exposto → incidente. | 30% | Muito alto | Localização e NF são restritas. | Usar dados fictícios e revisar. | Dados/LGPD |
+| R11 | Retorno sem NF → ciclo fiscal aberto. | 70% | Muito alto | Kick-off exige baixa fiscal. | Conferir retorno e NF. | Processos |
 
 **Oportunidades**
 
 | ID | Oportunidade | Prob. | Impacto | Tratamento | Responsável |
 |---|---|---:|---|---|---|
-| O01 | Rastreador reutilizável reduz custo por ciclo. | 70% | Alto | Explorar modularidade. | Produto |
-| O02 | Histórico permite avaliar prazo e desempenho das oficinas. | 70% | Alto | Criar indicador para seleção e negociação. | Produto/BI |
+| O01 | Reutilização reduz custo por ciclo. | 70% | Alto | Validar modularidade. | Produto |
+| O02 | Histórico apoia avaliação de oficinas. | 70% | Alto | Criar indicador. | Produto/BI |
 
-### 3.1.6. Política de Privacidade de acordo com a LGPD (sprint 1)	
+### 3.1.6. Política de Privacidade de acordo com a LGPD (sprint 1)
 
-Política preliminar, sem aprovação jurídica da CerradinhoBio.
+Política preliminar do GuaráTracking, sujeita à validação da CerradinhoBio e alinhada à LGPD [41] e à orientação da ANPD [42].
 
 #### 3.1.6.1 Informações gerais
 
-A solução acompanha equipamentos da CerradinhoBio em manutenção externa.
+A solução acompanha equipamentos do parceiro em manutenção externa; controlador e operador serão confirmados antes do piloto.
 
 #### 3.1.6.2 Tratamento de dados
 
-O tratamento seguirá a LGPD. Os dados pessoais previstos nos requisitos da seção 3.3.1 incluem os responsáveis por ciclos e pelo tratamento de alertas (RF002, RF023), o e-mail usado nas notificações (RF018), as credenciais individuais e o identificador interno `usuario_id` (RF021). O painel e a API só respondem a usuários autenticados (RN15).
+O tratamento abrange dados de usuários e responsáveis por ciclos e alertas (RF002, RF018, RF021, RF023; RN15).
 
 #### 3.1.6.3 Dados coletados
 
-Serão tratados nome, e-mail corporativo, cargo, perfil, logs, IP e horário dos usuários; responsáveis por ciclos e alertas; e contatos profissionais de fornecedores. Dados do equipamento não são pessoais por si só; sua localização pode identificar indiretamente o motorista.
+Nome, e-mail corporativo, cargo, perfil, credenciais, IP, logs, horários e contatos profissionais; localização pode identificar indiretamente o motorista.
 
 #### 3.1.6.4 Fonte dos dados
 
-Fontes: titulares, responsáveis, fornecedores, painel e equipamentos.
+Titulares, responsáveis, fornecedores, painel e dispositivos.
 
 #### 3.1.6.5 Finalidades
 
-Servirão à autenticação, acesso, auditoria, ciclos, alertas, suporte e comunicação. Será mantida apenas a última posição válida, atualizada semanalmente, sem rastreamento contínuo, conforme restrições 1 e 5 do TAPI.
+Autenticação, operação dos ciclos, alertas, auditoria, suporte e comunicação; posição válida será semanal, sem rastreamento contínuo [6].
 
 #### 3.1.6.6 Armazenamento
 
-Cadastros, logs, ciclos e alertas ficarão no backend/banco em nuvem; mensagens, no broker. Provedor, região e tecnologias: **PENDENTE DE VALIDAÇÃO**.
+Dados e logs ficarão em nuvem; eventos, no broker. Provedor, região e tecnologias: **PENDENTE DE VALIDAÇÃO**.
 
 #### 3.1.6.7 Retenção
 
-Cadastros e permissões serão conservados enquanto ativos; logs, pelo período de auditoria; ciclos e alertas, enquanto necessários ao histórico; contatos, durante a relação operacional; localização, até sua substituição semanal; cookies, durante a sessão. Depois, haverá exclusão ou anonimização. Prazos: **PENDENTE DE VALIDAÇÃO**.
+Manter dados só pelo período necessário; prazos de ciclos, logs e contatos: **PENDENTE DE VALIDAÇÃO**.
 
 #### 3.1.6.8 Cookies
 
-Se previstos no painel, serão usados somente cookies de sessão necessários.
+Se usados, serão cookies de sessão necessários.
 
 #### 3.1.6.9 Compartilhamento
 
-O compartilhamento necessário abrangerá provedores de nuvem, broker e conectividade.
+Somente com provedores necessários de nuvem, broker e conectividade.
 
 #### 3.1.6.10 Segurança
 
-Serão aplicados autenticação, acesso restrito, auditoria e proteção de credenciais.
+Aplicar autenticação, acesso restrito, auditoria e proteção de credenciais.
 
 #### 3.1.6.11 Direitos dos titulares
 
-O titular poderá pedir confirmação, acesso, correção, anonimização, bloqueio, eliminação e informações sobre compartilhamento.
+Garantir confirmação, acesso, correção, anonimização, bloqueio, eliminação e informação sobre compartilhamento [41, 42].
 
 #### 3.1.6.12 Exercício dos direitos
 
-Solicitações serão recebidas pelo canal oficial, terão identidade e escopo verificados, serão registradas, analisadas e respondidas. Canal: **PENDENTE DE VALIDAÇÃO**.
+Receber, verificar, registrar e responder solicitações; canal oficial: **PENDENTE DE VALIDAÇÃO**.
 
 #### 3.1.6.13 DPO/Encarregado
 
-O encarregado e seu contato serão indicados pela CerradinhoBio: **PENDENTE DE VALIDAÇÃO**.
-
+Nome e contato do encarregado indicado pelo controlador: **PENDENTE DE VALIDAÇÃO** [42].
 
 ### 3.1.7. Bill of Material (BOM) (sprint 1)
 
-O componente GNSS definido em 21/10/2026 é o Quectel LC76G, variante PA, uma unidade por dispositivo. A placa de desenvolvimento ou montagem, antena e circuito de alimentação/backup continuam **PENDENTES DE VALIDAÇÃO**. Para o módulo, registra-se uma referência de preço consultada em 22/10/2026 e convertida pela cotação PTAX de venda do dólar na mesma data; a consulta indicava estoque zerado, portanto o valor não representa disponibilidade para aquisição imediata e não inclui frete, tributos de importação ou encargos de compra [35, 36]. O fornecedor permanece **PENDENTE DE VALIDAÇÃO**. Esta definição deve integrar a BOM completa; não representa compra ou ensaio físico realizado. A decisão e o contrato de simulação estão no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md#5-gnss-escolhido-quectel-lc76g-pa).
+BOM preliminar para um dispositivo, organizada conforme a planilha do Inteli [43]. Referências são propostas; especificações e cotações pendentes serão confirmadas antes da construção [6]. Valores são em reais.
 
-| Categoria | Item / perfil | Quantidade | Horas por pessoa | Valor unitário | Subtotal |
-|---|---|---:|---:|---:|---:|
-| Material | Módulo GNSS Quectel LC76G (PA), código LC76GPATA | 1 | — | R$ 247,38 | R$ 247,38 |
-| Mão de obra | Engenheiro da computação (referência CBO 2122-10) | 3 | 80 | R$ 68,47/h | R$ 16.432,80 |
-| Mão de obra | Cientista da computação (referência CBO 2031-05) | 2 | 80 | R$ 54,95/h | R$ 8.792,00 |
-| Mão de obra | Analista de sistemas de informação (CBO 2124-05) | 1 | 80 | R$ 40,28/h | R$ 3.222,40 |
-| Mão de obra | Engenheiro de software (CBO 2122-15) | 1 | 80 | R$ 70,73/h | R$ 5.658,40 |
-| **Total de materiais** |  |  |  |  | **R$ 247,38** |
-| **Total de mão de obra** |  | **7** | **560** |  | **R$ 34.105,60** |
-| **Total estimado** | Materiais + mão de obra |  |  |  | **R$ 34.352,98** |
+| Categoria | Quantidade | Referência proposta | Código / modelo do fabricante | Valor do componente |
+|---|---:|---|---|---:|
+| Microcontrolador | 1 | U1 | ESP32 DevKit V1 | Pendente |
+| GNSS | 1 | U2 | Quectel LC76G-PA / LC76GPATA | R$ 247,38 [35, 36] |
+| Antena GNSS | 1 | ANT1 | Compatibilidade/modelo a selecionar | Pendente |
+| Bateria | 1 | BT1 | Capacidade a definir pelo ensaio | Pendente |
+| Alimentação | 1 conjunto | U3 | Regulador e circuito de carga/backup a definir | Pendente |
+| Sensor e lacre | 1 conjunto | S1 | Contato e lacre reutilizável a especificar | Pendente |
+| Gabinete | 1 | ENC1 | Modelo resistente à água a selecionar | Pendente |
+| Fixação e cabos | 1 conjunto | FIX1 | Fixação removível a especificar | Pendente |
+| Comunicação externa | 1 solução | COM1 | Tecnologia e plano após teste de cobertura | Pendente |
+| PCI, passivos e LEDs | 1 conjunto | PCB1 | Componentes e montagem a detalhar | Pendente |
 
-**Premissas da mão de obra:** 40 dias de trabalho, 2 horas por dia para cada integrante (80 horas por pessoa). Os valores horários são referências salariais médias por ocupação, usando os CBOs indicados como aproximação dos cargos solicitados; não são cotações de contratação. O cálculo não inclui encargos trabalhistas, benefícios, tributos, administração ou margem de fornecedor. O total de materiais cobre apenas o componente identificado na fonte da sprint; itens sem especificação e cotação confirmadas ficam fora do subtotal até validação da BOM. [37–40]
+O preço GNSS foi consultado em 22/10/2026; o distribuidor indicava estoque zerado. Não inclui frete, tributos nem encargos [35, 36].
+
+**Mão de obra estimada:** 40 dias, 2 horas/dia por pessoa (80 h); referências salariais, não cotações [37–40].
+
+| Perfil (CBO) | Pessoas | R$/h | Subtotal (R$) |
+|---|---:|---:|---:|
+| Engenheiro de hardware computacional (2122-10) | 3 | 68,47 | 16.432,80 |
+| Pesquisador em ciências da computação (2031-05) | 2 | 54,95 | 8.792,00 |
+| Analista de sistemas (2124-05) | 1 | 40,28 | 3.222,40 |
+| Engenheiro de software (2122-15) | 1 | 70,73 | 5.658,40 |
+| **Total** | **7** |  | **34.105,60** |
+
+Subtotal quantificado: R$ 34.352,98 (mão de obra e apenas o GNSS); exclui itens pendentes, frete, tributos e encargos.
 
 ## 3.2. Domínio de Fundamentos de Experiência de Usuário 
 
@@ -694,3 +688,6 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 38. PORTAL SALÁRIO. *Pesquisador em ciências da computação e informática — CBO 2031-05*. Base salarial do Novo CAGED; valor horário de referência: R$ 54,95. Disponível em: https://www.salario.com.br/profissao/pesquisador-em-ciencias-da-computacao-e-informatica-cbo-203105/. Acesso em: 23 out. 2026.
 39. PORTAL SALÁRIO. *Analista de sistemas — CBO 2124-05*. Base salarial do Novo CAGED; valor horário de referência: R$ 40,28. Disponível em: https://www.salario.com.br/profissao/analista-de-sistemas-informatica-cbo-212405/. Acesso em: 23 out. 2026.
 40. PORTAL SALÁRIO. *Engenheiro de software computacional básico — CBO 2122-15*. Base salarial do Novo CAGED; valor horário de referência: R$ 70,73. Disponível em: https://www.salario.com.br/profissao/engenheiro-de-software-computacional-basico-cbo-212215/. Acesso em: 23 out. 2026.
+41. BRASIL. *Lei nº 13.709, de 14 de agosto de 2018 — Lei Geral de Proteção de Dados Pessoais (texto compilado)*. Disponível em: https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709compilado.htm. Acesso em: 23 out. 2026.
+42. AUTORIDADE NACIONAL DE PROTEÇÃO DE DADOS. *Guia orientativo para definições dos agentes de tratamento de dados pessoais e do encarregado*. Disponível em: https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/guia-orientativo-para-definicoes-dos-agentes-de-tratamento-de-dados-pessoais-e-do-encarregado. Acesso em: 23 out. 2026.
+43. INTELI. *Templates de Negócios do Módulo 4*. Pasta compartilhada da disciplina. Disponível em: https://drive.google.com/drive/folders/1lTqisJ_gxxtc5J5aXM8ula2kQ4MsII_M?usp=sharing. Acesso em: 23 out. 2026.
