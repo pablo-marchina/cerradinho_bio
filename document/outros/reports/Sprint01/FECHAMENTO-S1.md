@@ -24,7 +24,7 @@
 
 **Regra:** patch proposto ≠ CT aprovado. Caso falhe, manter o caso reprovado e documentar o defeito com próxima ação.
 
-**Pesquisa institucional complementar:** aviso público LGPD disponibiliza `lgpd@cerradinho.com.br`, mas a designação para o produto carece de homologação; consultar [inventário](inventario-privacidade.md).
+**Pesquisa institucional complementar:** o canal LGPD do produto ainda carece de confirmação da CerradinhoBio; consultar [inventário](inventario-privacidade.md).
 
 ## Ampliação técnica posterior — host integrado e CI
 

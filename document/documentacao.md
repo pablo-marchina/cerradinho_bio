@@ -239,11 +239,11 @@ O titular pode pedir confirmação do tratamento, acesso, correção, anonimiza�
 
 #### 3.1.6.12 Solicitações
 
-As solicitações serão recebidas pelo canal de privacidade da CerradinhoBio (`lgpd@cerradinho.com.br`), registradas e respondidas em até 15 dias, após confirmação da identidade do titular.
+As solicitações serão recebidas pelo canal de privacidade indicado pela CerradinhoBio, registradas e respondidas em até 15 dias, após confirmação da identidade do titular.
 
 #### 3.1.6.13 Encarregado
 
-O encarregado (DPO) é o indicado pela CerradinhoBio, com contato pelo mesmo canal; o nome será confirmado com a empresa antes do piloto [41].
+O encarregado (DPO) é o indicado pela CerradinhoBio; nome e contato serão confirmados com a empresa antes do piloto [41].
 
 ### 3.1.7. Bill of Material (BOM) (sprint 1)
 

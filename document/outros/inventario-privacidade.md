@@ -24,7 +24,7 @@ A escolha definitiva de base legal depende do papel da CerradinhoBio e da organi
 
 ## Titulares, responsáveis e canal
 
-A página pública da CerradinhoBio [1] informa o endereço **lgpd@cerradinho.com.br** como canal corporativo. **Não há confirmação de que esse canal seja oficialmente designado para o GuaráTracking**, nem de que a identificação nominal do encarregado publicada em 2021 continue atual. O projeto deve publicar canal, prazo e mecanismo de verificação de identidade **após** confirmação institucional, sem solicitar cópia de documentos pessoais por meios improvisados.
+O canal do titular e o encarregado do GuaráTracking ainda não foram confirmados pela CerradinhoBio. O projeto deve publicar canal, prazo e mecanismo de verificação de identidade **após** confirmação institucional, sem solicitar cópia de documentos pessoais por meios improvisados.
 
 Exercício de direitos conforme LGPD e regulamentos aplicáveis: confirmação de tratamento, acesso, retificação, explicação/portabilidade nos casos cabíveis, informação sobre compartilhamento, oposição, eliminação ou anonimização quando cabível; registrar requisição e decisão, com resposta pela organização responsável e justificativa nos casos de limitação legal.
 
