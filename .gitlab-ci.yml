@@ -1,0 +1,73 @@
+# Verificacao deterministica de Sprint 1. Nao afirma aprovacao Wokwi/ESP32.
+stages:
+  - validar
+
+validacao-sprint1-host:
+  stage: validar
+  image: python:3.12-bookworm
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq --no-install-recommends gcc g++ make
+  script:
+    - bash scripts/verify-sprint1-local.sh
+    - bash scripts/check-firmware-syntax.sh
+    - python3 scripts/audit_sprint1.py
+  artifacts:
+    when: always
+    expire_in: 14 days
+    paths:
+      - build/wokwi-publicacao/manifest.json
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH
+
+# Build real do microcontrolador — o job falha se o core do ESP32 nao compilar.
+# Na revisao local, PlatformIO nao estava disponivel. Resultado deste job so e
+# aceito quando sua pipeline GitLab registrar PASS no commit de entrega.
+compilacao-esp32:
+  stage: validar
+  image: python:3.12-bookworm
+  before_script:
+    - python -m pip install --no-cache-dir platformio==6.2.0
+  script:
+    - pio run -e demo
+    - pio run -e weekly
+  artifacts:
+    when: always
+    expire_in: 7 days
+    paths:
+      - .pio/build/demo/firmware.bin
+      - .pio/build/demo/firmware.elf
+      - .pio/build/weekly/firmware.bin
+      - .pio/build/weekly/firmware.elf
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH
+
+# Teste de simulacao oficial opcional, sujeito a WOKWI_CLI_TOKEN (CI masked).
+# Nunca coloca o token no log, na linha de comando ou no repositorio.
+# O chip custom e recompilado a cada job; cenario alpha deve ser validado pela equipe.
+wokwi-smoke-integrado:
+  stage: validar
+  image: python:3.12-bookworm
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq --no-install-recommends curl ca-certificates
+    - python -m pip install --no-cache-dir platformio==6.2.0
+  script:
+    - pio run -e demo
+    - curl -fsSL https://wokwi.com/ci/install.sh | sh
+    - export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+    - command -v wokwi-cli
+    - wokwi-cli chip compile chips/gps.chip.c -o chips/gps.chip.wasm
+    - mkdir -p build/wokwi-ci
+    - cd src/firmware/prototipo_wokwi
+    - wokwi-cli . --scenario ../../../tests/wokwi-ci/smoke.yaml --serial-log-file ../../../build/wokwi-ci/smoke.serial.txt --timeout 45000
+  artifacts:
+    when: always
+    expire_in: 14 days
+    paths:
+      - build/wokwi-ci/
+  rules:
+    - if: '$WOKWI_CLI_TOKEN'
+      when: on_success
+    - when: never

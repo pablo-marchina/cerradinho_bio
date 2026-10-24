@@ -1,0 +1,16 @@
+name: GuaraTracking - boot e autorizacao (CT basico)
+version: 1
+author: Grupo G01
+steps:
+  - wait-serial: '[boot] ESP32 executando'
+  - wait-serial: '[comandos] NF; LIMIAR n; PENDENTES; ACK XXXXXXXX'
+  - set-control:
+      part-id: btn_autorizar
+      name: pressed
+      value: 1
+  - delay: 200ms
+  - set-control:
+      part-id: btn_autorizar
+      name: pressed
+      value: 0
+  - wait-serial: 'AUTORIZACAO_REGISTRADA'

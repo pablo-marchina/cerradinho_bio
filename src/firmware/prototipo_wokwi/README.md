@@ -8,8 +8,7 @@ O firmware principal preserva a comparação de posições, o debounce do lacre 
 registro NVS de diagnóstico existentes, tem o ciclo (dias fora, status semanal e alertas de
 atraso e de permanência, CT02–CT04) e as regras dos CT05–CT16: retirada autorizada, violação do
 lacre, fila de eventos sem rede, debounce dos botões, bateria baixa, encerramento e
-vínculo de ciclo, além do registro de desligamento pela chave ON/OFF. JSON na serial
-e Wi-Fi conectado não representam envio confirmado a servidor ou broker.
+vínculo de ciclo, além do registro de desligamento pela chave ON/OFF. JSON na serial, ACK manual e Wi-Fi conectado não representam envio confirmado a servidor ou broker.
 
 ## Módulo GNSS de referência
 
@@ -99,7 +98,7 @@ evitando compilar o `sketch.ino` de teste junto com o firmware principal.
 | GPS com `fixValid=0` | Reporta falta de fix e preserva a referência anterior |
 
 Pressione os botões durante um heartbeat para conferir sua leitura periódica.
-Comandos no Monitor Serial: `NF` lança a NF de retorno (representa o lançamento na
+Comandos no Monitor Serial: `PENDENTES` exibe fila; `ACK XXXXXXXX` confirma manualmente o primeiro token `[TX_SIM]` (não MQTT). `NF` lança a NF de retorno (representa o lançamento na
 plataforma) e `LIMIAR n` muda o limiar de permanência do ciclo (RN03). O modo semanal não valida autonomia.
 
 ## Validação da integração — 21/10/2026
@@ -172,7 +171,7 @@ depois volte para `150`.
 |---|---|---|
 | Violação (RN05) | Lacre aberto sem autorização vigente gera `VIOLACAO_LACRE` na hora, marcado como crítico; vermelho pisca até o lacre fechar (`LACRE_FECHADO`) | `seal_rules.h` |
 | Retirada autorizada (RN06) | `BTN_AUTORIZAR` vale por `AuthorizationWindowDays` (3 dias = 3 s no demo), medidos em ms desde o registro, e é consumido na abertura: `RETIRADA_AUTORIZADA`, verde piscando e `LACRE_REAPLICADO` ao fechar | `seal_rules.h` |
-| Fila sem rede (RN09) | Com `SW_REDE` à direita, os eventos vão para a fila (8), gravada na NVS (`p0`–`p7`); cheia, sai o não crítico mais antigo. Com as 8 posições ocupadas por violações, as seguintes entram num único resumo (quantidade, primeira e última ocorrência), também na NVS. Ao reconectar, saem na ordem com `dia_ocorrencia` e, por último, o `VIOLACAO_LACRE_RESUMO`, que é zerado após o envio; nenhuma violação é perdida (CT10) | `event_queue.h` |
+| Fila sem rede (RN09) | Eventos de negócio são preservados em snapshots alternados na NVS até receber ACK **manual de bancada**. A capacidade é oito registros: descarta eventos não críticos conforme política da fila e agrega violações excedentes apenas em **contagem e primeira/última ocorrência**, não em payloads individuais. Ao religar `SW_REDE`, há transmissão Serial `[TX_SIM]` com retentativas; **não** se esvazia ao imprimir: remover cada registro exige `ACK XXXXXXXX` correspondente (não é ACK MQTT). Os CTs antigos documentam **outra revisão** e precisam ser repetidos. | `event_queue.h`, `main.cpp`, `queue_snapshot.h` |
 | Botões | Debounce de 50 ms e evento por borda; segurar não repete | `main.cpp` |
 | Bateria (RN10) | `BATERIA_BAIXA` uma vez abaixo de 20%, rearma acima de 25%; ADC = 0 gera `SENSOR_BATERIA_FALHA` | `battery_rules.h` |
 | Ciclo (RN01, RN11) | Toque curto com ciclo ativo: `VINCULO_RECUSADO`; segurar 2 s: `CICLO_ENCERRADO` só com lacre fechado e NF de retorno, senão `ENCERRAMENTO_RECUSADO` com `motivo`; com o ciclo encerrado, toque curto: `CICLO_INICIADO` | `main.cpp` |
@@ -181,3 +180,18 @@ depois volte para `150`.
 
 O `seal_changed` que aparece no Serial é o registro local de diagnóstico (NVS `q0`–`q15`, CT18 e
 CT21); os eventos de negócio são os de nome em maiúsculas.
+
+## Publicação web integrada — procedimento obrigatório para entrega
+
+A URL pública histórica é uma **versão antiga de diagnóstico**, diferente do firmware principal (`../main.cpp`). O sketch de diagnóstico nesta pasta serve **somente para testar fiação** e não demonstra o conjunto de RN/CT da sprint. Não use a URL como evidência da versão atual sem atualizar seu conteúdo.
+
+1. No projeto raiz, executar `python scripts/export-wokwi.py` para produzir `build/wokwi-publicacao/` (sketch principal, headers, `diagram.json`, chip custom e `libraries.txt`). Isso **não publica** nem comprova compilação no Wokwi web.
+2. Importar/copiar o conteúdo no editor Wokwi da conta do grupo, conferir a presença de todos os arquivos e o suporte ao chip GPS personalizado; se a plataforma exigir um fluxo distinto para custom chips, usar a extensão oficial VS Code para a simulação integrada.
+3. Rodar `demo` e validar com estímulos fixados CT18/CT22/CT09 e casos básicos de lacre, autorização, LED e ciclo. **Publicar somente o resultado efetivamente testado**.
+4. Registrar URL, SHA do commit usado, hash do sketch exportado (`manifest.json`), data, passos e evidências em nova subseção da documentação. Não alterar os registros históricos de reprovação.
+
+O firmware mantém eventos persistidos até um **ACK manual digitado na Serial**; sem esse comando a fila não se esvazia. Não há ACK do broker ou servidor real. O `SW_REDE` não representa uma queda física do Wi-Fi, que precisa ser testada separadamente. O projeto publicado depende de login/permissão no Wokwi e não é alterado automaticamente por este repositório.
+
+## Alteração de transporte de bancada nesta revisão
+
+Eventos passam pela fila local, mesmo com chave de rede ligada; saída Serial não remove itens até `ACK XXXXXXXX`. O firmware repete o primeiro payload a cada 3 s sem ACK e o receptor externo **não existe** neste projeto. Ver [protocolo de ACK simulado](../../../document/outros/protocolo-ack-simulado.md) e preservar CT09 histórico como bloqueado. A simulação do circuito integrado pós-alteração ainda depende de reteste Wokwi.

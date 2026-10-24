@@ -6,6 +6,7 @@
 *.tsv
 *.xls
 *.xlsx
+!assets/negocios/BOM-GuaraTracking-Sprint1.xlsx
 
 # Compiled Object files
 *.slo
