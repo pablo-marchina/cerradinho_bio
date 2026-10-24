@@ -10,11 +10,6 @@
 #include "battery_rules.h"
 #include "sim_clock.h"
 #include "indicator_controller.h"
-#include "queue_snapshot.h"
-#include "seal_debounce.h"
-#include "transport_ack.h"
-#include <driver/gpio.h>
-#include <esp_system.h>
 
 namespace {
 TinyGPSPlus gps;
@@ -32,7 +27,6 @@ bool rawSeal = false, stableSeal = false;
 uint32_t sealChangedAt = 0;
 bool wasConnected = false;
 SimClock simClock;  // ms acumulados, sem a volta de ~49,7 dias do millis()
-IndicatorController indicators;  // classe do grupo utilizada por setup()/loop()
 CycleState cycle;
 uint64_t cycleStartedAt = 0;
 bool cycleActive = false;
@@ -45,50 +39,7 @@ uint32_t lastBatteryCheck = 0;
 bool poweredOn = true;
 bool networkWasAvailable = true;
 String serialLine;
-bool discardingSerialLine = false;
 bool contextDirty = false;  // ciclo/lacre mudou e precisa ir para a NVS
-bool pendingDirty = false;  // mantido ate putBytes verificado
-bool degradedMode = false;  // falha irrecuperavel: nao reabrir ciclo nem sobrescrever evidencias
-uint32_t lastPersistenceRetry = 0;
-// ACK exclusivamente de bancada via Serial. Nao e MQTT, HTTP, nem servidor real.
-bool awaitingSimAck = false;
-bool simAckIsSummary = false;
-uint32_t simAckToken = 0;
-uint32_t simAckLastSentAt = 0;
-constexpr uint32_t SimAckRetryMs = 3000;
-uint32_t pendingGeneration = 0;
-int8_t pendingSlot = -1;
-QueuePersistence::Snapshot queueIo{};
-QueuePersistence::Snapshot queueBest{};
-
-// ISR apenas captura bordas; nunca bloqueia, escreve NVS ou usa Serial.
-// O loop reconstrói transições estáveis a partir dos timestamps de cada borda.
-constexpr uint8_t SealEdgeCapacity = 64;
-struct SealEdge { uint32_t at; bool opened; };
-volatile SealEdge sealEdges[SealEdgeCapacity] = {};
-volatile uint8_t sealEdgeHead = 0, sealEdgeTail = 0;
-volatile uint32_t sealEdgeOverruns = 0;
-
-void IRAM_ATTR onSealEdge() {
-  const uint8_t head = sealEdgeHead;
-  const uint8_t next = (uint8_t)((head + 1U) % SealEdgeCapacity);
-  if (next == sealEdgeTail) { ++sealEdgeOverruns; return; }
-  sealEdges[head].at = millis();
-  sealEdges[head].opened = gpio_get_level(static_cast<gpio_num_t>(Config::SealPin)) != 0;
-  sealEdgeHead = next;
-}
-
-bool popSealEdge(SealEdge &edge) {
-  noInterrupts();
-  if (sealEdgeTail == sealEdgeHead) { interrupts(); return false; }
-  const uint8_t tail = sealEdgeTail;
-  edge.at = sealEdges[tail].at;
-  edge.opened = sealEdges[tail].opened;
-  sealEdgeTail = (uint8_t)((tail + 1U) % SealEdgeCapacity);
-  interrupts();
-  return true;
-}
-
 
 // Botao com debounce e deteccao por borda: segurar nao repete o evento.
 struct Button {
@@ -99,6 +50,7 @@ struct Button {
 };
 Button authorizeButton{Config::AuthorizeButtonPin, false, false, 0, 0, false};
 Button cycleButton{Config::CycleButtonPin, false, false, 0, 0, false};
+IndicatorController indicators;  // LEDs de estado (classe propria, usada no setup e no loop)
 
 uint64_t clockMs() {
   return simClock.elapsed_ms;
@@ -117,9 +69,12 @@ bool powerSwitchOn() {
 }
 
 void updateLeds(uint32_t now) {
+  // Verde: operando, lacre integro (piscando = retirada autorizada em curso).
+  // Amarelo: piscando = atraso, fixo = permanencia. Vermelho: violacao do lacre.
+  // Azul: rede simulada indisponivel. Desligado: tudo apagado.
+  const bool blinkOn = (now / Config::BlinkHalfPeriodMs) % 2 == 0;
   indicators.display(poweredOn, seal.violated, seal.removal_in_progress,
-                     cycleActive && cycle_yellow_led(&cycle,
-                         (now / Config::BlinkHalfPeriodMs) % 2 == 0),
+                     cycleActive && cycle_yellow_led(&cycle, blinkOn),
                      simulatedNetworkAvailable(), now);
 }
 
@@ -245,99 +200,27 @@ struct StoredContext {
   bool sealOpen;
 };
 constexpr uint32_t ContextVersion = 1;
-constexpr uint32_t ContextMagic = 0x47544331UL;  // 'GTC1'
-struct ContextSnapshot {
-  uint32_t magic;
-  uint32_t generation;
-  StoredContext context;
-  uint32_t checksum;
-};
-uint32_t contextGeneration = 0;
-int8_t contextSlot = -1;
-ContextSnapshot contextIo{};
-
-bool contextValid(const ContextSnapshot &snapshot) {
-  return snapshot.magic == ContextMagic &&
-      snapshot.context.version == ContextVersion &&
-      snapshot.context.dayMs == Config::DayMs &&
-      snapshot.checksum == QueuePersistence::crc32(
-          reinterpret_cast<const uint8_t *>(&snapshot), offsetof(ContextSnapshot, checksum));
-}
 
 void saveContext() {
-  contextDirty = true;
-  if (!storageReady || degradedMode) return;
+  contextDirty = false;
+  if (!storageReady) return;
   const StoredContext context{ContextVersion, Config::DayMs, clockMs(), cycle, cycleStartedAt,
                               cycleActive, returnInvoiceIssued, closedCycles, seal, stableSeal};
-  memset(&contextIo, 0, sizeof(contextIo));
-  contextIo.magic = ContextMagic;
-  contextIo.generation = contextGeneration + 1;
-  contextIo.context = context;
-  contextIo.checksum = QueuePersistence::crc32(
-      reinterpret_cast<const uint8_t *>(&contextIo), offsetof(ContextSnapshot, checksum));
-  const int8_t target = contextSlot == 0 ? 1 : 0;
-  const char *key = target == 0 ? (DEMO_MODE ? "ctxd0" : "ctxw0")
-                                  : (DEMO_MODE ? "ctxd1" : "ctxw1");
-  if (storage.putBytes(key, &contextIo, sizeof(contextIo)) != sizeof(contextIo) ||
-      storage.getBytesLength(key) != sizeof(contextIo) ||
-      storage.getBytes(key, &contextIo, sizeof(contextIo)) != sizeof(contextIo) ||
-      !contextValid(contextIo)) {
-    Serial.printf("[memoria] falha ao salvar contexto %s; anterior preservado\r\n", key);
-    return;
+  if (storage.putBytes("ctx", &context, sizeof(context)) != sizeof(context)) {
+    Serial.println("[memoria] falha ao salvar o contexto do ciclo");
   }
-  contextGeneration = contextIo.generation;
-  contextSlot = target;
-  contextDirty = false;
 }
 
 bool restoreContext(StoredContext &context) {
-  if (!storageReady) return false;
-  bool foundSlot = false, restored = false;
-  ContextSnapshot selected{};
-  for (int8_t slot = 0; slot < 2; ++slot) {
-    const char *key = slot == 0 ? (DEMO_MODE ? "ctxd0" : "ctxw0")
-                                  : (DEMO_MODE ? "ctxd1" : "ctxw1");
-    if (!storage.isKey(key)) continue;
-    foundSlot = true;
-    if (storage.getBytesLength(key) != sizeof(contextIo) ||
-        storage.getBytes(key, &contextIo, sizeof(contextIo)) != sizeof(contextIo) ||
-        !contextValid(contextIo)) {
-      Serial.printf("[memoria] ALERTA: contexto %s invalido; ignorado\r\n", key);
-      continue;
-    }
-    if (!restored || QueuePersistence::newer(contextIo.generation, contextGeneration)) {
-      selected = contextIo;
-      contextGeneration = contextIo.generation;
-      contextSlot = slot;
-      restored = true;
-    }
-  }
-  if (restored) {
-    context = selected.context;
-    return true;
-  }
-  if (foundSlot) {
-    Serial.println("[memoria] ERRO: nao ha contexto integro; operacao bloqueada para preservar evidencias");
-    degradedMode = true;
-    return false;
-  }
-  // Migracao somente de NVS anterior ao patch; nao sobrepor snapshots invalidos.
-  if (storage.isKey("ctx") && storage.getBytesLength("ctx") == sizeof(context) &&
-      storage.getBytes("ctx", &context, sizeof(context)) == sizeof(context) &&
-      context.version == ContextVersion && context.dayMs == Config::DayMs) {
-    Serial.println("[memoria] contexto legado recuperado; migra na proxima gravacao");
-    contextDirty = true;
-    return true;
-  }
-  return false;
+  return storageReady && storage.isKey("ctx") &&
+         storage.getBytesLength("ctx") == sizeof(context) &&
+         storage.getBytes("ctx", &context, sizeof(context)) == sizeof(context) &&
+         context.version == ContextVersion && context.dayMs == Config::DayMs;
 }
 
-// Persistencia copy-on-write: um snapshot versionado e validado com CRC32 e
-// escrito no slot inativo. Nunca sobrescrevemos o ultimo slot integro antes
-// de confirmar integralmente o seguinte. Slots "d" e "w" isolam demo/weekly.
-// Os dados antigos p0..p7 sao migrados apenas na ausencia dos novos snapshots.
-// Nao ha transacao atomica entre evento local e transporte externo.
-struct LegacyQueueMeta {
+// Fila de eventos de negocio na NVS: chaves p0..p7 com o texto e "pmeta" com
+// quantidade, criticos e perdas. Regravada a cada mudanca da fila.
+struct StoredQueueMeta {
   uint8_t count;
   bool critical[EVENT_QUEUE_CAPACITY];
   uint32_t lost;
@@ -345,81 +228,41 @@ struct LegacyQueueMeta {
   uint64_t overflowFirstMs, overflowLastMs;
 };
 
-bool savePending() {
-  pendingDirty = true;
-  if (!storageReady || degradedMode) return false;
-  const int8_t target = pendingSlot == 0 ? 1 : 0;
-  const char *key = target == 0 ? (DEMO_MODE ? "pqd0" : "pqw0")
-                                  : (DEMO_MODE ? "pqd1" : "pqw1");
-  QueuePersistence::prepare(queueIo, pending, pendingGeneration + 1);
-  if (storage.putBytes(key, &queueIo, sizeof(queueIo)) != sizeof(queueIo) ||
-      storage.getBytesLength(key) != sizeof(queueIo) ||
-      storage.getBytes(key, &queueIo, sizeof(queueIo)) != sizeof(queueIo) ||
-      !QueuePersistence::valid(queueIo)) {
-    Serial.printf("[memoria] falha no snapshot %s; anterior preservado; nova tentativa pendente\r\n", key);
-    return false;
+void savePending() {
+  if (!storageReady) return;
+  StoredQueueMeta meta{pending.count, {}, pending.lost, pending.overflow_count,
+                       pending.overflow_first_ms, pending.overflow_last_ms};
+  for (uint8_t i = 0; i < EVENT_QUEUE_CAPACITY; ++i) {
+    const String key = "p" + String(i);
+    if (i < pending.count) {
+      meta.critical[i] = pending.critical[i];
+      storage.putString(key.c_str(), pending.text[i]);
+    } else if (storage.isKey(key.c_str())) {
+      storage.remove(key.c_str());
+    }
   }
-  pendingGeneration = queueIo.generation;
-  pendingSlot = target;
-  pendingDirty = false;
-  return true;
+  if (storage.putBytes("pmeta", &meta, sizeof(meta)) != sizeof(meta)) {
+    Serial.println("[memoria] falha ao salvar a fila de eventos");
+  }
 }
 
-void restoreLegacyPending() {
-  LegacyQueueMeta meta{};
-  if (!storage.isKey("pmeta") || storage.getBytesLength("pmeta") != sizeof(meta) ||
+void restorePending() {
+  StoredQueueMeta meta{};
+  if (!storageReady || !storage.isKey("pmeta") ||
+      storage.getBytesLength("pmeta") != sizeof(meta) ||
       storage.getBytes("pmeta", &meta, sizeof(meta)) != sizeof(meta) ||
-      meta.count > EVENT_QUEUE_CAPACITY) return;
-  bool incomplete = false;
+      meta.count > EVENT_QUEUE_CAPACITY) {
+    return;
+  }
   for (uint8_t i = 0; i < meta.count; ++i) {
-    const String item = storage.getString(("p" + String(i)).c_str(), "");
-    if (item.length() == 0) { incomplete = true; continue; }
-    queue_push(&pending, item.c_str(), meta.critical[i], 0);
+    const String text = storage.getString(("p" + String(i)).c_str(), "");
+    if (text.length() == 0) break;  // entrada ausente: preserva so as anteriores
+    queue_push(&pending, text.c_str(), meta.critical[i], 0);
   }
   pending.lost = meta.lost;
   pending.overflow_count = meta.overflowCount;
   pending.overflow_first_ms = meta.overflowFirstMs;
   pending.overflow_last_ms = meta.overflowLastMs;
-  if (incomplete) Serial.println("[memoria] ALERTA: fila legada tem lacunas; integridade historica indeterminada");
-  Serial.printf("[memoria] migrando fila legada: %u registro(s) recuperado(s)\r\n", pending.count);
-  savePending();
-}
-
-void restorePending() {
-  if (!storageReady) {
-    Serial.println("[memoria] ALERTA: persistencia indisponivel");
-    return;
-  }
-  bool hasSnapshot = false;
-  bool validSnapshot = false;
-  for (int8_t slot = 0; slot < 2; ++slot) {
-    const char *key = slot == 0 ? (DEMO_MODE ? "pqd0" : "pqw0")
-                                  : (DEMO_MODE ? "pqd1" : "pqw1");
-    if (!storage.isKey(key)) continue;
-    hasSnapshot = true;
-    if (storage.getBytesLength(key) != sizeof(queueIo) ||
-        storage.getBytes(key, &queueIo, sizeof(queueIo)) != sizeof(queueIo) ||
-        !QueuePersistence::valid(queueIo)) {
-      Serial.printf("[memoria] ALERTA: snapshot %s invalido/incompleto; ignorado\r\n", key);
-      continue;
-    }
-    if (!validSnapshot || QueuePersistence::newer(queueIo.generation, pendingGeneration)) {
-      queueBest = queueIo;
-      pendingGeneration = queueIo.generation;
-      pendingSlot = slot;
-      validSnapshot = true;
-    }
-  }
-  if (validSnapshot) {
-    pending = queueBest.queue;
-    Serial.printf("[memoria] fila restaurada: snapshot %d geracao %lu, %u evento(s)\r\n",
-                  pendingSlot, (unsigned long)pendingGeneration, pending.count);
-  } else if (hasSnapshot) {
-    Serial.println("[memoria] ERRO: todos os snapshots invalidos; operacao bloqueada para preservar evidencias");
-    degradedMode = true;
-  } else {
-    restoreLegacyPending();
-  }
 }
 
 bool hasPending() {
@@ -434,11 +277,8 @@ void printPending() {
   Serial.print("\r\n");
 }
 
-// Fila persistida ANTES de qualquer transmissao simulada. Nesta Sprint o
-// "receptor" e o operador que digita ACK <token> na Serial; essa resposta NAO
-// valida RF009/MQTT nem prova recebimento por um servidor.
-void flushPending();
-
+// Com rede, o JSON sai no Serial (representa a mensagem MQTT). Sem rede, vai para a
+// fila e sai na reconexao, na ordem e com o dia em que ocorreu (RF010; RN09).
 void publishEvent(const char *type, bool critical = false, const String &extra = "") {
   String record = baseRecord(type);
   record += ",\"ciclo_id\":"; record += cycle.cycle_id;
@@ -450,114 +290,57 @@ void publishEvent(const char *type, bool critical = false, const String &extra =
   record += ",\"critico\":"; record += critical ? "true" : "false";
   record += extra;
   record += "}";
-  const int result = queue_push(&pending, record.c_str(), critical, clockMs());
-  if (result == QUEUE_SUMMARIZED) {
-    Serial.printf("[FILA] resumo de violacoes +1 (%lu agregadas), payloads individuais excedentes nao guardados\r\n",
-                  (unsigned long)pending.overflow_count);
-  } else if (result == QUEUE_REJECTED) {
-    Serial.printf("[FILA] DESCARTADO nao critico por falta de capacidade (%lu)\r\n",
-                  (unsigned long)pending.lost);
-  } else if (result == QUEUE_STORED_DROPPED_OLDEST) {
-    Serial.println("[FILA] DESCARTADO nao critico mais antigo; eventos criticos priorizados");
-  } else {
-    Serial.printf("[FILA] enfileirado: %s\r\n", type);
-  }
-  // Pode haver troca do registro na cabeca por descarte; token antigo nao deve
-  // jamais confirmar novo conteudo.
-  if (awaitingSimAck && pending.count > 0 &&
-      !simAckIsSummary && TransportAck::token(pending.text[0]) != simAckToken) {
-    awaitingSimAck = false;
-  }
-  if (!savePending()) {
-    Serial.println("[FILA] falha NVS: nao transmitido; RAM pode se perder com reset");
+  if (simulatedNetworkAvailable()) {
+    Serial.println(record);
     return;
   }
+  const int result = queue_push(&pending, record.c_str(), critical, clockMs());
+  if (result == QUEUE_SUMMARIZED) {
+    Serial.printf("[FILA] FILA_CHEIA: so ha violacoes; %s somado ao resumo (%lu no resumo)\r\n",
+                  type, (unsigned long)pending.overflow_count);
+    savePending();
+    printPending();
+    return;
+  }
+  if (result == QUEUE_REJECTED) {
+    Serial.printf("[FILA] FILA_CHEIA: so ha eventos criticos; %s nao coube (perdidos=%lu)\r\n",
+                  type, (unsigned long)pending.lost);
+    savePending();
+    return;
+  }
+  if (result == QUEUE_STORED_DROPPED_OLDEST) {
+    Serial.println("[FILA] FILA_CHEIA: descartado o evento nao critico mais antigo");
+  }
+  Serial.printf("[FILA] guardado: %s\r\n", type);
+  savePending();
   printPending();
-  if (simulatedNetworkAvailable() && poweredOn) flushPending();
-}
-
-String currentSummaryRecord() {
-  String extra = ",\"quantidade\":";
-  extra += pending.overflow_count;
-  extra += ",\"dia_primeira\":"; extra += simulatedDay(pending.overflow_first_ms);
-  extra += ",\"dia_ultima\":"; extra += simulatedDay(pending.overflow_last_ms);
-  // snprintf com %llu evita depender de construtor String(uint64_t), que
-  // pode mudar entre versoes do core Arduino ESP32.
-  char timestampText[24];
-  snprintf(timestampText, sizeof(timestampText), "%llu",
-           static_cast<unsigned long long>(pending.overflow_first_ms));
-  extra += ",\"primeira_ms\":"; extra += timestampText;
-  snprintf(timestampText, sizeof(timestampText), "%llu",
-           static_cast<unsigned long long>(pending.overflow_last_ms));
-  extra += ",\"ultima_ms\":"; extra += timestampText;
-  // Envelope deterministico: campos de telemetria dependentes do momento
-  // fariam o token mudar entre retransmissoes.
-  String record = "{\"device_id\":\"";
-  record += Config::DeviceId;
-  record += "\",\"type\":\"VIOLACAO_LACRE_RESUMO\"";
-  record += ",\"critico\":true";
-  record += extra;
-  record += "}";
-  return record;
 }
 
 void flushPending() {
-  if (!hasPending() || !poweredOn || !simulatedNetworkAvailable() || degradedMode) return;
-  if (pendingDirty && !savePending()) return;
-  const bool summary = pending.count == 0;
-  // Resumo e construido com o tempo apenas dos eventos agregados; o token
-  // precisa permanecer estavel entre retentativas e nao pode depender do uptime.
-  const String record = summary ? currentSummaryRecord() : String(pending.text[0]);
-  const uint32_t token = TransportAck::token(record.c_str());
-  const uint32_t now = millis();
-  if (awaitingSimAck && token == simAckToken && summary == simAckIsSummary &&
-      (uint32_t)(now - simAckLastSentAt) < SimAckRetryMs) return;
-  // Sem ACK a mensagem e repetida; aplicacoes reais precisam desduplicar por ID.
-  awaitingSimAck = true;
-  simAckIsSummary = summary;
-  simAckToken = token;
-  simAckLastSentAt = now;
-  Serial.printf("[TX_SIM] token=%08lX tipo=%s (sem confirmacao remota)\r\n",
-                (unsigned long)token, summary ? "resumo" : "evento");
-  Serial.println(record);
-  Serial.printf("[TX_SIM] para simular recebimento: ACK %08lX\r\n", (unsigned long)token);
-}
-
-void acknowledgeSim(const String &arg) {
-  if (!awaitingSimAck || !simulatedNetworkAvailable()) {
-    Serial.println("[ACK_SIM] RECUSADO: nao ha envio aguardando com rede simulada");
-    return;
+  if (!hasPending()) return;
+  Serial.printf("[FILA] rede disponivel; reenviando %u evento(s) na ordem\r\n", pending.count);
+  while (pending.count > 0) {
+    Serial.println(pending.text[0]);
+    queue_remove(&pending, 0);
   }
-  uint32_t token = 0;
-  if (!TransportAck::parseHex8(arg.c_str(), token)) {
-    Serial.println("[ACK_SIM] RECUSADO: token deve conter oito hexadecimais");
-    return;
+  // As violacoes do resumo ocorreram depois das guardadas na fila: saem por ultimo.
+  if (pending.overflow_count > 0) {
+    String extra = ",\"quantidade\":";
+    extra += pending.overflow_count;
+    extra += ",\"dia_primeira\":"; extra += simulatedDay(pending.overflow_first_ms);
+    extra += ",\"dia_ultima\":"; extra += simulatedDay(pending.overflow_last_ms);
+    extra += ",\"primeira_ms\":"; extra += String((unsigned long long)pending.overflow_first_ms);
+    extra += ",\"ultima_ms\":"; extra += String((unsigned long long)pending.overflow_last_ms);
+    publishEvent("VIOLACAO_LACRE_RESUMO", true, extra);
+    queue_clear_summary(&pending);
   }
-  if (token != simAckToken) {
-    Serial.println("[ACK_SIM] RECUSADO: token incorreto; fila mantida");
-    return;
-  }
-  const String current = simAckIsSummary ? currentSummaryRecord() :
-                         (pending.count > 0 ? String(pending.text[0]) : String());
-  if (current.length() == 0 || TransportAck::token(current.c_str()) != token) {
-    Serial.println("[ACK_SIM] RECUSADO: fila alterada desde emissao");
-    awaitingSimAck = false;
-    return;
-  }
-  if (simAckIsSummary) queue_clear_summary(&pending);
-  else queue_remove(&pending, 0);
-  awaitingSimAck = false;
-  const bool stored = savePending();
-  Serial.printf("[ACK_SIM] confirmado manualmente; snapshot=%s (NAO e ACK MQTT)\r\n",
-                stored ? "ok" : "falhou: possivel duplicata ao reiniciar");
+  savePending();
   printPending();
-  if (stored) flushPending();
 }
 
 void updateNetwork() {
   const bool available = simulatedNetworkAvailable();
   if (available && !networkWasAvailable) flushPending();
-  if (!available) awaitingSimAck = false;  // proximo envio sera uma retransmissao
   networkWasAvailable = available;
 }
 
@@ -660,25 +443,13 @@ void readBattery(uint32_t now) {
 void readCommands() {
   while (Serial.available()) {
     const char c = Serial.read();
-    if (c != '\n' && c != '\r') {
-      if (discardingSerialLine) continue;
-      if (serialLine.length() < 96) serialLine += c;
-      else { serialLine = ""; discardingSerialLine = true;
-             Serial.println("[comando] linha excedeu 96 caracteres; ignorada"); }
-      continue;
-    }
-    if (discardingSerialLine) { discardingSerialLine = false; serialLine = ""; continue; }
+    if (c != '\n' && c != '\r') { serialLine += c; continue; }
     serialLine.trim();
     serialLine.toUpperCase();
     if (serialLine == "NF") {
       returnInvoiceIssued = true;
       contextDirty = true;
       publishEvent("NF_RETORNO_LANCADA");
-    } else if (serialLine.startsWith("ACK ")) {
-      acknowledgeSim(serialLine.substring(4));
-    } else if (serialLine == "PENDENTES") {
-      printPending();
-      if (awaitingSimAck) Serial.printf("[ACK_SIM] aguardando %08lX\r\n", (unsigned long)simAckToken);
     } else if (serialLine.startsWith("LIMIAR ")) {
       const long days = serialLine.substring(7).toInt();
       if (days > 0) {
@@ -690,7 +461,7 @@ void readCommands() {
         publishEvent("LIMIAR_ALTERADO", false, extra);
       }
     } else if (serialLine.length() > 0) {
-      Serial.println("[comando] use NF, LIMIAR n, PENDENTES ou ACK XXXXXXXX");
+      Serial.println("[comando] use NF ou LIMIAR n");
     }
     serialLine = "";
   }
@@ -698,59 +469,23 @@ void readCommands() {
 
 // A referencia e o ultimo estado estavel salvo (fechado na primeira inicializacao):
 // ligar com o lacre aberto passa pelo mesmo caminho e gera a violacao.
-void sealTransition(bool opened, uint32_t at) {
-  stableSeal = opened;
-  contextDirty = true;
-  // Bordas podem continuar chegando enquanto eventos anteriores sao persistidos.
-  const uint32_t observedAt = millis();
-  const uint64_t observedClock = sim_clock_update(&simClock, observedAt);
-  const uint32_t elapsed = (uint32_t)(observedAt - at);
-  const uint64_t transitionClock = observedClock >= elapsed ? observedClock - elapsed : 0;
-  const int event = opened ? seal_opened(&seal, transitionClock) : seal_closed(&seal);
-  String record = baseRecord("seal_changed");
-  record += ",\"edge_at_ms\":";
-  record += at;
-  record += ",\"authorized_removal\":";
-  record += seal.removal_in_progress ? "true" : "false";
-  record += "}";
-  enqueue(record);
-  if (event == SEAL_EVENT_VIOLATION) publishEvent("VIOLACAO_LACRE", true);
-  if (event == SEAL_EVENT_REMOVAL) publishEvent("RETIRADA_AUTORIZADA");
-  if (event == SEAL_EVENT_RESEALED) publishEvent("LACRE_REAPLICADO");
-  if (event == SEAL_EVENT_CLOSED) publishEvent("LACRE_FECHADO");
-}
-
-void readSeal(uint32_t now) {
-  // Processa timestamps capturados pela ISR, inclusive periodos estaveis que
-  // ocorreram enquanto o loop fazia I/O bloqueante.
-  SealEdge edge{};
-  SealDebounceEvent confirmed{};
-  while (popSealEdge(edge)) {
-    if (seal_on_edge(rawSeal, stableSeal, sealChangedAt, edge.opened,
-                     edge.at, Config::SealDebounceMs, confirmed)) {
-      sealTransition(confirmed.opened, confirmed.confirmedAt);
-    }
-  }
-  // Captura estado inicial ou borda extraviada pelo estouro do buffer.
-  now = millis();
-  const bool current = digitalRead(Config::SealPin) == HIGH;
-  if (current != rawSeal &&
-      seal_on_edge(rawSeal, stableSeal, sealChangedAt, current, now,
-                   Config::SealDebounceMs, confirmed)) {
-    sealTransition(confirmed.opened, confirmed.confirmedAt);
-  }
-  if (seal_settle(rawSeal, stableSeal, sealChangedAt, now,
-                  Config::SealDebounceMs, confirmed)) {
-    sealTransition(confirmed.opened, confirmed.confirmedAt);
-  }
-  static uint32_t reported = 0;
-  noInterrupts();
-  const uint32_t overrun = sealEdgeOverruns;
-  interrupts();
-  if (overrun != reported) {
-    Serial.printf("[lacre] ALERTA: %lu borda(s) perdidas por overflow da ISR; reteste necessario\r\n",
-                  (unsigned long)(overrun - reported));
-    reported = overrun;
+void readSeal(uint32_t now, uint64_t clock) {
+  const bool value = digitalRead(Config::SealPin) == HIGH;
+  if (value != rawSeal) { rawSeal = value; sealChangedAt = now; }
+  if (rawSeal != stableSeal && now - sealChangedAt >= Config::SealDebounceMs) {
+    stableSeal = rawSeal;
+    contextDirty = true;
+    const int event = stableSeal ? seal_opened(&seal, clock) : seal_closed(&seal);
+    String record = baseRecord("seal_changed");
+    record += ",\"authorized_removal\":";
+    record += seal.removal_in_progress ? "true" : "false";
+    record += "}";
+    enqueue(record);
+    // Violacao e critica e sai na hora, fora da rotina periodica (RF006; RN05).
+    if (event == SEAL_EVENT_VIOLATION) publishEvent("VIOLACAO_LACRE", true);
+    if (event == SEAL_EVENT_REMOVAL) publishEvent("RETIRADA_AUTORIZADA");
+    if (event == SEAL_EVENT_RESEALED) publishEvent("LACRE_REAPLICADO");
+    if (event == SEAL_EVENT_CLOSED) publishEvent("LACRE_FECHADO");
   }
 }
 }
@@ -781,8 +516,6 @@ void setup() {
     havePrevious = true;
     // O ponto salvo e referencia historica, nao fix novo nem idade conhecida.
   }
-  Serial.printf("[boot] reset_reason=%d uptime_ms=%lu (diagnostico de CT22)\r\n",
-                (int)esp_reset_reason(), (unsigned long)millis());
   Serial.printf("[memoria] NVS=%s; diagnostico limitado a %u registros; fila de eventos de %u\r\n",
                 storageReady ? "ok" : "falhou", Config::QueueCapacity, EVENT_QUEUE_CAPACITY);
   WiFi.mode(WIFI_STA);
@@ -808,26 +541,21 @@ void setup() {
   } else {
     sim_clock_init(&simClock, millis(), 0);
     rawSeal = stableSeal = false;
-    if (!degradedMode) startCycle(clockMs(), 1);
+    startCycle(clockMs(), 1);
   }
   sealChangedAt = millis();
-  // Ativar interrupcoes somente depois que a NVS e o estado logico existem.
-  attachInterrupt(digitalPinToInterrupt(Config::SealPin), onSealEdge, CHANGE);
   saveContext();
-  if (degradedMode) {
-    Serial.println("[boot] MODO SEGURO: NVS inconsistente; sem novos vinculos ou remocoes. Inspecione slots antes de limpar flash.");
-  }
-  if (hasPending() && !degradedMode) {
+  if (hasPending()) {
     printPending();
     // Fila restaurada com rede ja disponivel: reenvia sem esperar a chave mudar.
     if (poweredOn && networkWasAvailable) flushPending();
   }
-  if (poweredOn && !degradedMode) {
+  if (poweredOn) {
     publishEvent("STATUS", false, restored ? ",\"contexto_restaurado\":true" : ",\"contexto_restaurado\":false");
   }
   updateLeds(millis());
   Serial.println("[boot] aguardando GPS; heartbeat aparece a cada 2 s");
-  Serial.println("[transporte] FIFO persistida + ACK manual serial; MQTT/HTTP e servidor pendentes");
+  Serial.println("[transporte] JSON na serial + fila local; envio HTTP/MQTT pendente");
   Serial.printf("[ciclo] 1 dia = %lu s; status a cada %lu dias; prazo %lu; limiar %lu\r\n",
                 Config::DayMs / 1000UL, (unsigned long)Config::StatusIntervalDays,
                 (unsigned long)Config::ExpectedReturnDays,
@@ -835,16 +563,13 @@ void setup() {
   Serial.printf("[regras] janela de autorizacao %lu dias; fila sem rede de %u eventos; bateria %u%%/%u%%\r\n",
                 (unsigned long)Config::AuthorizationWindowDays, EVENT_QUEUE_CAPACITY,
                 Config::BatteryLowPct, Config::BatteryRecoverPct);
-  Serial.println("[comandos] NF; LIMIAR n; PENDENTES; ACK XXXXXXXX (confirmacao manual, nao MQTT)");
+  Serial.println("[comandos] NF = lanca NF de retorno; LIMIAR n = muda o limiar de permanencia");
   Serial.println("[bancada] SW_REDE simula disponibilidade sem desligar o Wi-Fi; SW_ENERGIA liga/desliga");
 }
 
 void loop() {
   const uint32_t now = millis();
-  if (degradedMode) { updateLeds(now); return; }
   // O relogio do ciclo segue no desligamento logico da chave ON/OFF.
-  // Antes de bloqueios de Serial/NVS, capturar periodos estaveis do lacre.
-
   const uint64_t clock = sim_clock_update(&simClock, now);
   // Chave ON/OFF: desligar registra o evento e suspende o dispositivo.
   const bool on = powerSwitchOn();
@@ -858,21 +583,14 @@ void loop() {
   }
   updateLeds(now);
   if (!poweredOn) return;
-  // Captura timestamp atual para eventos ocorridos durante eventual I/O de boot.
-  const uint32_t sealNow = millis();
-  readSeal(sealNow);
   readGps();
+  readSeal(now, clock);
   readButtons(now, clock);
   readBattery(now);
   readCommands();
   updateNetwork();
   updateCycle(clock);
-  flushPending();  // retentativa limitada por tempo; sem descartar antes de ACK manual
-  if ((contextDirty || pendingDirty) && now - lastPersistenceRetry >= 1000) {
-    lastPersistenceRetry = now;
-    if (contextDirty) saveContext();
-    if (pendingDirty) savePending();
-  }
+  if (contextDirty) saveContext();
   const bool connected = WiFi.status() == WL_CONNECTED;
   if (connected != wasConnected) {
     Serial.printf("[wifi] %s\r\n", connected ? "conectado" : "desconectado");

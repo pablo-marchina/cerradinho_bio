@@ -40,9 +40,9 @@
 
 ## Correções e análise dos testes históricos
 
-- **CT18 — REPROVADO:** ensaio legado reportou 16/20 transições sem rede; alteração proposta usa ISR para registrar bordas e processá-las com debounce. **Não há reteste após o patch.** Reexecutar exatamente os 20 pulsos e ampliá-los para ≥30, com contagem, timestamp, latências e métrica de overflow. Inclua situação de NVS indisponível.
-- **CT22 — REPROVADO NO AMBIENTE:** NVS previamente validada, mas uptime não reiniciou como esperado e houve watchdog. Patch expõe `reset_reason` e usa snapshots duplos; **não demonstra reset físico correto nem resolve a origem do watchdog**. Repetir reset manual, watchdog e interrupções em cada etapa da gravação, preservando o oráculo original.
-- **CT09 — BLOQUEADO:** ACK manual (`ACK XXXXXXXX`) evita descarte prematuro, mas **não é confirmação remota**, nem valida MQTT. Manter bloqueio até implementar receptor externo e registrar ACK. Nunca modificar relatório histórico para fazê-lo passar.
+- **CT18 — REPROVADO:** ensaio legado reportou 16/20 transições sem rede; a captura por interrupção (ISR) foi proposta na revisão de 23/10 e adiada para a Sprint 2, por exigir novo reteste completo. Reexecutar exatamente os 20 pulsos e ampliá-los para ≥30, com contagem, timestamp, latências e métrica de overflow. Inclua situação de NVS indisponível.
+- **CT22 — REPROVADO NO AMBIENTE:** NVS previamente validada, mas uptime não reiniciou como esperado e houve watchdog. A investigação do watchdog e dos snapshots duplos ficou para a Sprint 2. Repetir reset manual, watchdog e interrupções em cada etapa da gravação, preservando o oráculo original.
+- **CT09 — BLOQUEADO:** Manter bloqueio até implementar o envio MQTT com confirmação do servidor (Sprint 3). Nunca modificar relatório histórico para fazê-lo passar.
 
 ## Matriz de consistência das personas
 
@@ -81,4 +81,4 @@ Executar no hardware/simulador oficial; registrar SHA de commit, binário (hash)
 
 ## Novos ensaios locais para transporte
 
-O [protocolo de ACK de bancada](protocolo-ack-simulado.md) define CT-SIM-ACK-01..06 com entradas, saídas e evidências esperadas. O teste host de fila/token não equivale a reteste de Wokwi, e nenhum CT histórico foi reclassificado.
+Um protocolo de confirmação manual pela Serial (ACK de bancada) foi proposto na revisão de 23/10 e adiado para a Sprint 2, junto com o reteste completo que ele exige. Nenhum CT histórico foi reclassificado.

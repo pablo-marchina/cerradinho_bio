@@ -38,6 +38,7 @@ class Preferences {
   return String(std::string(it->second.begin(),it->second.end()));
  }
  size_t putString(const char* key,const String &s){return putBytes(key,s.c_str(),s.length());}
+ bool remove(const char* key){return FakeNVS::bytes.erase(key)!=0;}
 #else
  bool begin(const char*,bool){return true;}
  bool isKey(const char*) const{return false;}
@@ -46,5 +47,6 @@ class Preferences {
  size_t getBytesLength(const char*)const{return 0;}
  String getString(const char*,const char* def)const{return String(def);}
  size_t putString(const char*,const String &s){return s.length();}
+ bool remove(const char*){return true;}
 #endif
 };

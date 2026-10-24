@@ -17,7 +17,7 @@ A escolha definitiva de base legal depende do papel da CerradinhoBio e da organi
 
 ## Onde, com quem, segurança
 
-- **Implementado:** protótipo Wokwi e firmware local; impressão em Serial e snapshots de eventos na NVS; **sem banco ou API de produção**. A memória NVS do protótipo **não contém criptografia/autenticação de payload implementada neste firmware**; não usar dados pessoais reais no simulador.
+- **Implementado:** protótipo Wokwi e firmware local; impressão em Serial e fila de eventos na NVS; **sem banco ou API de produção**. A memória NVS do protótipo **não contém criptografia/autenticação de payload implementada neste firmware**; não usar dados pessoais reais no simulador.
 - **Planejado, não contratado:** banco, armazenamento de backups, serviço MQTT, dashboard, alertas e API. Regiões, contratos, transferências internacionais e fornecedores **não definidos**.
 - **Cookies:** não há produto web publicado neste repositório. Ao implementar, inventariar essenciais/analíticos, consentimento e preferências quando aplicável; não confundir com cookies do site institucional.
 - **Controles antes do piloto:** controle de acesso por perfil, criptografia em trânsito e em repouso conforme arquitetura, segregação de dados, credenciais rotativas, inventário de subprocessadores, gestão de vulnerabilidades, backups/restauração e plano de incidentes testados. Nenhum desses controles de plataforma pode ser declarado implementado na Sprint 1.
