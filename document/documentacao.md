@@ -2,9 +2,17 @@
 
 ## Grupo G01 — GuaráTracking
 
-#### Equipe
+#### Nomes dos integrantes do grupo
 
-Os nomes dos integrantes e docentes serão inseridos a partir do cadastro oficial, sem atribuições inventadas nesta revisão.
+- Arthur Dantas Pereira Loyola
+- Bruno Fernandes Ramos
+- Guilherme Nunes Fernandes e Silva
+- Heloísa Noda Kadota
+- Luiz Gustavo Campos Cazelatto
+- Pablo Marchina
+- Rachel Durante Silvestre
+
+**Orientadora:** Camila Naves Arantes
 
 <img src="../assets/inteli.png">
 
@@ -61,15 +69,15 @@ Na cana, concorrem Raízen [7, 18], São Martinho [8, 19] e bp bioenergy [9]; no
 
 #### Modelo de negócio
 
-Modelo B2B integrado: cana e milho viram etanol, açúcar, bioeletricidade e coprodutos vendidos a distribuidores, indústrias e setor elétrico [4]. CBIOs diversificam receitas; custos e commodities afetam margens [13].
+A CerradinhoBio opera no modelo B2B integrado: transforma cana e milho em etanol, açúcar, bioeletricidade e coprodutos vendidos a distribuidores, indústrias e setor elétrico [4]. Diversificação e CBIOs ampliam receitas; eficiência, logística e preços de commodities afetam resultados [13].
 
 #### Tendências
 
-Etanol de milho cresce; a EPE registrou 36,2 bilhões de litros de etanol em 2025 [12]. RenovaBio e Lei do Combustível do Futuro estimulam biometano e SAF [13–16]. Digitalização apoia decisões.
+O etanol de milho cresce e complementa a cana; a EPE registrou 36,2 bilhões de litros de etanol no Brasil em 2025 [12]. RenovaBio e Lei do Combustível do Futuro impulsionam biometano e SAF, com metas de aviação a partir de 2027 [13–16]. A digitalização pode ampliar a visibilidade de ativos e apoiar decisões.
 
 #### Cinco Forças de Porter — CerradinhoBio
 
-Intensidade baixa/média/alta; Porter [17], template [20] e [critérios](outros/porter-criterios.md).
+A intensidade indica a pressão sobre a atratividade do setor: baixa, média ou alta. Análise baseada em Porter [17] e no template do Inteli [20]; os critérios de cada nível estão em [critérios das cinco forças](outros/porter-criterios.md).
 
 ![Cinco Forças de Porter para a CerradinhoBio](../assets/negocios/cinco_forcas.png)
 
@@ -103,7 +111,7 @@ Registros e contatos dispersos dificultam localizar equipamentos em manutenção
 
 #### 3.1.3.2 Solução proposta (visão de negócios)
 
-O GuaráTracking combina dispositivo reutilizável lacrado e cadastro por ciclo: equipamento, fornecedor, responsável, NF, prazo, posição válida, lacre, alertas, histórico e BI. O piloto avaliará viabilidade. Não pressupõe rastreamento contínuo nem posição precisa em galpões.
+O GuaráTracking combina dispositivo reutilizável com lacre e cadastro digital por ciclo. Reúne equipamento, fornecedor, responsável, NF, prazo, última localização válida, estado do lacre e alertas; disponibiliza histórico e dados para consulta e BI. O piloto avaliará utilidade e viabilidade antes de eventual expansão. Não pressupõe rastreamento contínuo nem localização precisa em ambientes internos.
 
 #### 3.1.3.3 Uso previsto
 
@@ -111,7 +119,7 @@ Na saída, cadastrar equipamento, fornecedor, responsável, NF e prazo e instala
 
 #### 3.1.3.4 Benefícios
 
-Centraliza consultas e apoia decisões, sob validação no piloto.
+A solução pode centralizar dados, reduzir buscas e apoiar decisões. Os ganhos dependem do tratamento dos alertas e serão medidos no piloto.
 
 #### 3.1.3.5 Critério de sucesso e medida
 
@@ -183,67 +191,97 @@ Matriz de riscos do projeto, com níveis estimados de 10%–90% e impacto qualit
 
 ### 3.1.6. Política de Privacidade de acordo com a LGPD (sprint 1)
 
-**Minuta do produto, NÃO aprovada para tratamento de dados reais.** A [política da CerradinhoBio](https://www.cerradinhobio.com.br/politica-de-privacidade/) não designa automaticamente infraestrutura, canal nem encarregado deste projeto. Piloto real exige validação institucional [40, 41].
+Política preliminar do GuaráTracking, alinhada à LGPD [40] e à orientação da ANPD [41]. Os prazos, canais e responsáveis abaixo são a proposta do grupo para o piloto e serão validados com a CerradinhoBio antes de qualquer tratamento de dados reais; até lá, o protótipo usa apenas dados fictícios.
 
 #### 3.1.6.1 Informações gerais
 
-Monitora manutenção externa. **Controlador, operador e CNPJ: a confirmar.**
+A solução acompanha equipamentos da CerradinhoBio enviados à manutenção externa. A CerradinhoBio é a controladora dos dados; a equipe do projeto e os provedores de nuvem atuam como operadores.
 
 #### 3.1.6.2 Dados coletados
 
-Nome/contato, perfil, identificador, fornecedor, GNSS, IP, logs e credenciais. Geolocalização pode identificar pessoas indiretamente.
+Dos usuários: nome, e-mail corporativo, cargo, perfil de acesso, `usuario_id`, credenciais, endereço IP e registros de acesso. Dos responsáveis por fornecedores: nome e contato profissional. Do dispositivo: posição GNSS semanal, estado do lacre, bateria e horário dos eventos. A posição do equipamento pode identificar indiretamente quem o transporta, por isso não há rastreamento contínuo.
 
 #### 3.1.6.3 Fontes
 
-Cadastro, sistema fiscal, dispositivo e logs técnicos.
+Cadastro feito pelos usuários na plataforma, dados do ciclo informados pelo PCM e pelo Fiscal, mensagens dos dispositivos e registros técnicos gerados pelo sistema.
 
 #### 3.1.6.4 Finalidades
 
-Acesso, ciclos de manutenção, alertas, auditoria e suporte.
+Autenticar usuários, registrar ciclos de manutenção, emitir alertas aos responsáveis, manter o histórico para auditoria e fornecer dados ao BI. Os dados não serão usados para avaliar o desempenho individual de pessoas.
 
 #### 3.1.6.5 Bases legais
 
-**Bases a aprovar por finalidade.** Minimizar dados; consentimento não é universal.
+Execução de contrato e legítimo interesse da controladora no controle dos seus ativos (art. 7º, V e IX) e cumprimento de obrigação legal para os registros fiscais (art. 7º, II) [40].
 
 #### 3.1.6.6 Armazenamento
 
-Simulação: Serial/NVS. **Nuvem, região, contratos e transferências: a definir.**
+No protótipo, os dados ficam apenas na memória do dispositivo e na saída Serial. No piloto, ficarão em serviço de nuvem com servidores no Brasil e acesso restrito por perfil.
 
 #### 3.1.6.7 Retenção
 
-**Retenção por categoria: a aprovar**; descarte quando cabível.
+Dados dos ciclos e histórico: 5 anos após o encerramento do ciclo, prazo dos documentos fiscais. Registros de acesso: 6 meses (Marco Civil da Internet). Contas de usuários: até 90 dias após o desligamento do usuário. Depois disso, os dados são eliminados ou anonimizados.
 
 #### 3.1.6.8 Cookies
 
-Sem painel web; inventariar cookies futuros.
+O painel usará apenas cookies de sessão necessários para a autenticação, sem cookies de publicidade ou de rastreamento.
 
 #### 3.1.6.9 Compartilhamento
 
-Sem backend atual; operadores futuros e acessos serão inventariados.
+Somente com os operadores necessários ao funcionamento (provedor de nuvem, broker MQTT e operadora de conectividade), sob contrato, e com autoridades quando houver obrigação legal. Não há venda nem cessão de dados.
 
 #### 3.1.6.10 Segurança
 
-Simulação local. Piloto exige acesso mínimo, criptografia, proteção de credenciais e resposta a incidentes.
+Autenticação individual, acesso por perfil, comunicação criptografada (TLS), credenciais fora do código, registro de auditoria e plano de resposta a incidentes com comunicação à ANPD quando exigido.
 
 #### 3.1.6.11 Direitos
 
-Confirmação, acesso, correção, oposição, eliminação e demais direitos aplicáveis [40].
+O titular pode pedir confirmação do tratamento, acesso, correção, anonimização, bloqueio ou eliminação de dados desnecessários, informação sobre compartilhamento e revisão de decisões automatizadas (art. 18) [40].
 
 #### 3.1.6.12 Solicitações
 
-**Canal do produto: a confirmar.** O site divulga `lgpd@cerradinho.com.br`; verificar aplicabilidade ao GuaráTracking.
+As solicitações serão recebidas pelo canal de privacidade da CerradinhoBio (`lgpd@cerradinho.com.br`), registradas e respondidas em até 15 dias, após confirmação da identidade do titular.
 
 #### 3.1.6.13 Encarregado
 
-**Designação para o produto: a confirmar** com o parceiro. O contato institucional publicado no aviso de 2021 não é prova de designação atual [41].
+O encarregado (DPO) é o indicado pela CerradinhoBio, com contato pelo mesmo canal; o nome será confirmado com a empresa antes do piloto [41].
 
 ### 3.1.7. Bill of Material (BOM) (sprint 1)
 
-A [planilha BOM](../assets/negocios/BOM-GuaraTracking-Sprint1.xlsx) segue os campos do template oficial [42] e separa **simulador, protótipo físico, serviços e alternativa futura**, com quantidades, referências, especificações propostas, custo por item, moeda, fonte, data e estado da cotação. Células de custo não cotado ficam vazias: não representam preço zero nem componente gratuito.
+BOM preliminar de um dispositivo, organizada com os campos da planilha do Inteli [42]. Os valores são preços de referência consultados em 22 e 23/10/2026, em reais; preços em dólar foram convertidos pela PTAX de venda de 22/10/2026 (R$ 5,0383) [35]. Não incluem frete, impostos de importação nem encargos, e os modelos serão confirmados antes da construção do protótipo físico [6]. O detalhamento, com fonte, data e estado de cada cotação, está na [planilha da BOM](../assets/negocios/BOM-GuaraTracking-Sprint1.xlsx).
 
-A planilha inclui preços referenciais consultados em 23/10/2026 para ESP32, resistores, jumpers, LEDs, chaves, botões e potenciômetro; os resistores da referência inicial estavam esgotados. O GNSS de R$ 247,38 [34, 35] continua referência histórica sem estoque garantido. Restam 8 linhas sem preço, sobretudo itens de campo; não há preço final do equipamento enquanto bateria, circuito de carga, antena, encapsulamento, comunicação, fixação, componentes e tributos não forem cotados. O subtotal é **parcial e não é orçamento aprovado**. Para cinco dispositivos, o custo não é necessariamente cinco vezes o unitário: há custos fixos, materiais compartilhados, homologação e mão de obra.
+| Categoria | Quantidade | Referência | Código / modelo do fabricante | Valor unitário (R$) | Valor total (R$) |
+|---|---:|---|---|---:|---:|
+| Microcontrolador | 1 | U1 | ESP32 DevKit V1 (ESP-WROOM-32) [43] | 51,00 | 51,00 |
+| GNSS | 1 | U2 | Quectel LC76G-PA / LC76GPATA [34, 35] | 247,38 | 247,38 |
+| Antena GNSS | 1 | ANT1 | Antena ativa 28 dB, conector SMA [44] | 73,81 | 73,81 |
+| Bateria | 1 | BT1 | LiPo 3,7 V 2000 mAh com proteção [45] | 62,93 | 62,93 |
+| Alimentação | 1 | U3 | Módulo carregador TP4056 com proteção [46] | 8,91 | 8,91 |
+| Sensor do lacre | 1 | S1 | Reed switch com ímã MC-38 [47] | 7,35 | 7,35 |
+| Gabinete | 1 | ENC1 | Caixa ABS IP65 100 × 68 × 50 mm [48] | 55,37 | 55,37 |
+| Fixação | 4 | FIX1 | Abraçadeira de nylon 300 mm (pacote de 100) [49] | 0,29 | 1,16 |
+| Comunicação externa | 1 | COM1 | Módulo SIM7080G (LTE-M/NB-IoT), opção a validar [50] | 195,69 | 195,69 |
+| PCI | 1 | PCB1 | Placa fenolite perfurada 10 × 10 cm [51] | 15,66 | 15,66 |
+| LEDs | 4 | D1–D4 | LED 5 mm verde, amarelo, vermelho e azul [52] | 0,25 | 1,00 |
+| Resistores | 4 | R1–R4 | Resistor 220 Ω 1/4 W [52] | 0,15 | 0,60 |
+| Botões | 2 | SW1–SW2 | Chave tátil 6 × 6 mm [52] | 0,30 | 0,60 |
+| Chaves | 3 | SW3–SW5 | Mini chave liga-desliga [53] | 0,78 | 2,34 |
+| Potenciômetro | 1 | RV1 | Potenciômetro linear 10 kΩ (bateria simulada na bancada) [53] | 1,79 | 1,79 |
+| Cabos | 1 | J1 | Kit jumper macho-fêmea 40 peças [52] | 8,40 | 8,40 |
+| **Total de materiais** |  |  |  |  | **733,99** |
 
-Como cenário independente, o esforço preliminar da equipe corresponde a **sete profissionais, 80 h por pessoa**, somando R$ 34.105,60 em custo de trabalho calculado com taxas referenciais [36–39], sem encargos. Essa hipótese não corresponde a desembolso contratado. O [plano de validação](outros/sprint1-validacao-e-limites.md) identifica as cotações e decisões necessárias antes do protótipo físico.
+O GNSS estava sem estoque na consulta, e a comunicação externa depende do teste de cobertura nas oficinas, por isso o SIM7080G é uma das opções e não a escolha final. LEDs, botões, chaves e potenciômetro reproduzem o circuito do Wokwi para a bancada.
+
+**Mão de obra estimada:** 40 dias, 2 horas/dia por pessoa (80 h); referências salariais, não cotações [36–39].
+
+| Perfil (CBO) | Pessoas | R$/h | Subtotal (R$) |
+|---|---:|---:|---:|
+| Engenheiro de hardware computacional (2122-10) | 3 | 68,47 | 16.432,80 |
+| Pesquisador em ciências da computação (2031-05) | 2 | 54,95 | 8.792,00 |
+| Analista de sistemas (2124-05) | 1 | 40,28 | 3.222,40 |
+| Engenheiro de software (2122-15) | 1 | 70,73 | 5.658,40 |
+| **Total** | **7** |  | **34.105,60** |
+
+**Total estimado do protótipo:** R$ 34.839,59 (R$ 733,99 de materiais e R$ 34.105,60 de mão de obra), sem frete, tributos e encargos. Para cinco dispositivos, o custo não é cinco vezes o unitário, porque a mão de obra e parte dos materiais de bancada são compartilhados.
 
 ## 3.2. Domínio de Fundamentos de Experiência de Usuário 
 
@@ -309,29 +347,29 @@ _Coloque aqui seu Storyboard (seguindo as instruções na descrição do artefat
 
 ### 3.3.1. Requisitos Funcionais (sprint 1, refinar e atualizar até sprint 5)
 
-Os requisitos abaixo saem do TAPI (MVP 1 a 7 e fluxo básico), da avaliação do protótipo e do kick-off com a Cerradinho (16/10/2026). A prioridade segue o que o parceiro chamou de indispensável no kick-off: alerta de lacre, alerta de prazo e geolocalização. Um RF só passa a `Simulado no Wokwi` depois que o caso de teste correspondente (seção 3.4.1) é executado e passa. Os IDs estão congelados: um RF removido não libera o número, e um RF novo entra no fim da lista.
+Os requisitos abaixo saem do TAPI (MVP 1 a 7 e fluxo básico), da avaliação do protótipo e do kick-off com a Cerradinho (16/10/2026). A prioridade segue o que o parceiro chamou de indispensável no kick-off: alerta de lacre, alerta de prazo e geolocalização. Um RF só passa a `Simulado no Wokwi` depois que o caso de teste correspondente (seção 3.4.1) é executado e passa. Fica `Parcialmente simulado` quando parte dos CTs passou e outra parte foi reprovada ou bloqueada (ver a RTM na seção 3.3.4). Os IDs estão congelados: um RF removido não libera o número, e um RF novo entra no fim da lista.
 
 | ID    | Descrição | Origem | Prioridade | Status |
 |-------|-----------|--------|------------|--------|
 | RF001 | O sistema deve cadastrar o equipamento com identificador próprio, descrição e foto. | TAPI MVP 1 | Alta | Planejado |
 | RF002 | O sistema deve abrir um ciclo de manutenção externa com NF de remessa (número e data de emissão), fornecedor, responsável e prazo previsto de retorno. | TAPI MVP 3 | Alta | Planejado |
 | RF003 | O sistema deve vincular um dispositivo a um ciclo de manutenção aberto. | TAPI MVP 3 | Alta | Planejado |
-| RF004 | O sistema deve recusar o vínculo de um dispositivo que já está em um ciclo ativo. | Fluxo básico | Alta | Planejado |
-| RF005 | O sistema deve coletar a posição GNSS na rotina de envio e guardar a última localização válida com data e hora. | TAPI MVP 2 | Alta | Planejado |
-| RF006 | O sistema deve monitorar o lacre e detectar sua abertura ou rompimento. | TAPI MVP 5 | Alta | Planejado |
-| RF007 | O sistema deve registrar a retirada autorizada e a reaplicação do lacre sem gerar alerta de violação. | TAPI MVP 5 | Alta | Planejado |
+| RF004 | O sistema deve recusar o vínculo de um dispositivo que já está em um ciclo ativo. | Fluxo básico | Alta | Simulado no Wokwi |
+| RF005 | O sistema deve coletar a posição GNSS na rotina de envio e guardar a última localização válida com data e hora. | TAPI MVP 2 | Alta | Parcialmente simulado |
+| RF006 | O sistema deve monitorar o lacre e detectar sua abertura ou rompimento. | TAPI MVP 5 | Alta | Parcialmente simulado |
+| RF007 | O sistema deve registrar a retirada autorizada e a reaplicação do lacre sem gerar alerta de violação. | TAPI MVP 5 | Alta | Simulado no Wokwi |
 | RF008 | O sistema deve conectar-se à rede Wi‑Fi e reconectar automaticamente quando a conexão cair. | Avaliação do protótipo | Alta | Planejado |
 | RF009 | O sistema deve publicar status e eventos no broker MQTT, em JSON, no tópico do dispositivo. | TAPI MVP 6 | Alta | Planejado |
-| RF010 | O sistema deve guardar os eventos gerados sem conexão e enviá-los na ordem em que ocorreram quando a conexão voltar. | TAPI MVP 5 | Alta | Planejado |
-| RF011 | O sistema deve enviar um status periódico, semanal por padrão e configurável. | TAPI MVP 4 | Alta | Planejado |
+| RF010 | O sistema deve guardar os eventos gerados sem conexão e enviá-los na ordem em que ocorreram quando a conexão voltar. | TAPI MVP 5 | Alta | Parcialmente simulado |
+| RF011 | O sistema deve enviar um status periódico, semanal por padrão e configurável. | TAPI MVP 4 | Alta | Simulado no Wokwi |
 | RF012 | O sistema deve calcular os dias fora a partir da data de emissão da NF de remessa. | TAPI MVP 4; Kick-off com a Cerradinho (16/10/2026) | Alta | Planejado |
-| RF013 | O sistema deve emitir um alerta de atraso quando os dias fora passam do prazo previsto de retorno. | TAPI MVP 3 | Alta | Planejado |
-| RF014 | O sistema deve emitir um alerta de permanência quando os dias fora atingem o limiar do ciclo (150 dias por padrão, configurável). | TAPI MVP 4 | Alta | Planejado |
+| RF013 | O sistema deve emitir um alerta de atraso quando os dias fora passam do prazo previsto de retorno. | TAPI MVP 3 | Alta | Simulado no Wokwi |
+| RF014 | O sistema deve emitir um alerta de permanência quando os dias fora atingem o limiar do ciclo (150 dias por padrão, configurável). | TAPI MVP 4 | Alta | Simulado no Wokwi |
 | RF015 | O sistema deve listar os equipamentos fora com última localização válida, dias fora, prazo, bateria e estado do lacre. | TAPI MVP 6 | Alta | Planejado |
-| RF016 | O sistema deve encerrar o ciclo somente com a NF de retorno lançada e o lacre fechado. | Fluxo básico | Alta | Planejado |
+| RF016 | O sistema deve encerrar o ciclo somente com a NF de retorno lançada e o lacre fechado. | Fluxo básico | Alta | Simulado no Wokwi |
 | RF017 | O sistema deve liberar o dispositivo do ciclo encerrado para um novo vínculo, preservando o histórico. | TAPI MVP 3; fluxo básico | Alta | Planejado |
 | RF018 | O sistema deve notificar o responsável do ciclo a cada alerta, com o e-mail como canal inicial. | Fluxo básico; Kick-off com a Cerradinho (16/10/2026) | Alta | Planejado |
-| RF019 | O sistema deve medir o nível de bateria e enviá-lo em cada mensagem. | TAPI MVP 6 | Média | Planejado |
+| RF019 | O sistema deve medir o nível de bateria e enviá-lo em cada mensagem. | TAPI MVP 6 | Média | Simulado no Wokwi |
 | RF020 | O sistema deve cadastrar os dispositivos na plataforma, cada um com identificador e credencial próprios. | TAPI MVP 3 | Média | Planejado |
 | RF021 | O sistema deve atribuir a cada usuário um `usuario_id` único e permanente, gerado pela plataforma, vinculado à sua credencial individual e ao seu perfil de acesso, e autenticar esse usuário para acessar o painel. | TAPI MVP 6 | Média | Planejado |
 | RF022 | O sistema deve exibir gráficos e mapa com equipamentos por faixa de dias fora, alertas por tipo e última posição de cada equipamento. | TAPI MVP 6 | Média | Planejado |
@@ -339,7 +377,7 @@ Os requisitos abaixo saem do TAPI (MVP 1 a 7 e fluxo básico), da avaliação do
 | RF024 | O sistema deve oferecer uma API autenticada e documentada para consulta dos dados por ferramentas de BI. | TAPI MVP 6 | Média | Planejado |
 | RF025 | O sistema deve emitir um alerta quando um dispositivo passa do período esperado sem se comunicar. | Kick-off com a Cerradinho (16/10/2026) | Média | Planejado |
 | RF026 | O sistema deve emitir um alerta quando os dias fora atingem a data limite legal do ciclo. | Kick-off com a Cerradinho (16/10/2026) | Média | Planejado |
-| RF027 | O sistema deve emitir um alerta quando o nível de bateria fica abaixo do limite mínimo. | TAPI MVP 6 | Média | Planejado |
+| RF027 | O sistema deve emitir um alerta quando o nível de bateria fica abaixo do limite mínimo. | TAPI MVP 6 | Média | Simulado no Wokwi |
 | RF028 | O sistema deve avisar antecipadamente ao vencimento do prazo de retorno, com antecedência configurada pelo parceiro. | Necessidade das personas; VPC | Média | Planejado (não simulado) |
 | RF029 | O sistema deve marcar retorno físico recebido e pendência de baixa fiscal como estados distintos, sem encerrar o ciclo. | Kick-off; P2-C2 | Alta | Planejado (não simulado) |
 
@@ -377,7 +415,7 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 | Regra | Situação no protótipo atual |
 |---|---|
 | RN05 — envio da violação fora da rotina periódica | Preservar registro local independente de GNSS/rede. Entrega ao servidor ainda não implementada; manter limites de latência pendentes com o parceiro. “Na hora” não define SLA nem garante entrega sem conexão. |
-| RN08 — data/hora GNSS e HDOP máximo de 2,0 | O firmware atual verifica validade, idade e satélites, mas não aplica esse limite de HDOP nem persiste data/hora absoluta. Registrar adequação futura do driver LC76G-PA; limite de HDOP ainda pendente. |
+| RN08 — data/hora GNSS e HDOP máximo de 2,0 | O firmware atual verifica validade, idade e satélites, mas não aplica esse limite de HDOP nem persiste data/hora absoluta. Registrar adequação futura do driver LC76G-PA [24]; limite de HDOP ainda pendente. |
 | RN09 — fila de 8 com prioridade para críticos | Implementada na fila de eventos sem rede (8 eventos, descarte do não crítico mais antigo, reenvio na ordem com `dia_ocorrencia`). Com a fila só de violações, a 9ª violação em diante entra num único registro de resumo (`VIOLACAO_LACRE_RESUMO`, com quantidade e primeira/última ocorrência), persistido na NVS e enviado depois das 8 no reenvio; o resumo preserva somente contagem e extremos temporais, **não cada violação individual**. Só eventos não críticos que não cabem são contados em `perdidos`. A política de agregação deve ser confirmada com o parceiro. O registro local de 16 entradas na NVS (CT21) continua separado. |
 | RN10 — leitura zero considerada falha | Implementada: ADC = 0 gera `SENSOR_BATERIA_FALHA` e nenhum `BATERIA_BAIXA` (CT13). No dispositivo físico, o diagnóstico elétrico do divisor ainda depende do CT30 previsto no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md). |
 | RN11 — encerramento exige lacre fechado e NF de retorno | As duas recusas foram verificadas no CT16. No simulador, `NF` no Serial representa o lançamento da NF de retorno e segurar `BTN_CICLO` por 2 s solicita o encerramento. No reteste de 23/10/2026, o CT14 confirmou JSON com ciclo inativo e dias zero, reutilização e contador acumulado. A persistência do histórico após corte de energia não foi verificada. |
@@ -438,7 +476,7 @@ A Matriz de Rastreabilidade (RTM) relaciona os requisitos funcionais (RF) e as r
 
 Os resultados dos CT17–CT23 correspondem às execuções de 23/10/2026 descritas na seção 3.4.1, com capturas, logs, configuração e limitações. As aprovações são funcionais no simulador; CT18 e CT22 permanecem reprovados, e CT09 depende da confirmação de entrega pelo servidor.
 
-A proposta de RNFs, a máquina de estados de energia e os CT24–CT34 estão no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md), para revisão nas próximas sprints.
+A proposta de RNFs, a máquina de estados de energia (com os modos de economia do ESP32 [21]) e os CT24–CT34 estão no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md), que compara o LC76G-PA escolhido com o u-blox MAX-M10S [23, 24], para revisão nas próximas sprints.
 
 
 **Legenda de prova:** `Simulado` comprova comportamento no Wokwi, `Host` valida funções isoladas, `Planejado` carece de implementação e `Bloqueado` carece de infraestrutura/ACK externo. A existência de JSON na Serial não comprova MQTT, dashboard, autenticação ou notificação.
@@ -496,10 +534,7 @@ _Nesta seção, detalhe os resultados obtidos com a implementação, de acordo c
 
 ### 3.4.1. Protótipo Inicial do Projeto usando o Simulador Wokwi (sprint 1)
 
-**Adendo de reprodutibilidade pós-revisão:** o firmware atual usa persistência antes de mostrar o payload e um **ACK manual simulado** (`ACK XXXXXXXX`) para retirar a primeira mensagem da fila. O token de oito hexadecimais aparece em `[TX_SIM]`. Sem confirmação, a mensagem é retransmitida; uma chave de rede simulada desligada impede o avanço. Este mecanismo não é MQTT e **não altera o resultado histórico de CT09, CT18 ou CT22**. Roteiro, oráculos e riscos no [protocolo de confirmação de bancada](outros/protocolo-ack-simulado.md). O reteste em Wokwi oficial permanece necessário.
-
-
-**Projeto Wokwi público (versão de diagnóstico **DESATUALIZADA**, não deve ser avaliada como versão integrada):** https://wokwi.com/projects/478276108359405569. **Publicação da versão integrada: A REALIZAR pela equipe.** O [procedimento de exportação](../src/firmware/prototipo_wokwi/README.md) prepara os arquivos para sincronização.
+**Link do protótipo:** https://wokwi.com/projects/478276108359405569
 
 **Circuito principal (21/10/2026):** o arquivo de referência no repositório é
 [`src/firmware/prototipo_wokwi/diagram.json`](../src/firmware/prototipo_wokwi/diagram.json),
@@ -508,9 +543,11 @@ LEDs verde/amarelo/vermelho/azul nos GPIO25/26/23/14, botões nos GPIO33/13 e ch
 de rede no GPIO18. O [guia do circuito](../src/firmware/prototipo_wokwi/README.md)
 contém a pinagem e o roteiro de diagnóstico. As configurações `wokwi.toml` e
 `wokwi.weekly.toml` ficam nessa mesma pasta e são selecionadas por **Wokwi: Select Config File**.
-O projeto público acima representa a versão anterior; a Figura 1 e as evidências dos CTs abaixo mostram o circuito local integrado usado nas execuções de 22/10/2026. O patch acrescenta uma classe própria `IndicatorController` usada no `setup` e no `loop`, snapshots alternados e captura de bordas por ISR. **Não há evidência de Wokwi integrada pós-patch:** CT18, CT22 e CT09 mantêm seus resultados históricos e exigem reexecução sem modificar estímulos.
+O projeto público acima representa a versão anterior; a Figura 1 e as evidências dos CTs abaixo mostram o circuito local integrado usado nas execuções de 22/10/2026. A publicação da versão integrada segue o [procedimento do guia do circuito](../src/firmware/prototipo_wokwi/README.md#publicação-no-wokwi-web).
 
-Na Sprint 1 o dispositivo é simulado no Wokwi com um ESP32 DevKit. Cada entrada do circuito representa uma situação física do rastreador: o lacre (`SW_LACRE`), a disponibilidade de conexão (`SW_REDE`), a autorização de retirada (`BTN_AUTORIZAR`), o encerramento ou vínculo de ciclo (`BTN_CICLO`) e o nível da bateria (`POT_BATERIA`). Os LEDs representam estados para inspeção e o Monitor Serial mostra os registros JSON. Não há transporte implementado para servidor ou broker. A integração local inclui GNSS simulado; a validação do hardware GNSS permanece para a Sprint 2.
+**Estrutura do código.** O firmware (`src/firmware/main.cpp`) tem `setup()` e `loop()` e funções auxiliares chamadas por eles, como `readSeal()`, `readButtons()`, `updateCycle()` e `updateLeds()`. Os LEDs de estado são controlados pela classe própria `IndicatorController` (`include/indicator_controller.h`): a instância `indicators` configura os pinos com `begin()` no `setup()` e atualiza os quatro LEDs com `display()` a cada passagem do `loop()`. A classe só reorganizou o código de LEDs que já existia, sem mudar o comportamento verificado nos CTs.
+
+Na Sprint 1 o dispositivo é simulado no Wokwi com um ESP32 DevKit, placa suportada pelo simulador [25]. Cada entrada do circuito representa uma situação física do rastreador: o lacre (`SW_LACRE`), a disponibilidade de conexão (`SW_REDE`), a autorização de retirada (`BTN_AUTORIZAR`), o encerramento ou vínculo de ciclo (`BTN_CICLO`) e o nível da bateria (`POT_BATERIA`). Os LEDs representam estados para inspeção e o Monitor Serial mostra os registros JSON. Não há transporte implementado para servidor ou broker. A integração local inclui GNSS simulado; a validação do hardware GNSS permanece para a Sprint 2.
 
 Na integração atual, o firmware principal já tem o ciclo (CT02–CT04): conta os dias
 fora, envia o `STATUS` ao ligar e o `STATUS_SEMANAL` a cada 7 dias, e emite os alertas
@@ -519,7 +556,7 @@ fixo na permanência, vermelho pisca na violação e azul pisca com a rede simul
 indisponível. O firmware também trata o lacre com retirada autorizada (CT05–CT16),
 a fila de eventos sem rede, o debounce dos botões, o alerta de bateria e o encerramento
 e o vínculo de ciclo, e a chave ON/OFF (`SW_ENERGIA`, GPIO19) registra o desligamento lógico (CT35).
-Os dias do ciclo são contados por um relógio de 64 bits que acumula os intervalos do `millis()`, então a volta do contador de 32 bits (~49,7 dias) não trava o `weekly` antes dos 150 dias. O contexto do ciclo e do lacre fica na NVS; a fila usa snapshots alternados com CRC neste patch, ainda sujeitos a reteste completo de interrupção de energia. Ao reiniciar, o firmware tenta restaurar: o ciclo continua com o mesmo `ciclo_id` e `dias_fora`, e o `STATUS` de inicialização informa `contexto_restaurado`. Sem RTC, o tempo com o ESP32 sem energia não é contado. Ligar com o lacre aberto passa pela mesma detecção e gera `VIOLACAO_LACRE`.
+Os dias do ciclo são contados por um relógio de 64 bits que acumula os intervalos do `millis()`, então a volta do contador de 32 bits (~49,7 dias) não trava o `weekly` antes dos 150 dias. O contexto do ciclo e do lacre e a fila de eventos sem rede ficam na NVS e são restaurados ao reiniciar: o ciclo continua com o mesmo `ciclo_id` e `dias_fora`, e o `STATUS` de inicialização informa `contexto_restaurado`. Sem RTC, o tempo com o ESP32 sem energia não é contado [22]. Ligar com o lacre aberto passa pela mesma detecção e gera `VIOLACAO_LACRE`.
 A chave de rede não desliga o Wi-Fi virtual; os estados são apresentados separadamente.
 
 **Tempo e parâmetros atuais.** O firmware principal usa `demo` com coleta a cada 30 s ou `weekly` com sete dias. No `demo`, o ciclo usa a escala `1 s = 1 dia` dos CT02–CT04 (`Config::DayMs`); no `weekly`, o dia é real. O intervalo de coleta é contado a partir da conclusão da coleta anterior, incluindo nova espera de fix quando necessária.
@@ -558,12 +595,12 @@ A chave de rede não desliga o Wi-Fi virtual; os estados são apresentados separ
 | SW_ENERGIA (chave deslizante) | Desligamento lógico no simulador; corte físico entre bateria e ESP32 ainda a validar |
 | BTN_CICLO (botão) | Encerramento do ciclo ou novo vínculo, feitos na conferência de retorno |
 | POT_BATERIA (potenciômetro) | Percentual sintético; medição física, calibração e diagnóstico do divisor ainda pendentes |
-| SW_REDE (chave deslizante) | Disponibilidade simulada, independente do Wi-Fi; sem rede, guarda eventos de negócio; ao reconectar, reenvia pela Serial, **sem esvaziar a fila até ACK manual simulado**. Não confirma servidor |
+| SW_REDE (chave deslizante) | Disponibilidade simulada, independente do Wi-Fi; sem rede, guarda eventos de negócio; ao reconectar, reenvia pela Serial e esvazia a fila, sem confirmação de servidor |
 | LEDs | Diagnóstico local; política futura de indicação e duração depende da implementação |
 | Monitor Serial (JSON) | Registro local; não comprova publicação MQTT ou recebimento pela plataforma |
 
 A versão inicial pública não inclui localização. O circuito principal local inclui
-GPS/GNSS customizado nos GPIO16/17; ele não modela recepção de satélites nem consumo real.
+GPS/GNSS customizado nos GPIO16/17, feito com a API de chips customizados do Wokwi [26]; ele não modela recepção de satélites nem consumo real.
 
 **Situação dos CT01–CT16 e do CT35:** executados no Wokwi em 22/10/2026, com resultados resumidos abaixo, prints e logs externos. A aprovação indicada se limita ao comportamento funcional observado no simulador. O CT09 permanece **BLOQUEADO** para confirmação de entrega pelo servidor; o CT14 foi corrigido e **APROVADO no reteste de 23/10/2026**, com confirmação das duas recusas do CT16 na mesma versão. As medições exatas de 1 Hz e das fronteiras de debounce não foram realizadas. Os RF/RN e IDs foram preservados, sem alterar o esperado para aprovar falhas. CT17–CT23 foram executados em 23/10/2026, com resultados na tabela complementar abaixo, e CT24–CT34 permanecem reservados no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md). Testes de lógica em `tests/model_tests.c` são evidência separada da execução no Wokwi e da validação física.
 
@@ -573,8 +610,6 @@ GPS/GNSS customizado nos GPIO16/17; ele não modela recepção de satélites nem
 
 **CT#** | **Bloco** | **Componente de entrada** | **Leitura da entrada** | **Componente de saída** | **Leitura da saída** | **Descrição**
 |----------|----------|----------|----------|----------|----------|----------|
-**Nota de versão dos testes:** CT01–CT24 descrevem estímulos, expectativas e/ou resultados de rodadas históricas anteriores ao protocolo `ACK_SIM` e aos snapshots alternados. São evidências preservadas, **não comprovação de aprovação do firmware deste patch**; repetir o conjunto no Wokwi integrado com código/binário identificado. Em especial, CT09 permanece bloqueado, CT18 e CT22 reprovados nas rodadas documentadas.
-
 |CT01|Inicialização|SW_LACRE e SW_REDE|Lacre fechado e rede disponível ao ligar|LED verde; Serial|Verde fixo, demais apagados; JSON `STATUS` com `dias_fora=0`, `seal="intact"`|Esperado: Ao ligar com o lacre íntegro e conexão, o dispositivo indica operação normal e publica o primeiro status (RF009).|
 |CT02|Status periódico|Relógio simulado (1 s = 1 dia)|Dias 7 e 14 de ciclo|Serial|Um `STATUS_SEMANAL` no dia 7 e outro no dia 14, nenhum fora desses dias|Esperado: O status é enviado a cada 7 dias, como pede o TAPI (RF011, RF009; RN07).|
 |CT03|Prazo e atraso|Relógio simulado (1 s = 1 dia)|`dias_fora` passa do prazo previsto (5) e fica abaixo do limiar|LED amarelo; Serial|Amarelo piscando a 1 Hz; `ALERTA_ATRASO` emitido uma única vez|Esperado: O equipamento passou da data prevista de retorno, o que é diferente de permanência prolongada (RF013, RF012; RN04).|
@@ -1000,3 +1035,14 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 40. BRASIL. *Lei nº 13.709, de 14 de agosto de 2018 — Lei Geral de Proteção de Dados Pessoais (texto compilado)*. Disponível em: https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709compilado.htm. Acesso em: 23 out. 2026.
 41. AUTORIDADE NACIONAL DE PROTEÇÃO DE DADOS. *Guia orientativo para definições dos agentes de tratamento de dados pessoais e do encarregado*. Disponível em: https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/guia-orientativo-para-definicoes-dos-agentes-de-tratamento-de-dados-pessoais-e-do-encarregado. Acesso em: 23 out. 2026.
 42. INTELI. *Templates de Negócios do Módulo 4*. Pasta compartilhada da disciplina. Disponível em: https://drive.google.com/drive/folders/1lTqisJ_gxxtc5J5aXM8ula2kQ4MsII_M?usp=sharing. Acesso em: 23 out. 2026.
+43. DIGIKITS. *ESP32 DevKit V1 WiFi Bluetooth ESP-WROOM-32*. Disponível em: https://www.digikits.com.br/esp32. Acesso em: 23 out. 2026.
+44. SOLDERED. *Active GPS antenna, SMA connector*. Preço de referência US$ 14,65. Disponível em: https://soldered.com/products/active-gps-antenna-sma-connector. Acesso em: 23 out. 2026.
+45. ADAFRUIT INDUSTRIES. *Lithium Ion Battery — 3.7 V 2000 mAh*. Micro Center; preço de referência US$ 12,49. Disponível em: https://www.microcenter.com/quickView/503621/adafruit-industries-lithium-ion-battery-37v-2000mah. Acesso em: 23 out. 2026.
+46. SHOPEE. *Módulo carregador USB Tipo C bateria TP4056*. Anúncio via Escorrega o Preço. Disponível em: https://escorregaopreco.com.br/ofertas/shopee/2115649. Acesso em: 23 out. 2026.
+47. CAMELCAMELCAMEL. *MC-38 Surface Mount Wired NC Door Sensor Alarm Magnetic Reed Switch, 10 pares*. Histórico de preço Amazon; referência US$ 14,59 por 10 pares. Disponível em: https://camelcamelcamel.com/product/B0FXH9PTWR. Acesso em: 23 out. 2026.
+48. NEWEGG BUSINESS. *Caixa de junção ABS IP65 100 × 68 × 50 mm*. Preço de referência US$ 10,99. Disponível em: https://www.neweggbusiness.com/p/9B-072-001K-007A7. Acesso em: 23 out. 2026.
+49. MAGAZINE LUIZA. *Abraçadeira de nylon Melfi 3,6 × 300 mm, 100 peças*. Preço de referência R$ 28,55. Disponível em: https://www.magazineluiza.com.br/busca/abracadeira+nylon+melfi+branca+48mmx300mm+com+100+pecas/. Acesso em: 23 out. 2026.
+50. ROBOTSHOP. *M5Stack SIM7080G CAT-M/NB-IoT Unit*. Preço de referência US$ 38,84. Disponível em: https://www.robotshop.com/es/products/m5stack-sim7080g-cat-m-nb-iot-unit. Acesso em: 23 out. 2026.
+51. MAGAZINE LUIZA. *Placa fenolite 10 × 10 furada, kit com 3 placas*. Preço de referência R$ 46,97 o kit. Disponível em: https://m.magazineluiza.com.br/busca/kit+fenolite/. Acesso em: 23 out. 2026.
+52. CURTO CIRCUITO. *LEDs, resistores, chaves táteis e jumpers*. Disponível em: https://curtocircuito.com.br/componentes/leds. Acesso em: 23 out. 2026.
+53. ROBOCORE. *Mini chave liga-desliga e potenciômetro linear 10 kΩ*. Disponível em: https://www.robocore.net/botao-chave. Acesso em: 23 out. 2026.
