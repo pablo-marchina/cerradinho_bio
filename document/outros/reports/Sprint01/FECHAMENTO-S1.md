@@ -1,5 +1,8 @@
 # Fechamento da Sprint 1 — checklist de entrega
 
+> **Nota (24/10/2026):** este registro descreve a versão `fe2ed7c` da revisão geral. Na entrega, ficou só a classe `IndicatorController`; a captura do lacre por ISR, o ACK manual pela Serial e os snapshots alternados foram adiados para a Sprint 2, porque exigem rodar de novo todos os CTs no Wokwi.
+
+
 **Base:** `a70d1d6` (`origin/develop` exportada 23/10/2026). As modificações posteriores estão no patch, não na versão pública original.
 
 - [x] Firmware com classe própria de LEDs e duas funções auxiliares em `setup`/`loop` (alteração do código).

@@ -1,5 +1,8 @@
 # Relatório de preparação de entrega — Sprint 1 GuaráTracking
 
+> **Nota (24/10/2026):** este registro descreve a versão `fe2ed7c` da revisão geral. Na entrega, ficou só a classe `IndicatorController`; a captura do lacre por ISR, o ACK manual pela Serial e os snapshots alternados foram adiados para a Sprint 2, porque exigem rodar de novo todos os CTs no Wokwi.
+
+
 **Referência:** 23/10/2026 · Inteli, Grupo G01 · Parceiro: CerradinhoBio · **base Git:** `a70d1d6` na `develop`.
 
 ## Declaração de escopo e de evidências

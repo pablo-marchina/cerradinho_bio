@@ -1,5 +1,8 @@
 # Protocolo de regressão funcional — evidências pós-patch (CT18 / CT22 / CT09)
 
+> **Nota (24/10/2026):** este registro descreve a versão `fe2ed7c` da revisão geral. Na entrega, ficou só a classe `IndicatorController`; a captura do lacre por ISR, o ACK manual pela Serial e os snapshots alternados foram adiados para a Sprint 2, porque exigem rodar de novo todos os CTs no Wokwi.
+
+
 **Não executado em Wokwi nesta sessão.** Rodar somente após `pio run -e demo`, compilar o GPS custom e iniciar a simulação integrada. Guardar `commit`, ambiente, firmware `.bin`, hash do sketch, data, entradas e console integral. Não apagar os logs da revisão anterior.
 
 ## CT18 — 20 transições com rede simulada indisponível
