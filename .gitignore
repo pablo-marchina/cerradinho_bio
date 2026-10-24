@@ -6,6 +6,7 @@
 *.tsv
 *.xls
 *.xlsx
+!assets/negocios/BOM-GuaraTracking-Sprint1.xlsx
 
 # Compiled Object files
 *.slo
@@ -40,3 +41,31 @@
 # Python
 __pycache__/
 *.pyc
+
+# PlatformIO / Wokwi
+.pio/
+.tools/
+build/
+tmp/
+chips/wokwi-api.h
+chips/*.wasm
+*.vcd
+/debug.log
+include/config.local.h
+.env
+.env.*
+!.env.example
+
+# Compartilhar extensoes e tarefas; manter os arquivos gerados locais
+.vscode/*
+!.vscode/extensions.json
+!.vscode/tasks.json
+
+# Anotações locais
+local-notes/
+
+# Pasta local de cada integrante
+/local
+
+# Rascunhos de revisão e arquivos temporários de agentes de IA (ficam fora do repositório)
+.claude-tmp/

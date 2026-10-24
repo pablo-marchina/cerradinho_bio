@@ -6,6 +6,7 @@ Mapa das skills do projeto. Use para escolher o que carregar antes de trabalhar;
 | --- | --- | --- |
 | Criar, revisar ou reorganizar uma skill | `skill-creator` | [skills/skills/skill-creator/SKILL.md](skills/skill-creator/SKILL.md) |
 | Auditar, criar ou melhorar cards (issues) do GitLab; listar labels e membros | `issue-manager` | [skills/skills/issue-manager/SKILL.md](skills/issue-manager/SKILL.md) |
+| Revisar um merge request, dar parecer ou fazer a revisão atualizada | `mr-review` | [skills/skills/mr-review/SKILL.md](skills/mr-review/SKILL.md) |
 | Criar ou conferir o índice de relatórios de uma sprint | `report-index` | [skills/skills/report-index/SKILL.md](skills/report-index/SKILL.md) |
 | Preparar a branch limpa (sem material de IA) que vai para a `main` | `repo-snapshot` | [skills/skills/repo-snapshot/SKILL.md](skills/repo-snapshot/SKILL.md) |
 | Planejar ou dividir uma sprint entre os integrantes (planning em HTML no formato runbook) | `planning-sprint` | [skills/skills/planning-sprint/SKILL.md](skills/planning-sprint/SKILL.md) |

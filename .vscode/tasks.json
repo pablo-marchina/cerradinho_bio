@@ -1,0 +1,41 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Cerradinho: preparar ferramentas",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/setup.ps1"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Cerradinho: compilar ESP32 e GPS",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/build.ps1"],
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "Cerradinho: compilar semanal e GPS",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/build.ps1", "-Environment", "weekly"],
+      "group": "build",
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "Cerradinho: verificar modelagem",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/verify.ps1"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Cerradinho: validar tudo",
+      "dependsOrder": "sequence",
+      "dependsOn": ["Cerradinho: compilar ESP32 e GPS", "Cerradinho: compilar semanal e GPS", "Cerradinho: verificar modelagem"],
+      "problemMatcher": []
+    }
+  ]
+}

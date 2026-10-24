@@ -1,0 +1,6 @@
+{
+  "name": "Ensaio temporizado CT18-CT22",
+  "author": "Grupo Guará",
+  "pins": ["TX", "RX", "SEAL", "NET", "AUTH", "TRACE", "MONITOR"],
+  "controls": [{"id":"caso","label":"CT (reiniciar apos selecionar)","type":"range","min":18,"max":22,"step":1}]
+}
