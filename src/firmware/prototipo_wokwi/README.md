@@ -181,3 +181,12 @@ depois volte para `150`.
 
 O `seal_changed` que aparece no Serial é o registro local de diagnóstico (NVS `q0`–`q15`, CT18 e
 CT21); os eventos de negócio são os de nome em maiúsculas.
+
+## Publicação no Wokwi web
+
+A URL pública do projeto é uma versão anterior de diagnóstico, diferente do firmware principal (`../main.cpp`). Para atualizá-la:
+
+1. Na raiz, executar `python scripts/export-wokwi.py`, que gera `build/wokwi-publicacao/` com o sketch principal, os headers, o `diagram.json`, o chip GPS customizado e `libraries.txt`. O script não publica nem comprova a compilação no Wokwi web.
+2. Abrir o projeto da conta do grupo no Wokwi, substituir os arquivos pelos do pacote e conferir se o chip GPS customizado é aceito. Se a plataforma não aceitar o chip, manter a simulação integrada na extensão do VS Code e registrar isso na documentação.
+3. Rodar o projeto e conferir ao menos o CT01 (verde aceso e `STATUS` na Serial) antes de salvar.
+4. Registrar na seção 3.4.1 a URL, o commit e a data da publicação.

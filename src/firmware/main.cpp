@@ -9,6 +9,7 @@
 #include "event_queue.h"
 #include "battery_rules.h"
 #include "sim_clock.h"
+#include "indicator_controller.h"
 
 namespace {
 TinyGPSPlus gps;
@@ -49,6 +50,7 @@ struct Button {
 };
 Button authorizeButton{Config::AuthorizeButtonPin, false, false, 0, 0, false};
 Button cycleButton{Config::CycleButtonPin, false, false, 0, 0, false};
+IndicatorController indicators;  // LEDs de estado (classe propria, usada no setup e no loop)
 
 uint64_t clockMs() {
   return simClock.elapsed_ms;
@@ -71,12 +73,9 @@ void updateLeds(uint32_t now) {
   // Amarelo: piscando = atraso, fixo = permanencia. Vermelho: violacao do lacre.
   // Azul: rede simulada indisponivel. Desligado: tudo apagado.
   const bool blinkOn = (now / Config::BlinkHalfPeriodMs) % 2 == 0;
-  const bool green = !seal.violated && (!seal.removal_in_progress || blinkOn);
-  digitalWrite(Config::GreenLedPin, poweredOn && green);
-  digitalWrite(Config::YellowLedPin,
-               poweredOn && cycleActive && cycle_yellow_led(&cycle, blinkOn));
-  digitalWrite(Config::RedLedPin, poweredOn && seal.violated && blinkOn);
-  digitalWrite(Config::BlueLedPin, poweredOn && !simulatedNetworkAvailable() && blinkOn);
+  indicators.display(poweredOn, seal.violated, seal.removal_in_progress,
+                     cycleActive && cycle_yellow_led(&cycle, blinkOn),
+                     simulatedNetworkAvailable(), now);
 }
 
 bool freshFix() {
@@ -503,11 +502,7 @@ void setup() {
   pinMode(Config::CycleButtonPin, INPUT_PULLUP);
   pinMode(Config::NetworkSwitchPin, INPUT_PULLUP);
   pinMode(Config::PowerSwitchPin, INPUT_PULLUP);
-  for (int pin : {Config::GreenLedPin, Config::YellowLedPin,
-                  Config::RedLedPin, Config::BlueLedPin}) {
-    pinMode(pin, OUTPUT);
-    digitalWrite(pin, LOW);
-  }
+  indicators.begin();
   pinMode(Config::BatteryPin, INPUT);
   analogReadResolution(12);
   Serial2.begin(Config::GpsBaud, SERIAL_8N1, Config::GpsRx, Config::GpsTx);
