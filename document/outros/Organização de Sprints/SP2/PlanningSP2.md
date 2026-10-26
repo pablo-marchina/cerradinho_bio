@@ -1,6 +1,6 @@
 # Planning Sprint 2 — tópicos dos artefatos 5, 6 e 7
 
-São 46 cards sem pessoas atribuídas: 12 do Art. 5, 12 do Art. 6, 10 do Art. 7 e 12 transversais (repositório, apresentação, revisão e merge). Seg 26/10 é só a planning. O build e os ajustes finos vão de ter 27/10 a qua 4/11. Na qui 5/11 acontecem a revisão final contra a rubrica, o merge da develop na main e a entrega. A apresentação é na sex 6/11 de manhã e fica pronta na quinta.
+São 47 cards sem pessoas atribuídas: 13 do Art. 5, 12 do Art. 6, 10 do Art. 7 e 12 transversais (repositório, apresentação, revisão e merge). Seg 26/10 é só a planning. O build e os ajustes finos vão de ter 27/10 a qua 4/11. Na qui 5/11 acontecem a revisão final contra a rubrica, o merge da develop na main e a entrega. A apresentação é na sex 6/11 de manhã e fica pronta na quinta.
 
 Enunciados e rubricas: [ArtefatosDaSp2.md](ArtefatosDaSp2.md).
 
@@ -35,7 +35,7 @@ Os 9 dias úteis contam de seg 26/10 a sex 6/11, sem o feriado de Finados (seg 2
 | 1 | Seg 26/10 | Planning | — | — | — | Responsáveis, equipes e cards de cada artefato (5.R1, 6.R1, 7.R1) | Cards criados e atribuídos |
 | 2 | Ter 27/10 | Alinhamento | 5.1 inventário · 5.5 qualidade do código (início) | 6.1 taxonomia · 6.10 prints do Wokwi (início) | 7.1 template · 7.2 insumos | X1 pastas e nomes de assets | Ferramentas escolhidas e primeiros cards em andamento |
 | 3 | Qua 28/10 | Base | 5.R2 dúvidas ao professor · 5.2 pinagem · 5.3 montagem · 5.6 CTs escritos | 6.R2 dúvidas ao professor · 6.2 demandas de negócio | 7.R2 dúvidas ao professor · 7.3 jornada atual (início) | X2 limpeza de branches e MRs | CTs numerados e publicados para o Art. 6 e o Art. 7 |
-| 4 | Qui 29/10 | Construção | 5.4 firmware no hardware · 5.5 fecha | 6.3 a 6.6 RNFs em paralelo · 6.10 fecha | 7.3 jornada atual fecha | — | ESP32 lê sensores e acende LEDs no protoboard; jornada atual pronta |
+| 4 | Qui 29/10 | Construção | 5.4 firmware em cada versão · 5.5 fecha · 5.11 comparação e escolha da versão | 6.3 a 6.6 RNFs em paralelo · 6.10 fecha | 7.3 jornada atual fecha | — | ESP32 lê sensores e acende LEDs no protoboard; versão final escolhida; jornada atual pronta |
 | 5 | Sex 30/10 | Construção | 5.7 execução dos CTs | 6.3 a 6.6 fecham | 7.4 jornada futura · 7.6 roteiro do storyboard | A1 roteiro da apresentação · S1 reunião de sincronização | 8 RNFs escritos; CTs executados; responsáveis revisam os cards |
 | — | Seg 2/11 | Feriado | — | — | — | — | — |
 | 6 | Ter 3/11 | Integração | 5.8 correções · 5.9 texto da 3.4.2 | 6.7 RF e RN · 6.8 RTM (início) | 7.5 insights · 7.7 cenas do storyboard (início) | A2 slides (início) · A3 vídeo do protótipo | Todo conteúdo existe em branch |
@@ -64,10 +64,11 @@ gantt
     5.5 Qualidade do código                 :a55, 2026-10-27, 3d
     5.R2 Dúvidas ao professor               :a5r2, 2026-10-27, 2d
     5.2 Pinagem ← 5.1                       :crit, a52, 2026-10-28, 1d
-    5.3 Montagem ← 5.2                      :crit, a53, 2026-10-28, 1d
+    5.3 Montagem de cada versão ← 5.2       :crit, a53, 2026-10-28, 1d
     5.6 CTs escritos ← 5.1                  :a56, 2026-10-28, 1d
-    5.4 Firmware no hardware ← 5.3, 5.5     :crit, a54, 2026-10-29, 1d
-    5.7 Execução dos CTs ← 5.4, 5.6         :crit, a57, 2026-10-30, 1d
+    5.4 Firmware em cada versão ← 5.3, 5.5  :crit, a54, 2026-10-29, 1d
+    5.11 Comparação e escolha ← 5.4, 5.6    :crit, a511, 2026-10-29, 1d
+    5.7 Execução dos CTs ← 5.11, 5.6        :crit, a57, 2026-10-30, 1d
     5.8 Correções ← 5.7                     :a58, 2026-11-03, 1d
     5.9 Texto 3.4.2 ← 5.7                   :a59, 2026-11-03, 1d
     5.10 CTs na RTM ← 5.6, 6.8              :a510, 2026-11-04, 1d
@@ -127,21 +128,22 @@ Cada card nasce de uma frase do enunciado ou de uma exigência da rubrica; a col
 
 ### 3.1 Artefato 5 — Protótipo físico offline (seção 3.4.2)
 
-O firmware do Wokwi já existe (`src/firmware/main.cpp` e os `include/*_rules.h`), então o trabalho é levar esse circuito para o protoboard, testar e registrar. No nível Avançado a rubrica pede quatro coisas: pelo menos 3 CTs completos, ESP32 com sensor no protoboard e fios organizados, resultados documentados com prints e vídeos, e código com nomes descritivos e funções comentadas.
+O firmware do Wokwi já existe (`src/firmware/main.cpp` e os `include/*_rules.h`), então o trabalho é levar esse circuito para o protoboard, testar e registrar. A equipe do Art. 5 decidiu que **cada integrante monta a própria versão física** do protótipo (5.3 e 5.4); depois as versões são comparadas e o grupo escolhe a melhor (5.11), que é a usada nos CTs, nas evidências e na seção 3.4.2. No nível Avançado a rubrica pede quatro coisas: pelo menos 3 CTs completos, ESP32 com sensor no protoboard e fios organizados, resultados documentados com prints e vídeos, e código com nomes descritivos e funções comentadas.
 
 | # | Tópico (vira card) | Pronto quando | Critério da rubrica | Depende de | Prazo | Tamanho |
 | --- | --- | --- | --- | --- | --- | --- |
 | 5.R1 | Responsável: alinhar o artefato com o time | Enunciado e rubrica apresentados ao grupo; cards divididos; o que roda em paralelo combinado; ao longo da sprint, informações trocadas entre cards e cards criados ou excluídos quando preciso (checagem na sex 30/10) | Todos | — | Seg 26/10, na planning (divisão) · Ter 3/11 (último ajuste de cards) | M |
 | 5.R2 | Responsável: levar ao professor o que o enunciado não diz | Respostas registradas no card: numeração dos CTs físicos (CT36 em diante, como diz o texto-guia, ou CT27 a CT31 já planejados), se o GNSS precisa estar no protótipo offline, onde ficam os vídeos | Todos | 5.R1 | Qua 28/10 | P |
-| 5.1 | Inventário dos componentes físicos e recorte do protótipo offline | Lista do que o grupo tem (reed switch ou chave, pot ou divisor, LEDs, botões, GNSS LC76G) e do que fica fora (Wi‑Fi, MQTT); BOM da 3.1.7 conferida | Sensor conectado ao ESP32 | — | Ter 27/10 | P |
+| 5.1 | Inventário dos componentes físicos e recorte do protótipo offline | Lista do que o grupo tem (reed switch ou chave, pot ou divisor, LEDs, botões, GNSS LC76G) e do que fica fora (Wi‑Fi, MQTT); BOM da 3.1.7 conferida; confirmado que há kit (ESP32, protoboard e componentes) para cada integrante montar a sua versão | Sensor conectado ao ESP32 | — | Ter 27/10 | P |
 | 5.2 | Pinagem e esquema elétrico do circuito físico | Esquema (Fritzing ou foto anotada) mantendo os GPIOs do Wokwi (27, 34, 25, 26, 23, 14, 33, 13, 18, 19) | Organização dos fios | 5.1 | Qua 28/10 | M |
-| 5.3 | Montagem no protoboard com fios organizados | Circuito montado, cores de fio padronizadas, foto de cima e de lado | Protótipo no protoboard | 5.2 | Qua 28/10 | G |
+| 5.3 | Montagem no protoboard com fios organizados, uma versão por integrante | Cada integrante do Art. 5 com o seu circuito montado a partir do mesmo esquema (5.2), cores de fio padronizadas, foto de cima e de lado de cada versão | Protótipo no protoboard | 5.2 | Qua 28/10 | G |
 | 5.5 | Auditoria de qualidade do código | Nomes descritivos, uma responsabilidade por função, comentário em cada função; `tests/model_tests.c` continua passando | Nomes, funções e comentários (separa o 75% do 100%) | — | Qui 29/10 | M |
 | 5.6 | Casos de teste do protótipo físico | Tabela no formato do template (descrição, pré-condição, procedimento, pós-condição) com sucesso e falha: lacre aberto, ruído no contato, divisor desconectado, botão com ruído, GNSS sem fix | 3 CTs ou mais com mudança de sensor e resultado nos LEDs | 5.1 | Qua 28/10 | G |
-| 5.4 | Firmware rodando no hardware real | Ambiente PlatformIO para a placa física compila e grava; leituras reais de lacre, bateria e botões aparecem no Serial | Leituras e saídas | 5.3, 5.5 | Qui 29/10 | G |
-| 5.7 | Execução dos CTs e registro de evidências | Cada CT com print do Serial, foto e vídeo curto em `assets/` e situação APROVADO ou REPROVADO | Resultados documentados | 5.4, 5.6 | Sex 30/10 | GG |
+| 5.4 | Firmware rodando no hardware real, em cada versão | Ambiente PlatformIO para a placa física compila e grava em todas as versões; leituras reais de lacre, bateria e botões aparecem no Serial de cada uma | Leituras e saídas | 5.3, 5.5 | Qui 29/10 | G |
+| 5.11 | Comparação das versões e escolha da melhor | Tabela comparando as versões (fios organizados, leituras corretas no Serial, LEDs reagindo aos sensores, firmeza dos contatos, facilidade de demonstrar), com foto de cada uma; versão escolhida e motivo registrados no card | Protótipo no protoboard com fios organizados | 5.4, 5.6 | Qui 29/10 | M |
+| 5.7 | Execução dos CTs e registro de evidências | Cada CT, executado na versão escolhida, com print do Serial, foto e vídeo curto em `assets/` e situação APROVADO ou REPROVADO | Resultados documentados | 5.11, 5.6 | Sex 30/10 | GG |
 | 5.8 | Correção das falhas e reexecução | CTs reprovados corrigidos ou registrados como falha com motivo | Resultados alinhados ao esperado | 5.7 | Ter 3/11 | M |
-| 5.9 | Texto da seção 3.4.2 | Introdução, figuras com legenda e fonte, tabela de CTs, links dos vídeos, texto-guia removido | Figuras e descrição dos testes | 5.7 | Ter 3/11 | M |
+| 5.9 | Texto da seção 3.4.2 | Introdução, resumo da comparação das versões e motivo da escolha, figuras com legenda e fonte, tabela de CTs, links dos vídeos, texto-guia removido | Figuras e descrição dos testes | 5.7 | Ter 3/11 | M |
 | 5.10 | CTs novos na RTM | Cada CT da 3.4.2 ligado a RF e RN na 3.3.4, feito junto com o 6.8 | Atualizar a RTM | 5.6, 6.8 | Qua 4/11 | P |
 
 ### 3.2 Artefato 6 — RNFs (3.3.3) e atualização de RF, RN e RTM
@@ -201,7 +203,7 @@ Estes cards não pertencem a um artefato. A apresentação é na sexta 6/11 de m
 
 ## 4. Dependências
 
-O caminho crítico é o protótipo físico: 5.1 → 5.2 → 5.3 → 5.4 → 5.7. Ele não tem folga, e um dia de atraso na montagem atrasa a RTM (6.7, 6.8), o vídeo (A3) e os slides (A2).
+O caminho crítico é o protótipo físico: 5.1 → 5.2 → 5.3 → 5.4 → 5.11 → 5.7. Ele não tem folga, e um dia de atraso na montagem atrasa a RTM (6.7, 6.8), o vídeo (A3) e os slides (A2).
 
 Como ler: uma seta vai do card que entrega para o card que espera. A legenda fica abaixo de cada diagrama. Os arquivos `.mmd` desta pasta têm os mesmos diagramas para abrir no [Mermaid Live](https://mermaid.live).
 
@@ -220,10 +222,11 @@ flowchart LR
         A5R2["5.R2 Dúvidas ao professor<br/>Qua 28/10"]
         A5_1["5.1 Inventário<br/>Ter 27/10"]
         A5_2["5.2 Pinagem<br/>Qua 28/10"]
-        A5_3["5.3 Montagem<br/>Qua 28/10"]
+        A5_3["5.3 Montagem de cada versão<br/>Qua 28/10"]
         A5_5["5.5 Qualidade do código<br/>Qui 29/10"]
         A5_6["5.6 CTs escritos<br/>Qua 28/10"]
-        A5_4["5.4 Firmware no hardware<br/>Qui 29/10"]
+        A5_4["5.4 Firmware em cada versão<br/>Qui 29/10"]
+        A5_11["5.11 Comparação e escolha<br/>Qui 29/10"]
         A5_7["5.7 Execução dos CTs<br/>Sex 30/10"]
         A5_8["5.8 Correções<br/>Ter 3/11"]
         A5_9["5.9 Texto 3.4.2<br/>Ter 3/11"]
@@ -268,7 +271,9 @@ flowchart LR
     A5_3 -->A5_4
     A5_5 -->|mesmo main.cpp| A5_4
     A5_1 -->A5_6
-    A5_4 -->A5_7
+    A5_4 -->A5_11
+    A5_6 -->|CTs como base| A5_11
+    A5_11 -->|versão escolhida| A5_7
     A5_6 -->A5_7
     A5_7 --> A5_8
     A5_7 -->A5_9
@@ -303,7 +308,7 @@ flowchart LR
     classDef livre fill:#A8E6B8,stroke:#2E7D32,color:#182420,stroke-width:2px
     classDef critico fill:#F8B4B4,stroke:#C62828,color:#182420,stroke-width:3px
     class A5R1,A6R1,A7R1,A5_1,A5_5,A6_1,A6_10,A7_2 livre
-    class A5_2,A5_3,A5_4,A5_7 critico
+    class A5_2,A5_3,A5_4,A5_11,A5_7 critico
     classDef espera fill:#D9CCF2,stroke:#6B4A86,color:#182420
     class A5R2,A5_6,A5_8,A5_9,A5_10,A6R2,A6_2,A6_3,A6_4,A6_5,A6_6,A6_7,A6_8,A6_9,A7R2,A7_1,A7_3,A7_4,A7_6,A7_5,A7_7,A7_8 espera
 ```
@@ -329,7 +334,7 @@ flowchart LR
 
     subgraph ENTRADAS["Vem dos artefatos"]
         direction TB
-        E5_4["5.4 Firmware no hardware<br/>Qui 29/10"]
+        E5_4["5.4 Firmware em cada versão<br/>Qui 29/10"]
         E5_6["5.6 CTs escritos<br/>Qua 28/10"]
         E7_3["7.3 Jornada atual<br/>Qui 29/10"]
         E5_7["5.7 Execução dos CTs<br/>Sex 30/10"]
@@ -401,10 +406,11 @@ Cada linha diz quem espera, por quê e quanto tempo sobra entre a entrega e o us
 | Card que espera | Espera por | Por que depende | O que precisa chegar | Entregue até | Usado a partir de | Folga |
 | --- | --- | --- | --- | --- | --- | --- |
 | 5.2 Pinagem | 5.1 Inventário | Só dá para desenhar o esquema com os componentes que o grupo tem | Lista de componentes | Ter 27/10 | Qua 28/10 | 0 |
-| 5.3 Montagem | 5.2 Pinagem | A montagem segue o esquema | Esquema elétrico | Qua 28/10 (manhã) | Qua 28/10 (tarde) | Mesmo dia |
+| 5.3 Montagem | 5.2 Pinagem | Todas as versões seguem o mesmo esquema, para a comparação ser justa | Esquema elétrico | Qua 28/10 (manhã) | Qua 28/10 (tarde) | Mesmo dia |
 | 5.4 Firmware no hardware | 5.3 Montagem | O firmware só lê sensores reais com o circuito montado | Protoboard montado | Qua 28/10 | Qui 29/10 | 0 |
 | 5.4 Firmware no hardware | 5.5 Qualidade do código | Os dois mexem no `main.cpp`; refatorar depois geraria conflito e evidências de código antigo | Refatoração mergeada | Qui 29/10 (manhã) | Qui 29/10 (tarde) | Mesmo dia |
-| 5.7 Execução dos CTs | 5.4 e 5.6 | Executar exige o hardware rodando e os CTs escritos | Firmware gravado e tabela de CTs | Qui 29/10 | Sex 30/10 | 0 |
+| 5.11 Comparação e escolha | 5.4 e 5.6 | Só dá para comparar versões que já rodam o firmware; os CTs escritos servem de roteiro da comparação | Firmware gravado em cada versão e tabela de CTs | Qui 29/10 (manhã) | Qui 29/10 (tarde) | Mesmo dia |
+| 5.7 Execução dos CTs | 5.11 e 5.6 | As evidências saem da versão escolhida, com os CTs escritos | Versão escolhida e tabela de CTs | Qui 29/10 | Sex 30/10 | 0 |
 | 6.7 RF e RN | 5.4 e 5.7 | Um RF só muda de status depois que o CT físico passou | Resultado dos CTs | Sex 30/10 | Ter 3/11 | 0 |
 | 6.3 a 6.6 RNFs | 6.2 Demandas | A justificativa de cada RNF cita uma demanda de negócio | Lista de demandas | Qua 28/10 | Qui 29/10 | 0 |
 | 6.8 RTM e 5.10 | 5.6 CTs escritos | A RTM liga cada CT a RF e RN, então precisa dos IDs | Numeração dos CTs | Qua 28/10 | Ter 3/11 | 2 dias |
@@ -439,7 +445,7 @@ Ponto de partida para cada equipe conferir as listas que montar no bloco 3 da pl
 | --- | --- | --- | --- | --- |
 | Art. 5 — Protótipo físico | Nada de outro artefato; só as linhas dos seus CTs na RTM, feitas junto com o Art. 6 (6.8) | Qua 4/11 | Ao Art. 6: numeração e tabela dos CTs (5.6) | Qua 28/10 |
 | | | | Ao Art. 7: reações do sistema em cada CT, para o storyboard (5.6) | Qua 28/10 |
-| | | | Ao Art. 6 e à apresentação: resultados dos CTs, fotos e vídeos (5.7) | Sex 30/10 |
+| | | | Ao Art. 6 e à apresentação: versão escolhida (5.11) e resultados dos CTs, fotos e vídeos (5.7) | Sex 30/10 |
 | | | | Ao README (X3): como gravar o firmware no ESP32 físico (5.4) | Qui 29/10 |
 | Art. 6 — RNF, RF, RN, RTM | Do Art. 5: numeração dos CTs (5.6) | Qua 28/10 | Ao Art. 5: linhas dos CTs físicos na RTM (6.8) | Qua 4/11 |
 | | Do Art. 5: resultado dos CTs, para mudar o status dos RFs (5.7) | Sex 30/10 | À apresentação: os 8 RNFs (6.3 a 6.6) | Sex 30/10 |
@@ -471,6 +477,7 @@ Na quinta, cada artefato é revisado por quem não trabalhou nele, com a rubrica
 | Calendário | Seg 26/10 só planning; build até qua 4/11; entrega e merge na qui 5/11; apresentação sex 6/11 de manhã | Calendário |
 | RNF | Seguir o enunciado (ISO 25010, `RNF01`…); o que ele não diz vai ao professor | 6.1, 6.R2 |
 | Componentes do protótipo | Em aberto | 5.1 e 5.R2 |
+| Protótipo físico | Cada integrante do Art. 5 monta a própria versão; o grupo compara as versões e escolhe a melhor, que vai para os CTs e a 3.4.2 | 5.3, 5.4, 5.11 |
 | Numeração de CT | Em aberto; o texto-guia da 3.4.2 sugere continuar no CT36 | 5.R2 |
 | Prints pendentes do Wokwi | Entra na sprint | 6.10 |
 | Ferramenta das jornadas | O responsável decide (Claude Design, Figma ou Canva) | 7.R1 |

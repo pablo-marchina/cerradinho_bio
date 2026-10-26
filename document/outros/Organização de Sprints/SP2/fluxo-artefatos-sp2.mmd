@@ -10,10 +10,11 @@ flowchart LR
         A5R2["5.R2 Dúvidas ao professor<br/>Qua 28/10"]
         A5_1["5.1 Inventário<br/>Ter 27/10"]
         A5_2["5.2 Pinagem<br/>Qua 28/10"]
-        A5_3["5.3 Montagem<br/>Qua 28/10"]
+        A5_3["5.3 Montagem de cada versão<br/>Qua 28/10"]
         A5_5["5.5 Qualidade do código<br/>Qui 29/10"]
         A5_6["5.6 CTs escritos<br/>Qua 28/10"]
-        A5_4["5.4 Firmware no hardware<br/>Qui 29/10"]
+        A5_4["5.4 Firmware em cada versão<br/>Qui 29/10"]
+        A5_11["5.11 Comparação e escolha<br/>Qui 29/10"]
         A5_7["5.7 Execução dos CTs<br/>Sex 30/10"]
         A5_8["5.8 Correções<br/>Ter 3/11"]
         A5_9["5.9 Texto 3.4.2<br/>Ter 3/11"]
@@ -58,7 +59,9 @@ flowchart LR
     A5_3 -->A5_4
     A5_5 -->|mesmo main.cpp| A5_4
     A5_1 -->A5_6
-    A5_4 -->A5_7
+    A5_4 -->A5_11
+    A5_6 -->|CTs como base| A5_11
+    A5_11 -->|versão escolhida| A5_7
     A5_6 -->A5_7
     A5_7 --> A5_8
     A5_7 -->A5_9
@@ -93,6 +96,6 @@ flowchart LR
     classDef livre fill:#A8E6B8,stroke:#2E7D32,color:#182420,stroke-width:2px
     classDef critico fill:#F8B4B4,stroke:#C62828,color:#182420,stroke-width:3px
     class A5R1,A6R1,A7R1,A5_1,A5_5,A6_1,A6_10,A7_2 livre
-    class A5_2,A5_3,A5_4,A5_7 critico
+    class A5_2,A5_3,A5_4,A5_11,A5_7 critico
     classDef espera fill:#D9CCF2,stroke:#6B4A86,color:#182420
     class A5R2,A5_6,A5_8,A5_9,A5_10,A6R2,A6_2,A6_3,A6_4,A6_5,A6_6,A6_7,A6_8,A6_9,A7R2,A7_1,A7_3,A7_4,A7_6,A7_5,A7_7,A7_8 espera
