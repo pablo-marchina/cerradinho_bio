@@ -1,0 +1,59 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Segoe UI, Arial, sans-serif", "fontSize": "13px", "sectionBkgColor": "#7D8A84", "altSectionBkgColor": "#7D8A84", "sectionBkgColor2": "#7D8A84", "excludeBkgColor": "#E3E7E4", "gridColor": "#D5DBD6", "taskBkgColor": "#A8E6B8", "taskBorderColor": "#2E7D32", "taskTextColor": "#182420", "taskTextLightColor": "#182420", "taskTextDarkColor": "#182420", "taskTextOutsideColor": "#7D8A84", "taskTextClickableColor": "#182420", "critBkgColor": "#F8B4B4", "critBorderColor": "#C62828", "doneTaskBkgColor": "#E0E0E0", "doneTaskBorderColor": "#8A968F", "activeTaskBkgColor": "#A8E6B8", "activeTaskBorderColor": "#1F5C52", "titleColor": "#7D8A84", "textColor": "#7D8A84", "todayLineColor": "#9B3A34"}, "gantt": {"barHeight": 22, "barGap": 6, "topPadding": 56, "leftPadding": 190, "gridLineStartPadding": 40, "fontSize": 13, "sectionFontSize": 13, "numberSectionStyles": 4}}}%%
+gantt
+    title Sprint 2 — cards por dia (← indica de quais cards depende)
+    dateFormat YYYY-MM-DD
+    axisFormat %d/%m
+    tickInterval 1day
+    todayMarker off
+
+    section Planning
+    5.R1, 6.R1, 7.R1 Alinhamento dos responsáveis :done, r1, 2026-10-26, 1d
+
+    section Art. 5 Protótipo
+    5.1 Inventário                          :crit, a51, 2026-10-27, 1d
+    5.5 Qualidade do código                 :a55, 2026-10-27, 3d
+    5.R2 Dúvidas ao professor               :a5r2, 2026-10-27, 2d
+    5.2 Pinagem ← 5.1                       :crit, a52, 2026-10-28, 1d
+    5.3 Montagem ← 5.2                      :crit, a53, 2026-10-28, 1d
+    5.6 CTs escritos ← 5.1                  :a56, 2026-10-28, 1d
+    5.4 Firmware no hardware ← 5.3, 5.5     :crit, a54, 2026-10-29, 1d
+    5.7 Execução dos CTs ← 5.4, 5.6         :crit, a57, 2026-10-30, 1d
+    5.8 Correções ← 5.7                     :a58, 2026-11-03, 1d
+    5.9 Texto 3.4.2 ← 5.7                   :a59, 2026-11-03, 1d
+    5.10 CTs na RTM ← 5.6, 6.8              :a510, 2026-11-04, 1d
+
+    section Art. 6 RNF, RF, RN, RTM
+    6.1 Estrutura da tabela RNF             :a61, 2026-10-27, 1d
+    6.10 Prints pendentes do Wokwi          :a610, 2026-10-27, 3d
+    6.R2 Dúvidas ao professor               :a6r2, 2026-10-27, 2d
+    6.2 Demandas de negócio ← 6.1           :a62, 2026-10-28, 1d
+    6.3 a 6.6 Oito RNFs em paralelo ← 6.2   :a63, 2026-10-29, 2d
+    6.7 RF e RN ← 5.4, 5.7                  :a67, 2026-11-03, 1d
+    6.8 RTM ← 5.6, 6.3 a 6.7, 6.10          :a68, 2026-11-03, 2d
+    6.9 Consistência cruzada ← 6.8, 7.5     :a69, 2026-11-04, 1d
+
+    section Art. 7 Jornadas e storyboard
+    7.1 Template e fases                    :a71, 2026-10-27, 1d
+    7.2 Insumos da persona                  :a72, 2026-10-27, 1d
+    7.R2 Dúvidas ao professor               :a7r2, 2026-10-27, 2d
+    7.3 Jornada atual ← 7.1, 7.2            :a73, 2026-10-28, 2d
+    7.4 Jornada futura ← 7.3                :a74, 2026-10-30, 1d
+    7.6 Roteiro do storyboard ← 7.3, 5.6    :a76, 2026-10-30, 1d
+    7.5 Insights e oportunidades ← 7.4      :a75, 2026-11-03, 1d
+    7.7 Ilustração do storyboard ← 7.6      :a77, 2026-11-03, 2d
+    7.8 Texto 3.2.2 ← 7.5, 7.7              :a78, 2026-11-04, 1d
+
+    section Transversais
+    X1 Pastas e nomes de assets             :x1, 2026-10-27, 1d
+    X2 Limpeza de branches e MRs            :x2, 2026-10-27, 2d
+    S1 Reunião de sincronização             :milestone, s1, 2026-10-30, 0d
+    A1 Roteiro da apresentação ← 5.6, 7.3   :ap1, 2026-10-30, 1d
+    A3 Vídeo do protótipo ← 5.7             :ap3, 2026-11-03, 1d
+    A2 Slides ← A1, 5.7, 6.3 a 6.6, 7.4     :ap2, 2026-11-03, 2d
+    X3 README ← X1, 5.4                     :x3, 2026-11-04, 1d
+
+    section Revisão e entrega
+    R5, R6, R7 Revisão contra a rubrica     :rv, 2026-11-05, 1d
+    M1 Merge develop → main ← R5 a R7       :m1, 2026-11-05, 1d
+    A4 Ensaio e versão final ← A2, A3, R5 a R7 :ap4, 2026-11-05, 1d
+    Apresentação                            :milestone, apr, 2026-11-06, 0d

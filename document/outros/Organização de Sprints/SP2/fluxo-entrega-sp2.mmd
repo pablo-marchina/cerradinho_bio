@@ -1,0 +1,56 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Segoe UI, Arial, sans-serif", "primaryColor": "#D9CCF2", "primaryBorderColor": "#6B4A86", "primaryTextColor": "#182420", "lineColor": "#7D8A84", "clusterBkg": "#7D8A8414", "clusterBorder": "#7D8A84", "titleColor": "#7D8A84", "edgeLabelBackground": "#FFFFFF"}}}%%
+flowchart LR
+    %% Sprint 2 - repositório, apresentação, revisão e entrega
+    %% Retângulo cinza: card de artefato que alimenta o transversal.
+
+    subgraph ENTRADAS["Vem dos artefatos"]
+        direction TB
+        E5_4["5.4 Firmware no hardware<br/>Qui 29/10"]
+        E5_6["5.6 CTs escritos<br/>Qua 28/10"]
+        E7_3["7.3 Jornada atual<br/>Qui 29/10"]
+        E5_7["5.7 Execução dos CTs<br/>Sex 30/10"]
+        E6_RNF["6.3 a 6.6 RNFs<br/>Sex 30/10"]
+        E7_4["7.4 Jornada futura<br/>Sex 30/10"]
+        E5F["Art. 5 completo<br/>5.8, 5.9, 5.10"]
+        E6F["Art. 6 completo<br/>6.9"]
+        E7F["Art. 7 completo<br/>7.8"]
+    end
+
+    X1["X1 Pastas e nomes de assets<br/>Ter 27/10"]
+    X2["X2 Limpeza de branches e MRs<br/>Qua 28/10"]
+    S1["S1 Reunião de sincronização<br/>Sex 30/10"]
+    X3["X3 README<br/>Qua 4/11"]
+    AP1["A1 Roteiro da apresentação<br/>Sex 30/10"]
+    AP3["A3 Vídeo do protótipo<br/>Ter 3/11"]
+    AP2["A2 Slides<br/>Qua 4/11"]
+    R5["R5 Revisão Art. 5 x rubrica<br/>Qui 5/11"]
+    R6["R6 Revisão Art. 6 x rubrica<br/>Qui 5/11"]
+    R7["R7 Revisão Art. 7 x rubrica<br/>Qui 5/11"]
+    M1["M1 Merge develop → main<br/>Qui 5/11"]
+    AP4["A4 Ensaio e versão final<br/>Qui 5/11"]
+    APR(["Apresentação<br/>Sex 6/11 de manhã"])
+
+    X1 --> X3
+    E5_4 -.->|como gravar o firmware| X3
+    E5_6 -.-> AP1
+    E7_3 -.-> AP1
+    AP1 --> AP2
+    E5_7 -.-> AP2
+    E6_RNF -.-> AP2
+    E7_4 -.-> AP2
+    E5_7 -.-> AP3
+    E5F -.-> R5
+    E6F -.-> R6
+    E7F -.-> R7
+    R5 & R6 & R7 --> M1
+    R5 & R6 & R7 --> AP4
+    AP2 & AP3 --> AP4
+    AP4 --> APR
+    classDef livre fill:#A8E6B8,stroke:#2E7D32,color:#182420,stroke-width:2px
+    classDef fim fill:#FFD59E,stroke:#E08A00,color:#182420,stroke-width:2px
+    classDef entrada fill:#E0E0E0,stroke:#8A8A8A,color:#333333
+    class X1,X2,S1 livre
+    class R5,R6,R7,M1,AP4,APR fim
+    class E5_4,E5_6,E7_3,E5_7,E6_RNF,E7_4,E5F,E6F,E7F entrada
+    classDef espera fill:#D9CCF2,stroke:#6B4A86,color:#182420
+    class X3,AP1,AP3,AP2 espera
