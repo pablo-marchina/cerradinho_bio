@@ -420,6 +420,23 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 | RN10 — leitura zero considerada falha | Implementada: ADC = 0 gera `SENSOR_BATERIA_FALHA` e nenhum `BATERIA_BAIXA` (CT13). No dispositivo físico, o diagnóstico elétrico do divisor ainda depende do CT30 previsto no [planejamento de energia e GNSS](outros/planejamento-energia-gnss.md). |
 | RN11 — encerramento exige lacre fechado e NF de retorno | As duas recusas foram verificadas no CT16. No simulador, `NF` no Serial representa o lançamento da NF de retorno e segurar `BTN_CICLO` por 2 s solicita o encerramento. No reteste de 23/10/2026, o CT14 confirmou JSON com ciclo inativo e dias zero, reutilização e contador acumulado. A persistência do histórico após corte de energia não foi verificada. |
 
+### 3.3.3. Requisitos Não Funcionais — ISO/IEC 25010 (sprints 2 a 5)
+
+*Preencha as 8 características da ISO/IEC 25010. Cada uma deve ter ao menos um RNF verificável (com métrica ou critério de aceitação concreto e justificativa ligada à demanda do negócio) ou justificativa explícita de ausência. Evolua do conceitual (sprint 2) ao técnico mensurável (sprint 5).*
+
+| Eixo (ISO/IEC 25010) | ID | Requisito Não Funcional | Métrica / Critério de Aceitação | Justificativa (demanda do negócio) | Justificativa de Ausência (se aplicável) |
+|---|---|---|---|---|---|
+| Adequação Funcional | RNF01 | ... | ... | ... | (Preencher caso não haja RNF neste eixo) |
+| Eficiência de Desempenho | RNF02 | ... | ... | ... | |
+| Compatibilidade | RNF03 | ... | ... | ... | |
+| Usabilidade | RNF04 | ... | ... | ... | |
+| Confiabilidade | RNF05 | ... | ... | ... | |
+| Segurança | RNF06 | ... | ... | ... | |
+| Manutenibilidade | RNF07 | ... | ... | ... | |
+| Portabilidade | RNF08 | ... | ... | ... | |
+
+<!-- Versão anterior (template FURPS+), mantida apenas para referência:
+
 ### 3.3.3. Requisitos Não Funcionais — 8 Eixos ISO/IEC 25010 (sprints 2 a 5)
 
 *Preencha os 8 eixos. Cada eixo deve ter ao menos um RNF verificável (com métrica, limite ou critério concreto) ou justificativa explícita de ausência. Evolua do conceitual (sprint 2) ao técnico mensurável (sprint 5).*
@@ -434,6 +451,8 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 | CAP — Capacidade         | ...       | ...                | ...           |
 | REST — Restrições Design | ...       | ...                | ...           |
 | ORG — Organizacionais    | ...       | ...                | ...           |
+
+-->
 
 
 ### 3.3.4. Matriz de Rastreabilidade (RTM) (sprints 1 a 5)
