@@ -65,7 +65,9 @@ for section, following in [('3.1.1.', '3.1.2.'), ('3.1.2.', '3.1.3.'),
                            ('3.1.7.', '## 3.2.')]:
     a = text.index('### ' + section)
     b = text.index('## 3.2.', a) if following == '## 3.2.' else text.index('### ' + following, a)
-    count = len(re.findall(r'\b[\wÀ-ÿ]+\b', text[a:b]))
+    # Conta só o texto visível: destinos de link e tags HTML não são palavras.
+    visible = re.sub(r'<[^>]+>', ' ', re.sub(r'\]\([^)]*\)', ']', text[a:b]))
+    count = len(re.findall(r'\b[\wÀ-ÿ]+\b', visible))
     check(count <= 300, f'Limite 300 palavras: {section} ({count})')
 
 # Pendências com responsáveis externos nunca são contabilizadas como evidências
