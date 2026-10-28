@@ -2,6 +2,8 @@
 
 Capturas reais e logs Serial dos CT01–CT23 e CT35. Critérios, configuração, resultados e limitações estão na [seção 3.4.1 da documentação](../../document/documentacao.md). As etapas complementares de cada CT ficam neste diretório e estão vinculadas nessa seção.
 
+**Issue #74 (6.10):** [inventário auditável para a RTM da issue #79 (6.8)](ISSUE-74-RTM.md) · [mapeamento CSV](issue74-mapeamento-rtm.csv) · [hashes das evidências](issue74-evidencias.sha256). Verificação: `python scripts/verify_issue74.py`, a partir da raiz do repositório. As imagens foram capturadas em 22–23/10/2026; este inventário apenas organiza as evidências já existentes, sem novo ensaio.
+
 | CT | Captura principal / etapas | Log Serial |
 |---|---|---|
 | CT01 | [Inicialização](CT01.png) | [A](CT01-CT07-CT11-CT12-CT35-execucao.serial.txt) |

@@ -440,6 +440,8 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 
 A Matriz de Rastreabilidade (RTM) relaciona os requisitos funcionais (RF) e as regras de negócio (RN) aos casos de teste e às evidências de verificação. Ela permite identificar a cobertura de cada requisito e acompanhar as pendências de validação.
 
+**Evidências Wokwi da issue #74 (6.10):** o [inventário CT01–CT23 e CT35 com caminhos, logs, status e associação RF/RN](../assets/wokwi/ISSUE-74-RTM.md) prepara os insumos para a atualização da RTM na issue #79 (6.8), sem antecipar a inclusão dos CTs físicos, a revisão de RNFs ou a reclassificação dos testes bloqueados/reprovados. Executar `python scripts/verify_issue74.py` para conferir links e checksums.
+
 | Persona | RF    | RN   | Caso de Teste | Evidência        |
 |---------|-------|------|---------------|------------------|
 | P1 Geraldo — P1-C1 Saída com TAG e lacre | RF001 | Não se aplica — o cadastro do equipamento não tem restrição própria; as restrições começam na abertura do ciclo (RN02) | Planejado — CT a definir | Planejado, sprint a definir |
