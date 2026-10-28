@@ -176,7 +176,7 @@ Matriz de riscos do projeto, com níveis estimados de 10%–90% e impacto qualit
 | R04 | Sem rede → eventos retidos. | 90% | Alto | Cobertura externa incerta [6]. | Armazenar e comparar redes. | Conectividade |
 | R05 | Ruído ou abertura autorizada → falso alerta. | 50% | Alto | Retirada ocorre no reparo. | Debounce e autorização. | Firmware |
 | R06 | Fixação inadequada → dano. | 50% | Muito alto | Formatos variam [6]. | Usar fixação removível. | Hardware |
-| R07 | Água/lavagem → falha. | 70% | Muito alto | Exposição prevista [6]. | Vedar e ensaiar. | Hardware |
+| R07 | Fora do escopo atual; trabalho futuro (ensaios de resistência à água). | 70% | Muito alto | Previsto no TAPI [6]. | Fora do escopo atual; trabalho futuro. | Hardware |
 | R08 | Conectividade cara → inviabilidade. | 50% | Alto | Custo afeta a escolha. | Comparar planos. | Produto |
 | R09 | Fornecedor indisponível → piloto limitado. | 50% | Moderado | Dependência externa. | Agendar e simular. | Projeto |
 | R10 | Dado restrito exposto → incidente. | 30% | Muito alto | Localização e NF são restritas. | Usar dados fictícios e revisar. | Dados/LGPD |

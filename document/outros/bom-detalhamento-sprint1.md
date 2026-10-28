@@ -14,7 +14,7 @@ BOM preliminar de um dispositivo, organizada com os campos da planilha do Inteli
 | Bateria | 1 | BT1 | LiPo 3,7 V 2000 mAh com proteção [45] | 62,93 | 62,93 |
 | Alimentação | 1 | U3 | Módulo carregador TP4056 com proteção [46] | 8,91 | 8,91 |
 | Sensor do lacre | 1 | S1 | Reed switch com ímã MC-38 [47] | 7,35 | 7,35 |
-| Gabinete | 1 | ENC1 | Caixa ABS IP65 100 × 68 × 50 mm [48] | 55,37 | 55,37 |
+| Gabinete | 1 | ENC1 | Caixa de junção ABS 100 × 68 × 50 mm [48] | 55,37 | 55,37 |
 | Fixação | 4 | FIX1 | Abraçadeira de nylon 300 mm (pacote de 100) [49] | 0,29 | 1,16 |
 | Comunicação externa | 1 | COM1 | Módulo SIM7080G (LTE-M/NB-IoT), opção a validar [50] | 195,69 | 195,69 |
 | PCI | 1 | PCB1 | Placa fenolite perfurada 10 × 10 cm [51] | 15,66 | 15,66 |

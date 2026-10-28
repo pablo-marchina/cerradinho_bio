@@ -53,7 +53,7 @@ Quando `platformio` estiver instalado globalmente, as duas compilações equival
 4. Para publicar no Wokwi web, prepare os arquivos com `python scripts/export-wokwi.py`, siga o [guia do circuito](src/firmware/prototipo_wokwi/README.md) e confira que a URL final corresponde ao commit e executa os CTs com o mesmo binário/código. A publicação requer ação na conta da equipe.
 5. Preserve os logs originais dos testes antigos; anexe novas evidências versionadas após os retestes. Os estímulos CT18/CT22 **não podem ser alterados para forçar aprovação**.
 
-`demo`: localização a cada 30 segundos, 1 s simulando 1 dia nas regras de ciclo. `weekly`: sete dias reais, com o ciclo em escala real. O protótipo não comprova autonomia real, vedação ou cobertura em oficinas.
+`demo`: localização a cada 30 segundos, 1 s simulando 1 dia nas regras de ciclo. `weekly`: sete dias reais, com o ciclo em escala real. O protótipo não comprova autonomia real ou cobertura em oficinas.
 
 ## Organização
 

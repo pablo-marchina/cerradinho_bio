@@ -24,7 +24,7 @@ Desenvolver e validar um protótipo IoT **reutilizável** (sem tecnologia pré-d
 - informe a **última localização válida** do equipamento;
 - gere alertas de **permanência** (prazo configurável, referência inicial de **150 dias**) e de **retirada ou rompimento do lacre**;
 - atualize localização e status **uma vez por semana** (frequência ajustável);
-- seja resistente à água e disponibilize dados por **API** para BI.
+- disponibilize dados por **API** para BI.
 
 ### Fluxo básico
 Necessidade e aprovação → cadastro do equipamento, fornecedor, NF e prazo → vínculo do dispositivo e aplicação do lacre → saída e acompanhamento periódico → alertas e tratamento pelo responsável → retorno, conferência e encerramento → liberação do dispositivo para outro equipamento (preservando o histórico e impedindo vínculos simultâneos indevidos).
@@ -36,7 +36,7 @@ Necessidade e aprovação → cadastro do equipamento, fornecedor, NF e prazo �
 4. Atualização semanal configurável e alertas de permanência (testar 150 dias e outros limiares com datas simuladas).
 5. Detecção de retirada/rompimento do lacre, tratamento de retirada autorizada e comportamento sem conexão (armazenar eventos e enviar depois).
 6. Interface com última localização válida, dias fora, prazo, bateria, estado do lacre e histórico; API documentada e consumida por BI ou cliente de teste.
-7. Testes de comunicação, fixação, reutilização, consumo e exposição à água, além do ciclo completo de saída e retorno.
+7. Testes de comunicação, fixação, reutilização, consumo, além do ciclo completo de saída e retorno.
 
 ### Premissas importantes
 - Equipamento de referência de 1 × 1 × 1 m; equipamentos metálicos, poeira, umidade e ambientes cobertos.
@@ -153,7 +153,7 @@ Regras ao criar ou sugerir um card:
   - `tipo` é o mesmo dos commits (lista abaixo).
   - `NN` é o número da issue que a branch resolve, com dois dígitos quando for menor que 10.
   - `sprintN` é obrigatório e identifica a sprint atual (a do Milestone do card), sem zero à esquerda: `sprint1`, `sprint2`... (como em `8-art-4-3-3-1-requisitos-funcionais-sprint1`).
-  - Exemplos: `docs/01-estrutura-skills-sprint1`, `feat/12-alerta-permanencia-sprint2`, `fix/27-leitura-lacre-sprint3`, `test/31-ensaio-agua-sprint4`.
+  - Exemplos: `docs/01-estrutura-skills-sprint1`, `feat/12-alerta-permanencia-sprint2`, `fix/27-leitura-lacre-sprint3`, `test/31-ensaio-consumo-sprint4`.
 - Uma branch por issue. Se a tarefa crescer para outra issue, abra outra branch.
 
 ### Commits (Conventional Commits)

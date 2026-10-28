@@ -67,7 +67,7 @@
 
 ## BOM — hipóteses e critérios de compra
 
-Orçar pelo menos duas alternativas em itens com risco de estoque; levantar data, fornecedor, moeda, prazo de entrega e comprovante. Confirmar antena compatível com módulo GNSS escolhido, proteção de Li-ion, autonomia estimada com duty cycle, IP do gabinete, vedação de fixação e requisitos da operadora (SIM e mensalidade). O CSV/planilha anexos separam hardware do circuito Wokwi de componentes físicos e contratos de dados. Total parcial não é preço final.
+Orçar pelo menos duas alternativas em itens com risco de estoque; levantar data, fornecedor, moeda, prazo de entrega e comprovante. Confirmar antena compatível com módulo GNSS escolhido, proteção de Li-ion, autonomia estimada com duty cycle, fixação do gabinete e requisitos da operadora (SIM e mensalidade). O CSV/planilha anexos separam hardware do circuito Wokwi de componentes físicos e contratos de dados. Total parcial não é preço final.
 
 ## Porter / riscos — fundamentos de classificação
 
