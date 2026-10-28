@@ -7,6 +7,7 @@
 *.xls
 *.xlsx
 !assets/negocios/BOM-GuaraTracking-Sprint1.xlsx
+!assets/wokwi/issue74-mapeamento-rtm.csv
 
 # Compiled Object files
 *.slo
@@ -69,3 +70,12 @@ local-notes/
 
 # Rascunhos de revis√£o e arquivos tempor√°rios de agentes de IA (ficam fora do reposit√≥rio)
 .claude-tmp/
+
+# OpenAI OMX - arquivos locais e tempor·rios
+.omx/
+
+# Arquivos tempor·rios de trabalho
+.mr28-work
+
+# Patches locais
+GUARATRACKING_SPRINT1_PATCH_*.patch

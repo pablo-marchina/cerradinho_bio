@@ -9,6 +9,11 @@ mkdir -p build
 ./build/model_tests_host
 "$CXX" -std=c++17 -O2 -Wall -Wextra -Werror -Iinclude -Itests/stubs tests/indicator_controller_tests.cpp -o build/indicator_tests_host
 ./build/indicator_tests_host
-python3 -m py_compile scripts/export-wokwi.py scripts/audit_sprint1.py scripts/validate-project.py
+"$CXX" -std=c++17 -O2 -Wall -Wextra -Werror -Iinclude -Itests/firmware_stubs tests/firmware_persistence_tests.cpp -o build/firmware_persistence_tests_host
+./build/firmware_persistence_tests_host
+"$CXX" -std=c++17 -O2 -Wall -Wextra -Werror -Iinclude -Itests/firmware_stubs tests/firmware_seal_isr_tests.cpp -o build/firmware_seal_isr_tests_host
+./build/firmware_seal_isr_tests_host
+python3 -m unittest discover -s tests/audit -p "test_*.py" -v
+python3 -m py_compile scripts/export-wokwi.py scripts/audit_sprint1.py scripts/sprint1_evidence.py scripts/validate-project.py
 python3 scripts/export-wokwi.py
 printf '%s\n' 'PASS: testes HOST e exportacao Wokwi; nenhuma alegacao de simulacao remota.'

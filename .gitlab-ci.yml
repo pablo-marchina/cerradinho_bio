@@ -11,7 +11,7 @@ validacao-sprint1-host:
   script:
     - bash scripts/verify-sprint1-local.sh
     - bash scripts/check-firmware-syntax.sh
-    - python3 scripts/audit_sprint1.py
+    - python3 scripts/audit_sprint1.py --strict-local
   artifacts:
     when: always
     expire_in: 14 days
