@@ -2,6 +2,7 @@
 #include <TinyGPS++.h>
 #include <WiFi.h>
 #include <Preferences.h>
+#include <LiquidCrystal_I2C.h>
 #include "config.h"
 #include "tracking_math.h"
 #include "cycle_rules.h"
@@ -9,7 +10,7 @@
 #include "event_queue.h"
 #include "battery_rules.h"
 #include "sim_clock.h"
-#include "indicator_controller.h"
+#include "screen_controller.h"
 
 namespace {
 TinyGPSPlus gps;
@@ -36,10 +37,15 @@ SealState seal;
 EventQueue pending;
 BatteryState battery;
 uint32_t lastBatteryCheck = 0;
+int batteryPct = 0;  // ultima leitura, usada pelo LCD sem ler o ADC a cada volta
 bool poweredOn = true;
 bool networkWasAvailable = true;
 String serialLine;
 bool contextDirty = false;  // ciclo/lacre mudou e precisa ir para a NVS
+char shipmentInvoice[Config::InvoiceMaxLength + 1] = "";  // NF da remessa (comando REMESSA)
+bool alarmActive = false;   // buzzer da violacao, limitado a BuzzerAlarmMs
+uint32_t alarmStartedAt = 0;
+bool buzzerOn = false;
 
 // Botao com debounce e deteccao por borda: segurar nao repete o evento.
 struct Button {
@@ -50,7 +56,13 @@ struct Button {
 };
 Button authorizeButton{Config::AuthorizeButtonPin, false, false, 0, 0, false};
 Button cycleButton{Config::CycleButtonPin, false, false, 0, 0, false};
-IndicatorController indicators;  // LEDs de estado (classe propria, usada no setup e no loop)
+Button nextButton{Config::NextButtonPin, false, false, 0, 0, false};
+Button previousButton{Config::PreviousButtonPin, false, false, 0, 0, false};
+LiquidCrystal_I2C lcd(Config::LcdAddress, ScreenController::Columns, 2);
+ScreenController screens;  // telas do LCD (classe propria, usada no setup e no loop)
+ScreenController::Line shownTop = "", shownBottom = "";
+bool lcdLit = true;
+uint32_t lastInteractionAt = 0;  // ultimo botao ou mensagem; o LCD apaga apos LcdTimeoutMs
 
 uint64_t clockMs() {
   return simClock.elapsedMs;
@@ -66,16 +78,6 @@ bool simulatedNetworkAvailable() {
 
 bool powerSwitchOn() {
   return digitalRead(Config::PowerSwitchPin) == LOW;
-}
-
-void updateLeds(uint32_t now) {
-  // Verde: operando, lacre integro (piscando = retirada autorizada em curso).
-  // Amarelo: piscando = atraso, fixo = permanencia. Vermelho: violacao do lacre.
-  // Azul: rede simulada indisponivel. Desligado: tudo apagado.
-  const bool blinkOn = (now / Config::BlinkHalfPeriodMs) % 2 == 0;
-  indicators.display(poweredOn, seal.violated, seal.removalInProgress,
-                     cycleActive && cycleYellowLed(&cycle, blinkOn),
-                     simulatedNetworkAvailable(), now);
 }
 
 bool freshFix() {
@@ -198,14 +200,16 @@ struct StoredContext {
   uint32_t closedCycles;
   SealState seal;
   bool sealOpen;
+  char invoice[Config::InvoiceMaxLength + 1];
 };
-constexpr uint32_t ContextVersion = 1;
+constexpr uint32_t ContextVersion = 2;  // V2 acrescentou a NF da remessa
 
 void saveContext() {
   contextDirty = false;
   if (!storageReady) return;
-  const StoredContext context{ContextVersion, Config::DayMs, clockMs(), cycle, cycleStartedAt,
-                              cycleActive, returnInvoiceIssued, closedCycles, seal, stableSeal};
+  StoredContext context{ContextVersion, Config::DayMs, clockMs(), cycle, cycleStartedAt,
+                        cycleActive, returnInvoiceIssued, closedCycles, seal, stableSeal, {}};
+  memcpy(context.invoice, shipmentInvoice, sizeof(context.invoice));
   if (storage.putBytes("ctx", &context, sizeof(context)) != sizeof(context)) {
     Serial.println("[memoria] falha ao salvar o contexto do ciclo");
   }
@@ -338,11 +342,6 @@ void flushPending() {
   printPending();
 }
 
-void updateNetwork() {
-  const bool available = simulatedNetworkAvailable();
-  if (available && !networkWasAvailable) flushPending();
-  networkWasAvailable = available;
-}
 
 void startCycle(uint64_t clock, uint32_t id) {
   cycleStart(&cycle, id, Config::ExpectedReturnDays, Config::StayThresholdDays,
@@ -350,6 +349,7 @@ void startCycle(uint64_t clock, uint32_t id) {
   cycleStartedAt = clock;
   cycleActive = true;
   returnInvoiceIssued = false;
+  shipmentInvoice[0] = '\0';  // cada remessa recebe a sua NF pelo comando REMESSA
   contextDirty = true;
 }
 
@@ -366,14 +366,26 @@ void updateCycle(uint64_t clock) {
   }
 }
 
+bool displayAwake(uint32_t now) {
+  return now - lastInteractionAt < Config::LcdTimeoutMs;
+}
+
+void showMessage(const char *top, const char *bottom) {
+  lastInteractionAt = millis();
+  screens.flash(top, bottom, lastInteractionAt, Config::MessageMs);
+}
+
 // Encerrar exige lacre fechado e NF de retorno; o historico e preservado (RF016; RN11).
 void requestClose() {
   if (!cycleActive) {
     publishEvent("ENCERRAMENTO_RECUSADO", false, ",\"motivo\":\"sem_ciclo_ativo\"");
+    showMessage("Nao encerrado", "sem ciclo ativo");
   } else if (stableSeal) {
     publishEvent("ENCERRAMENTO_RECUSADO", false, ",\"motivo\":\"lacre_aberto\"");
+    showMessage("Nao encerrado", "lacre aberto");
   } else if (!returnInvoiceIssued) {
     publishEvent("ENCERRAMENTO_RECUSADO", false, ",\"motivo\":\"nf_retorno_ausente\"");
+    showMessage("Nao encerrado", "falta NF retorno");
   } else {
     ++closedCycles;
     cycleActive = false;
@@ -383,6 +395,7 @@ void requestClose() {
     extra += closedCycles;
     // O evento deve retratar o estado ja encerrado, inclusive quando fica na fila.
     publishEvent("CICLO_ENCERRADO", false, extra);
+    showMessage("Ciclo encerrado", "");
   }
 }
 
@@ -390,10 +403,29 @@ void requestClose() {
 void requestLink(uint64_t clock) {
   if (cycleActive) {
     publishEvent("VINCULO_RECUSADO", false, ",\"motivo\":\"ciclo_ativo\"");
+    showMessage("Nao iniciado", "ciclo ja ativo");
     return;
   }
   startCycle(clock, cycle.cycleId + 1);
   publishEvent("CICLO_INICIADO");
+  showMessage("Ciclo iniciado", "aguardando NF");
+}
+
+// Chave de sinal (on/off do SIM): reenvia a fila na volta e mostra o resultado no LCD.
+void updateNetwork() {
+  const bool available = simulatedNetworkAvailable();
+  if (available == networkWasAvailable) return;
+  networkWasAvailable = available;
+  char bottom[ScreenController::Columns + 1];
+  if (available) {
+    const unsigned sent = pending.count + (pending.overflowCount > 0 ? 1u : 0u);
+    flushPending();
+    snprintf(bottom, sizeof(bottom), "enviados: %u", sent);
+    showMessage("Sinal ok", bottom);
+  } else {
+    snprintf(bottom, sizeof(bottom), "na fila: %u", pending.count);
+    showMessage("Sem sinal", bottom);
+  }
 }
 
 // Retorna true na borda de pressao (apos debounce).
@@ -405,41 +437,73 @@ bool updateButton(Button &button, uint32_t now) {
   }
   button.pressed = button.raw;
   if (button.pressed) {
+    lastInteractionAt = now;  // qualquer botao acende o LCD
     button.pressedAt = now;
     button.longFired = false;
   }
   return button.pressed;
 }
 
+// Retorna true uma vez, quando o botao completa LongPressMs pressionado (V2: 3 s).
+// Soltar antes disso nao registra nada.
+bool holdCompleted(Button &button, uint32_t now, const char *name) {
+  const bool wasPressed = button.pressed;
+  updateButton(button, now);
+  if (wasPressed && !button.pressed && !button.longFired) {
+    Serial.printf("[botao] %s solto antes de %lu s; nada registrado\r\n", name,
+                  (unsigned long)(Config::LongPressMs / 1000UL));
+  }
+  if (!button.pressed || button.longFired || now - button.pressedAt < Config::LongPressMs) {
+    return false;
+  }
+  button.longFired = true;
+  return true;
+}
+
 void readButtons(uint32_t now, uint64_t clock) {
-  if (updateButton(authorizeButton, now)) {
+  // Com o LCD apagado, o primeiro toque em avancar/voltar so acende o visor.
+  const bool awake = displayAwake(now);
+  if (updateButton(nextButton, now) && awake) screens.next();
+  if (updateButton(previousButton, now) && awake) screens.previous();
+  if (holdCompleted(authorizeButton, now, "BTN_AUTORIZAR")) {
     sealAuthorize(&seal, clock);
     contextDirty = true;
     String extra = ",\"janela_dias\":";
     extra += Config::AuthorizationWindowDays;
     publishEvent("AUTORIZACAO_REGISTRADA", false, extra);
+    char bottom[ScreenController::Columns + 1];
+    snprintf(bottom, sizeof(bottom), "vale %lu dias", (unsigned long)Config::AuthorizationWindowDays);
+    showMessage("Autorizacao ok", bottom);
   }
-  const bool wasPressed = cycleButton.pressed;
-  updateButton(cycleButton, now);
-  // Segurar 2 s encerra; toque curto pede novo vinculo.
-  if (cycleButton.pressed && !cycleButton.longFired &&
-      now - cycleButton.pressedAt >= Config::LongPressMs) {
-    cycleButton.longFired = true;
-    requestClose();
+  // Segurar 3 s inicia o ciclo quando nao ha ciclo ativo e encerra quando ha.
+  if (holdCompleted(cycleButton, now, "BTN_CICLO")) {
+    if (cycleActive) requestClose();
+    else requestLink(clock);
   }
-  if (wasPressed && !cycleButton.pressed && !cycleButton.longFired) requestLink(clock);
 }
 
 void readBattery(uint32_t now) {
   if (now - lastBatteryCheck < Config::BatteryCheckMs) return;
   lastBatteryCheck = now;
   const int raw = analogRead(Config::BatteryPin);
-  const unsigned events = batteryUpdate(&battery, raw, simulatedBatteryPercent());
+  batteryPct = simulatedBatteryPercent();
+  const unsigned events = batteryUpdate(&battery, raw, batteryPct);
   if (events & BATTERY_EVENT_SENSOR_FAILURE) publishEvent("SENSOR_BATERIA_FALHA");
   if (events & BATTERY_EVENT_LOW) publishEvent("BATERIA_BAIXA");
 }
 
-// Comandos no Monitor Serial: NF (lanca a NF de retorno) e LIMIAR n (RN03).
+// NF da remessa: letras, digitos e separadores comuns, ate InvoiceMaxLength.
+bool validInvoice(const String &text) {
+  if (text.length() == 0 || text.length() > Config::InvoiceMaxLength) return false;
+  for (unsigned i = 0; i < text.length(); ++i) {
+    const char c = text.c_str()[i];
+    if (!isalnum((unsigned char)c) && c != '-' && c != '.' && c != '/') return false;
+  }
+  return true;
+}
+
+// Comandos no Monitor Serial: NF (lanca a NF de retorno), REMESSA x (NF da remessa,
+// simulando a plataforma) e LIMIAR n (RN03).
 void readCommands() {
   while (Serial.available()) {
     const char c = Serial.read();
@@ -450,6 +514,20 @@ void readCommands() {
       returnInvoiceIssued = true;
       contextDirty = true;
       publishEvent("NF_RETORNO_LANCADA");
+    } else if (serialLine.startsWith("REMESSA ")) {
+      String invoice = serialLine.substring(8);
+      invoice.trim();
+      if (!cycleActive) {
+        Serial.println("[comando] sem ciclo ativo; inicie o ciclo antes da REMESSA");
+      } else if (!validInvoice(invoice)) {
+        Serial.printf("[comando] NF invalida; use ate %u letras, digitos, '-', '.' ou '/'\r\n",
+                      Config::InvoiceMaxLength);
+      } else {
+        snprintf(shipmentInvoice, sizeof(shipmentInvoice), "%s", invoice.c_str());
+        contextDirty = true;
+        Serial.printf("[comando] NF da remessa registrada: %s\r\n", shipmentInvoice);
+        showMessage("NF registrada", shipmentInvoice);
+      }
     } else if (serialLine.startsWith("LIMIAR ")) {
       const long days = serialLine.substring(7).toInt();
       if (days > 0) {
@@ -461,7 +539,7 @@ void readCommands() {
         publishEvent("LIMIAR_ALTERADO", false, extra);
       }
     } else if (serialLine.length() > 0) {
-      Serial.println("[comando] use NF ou LIMIAR n");
+      Serial.println("[comando] use NF, REMESSA x ou LIMIAR n");
     }
     serialLine = "";
   }
@@ -482,10 +560,95 @@ void readSeal(uint32_t now, uint64_t clock) {
     record += "}";
     enqueue(record);
     // Violacao e critica e sai na hora, fora da rotina periodica (RF006; RN05).
-    if (event == SEAL_EVENT_VIOLATION) publishEvent("VIOLACAO_LACRE", true);
-    if (event == SEAL_EVENT_REMOVAL) publishEvent("RETIRADA_AUTORIZADA");
-    if (event == SEAL_EVENT_RESEALED) publishEvent("LACRE_REAPLICADO");
-    if (event == SEAL_EVENT_CLOSED) publishEvent("LACRE_FECHADO");
+    if (event == SEAL_EVENT_VIOLATION) {
+      publishEvent("VIOLACAO_LACRE", true);
+      alarmActive = true;  // buzzer so na violacao, nunca na retirada autorizada
+      alarmStartedAt = now;
+      showMessage("VIOLACAO", "registrada");
+    }
+    if (event == SEAL_EVENT_REMOVAL) {
+      publishEvent("RETIRADA_AUTORIZADA");
+      showMessage("Retirada", "autorizada");
+    }
+    if (event == SEAL_EVENT_RESEALED) {
+      publishEvent("LACRE_REAPLICADO");
+      showMessage("Lacre fechado", "reaplicado");
+    }
+    if (event == SEAL_EVENT_CLOSED) {
+      publishEvent("LACRE_FECHADO");
+      showMessage("Lacre fechado", "apos violacao");
+    }
+  }
+}
+
+// Bipe intermitente enquanto o lacre segue violado, por ate BuzzerAlarmMs.
+void updateBuzzer(uint32_t now) {
+  if (alarmActive && (!seal.violated || now - alarmStartedAt >= Config::BuzzerAlarmMs)) {
+    alarmActive = false;
+  }
+  const bool on = poweredOn && alarmActive &&
+                  ((now - alarmStartedAt) / Config::BuzzerBeepMs) % 2 == 0;
+  if (on == buzzerOn) return;
+  buzzerOn = on;
+  if (on) tone(Config::BuzzerPin, Config::BuzzerFrequencyHz);
+  else noTone(Config::BuzzerPin);
+}
+
+SealView sealView(uint64_t clock) {
+  if (seal.violated) return SealView::Violated;
+  if (seal.removalInProgress || sealAuthorizationValid(&seal, clock)) {
+    return SealView::Authorized;
+  }
+  return SealView::Intact;
+}
+
+// Tempo restante enquanto um botao de 3 s esta pressionado.
+bool holdRemaining(const Button &button, uint32_t now, uint32_t &remaining) {
+  if (!button.pressed || button.longFired) return false;
+  const uint32_t held = now - button.pressedAt;
+  remaining = held < Config::LongPressMs ? Config::LongPressMs - held : 0;
+  return true;
+}
+
+// Escreve no LCD so quando o texto muda. Desligado ou sem uso por LcdTimeoutMs,
+// apaga o visor e a luz de fundo, que dominam o consumo do LCD.
+void updateDisplay(uint32_t now, uint64_t clock) {
+  if (!poweredOn || !displayAwake(now)) {
+    if (lcdLit) {
+      lcd.clear();
+      lcd.noBacklight();
+      lcdLit = false;
+      shownTop[0] = shownBottom[0] = '\0';
+    }
+    return;
+  }
+  if (!lcdLit) {
+    lcd.backlight();
+    lcdLit = true;
+  }
+  ScreenController::Line top, bottom;
+  uint32_t remaining = 0;
+  if (holdRemaining(cycleButton, now, remaining)) {
+    ScreenController::renderHold(cycleActive ? "Encerrar ciclo" : "Iniciar ciclo", remaining,
+                                 top, bottom);
+  } else if (holdRemaining(authorizeButton, now, remaining)) {
+    ScreenController::renderHold("Autorizar lacre", remaining, top, bottom);
+  } else {
+    const StatusView view{shipmentInvoice, cycleActive, cycle.daysOut,
+                          cycle.expectedReturnDays, haveLatest || havePrevious, haveLatest,
+                          (uint32_t)((now - latestAt) / 1000UL), batteryPct, battery.lowSent,
+                          battery.failureSent, sealView(clock), stableSeal};
+    screens.render(view, now, top, bottom);
+  }
+  if (strcmp(top, shownTop) != 0) {
+    lcd.setCursor(0, 0);
+    lcd.printf("%-16s", top);
+    memcpy(shownTop, top, sizeof(shownTop));
+  }
+  if (strcmp(bottom, shownBottom) != 0) {
+    lcd.setCursor(0, 1);
+    lcd.printf("%-16s", bottom);
+    memcpy(shownBottom, bottom, sizeof(shownBottom));
   }
 }
 }
@@ -502,9 +665,15 @@ void setup() {
   pinMode(Config::CycleButtonPin, INPUT_PULLUP);
   pinMode(Config::NetworkSwitchPin, INPUT_PULLUP);
   pinMode(Config::PowerSwitchPin, INPUT_PULLUP);
-  indicators.begin();
+  pinMode(Config::NextButtonPin, INPUT_PULLUP);
+  pinMode(Config::PreviousButtonPin, INPUT_PULLUP);
+  pinMode(Config::BuzzerPin, OUTPUT);
+  digitalWrite(Config::BuzzerPin, LOW);
+  lcd.init();
+  lcd.backlight();
   pinMode(Config::BatteryPin, INPUT);
   analogReadResolution(12);
+  batteryPct = simulatedBatteryPercent();
   Serial2.begin(Config::GpsBaud, SERIAL_8N1, Config::GpsRx, Config::GpsTx);
   storageReady = storage.begin("tracker", false);
   double point[2] = {};
@@ -538,6 +707,8 @@ void setup() {
     closedCycles = context.closedCycles;
     seal = context.seal;
     rawSeal = stableSeal = context.sealOpen;
+    memcpy(shipmentInvoice, context.invoice, sizeof(shipmentInvoice));
+    shipmentInvoice[Config::InvoiceMaxLength] = '\0';
   } else {
     simClockInit(&simClock, millis(), 0);
     rawSeal = stableSeal = false;
@@ -553,7 +724,8 @@ void setup() {
   if (poweredOn) {
     publishEvent("STATUS", false, restored ? ",\"contexto_restaurado\":true" : ",\"contexto_restaurado\":false");
   }
-  updateLeds(millis());
+  lastInteractionAt = millis();
+  updateDisplay(millis(), clockMs());
   Serial.println("[boot] aguardando GPS; heartbeat aparece a cada 2 s");
   Serial.println("[transporte] JSON na serial + fila local; envio HTTP/MQTT pendente");
   Serial.printf("[ciclo] 1 dia = %lu s; status a cada %lu dias; prazo %lu; limiar %lu\r\n",
@@ -563,7 +735,10 @@ void setup() {
   Serial.printf("[regras] janela de autorizacao %lu dias; fila sem rede de %u eventos; bateria %u%%/%u%%\r\n",
                 (unsigned long)Config::AuthorizationWindowDays, EVENT_QUEUE_CAPACITY,
                 Config::BatteryLowPct, Config::BatteryRecoverPct);
-  Serial.println("[comandos] NF = lanca NF de retorno; LIMIAR n = muda o limiar de permanencia");
+  Serial.println("[comandos] NF = lanca NF de retorno; REMESSA x = NF da remessa; LIMIAR n = muda o limiar de permanencia");
+  Serial.printf("[interface] LCD 16x2 I2C 0x%02X; AVANCAR/VOLTAR trocam a tela; CICLO e AUTORIZAR exigem %lu s; LCD apaga apos %lu s sem uso\r\n",
+                Config::LcdAddress, (unsigned long)(Config::LongPressMs / 1000UL),
+                (unsigned long)(Config::LcdTimeoutMs / 1000UL));
   Serial.println("[bancada] SW_REDE simula disponibilidade sem desligar o Wi-Fi; SW_ENERGIA liga/desliga");
 }
 
@@ -577,11 +752,13 @@ void loop() {
     if (!on) publishEvent("DISPOSITIVO_DESLIGADO");
     poweredOn = on;
     if (on) {
+      lastInteractionAt = now;
       if (simulatedNetworkAvailable()) flushPending();  // fila restaurada durante o desligamento
       publishEvent("STATUS");
     }
   }
-  updateLeds(now);
+  updateDisplay(now, clock);
+  updateBuzzer(now);
   if (!poweredOn) return;
   readGps();
   readSeal(now, clock);
@@ -608,13 +785,15 @@ void loop() {
   }
   if (now - lastHeartbeat >= Config::HeartbeatMs) {
     lastHeartbeat = now;
-    Serial.printf("[vivo] tempo=%lu s gps_chars=%lu fix=%s lacre=%s bateria_sim=%d%% wifi=%s rede_sim=%s autorizar=%d ciclo=%d dias_fora=%lu fila=%u\r\n",
+    Serial.printf("[vivo] tempo=%lu s gps_chars=%lu fix=%s lacre=%s bateria_sim=%d%% wifi=%s rede_sim=%s autorizar=%d ciclo=%d avancar=%d voltar=%d tela=%u dias_fora=%lu fila=%u\r\n",
                   now / 1000UL, (unsigned long)gps.charsProcessed(),
                   freshFix() ? "valido" : "ausente",
-                  stableSeal ? "violado" : "integro", simulatedBatteryPercent(),
+                  stableSeal ? "violado" : "integro", batteryPct,
                   connected ? "on" : "off", simulatedNetworkAvailable() ? "on" : "off",
                   digitalRead(Config::AuthorizeButtonPin) == LOW,
                   digitalRead(Config::CycleButtonPin) == LOW,
-                  (unsigned long)cycle.daysOut, pending.count);
+                  digitalRead(Config::NextButtonPin) == LOW,
+                  digitalRead(Config::PreviousButtonPin) == LOW,
+                  (unsigned)screens.current() + 1, (unsigned long)cycle.daysOut, pending.count);
   }
 }

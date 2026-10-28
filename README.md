@@ -33,7 +33,7 @@
 
 O GuaráTracking é uma solução IoT desenvolvida com a **CerradinhoBio** para acompanhar equipamentos enviados à manutenção externa. Cada ciclo de manutenção recebe um dispositivo reutilizável, fixado ao equipamento com um lacre e vinculado à nota fiscal de remessa, ao fornecedor, ao responsável e ao prazo previsto. O dispositivo informa periodicamente a última localização GNSS válida e registra eventos de lacre; a plataforma calcula os dias fora, sinaliza atraso e permanência acima do limiar configurado (referência inicial de 150 dias) e preserva o histórico quando o dispositivo é reutilizado em outro equipamento. Os dados ficam disponíveis por API para análise em BI. A proposta reduz consultas dispersas e cobranças manuais entre PCM, Fiscal e Logística.
 
-O protótipo atual roda no simulador Wokwi com ESP32, GPS customizado, chave de lacre, bateria simulada, LEDs de estado e botões de autorização e de ciclo. As regras de ciclo, lacre, fila de eventos sem rede e bateria estão implementadas e testadas, com as evidências dos casos de teste CT01–CT23 e CT35 descritas na [documentação](document/documentacao.md); o CT18 e o CT22 seguem reprovados e o CT09 bloqueado (seção 3.4.1). Transporte por MQTT, interface web e API ficam para as próximas sprints. A rede simulada (`SW_REDE`) não representa o estado real do Wi-Fi, e o JSON impresso na Serial não equivale a uma publicação confirmada em servidor.
+O protótipo atual roda no simulador Wokwi com ESP32, GPS customizado, chave de lacre, bateria simulada, LCD 16x2 com botões de navegação, buzzer de violação e botões de autorização e de ciclo. As regras de ciclo, lacre, fila de eventos sem rede e bateria estão implementadas e testadas, com as evidências dos casos de teste CT01–CT23 e CT35 descritas na [documentação](document/documentacao.md); o CT18 e o CT22 seguem reprovados e o CT09 bloqueado (seção 3.4.1). Transporte por MQTT, interface web e API ficam para as próximas sprints. A rede simulada (`SW_REDE`) não representa o estado real do Wi-Fi, e o JSON impresso na Serial não equivale a uma publicação confirmada em servidor.
 
 Projeto no Wokwi: https://wokwi.com/projects/478276108359405569.
 
@@ -69,7 +69,7 @@ Dentre os arquivos e pastas presentes na raiz do projeto, definem-se:
 
 ### Ambiente
 
-- Placa `esp32dev`, framework Arduino, Espressif32 `6.12.0`, TinyGPSPlus `1.0.3`.
+- Placa `esp32dev`, framework Arduino, Espressif32 `6.12.0`, TinyGPSPlus `1.0.3` e LiquidCrystal_I2C `1.1.4` (LCD do protótipo V2).
 - VS Code com as extensões PlatformIO e Wokwi; Python 3.10+ e Node 22+ para os scripts.
 - Senhas de Wi-Fi ficam fora do controle de versão, em `include/config.local.h` (modelo em `include/config.local.example.h`).
 
@@ -84,7 +84,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1 -Environ
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify.ps1
 ```
 
-Com o PlatformIO instalado globalmente, as compilações equivalem a `pio run -e demo` e `pio run -e weekly`. As ferramentas locais são instaladas em `.tools/`. Em Linux/macOS, com `g++` e Python, `bash scripts/verify-host.sh` executa os testes das regras e da classe `IndicatorController`, e `bash scripts/check-firmware-syntax.sh` compila o `main.cpp` com dublês do Arduino. São testes em computador e não substituem a compilação para ESP32 nem a simulação no Wokwi.
+Com o PlatformIO instalado globalmente, as compilações equivalem a `pio run -e demo` e `pio run -e weekly`. As ferramentas locais são instaladas em `.tools/`. Em Linux/macOS, com `g++` e Python, `bash scripts/verify-host.sh` executa os testes das regras e da classe `ScreenController` (telas do LCD), e `bash scripts/check-firmware-syntax.sh` compila o `main.cpp` com dublês do Arduino. São testes em computador e não substituem a compilação para ESP32 nem a simulação no Wokwi.
 
 ### Simulação no Wokwi
 

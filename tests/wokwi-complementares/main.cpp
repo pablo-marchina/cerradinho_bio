@@ -2,6 +2,7 @@
 #include <TinyGPS++.h>
 #include <WiFi.h>
 #include <Preferences.h>
+#include <LiquidCrystal_I2C.h>
 #define setup trackerSetup
 #define loop trackerLoop
 #include "../../src/firmware/main.cpp"
