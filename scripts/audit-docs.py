@@ -36,10 +36,10 @@ check(not missing_rf, f'RF em RTM ({len(ids_rf)} RF)', str(missing_rf))
 check(not missing_rn, f'RN em RTM ({len(ids_rn)} RN)', str(missing_rn))
 
 code = (ROOT / 'src/firmware/main.cpp').read_text(encoding='utf-8')
-header = (ROOT / 'include/indicator_controller.h').read_text(encoding='utf-8')
+header = (ROOT / 'include/screen_controller.h').read_text(encoding='utf-8')
 check('void setup()' in code and 'void loop()' in code, 'Funções setup()/loop()')
-check('class IndicatorController' in header and 'indicators.begin();' in code and
-      'indicators.display(' in code, 'Classe própria invocada por setup()/loop()')
+check('class ScreenController' in header and 'screens.render(' in code and
+      'updateDisplay(' in code, 'Classe própria invocada por setup()/loop()')
 
 # Testes documentados podem incluir falhas: contabilizar é observação, não reprovar automatismo.
 ct_ids = set(re.findall(r'\bCT\d{2}\b', text[text.index('### 3.4.1.'):text.index('### 3.4.2.')]))

@@ -34,10 +34,15 @@ static inline void sealAuthorize(SealState *seal, uint64_t nowMs) {
   seal->authorizedAtMs = nowMs;
 }
 
-// A autorizacao vale windowMs a partir do instante do registro e e consumida na abertura.
+// A autorizacao vale windowMs a partir do instante do registro.
+static inline bool sealAuthorizationValid(const SealState *seal, uint64_t nowMs) {
+  return seal->authorized && nowMs >= seal->authorizedAtMs &&
+         nowMs - seal->authorizedAtMs <= seal->windowMs;
+}
+
+// A autorizacao vigente e consumida na abertura.
 static inline int sealOpened(SealState *seal, uint64_t nowMs) {
-  const bool valid = seal->authorized && nowMs >= seal->authorizedAtMs &&
-                     nowMs - seal->authorizedAtMs <= seal->windowMs;
+  const bool valid = sealAuthorizationValid(seal, nowMs);
   seal->authorized = false;
   if (valid) {
     seal->removalInProgress = true;
