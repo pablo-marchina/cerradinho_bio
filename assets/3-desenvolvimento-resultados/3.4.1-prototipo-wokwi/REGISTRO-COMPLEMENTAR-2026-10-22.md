@@ -18,23 +18,23 @@ O [registro anterior](REGISTRO-2026-10-22.md) contém os procedimentos, resultad
 
 | CT | Situação | Resultado e evidências |
 |---|---|---|
-| CT01 | APROVADO no simulador | Inicialização com lacre íntegro, dias zero, verde aceso e demais LEDs apagados. [Print](CT01.png); log A. Wi-Fi ainda desconectado no primeiro JSON, conforme ressalva abaixo. |
-| CT02 | APROVADO no simulador | Um status no dia 7 e outro no dia 14, sem status semanal intermediário. [Dia 7](CT02.png), [dia 14](CT02-dia14.png); log B. |
-| CT03 | APROVADO no alerta funcional | Um único `ALERTA_ATRASO`, no dia 6; amarelo observado em fases acesa/apagada. [Print](CT03.png); logs A/B. Frequência exata de 1 Hz não medida. |
-| CT04 | APROVADO no simulador | Alertas únicos nas rodadas de limiar 150 e 10. [150](CT04.png), [10](CT04-limiar10.png); [registro anterior](REGISTRO-2026-10-22.md). |
-| CT05 | APROVADO na detecção local | Abertura não autorizada gerou `VIOLACAO_LACRE` crítico fora do status semanal. [Evento e vermelho aceso](CT05-evento.png), [estado posterior](CT05.png); log B. |
-| CT06 | APROVADO no simulador | `RETIRADA_AUTORIZADA` dentro da janela, sem violação nessa retirada, seguida de `LACRE_REAPLICADO`. [Retirada](CT06-retirada.png), [reaplicação](CT06.png); log B. |
-| CT07 | APROVADO no simulador | Abertura depois da autorização vencer gerou violação crítica, sem retirada autorizada. [Print](CT07.png); log A. |
-| CT08 | APROVADO no armazenamento simulado | Sem rede simulada, violação guardada e exatamente um pendente no primeiro registro. Vermelho e azul acesos na captura. [Print](CT08.png); log B. |
-| CT09 | BLOQUEADO para aprovação integral | Reenvio local de dois eventos na ordem, com dias originais preservados, fila zero e azul apagado. [Antes](CT09-antes.png), [depois](CT09.png); log B. Falta transporte e confirmação do servidor exigida pelo CT. |
-| CT10 | APROVADO na fila/reenvio simulado | Rodadas A e B registradas, incluindo resumo de quatro violações após oito individuais. [Resumo](CT10.png); [registro anterior](REGISTRO-2026-10-22.md). Sem confirmação de servidor. |
-| CT11 | APROVADO nos estímulos aplicados | Três pressões curtas: três autorizações; uma pressão mantida: uma autorização, sem repetição. [Evento](CT11.png), [pressão mantida](CT11-pressao-mantida.png); log A. Não foi medida a fronteira exata de 50 ms. |
-| CT12 | APROVADO no simulador | Sequência 17% → 22% → 17% → 31% → 17% confirmou histerese: somente dois alertas, um em cada queda com rearme válido. [Segundo alerta](CT12.png) e sequência detalhada abaixo; log A. |
-| CT13 | APROVADO no diagnóstico simulado | Partindo de 78%, entrada zero gerou uma falha do sensor e nenhum alerta de bateria baixa. [Rodada isolada](CT13-isolado.png), [rodada adicional](CT13.png); log C e log A. |
-| CT14 | REPROVADO na consistência do JSON | Fluxo encerrou e permitiu reutilizar, mas o JSON de encerramento manteve `ciclo_ativo=true` e dias anteriores. [Encerramento](CT14.png), [reutilização](CT14-reutilizado.png); [registro anterior](REGISTRO-2026-10-22.md). Não corrigido nem reclassificado como aprovado. |
-| CT15 | APROVADO no simulador | Toque curto com ciclo 1 ativo gerou `VINCULO_RECUSADO`, motivo `ciclo_ativo`; nenhum novo ciclo foi iniciado. [Print](CT15.png); log B. |
-| CT16 | APROVADO nas duas recusas | Lacre aberto com NF e lacre fechado sem NF recusaram encerramento, mantendo ciclo ativo. [A](CT16.png), [B](CT16-B-nf-ausente.png); [registro anterior](REGISTRO-2026-10-22.md). |
-| CT35 | APROVADO no desligamento lógico observado | Desligamento registrado, LEDs apagados, silêncio na Serial por 26.535 ms simulados; religamento publicou `STATUS` e restaurou LEDs do ciclo. [Desligado](CT35-desligado.png), [religado](CT35.png); log A. |
+| CT01 | APROVADO no simulador | Inicialização com lacre íntegro, dias zero, verde aceso e demais LEDs apagados. [Print](ct01.png); log A. Wi-Fi ainda desconectado no primeiro JSON, conforme ressalva abaixo. |
+| CT02 | APROVADO no simulador | Um status no dia 7 e outro no dia 14, sem status semanal intermediário. [Dia 7](ct02.png), [dia 14](ct02Dia14.png); log B. |
+| CT03 | APROVADO no alerta funcional | Um único `ALERTA_ATRASO`, no dia 6; amarelo observado em fases acesa/apagada. [Print](ct03.png); logs A/B. Frequência exata de 1 Hz não medida. |
+| CT04 | APROVADO no simulador | Alertas únicos nas rodadas de limiar 150 e 10. [150](ct04.png), [10](ct04Limiar10.png); [registro anterior](REGISTRO-2026-10-22.md). |
+| CT05 | APROVADO na detecção local | Abertura não autorizada gerou `VIOLACAO_LACRE` crítico fora do status semanal. [Evento e vermelho aceso](ct05Evento.png), [estado posterior](ct05.png); log B. |
+| CT06 | APROVADO no simulador | `RETIRADA_AUTORIZADA` dentro da janela, sem violação nessa retirada, seguida de `LACRE_REAPLICADO`. [Retirada](ct06Retirada.png), [reaplicação](ct06.png); log B. |
+| CT07 | APROVADO no simulador | Abertura depois da autorização vencer gerou violação crítica, sem retirada autorizada. [Print](ct07.png); log A. |
+| CT08 | APROVADO no armazenamento simulado | Sem rede simulada, violação guardada e exatamente um pendente no primeiro registro. Vermelho e azul acesos na captura. [Print](ct08.png); log B. |
+| CT09 | BLOQUEADO para aprovação integral | Reenvio local de dois eventos na ordem, com dias originais preservados, fila zero e azul apagado. [Antes](ct09Antes.png), [depois](ct09.png); log B. Falta transporte e confirmação do servidor exigida pelo CT. |
+| CT10 | APROVADO na fila/reenvio simulado | Rodadas A e B registradas, incluindo resumo de quatro violações após oito individuais. [Resumo](ct10.png); [registro anterior](REGISTRO-2026-10-22.md). Sem confirmação de servidor. |
+| CT11 | APROVADO nos estímulos aplicados | Três pressões curtas: três autorizações; uma pressão mantida: uma autorização, sem repetição. [Evento](ct11.png), [pressão mantida](ct11PressaoMantida.png); log A. Não foi medida a fronteira exata de 50 ms. |
+| CT12 | APROVADO no simulador | Sequência 17% → 22% → 17% → 31% → 17% confirmou histerese: somente dois alertas, um em cada queda com rearme válido. [Segundo alerta](ct12.png) e sequência detalhada abaixo; log A. |
+| CT13 | APROVADO no diagnóstico simulado | Partindo de 78%, entrada zero gerou uma falha do sensor e nenhum alerta de bateria baixa. [Rodada isolada](ct13Isolado.png), [rodada adicional](ct13.png); log C e log A. |
+| CT14 | REPROVADO na consistência do JSON | Fluxo encerrou e permitiu reutilizar, mas o JSON de encerramento manteve `ciclo_ativo=true` e dias anteriores. [Encerramento](ct14.png), [reutilização](ct14Reutilizado.png); [registro anterior](REGISTRO-2026-10-22.md). Não corrigido nem reclassificado como aprovado. |
+| CT15 | APROVADO no simulador | Toque curto com ciclo 1 ativo gerou `VINCULO_RECUSADO`, motivo `ciclo_ativo`; nenhum novo ciclo foi iniciado. [Print](ct15.png); log B. |
+| CT16 | APROVADO nas duas recusas | Lacre aberto com NF e lacre fechado sem NF recusaram encerramento, mantendo ciclo ativo. [A](ct16.png), [B](ct16BNfAusente.png); [registro anterior](REGISTRO-2026-10-22.md). |
+| CT35 | APROVADO no desligamento lógico observado | Desligamento registrado, LEDs apagados, silêncio na Serial por 26.535 ms simulados; religamento publicou `STATUS` e restaurou LEDs do ciclo. [Desligado](ct35Desligado.png), [religado](ct35.png); log A. |
 
 ## Logs desta complementação
 
@@ -56,7 +56,7 @@ Ressalva: `wifi_connected=false` nesse primeiro JSON; a conexão Wi-Fi aconteceu
 
 Critérios: CT02, RF011/RF009 e RN07; CT03, RF013/RF012 e RN04.
 
-No log B, antes dos 19 segundos simulados, os únicos `STATUS_SEMANAL` foram em `8627`, dia 7, e `15627`, dia 14. Um único `ALERTA_ATRASO` saiu em `7627`, dia 6. A captura de dia 7 e a captura de atraso mostram a mesma região real da Serial, por isso os arquivos CT02.png e CT03.png têm o mesmo conteúdo.
+No log B, antes dos 19 segundos simulados, os únicos `STATUS_SEMANAL` foram em `8627`, dia 7, e `15627`, dia 14. Um único `ALERTA_ATRASO` saiu em `7627`, dia 6. A captura de dia 7 e a captura de atraso mostram a mesma região real da Serial, por isso os arquivos ct02.png e ct03.png têm o mesmo conteúdo.
 
 O segundo boot do log A também permaneceu ativo até depois do dia 287, com exatamente um alerta de atraso e status semanais nos múltiplos de 7 até o desligamento. Isso complementa as fotografias com observação contínua de não duplicação. O amarelo foi visto aceso e apagado, mas a frequência exata de 1 Hz não recebeu medição instrumental; essa verificação temporal permanece pendente para uma aprovação metrológica do critério.
 
@@ -66,7 +66,7 @@ Critérios: CT05, RF006/RN05; CT06, RF007/RN06. Uma retirada autorizada e uma ab
 
 1. Autorização em `45015` no log B. A abertura foi lida em `45323` com `authorized_removal=true`; `RETIRADA_AUTORIZADA` saiu em `45352`, 337 ms depois da autorização e dentro dos 3.000 ms da janela demo.
 2. Fechamento em `51016`; `LACRE_REAPLICADO` em `51052`. Nenhuma `VIOLACAO_LACRE` ocorreu entre a autorização dessa retirada e sua reaplicação.
-3. Nova abertura, sem autorização válida, em `56431`, com `authorized_removal=false`; `VIOLACAO_LACRE` crítica em `56472`, dia 54, fora dos dias semanais. O print complementar CT05-evento.png mostra o evento e o vermelho aceso. O CT05.png mostra o estado posterior e uma fase apagada do piscar.
+3. Nova abertura, sem autorização válida, em `56431`, com `authorized_removal=false`; `VIOLACAO_LACRE` crítica em `56472`, dia 54, fora dos dias semanais. O print complementar ct05Evento.png mostra o evento e o vermelho aceso. O ct05.png mostra o estado posterior e uma fase apagada do piscar.
 
 Os 41 ms entre `seal_changed` e `VIOLACAO_LACRE` são intervalo entre dois registros do firmware, não latência desde a estabilização física do contato. Não foi introduzida condição de GNSS sem fix nesta rodada. A detecção durante essa condição pertence ao ensaio específico de lacre do CT18.
 
@@ -84,7 +84,7 @@ Depois de a autorização vencer, o lacre foi aberto: `seal_changed` em `111300`
 
 Critérios: CT08, RF010/RF008 e RN05/RN09; CT09, RF010/RF008 e RN09. Fila vazia e lacre fechado antes de indisponibilizar a rede.
 
-1. No log B, a abertura sem rede foi lida em `96725`, `authorized_removal=false`. A Serial registrou `[FILA] guardado: VIOLACAO_LACRE` e `[FILA] 1 pendente`. O print CT08.png mostra o evento pendente e os LEDs vermelho/azul acesos. O Wi-Fi permaneceu conectado, como previsto para SW_REDE.
+1. No log B, a abertura sem rede foi lida em `96725`, `authorized_removal=false`. A Serial registrou `[FILA] guardado: VIOLACAO_LACRE` e `[FILA] 1 pendente`. O print ct08.png mostra o evento pendente e os LEDs vermelho/azul acesos. O Wi-Fi permaneceu conectado, como previsto para SW_REDE.
 2. Mantendo a rede indisponível, o status semanal do dia 98 também foi guardado. A fila passou a dois pendentes, sem saturação.
 3. Ao restaurar a rede, a Serial anunciou reenvio de dois eventos na ordem. Saíram a violação, com `uptime_ms=96836` e `dia_ocorrencia=95`, e o status, com `uptime_ms=99627` e `dia_ocorrencia=98`. Depois, `[FILA] 0 pendentes`, com azul apagado.
 
@@ -96,11 +96,11 @@ Critério: CT12, RF019/RF027 e RN10. Bateria inicialmente saudável, depois subm
 
 | Etapa | Entrada do potenciômetro | Leitura observada | Resultado |
 |---|---|---|---|
-| Primeira queda | 184 | 17% | Primeiro `BATERIA_BAIXA` em `225386`. [Print](CT12-primeiro-alerta.png). |
-| Recuperação insuficiente | 230 | 22% | Nenhum novo alerta. [Print](CT12-recuperacao-insuficiente.png). |
-| Nova queda, sem rearme | 184 | 17% | Continuou sem novo alerta. [Print](CT12-sem-repeticao.png). |
-| Recuperação acima de 25% | 320 | 31% | Leitura saudável confirmada antes de reduzir novamente. [Print](CT12-recuperacao.png). |
-| Segunda queda, após rearme | 184 | 17% | Segundo `BATERIA_BAIXA` em `265814`. [Print](CT12.png). |
+| Primeira queda | 184 | 17% | Primeiro `BATERIA_BAIXA` em `225386`. [Print](ct12PrimeiroAlerta.png). |
+| Recuperação insuficiente | 230 | 22% | Nenhum novo alerta. [Print](ct12RecuperacaoInsuficiente.png). |
+| Nova queda, sem rearme | 184 | 17% | Continuou sem novo alerta. [Print](ct12SemRepeticao.png). |
+| Recuperação acima de 25% | 320 | 31% | Leitura saudável confirmada antes de reduzir novamente. [Print](ct12Recuperacao.png). |
+| Segunda queda, após rearme | 184 | 17% | Segundo `BATERIA_BAIXA` em `265814`. [Print](ct12.png). |
 
 Exatamente dois alertas de bateria baixa no segundo boot do log A. A permanência em 17% e a passagem 22% → 17% não duplicaram o primeiro. A preparação anterior à primeira queda incluiu leituras de 78% e 25%; não houve alerta nessas condições.
 
@@ -141,13 +141,13 @@ Pendências e acompanhamento após a execução:
 1. **CT14:** corrigir a consistência do estado publicado em `CICLO_ENCERRADO` e executar novamente. A falha observada continua REPROVADA.
 2. **CT09:** implementar/integrar transporte e confirmação do servidor, então verificar que somente eventos confirmados são removidos. Até lá, aprovação integral BLOQUEADA.
 3. **Medições temporais:** medir a frequência de 1 Hz do amarelo e, se exigida aprovação temporal completa, usar estímulos/instrumentação para debounce e latência. Os prints e os registros acima não comprovam essas precisões.
-4. **Integração documental — CONCLUÍDA:** registros, prints e logs vinculados na seção 3.4.1 e na RTM da [documentação principal](../../document/documentacao.md), com atualização da compatibilidade da RN11. Somente as seções 3.3.2, 3.3.4 e 3.4.1 da Sprint 1 foram alteradas; IDs preservados e demais sprints intactas.
+4. **Integração documental — CONCLUÍDA:** registros, prints e logs vinculados na seção 3.4.1 e na RTM da [documentação principal](../../../document/documentacao.md), com atualização da compatibilidade da RN11. Somente as seções 3.3.2, 3.3.4 e 3.4.1 da Sprint 1 foram alteradas; IDs preservados e demais sprints intactas.
 5. Os novos casos de falha combinada propostos a partir de CT36 e a eventual regra para lacre aberto com equipamento desligado continuam fora desta execução dos CTs existentes.
 
 Estado final da bancada: simulador pausado em aproximadamente 132,3 s da última rodada; ciclo 1 ativo, lacre fechado, rede simulada disponível, bateria 78%, fila zero; capturadores Serial encerrados. O estado final descrito no registro anterior corresponde àquela execução anterior e foi sucedido por esta rodada.
 
-Nenhum commit, push ou MR foi realizado. As evidências estão disponíveis no diretório `assets/wokwi/` para revisão.
+Nenhum commit, push ou MR foi realizado. As evidências estão disponíveis no diretório `assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/` para revisão.
 
 ## Adendo — reteste do CT14
 
-Depois deste registro, `requestClose()` em `src/firmware/main.cpp` passou a encerrar o ciclo antes de publicar `CICLO_ENCERRADO` (commit `7777594`). O [log de confirmação da falha](CT14-reteste.serial.txt), feito antes da correção, repete `ciclo_ativo=true`; ele também traz a recusa por NF ausente da [captura de reteste do CT16](CT16-reteste-nf-ausente.png). O [log do reteste](CT14-corrigido.serial.txt), feito com a correção, mostra `CICLO_ENCERRADO` com `ciclo_ativo=false` e `dias_fora=0`. O CT14 passa a **APROVADO no reteste**; a reprovação da primeira execução continua registrada acima. O reteste não repetiu a reutilização, cuja lógica não mudou.
+Depois deste registro, `requestClose()` em `src/firmware/main.cpp` passou a encerrar o ciclo antes de publicar `CICLO_ENCERRADO` (commit `7777594`). O [log de confirmação da falha](CT14-reteste.serial.txt), feito antes da correção, repete `ciclo_ativo=true`; ele também traz a recusa por NF ausente da [captura de reteste do CT16](ct16RetesteNfAusente.png). O [log do reteste](CT14-corrigido.serial.txt), feito com a correção, mostra `CICLO_ENCERRADO` com `ciclo_ativo=false` e `dias_fora=0`. O CT14 passa a **APROVADO no reteste**; a reprovação da primeira execução continua registrada acima. O reteste não repetiu a reutilização, cuja lógica não mudou.

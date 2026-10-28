@@ -3,8 +3,8 @@
 **Autor:** Arthur Loyola (@arthur.loyola)
 
 > **Pergunta investigada:** como apresentar, em 5 minutos exatos e com 2 pessoas, os quatro artefatos da Sprint 1 de modo que o parceiro confirme ou corrija o que assumimos, em especial quem são as nossas personas.
-> **O que foi feito:** cruzamento de `ArtefatosSolicitados.md` (itens e critérios dos Artefatos 1 a 4), do planning (`SP1Planning.html`), dos reports do kick-off e dos slides da professora (arquitetura da narrativa, timeboxing de 5 minutos, matriz de qualidade); a estrutura virou um roteiro de alinhamento, em que cada bloco termina com uma pergunta de confirmação.
-> **Evidência:** `ArtefatosSolicitados.md`, `SP1Planning.html`, report de personas (`03-personas-do-fluxo.md`), reports do kick-off e slides "Sprint 1 - Encontro 2" (Camila Naves Arantes).
+> **O que foi feito:** cruzamento de `artefatos-solicitados.md` (itens e critérios dos Artefatos 1 a 4), do planning (`SP1Planning.html`), dos reports do kick-off e dos slides da professora (arquitetura da narrativa, timeboxing de 5 minutos, matriz de qualidade); a estrutura virou um roteiro de alinhamento, em que cada bloco termina com uma pergunta de confirmação.
+> **Evidência:** `artefatos-solicitados.md`, `SP1Planning.html`, report de personas (`03-personas-do-fluxo.md`), reports do kick-off e slides "Sprint 1 - Encontro 2" (Camila Naves Arantes).
 > **Em aberto:** status real de cada artefato no dia da review; prints do Wokwi (CT03, CT04 e CT05); numeração final de RF, RN e CT (hoje só existe no planning; a `documentacao.md` ainda está com o texto do template); trecho do Bruno a confirmar com ele; roteiro falado (card #43).
 > **Alimenta:** roteiro da apresentação da Sprint 1 (card #43); critérios de Didática, Organização, Envolvimento e Contribuição individual da review.
 > **Implicação:** a apresentação mostra os quatro artefatos em uma linha de raciocínio só (negócio, personas, requisitos, protótipo), com as personas em destaque, e termina na pergunta da professora: "O que precisamos validar com o parceiro antes de avançar?". Cada bloco gera um item para a lista de validação.
@@ -45,7 +45,7 @@ Padrão de todo bloco: o slide mostra **o que assumimos** e termina com uma linh
 
 ## 4. Cobertura dos artefatos
 
-Conferência de `ArtefatosSolicitados.md` contra a apresentação e contra o planning. "Citado" quer dizer uma linha no slide; o detalhe fica na `documentacao.md`.
+Conferência de `artefatos-solicitados.md` contra a apresentação e contra o planning. "Citado" quer dizer uma linha no slide; o detalhe fica na `documentacao.md`.
 
 ### 4.1 Artefato 1: negócio (bloco 1)
 

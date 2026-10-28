@@ -2,8 +2,8 @@
 #include <TinyGPS++.h>
 #include <WiFi.h>
 #include <Preferences.h>
-#define setup tracker_setup
-#define loop tracker_loop
+#define setup trackerSetup
+#define loop trackerLoop
 #include "../../src/firmware/main.cpp"
 #undef setup
 #undef loop
@@ -25,7 +25,7 @@ void inspectNvs(const char *label) {
   StoredContext ctx{};
   if (restoreContext(ctx)) {
     Serial.printf("[ensaio] NVS ctx ciclo=%lu dias=%lu ativo=%u lacre_aberto=%u clock_ms=%llu\r\n",
-      (unsigned long)ctx.cycle.cycle_id, (unsigned long)ctx.cycle.days_out,
+      (unsigned long)ctx.cycle.cycleId, (unsigned long)ctx.cycle.daysOut,
       ctx.cycleActive, ctx.sealOpen, (unsigned long long)ctx.clockMs);
   }
   StoredQueueMeta meta{};
@@ -40,7 +40,7 @@ void inspectNvs(const char *label) {
 }
 
 void setup() {
-  tracker_setup();
+  trackerSetup();
   Serial1.begin(115200, SERIAL_8N1, 32, -1);
   Serial.println("[ensaio] Instrumentacao CT18-CT22 v1; GPIO32 recebe estimulos/sondas; firmware de negocio sem alteracao");
   inspectNvs("boot");
@@ -60,5 +60,5 @@ void loop() {
       probeLine = "";
     } else if (probeLine.length() < 240) probeLine += c;
   }
-  tracker_loop();
+  trackerLoop();
 }

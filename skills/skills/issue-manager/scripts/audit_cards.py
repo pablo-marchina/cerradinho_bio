@@ -1,5 +1,5 @@
 """Audit (and, on explicit request, fix) GitLab cards against the team card template
-(.gitlab/issue_templates/Tempalte01.md, in Portuguese) and the label/estimate rules graded in sprint reviews.
+(.gitlab/issue_templates/card-kanban.md, in Portuguese) and the label/estimate rules graded in sprint reviews.
 
 Read-only by default (run it on your own cards: each member is graded on their own issues):
     python scripts/audit_cards.py audit --milestone "Sprint 04" --assignee <your.username> [--iid 207 208] [--json]

@@ -1,18 +1,18 @@
 # Planejamento de energia e GNSS
 
-**Situação: proposta para as próximas sprints, ainda não implementada.** Este documento preserva o estudo de baixo consumo, os critérios mensuráveis e os testes futuros. As seções das Sprints 2 a 5 da [documentação principal](../documentacao.md) permanecem no template original; o conteúdo abaixo deve ser revisado antes de incorporá-lo às respectivas entregas.
+**Situação: proposta para as próximas sprints, ainda não implementada.** Este documento preserva o estudo de baixo consumo, os critérios mensuráveis e os testes futuros. As seções das Sprints 2 a 5 da [documentação principal](../../../documentacao.md) permanecem no template original; o conteúdo abaixo deve ser revisado antes de incorporá-lo às respectivas entregas.
 
 **Decisões e pendências de 21/10/2026:** o módulo de referência é o Quectel LC76G-PA. A adaptação do chip Wokwi está pendente. Autonomia, latência de alerta, tempo de chegada da autorização e duração máxima sem conexão continuam **PENDENTE DE VALIDAÇÃO** com o parceiro. A possibilidade de autorização antecipada não foi aprovada.
 
 ## 1. Máquina de estados proposta
 
-**Estado atual.** O [firmware principal](../../src/firmware/main.cpp) mantém o ESP32 ativo, recebe NMEA continuamente, verifica o lacre por polling, tenta reconectar o Wi-Fi e mantém LEDs de diagnóstico conforme as entradas. Há JSON na Serial e fila em NVS, sem entrega ao servidor. Ainda não há suspensão, controle de alimentação do GNSS, confirmação de entrega ou lógica de autorização/ciclo. Os valores atuais estão em [`include/config.h`](../../include/config.h).
+**Estado atual.** O [firmware principal](../../../../src/firmware/main.cpp) mantém o ESP32 ativo, recebe NMEA continuamente, verifica o lacre por polling, tenta reconectar o Wi-Fi e mantém LEDs de diagnóstico conforme as entradas. Há JSON na Serial e fila em NVS, sem entrega ao servidor. Ainda não há suspensão, controle de alimentação do GNSS, confirmação de entrega ou lógica de autorização/ciclo. Os valores atuais estão em [`include/config.h`](../../../../include/config.h).
 
 O diagrama mostra quatro estados principais do gerenciamento de energia. As ações e as condições de saída ficam nas tabelas, evitando cruzamentos de setas. Lacre, autorização, ciclo e fila têm seus próprios estados de negócio. Esta visão não descreve uma funcionalidade já presente no firmware.
 
-![Ciclo proposto: preparar tarefas, executar, preparar suspensão e suspender; despertar por temporizador ou lacre](../../assets/diagramas/estados-energia.svg)
+![Ciclo proposto: preparar tarefas, executar, preparar suspensão e suspender; despertar por temporizador ou lacre](../../../../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/estadosEnergia.svg)
 
-*Figura P1 — Visão geral dos estados de energia. Azul: fases ativas; verde: suspensão. Fonte: elaboração própria. [Fonte editável em Mermaid](../../assets/diagramas/estados-energia.mmd).*
+*Figura P1 — Visão geral dos estados de energia. Azul: fases ativas; verde: suspensão. Fonte: elaboração própria. [Fonte editável em Mermaid](../../../../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/estadosEnergia.mmd).*
 
 | Estado | Responsabilidade | Condição de saída |
 |---|---|---|
@@ -82,7 +82,7 @@ Os critérios mensuráveis propostos ficam nesta seção; os procedimentos futur
 
 ### 3.3. Rastreabilidade do planejamento
 
-Rastreabilidade técnica proposta, vinculada aos RF e RN de negócio das seções 3.3.1 e 3.3.2 da [documentação](../documentacao.md). A matriz não indica testes executados nem cobre integralmente os 27 RFs: prorrogação, prazo legal, ausência de comunicação e autenticação da plataforma/dispositivo ainda precisam de cobertura específica além dos cenários embarcados abaixo.
+Rastreabilidade técnica proposta, vinculada aos RF e RN de negócio das seções 3.3.1 e 3.3.2 da [documentação](../../../documentacao.md). A matriz não indica testes executados nem cobre integralmente os 27 RFs: prorrogação, prazo legal, ausência de comunicação e autenticação da plataforma/dispositivo ainda precisam de cobertura específica além dos cenários embarcados abaixo.
 
 | Necessidade | RF | RN de negócio | Regra técnica proposta | RNF | Casos de teste | Evidência a produzir |
 |---|---|---|---|---|---|---|
@@ -98,7 +98,7 @@ Rastreabilidade técnica proposta, vinculada aos RF e RN de negócio das seçõe
 
 ## 4. Como registrar e validar
 
-Os CT01–CT23 permanecem na seção 3.4.1 da [documentação principal](../documentacao.md). Os CT24–CT34 abaixo estão reservados ao planejamento futuro e não são resultados da Sprint 1. Os exemplos CT11/CT21 nas seções ainda não preenchidas do template não representam novos casos executados.
+Os CT01–CT23 permanecem na seção 3.4.1 da [documentação principal](../../../documentacao.md). Os CT24–CT34 abaixo estão reservados ao planejamento futuro e não são resultados da Sprint 1. Os exemplos CT11/CT21 nas seções ainda não preenchidas do template não representam novos casos executados.
 
 Antes de executar, definir metas e condições, identificar versão e configuração e registrar os dados medidos. Usar o registro de execução da seção 3.4.1. Para critérios ainda sem limite acordado, informar a medição e manter a aprovação pendente. Consumo, recepção GNSS, fixação e exposição à água exigem validação física.
 
@@ -112,7 +112,7 @@ Antes de executar, definir metas e condições, identificar versão e configura�
 | u-blox MAX-M10S — alternativa considerada | UART/NMEA, modos de economia e backup por hardware. Backup típico de **28 µA**, nas condições `V_BCKP=3,3 V`, `VCC=V_IO=0 V`. | Verificar alimentação, nível de I/O e sequência de desligamento; escolher placa que exponha os sinais necessários. Consumo de placa, regulador e antena entra no ensaio. [Ficha R08](https://content.u-blox.com/sites/default/files/MAX-M10S_DataSheet_UBX-20035208.pdf). |
 | **Quectel LC76G, variante PA — escolhido** | UART/NMEA e alimentação de 3,3 V na PA; backup típico de **13 µA**, com `V_BCKP` mantido, nas condições do fabricante. | Backup exige comando `PAIR650` e corte de VCC conforme o fabricante. Conferir a configuração UART da versão adquirida e compatibilizar com o firmware. A variante PB usa 1,8 V e não é substituição elétrica direta. [Hardware Design V1.3](https://www.quectel.com/content/uploads/2023/05/Quectel_LC76G_Series_Hardware_Design_V1.3.pdf). |
 
-Não foi encontrado GPS nativo com esses recursos no [catálogo oficial do Wokwi](https://docs.wokwi.com/getting-started/supported-hardware); isso não exclui projetos comunitários. O [chip próprio do projeto](../../chips/gps.chip.c) pode ser evoluído com a [Chips API](https://docs.wokwi.com/chips-api/getting-started).
+Não foi encontrado GPS nativo com esses recursos no [catálogo oficial do Wokwi](https://docs.wokwi.com/getting-started/supported-hardware); isso não exclui projetos comunitários. O [chip próprio do projeto](../../../../chips/gps.chip.c) pode ser evoluído com a [Chips API](https://docs.wokwi.com/chips-api/getting-started).
 
 **Diretriz de integração e simulação:** adaptar o chip do Wokwi ao **LC76G-PA**, reproduzindo os comportamentos usados pelo projeto. O gerador genérico atual ainda não satisfaz essa correspondência. A placa física deve permitir acesso a VCC, V_BCKP e UART para executar as sequências de energia. Validar o módulo escolhido pelo CT28 e medir `Q_ciclo = Q_backup + Q_aquisicao + Q_processamento + Q_comunicacao` na mesma alimentação de referência. Para intervalos semanais, comparar backup e desligamento completo; preservar dados não garante fix rápido após qualquer intervalo. Antena, céu obstruído e metal entram no ensaio. Rever o limite atual de 10 s após medições. Preço, estoque, placa e versão de firmware do módulo: **PENDENTE DE VALIDAÇÃO**.
 

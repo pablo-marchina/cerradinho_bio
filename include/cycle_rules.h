@@ -12,48 +12,48 @@ enum {
 };
 
 typedef struct {
-  uint32_t cycle_id;
-  uint32_t days_out;
-  uint32_t expected_return_days;
-  uint32_t stay_threshold_days;
-  uint32_t status_interval_days;
-  bool late_sent;
-  bool stay_sent;
+  uint32_t cycleId;
+  uint32_t daysOut;
+  uint32_t expectedReturnDays;
+  uint32_t stayThresholdDays;
+  uint32_t statusIntervalDays;
+  bool lateSent;
+  bool staySent;
 } CycleState;
 
-static inline void cycle_start(CycleState *cycle, uint32_t cycle_id, uint32_t expected_return_days,
-                               uint32_t stay_threshold_days, uint32_t status_interval_days) {
-  cycle->cycle_id = cycle_id;
-  cycle->days_out = 0;
-  cycle->expected_return_days = expected_return_days;
-  cycle->stay_threshold_days = stay_threshold_days;
-  cycle->status_interval_days = status_interval_days;
-  cycle->late_sent = false;
-  cycle->stay_sent = false;
+static inline void cycleStart(CycleState *cycle, uint32_t cycleId, uint32_t expectedReturnDays,
+                               uint32_t stayThresholdDays, uint32_t statusIntervalDays) {
+  cycle->cycleId = cycleId;
+  cycle->daysOut = 0;
+  cycle->expectedReturnDays = expectedReturnDays;
+  cycle->stayThresholdDays = stayThresholdDays;
+  cycle->statusIntervalDays = statusIntervalDays;
+  cycle->lateSent = false;
+  cycle->staySent = false;
 }
 
 // Atraso: passou do prazo previsto. Permanencia: atingiu o limiar. Podem coexistir.
-static inline bool cycle_is_late(const CycleState *cycle) {
-  return cycle->days_out > cycle->expected_return_days;
+static inline bool cycleIsLate(const CycleState *cycle) {
+  return cycle->daysOut > cycle->expectedReturnDays;
 }
 
-static inline bool cycle_in_stay(const CycleState *cycle) {
-  return cycle->days_out >= cycle->stay_threshold_days;
+static inline bool cycleInStay(const CycleState *cycle) {
+  return cycle->daysOut >= cycle->stayThresholdDays;
 }
 
 // Avanca um dia e devolve os eventos daquele dia. Cada alerta sai uma vez por ciclo.
-static inline unsigned cycle_advance_day(CycleState *cycle) {
+static inline unsigned cycleAdvanceDay(CycleState *cycle) {
   unsigned events = 0;
-  ++cycle->days_out;
-  if (cycle->status_interval_days > 0 && cycle->days_out % cycle->status_interval_days == 0) {
+  ++cycle->daysOut;
+  if (cycle->statusIntervalDays > 0 && cycle->daysOut % cycle->statusIntervalDays == 0) {
     events |= CYCLE_EVENT_STATUS;
   }
-  if (cycle_is_late(cycle) && !cycle->late_sent) {
-    cycle->late_sent = true;
+  if (cycleIsLate(cycle) && !cycle->lateSent) {
+    cycle->lateSent = true;
     events |= CYCLE_EVENT_LATE;
   }
-  if (cycle_in_stay(cycle) && !cycle->stay_sent) {
-    cycle->stay_sent = true;
+  if (cycleInStay(cycle) && !cycle->staySent) {
+    cycle->staySent = true;
     events |= CYCLE_EVENT_STAY;
   }
   return events;
@@ -61,11 +61,11 @@ static inline unsigned cycle_advance_day(CycleState *cycle) {
 
 // Muda o limiar sem rearmar o alerta ja emitido no ciclo (RN04): cada alerta sai
 // uma vez por ciclo, mesmo que o limiar suba e depois volte a ser atingido.
-static inline void cycle_set_stay_threshold(CycleState *cycle, uint32_t stay_threshold_days) {
-  cycle->stay_threshold_days = stay_threshold_days;
+static inline void cycleSetStayThreshold(CycleState *cycle, uint32_t stayThresholdDays) {
+  cycle->stayThresholdDays = stayThresholdDays;
 }
 
-// Amarelo fixo na permanencia; piscando (blink_on alterna a 1 Hz) no atraso.
-static inline bool cycle_yellow_led(const CycleState *cycle, bool blink_on) {
-  return cycle_in_stay(cycle) || (cycle_is_late(cycle) && blink_on);
+// Amarelo fixo na permanencia; piscando (blinkOn alterna a 1 Hz) no atraso.
+static inline bool cycleYellowLed(const CycleState *cycle, bool blinkOn) {
+  return cycleInStay(cycle) || (cycleIsLate(cycle) && blinkOn);
 }

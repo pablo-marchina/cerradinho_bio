@@ -65,23 +65,56 @@ São **restritos**: cadastros de ativos e fornecedores, notas fiscais, localiza�
 
 ```
 .
-├── AGENT.md                  # este arquivo
-├── README.md                 # visão geral do projeto, integrantes, instalação e versões
-├── skills/                   # skills para agentes de IA (ver skills/README.md e skills/SKILLS_INDEX.md)
-├── assets/                   # imagens, vídeos e logo do grupo
+├── AGENT.md                        # este arquivo
+├── README.md                       # visão geral do projeto, integrantes, instalação e versões
+├── platformio.ini                  # ambientes demo e weekly do firmware
+├── .gitlab/issue_templates/        # card-kanban.md (modelo de card)
+├── assets/                         # imagens e arquivos de apoio, uma pasta por seção da documentacao.md
+│   ├── inteli.png                  # itens comuns ficam na raiz
+│   ├── 1-introducao/
+│   ├── 2-metodologia/
+│   ├── 3-desenvolvimento-resultados/
+│   │   └── 3.1.2-swot/ ...         # uma subpasta por subseção com conteúdo
+│   ├── 4-conclusoes-recomendacoes/
+│   └── 5-referencias/
+├── chips/                          # chip GPS customizado do Wokwi e gerador NMEA
 ├── document/
-│   ├── documentacao.md       # documentação principal (IoTDoc), dividida por sprint
-│   ├── TemplateManual.md     # manual de instruções (sprints 3 a 5)
-│   └── outros/               # documentos complementares
-│       └── reports/          # controle interno do grupo (tudo aqui dentro); não é evidência
-└── src/
-    ├── firmware/             # código do dispositivo embarcado
-    └── ...                   # crie pastas conforme a arquitetura (ex.: backend/, frontend/, api/)
+│   ├── documentacao.md             # documentação principal (IoTDoc), dividida por sprint
+│   ├── manual-de-instrucoes.md     # manual de instruções (sprints 3 a 5)
+│   └── outros/                     # documentos complementares
+│       ├── 3-desenvolvimento-resultados/  # mesmas pastas de seção de assets/
+│       ├── orientacoes/            # enunciado dos artefatos e guia de estilos da disciplina
+│       └── reports/                # controle interno do grupo (tudo aqui dentro); não é evidência
+├── include/                        # cabeçalhos e regras portáveis do firmware
+├── scripts/                        # setup, build, verificação e exportação Wokwi
+├── skills/                         # skills para agentes de IA (ver skills/README.md e skills/SKILLS_INDEX.md)
+├── src/
+│   ├── firmware/                   # código do dispositivo embarcado e circuito Wokwi (prototipo_wokwi/)
+│   └── ...                         # crie pastas conforme a arquitetura (ex.: backend/, frontend/, api/)
+└── tests/                          # testes em computador, dublês do Arduino e cenários Wokwi
 ```
 
 - A `documentacao.md` segue a ordem do template do Inteli. Cada seção indica em qual sprint deve ser entregue; preencha a seção certa e **remova os trechos em itálico** de orientação quando a seção estiver concluída.
-- Imagens usadas na documentação ficam em `assets/` e são referenciadas com caminho relativo (ex.: `../assets/arquivo.png`), sempre com legenda e fonte.
-- Os documentos de entrega (`documentacao.md`, `TemplateManual.md`, `README.md` e os de `document/outros/` fora de `reports/`) não falam do processo interno do grupo: nada de branches (`develop` ou nomes de branch), issues, cards, merge requests, commits, rascunhos de integrantes, "integração" entre branches ou "arquivo local". Descreva o projeto como o leitor o vê na `main`. Se a nota for útil para o grupo, use um comentário HTML (`<!-- ... -->`), que o GitLab não renderiza.
+- Imagens usadas na documentação ficam em `assets/`, na pasta da seção em que aparecem (ex.: `assets/3-desenvolvimento-resultados/3.2.2-jornada-usuario/`), e são referenciadas com caminho relativo (ex.: `../assets/3-desenvolvimento-resultados/3.1.2-swot/swot.png`), sempre com legenda e fonte. Documentos complementares de uma seção ficam na pasta equivalente em `document/outros/`.
+
+### Convenções de nomes
+
+| O quê | Padrão | Exemplo |
+|---|---|---|
+| Pasta de seção (`assets/` e `document/outros/`) | `N-nome-da-secao` | `3-desenvolvimento-resultados/` |
+| Pasta de subseção | `N.N.N-nome` | `3.1.2-swot/`, `3.4.2-prototipo-fisico-offline/` |
+| Arquivo de imagem (png, jpg, svg, gif) | camelCase | `cincoForcas.png`, `persona01Geraldo.png` |
+| Fonte editável de uma imagem (`.mmd`, `.json`) | mesmo nome da imagem | `estadosEnergia.mmd` |
+| Documentos `.md`, planilhas, logs e scripts | kebab-case, sem acento e sem espaço | `guia-de-estilos.md`, `verify-host.sh` |
+| C/C++: funções, variáveis, parâmetros e campos | camelCase | `cycleStart`, `daysOut` |
+| C/C++: tipos e classes | PascalCase | `CycleState`, `IndicatorController` |
+| C/C++: macros e constantes de enum | UPPER_SNAKE_CASE | `CYCLE_EVENT_LATE`, `DEMO_MODE` |
+| Python | PEP 8 (snake_case) | `read_jsonc` |
+
+- Não renomeie nomes de APIs externas (Wokwi chip API, Arduino/ESP32, libc) nem as chaves do JSON da Serial e da NVS: são contrato de dados conferido pelos logs de evidência.
+- Crie a pasta de uma seção só quando houver conteúdo. As pastas de seção vazias de `assets/` têm `.gitkeep`; apague-o quando a pasta receber arquivos.
+- A cada sprint encerrada, acrescente uma entrada ao "Histórico de lançamentos" do `README.md`.
+- Os documentos de entrega (`documentacao.md`, `manual-de-instrucoes.md`, `README.md` e os de `document/outros/` fora de `reports/`) não falam do processo interno do grupo: nada de branches (`develop` ou nomes de branch), issues, cards, merge requests, commits, rascunhos de integrantes, "integração" entre branches ou "arquivo local". Descreva o projeto como o leitor o vê na `main`. Se a nota for útil para o grupo, use um comentário HTML (`<!-- ... -->`), que o GitLab não renderiza.
 - Os arquivos `placeholder.md` devem ser apagados quando a pasta tiver conteúdo real.
 - Ao criar uma nova pasta em `src/`, atualize a seção "Estrutura de pastas" do `README.md`.
 - O repositório é hospedado no GitLab do Inteli (`git.inteli.edu.br`).
@@ -137,7 +170,7 @@ Regras ao criar ou sugerir um card:
 ## 6. Boas práticas para agentes
 
 - Não invente dados do parceiro (quantidade de remessas, prazos reais, fornecedores). Se a informação não estiver no repositório, marque como pendente ou pergunte ao grupo.
-- Antes de trabalhar num artefato, leia o enunciado e os critérios de avaliação dele em `document/outros/ArtefatosSolicitados.md` e confira quais itens do nível mais alto a tarefa precisa atender.
+- Antes de trabalhar num artefato, leia o enunciado e os critérios de avaliação dele em `document/outros/orientacoes/artefatos-solicitados.md` e confira quais itens do nível mais alto a tarefa precisa atender.
 - Prefira mudanças pequenas e focadas, alinhadas a um card.
 - Não faça commit, push ou merge sem pedido explícito de um integrante do grupo.
 - Commits e branches seguem a seção 7 (Conventional Commits ligados a uma issue).

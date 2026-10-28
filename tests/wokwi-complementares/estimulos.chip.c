@@ -8,18 +8,18 @@ typedef struct {
   uart_dev_t gps, trace, monitor;
   pin_t seal, net, auth;
   uint32_t caso, ms;
-  uint64_t last_edge_us, first_byte_us, record_edge_us;
+  uint64_t lastEdgeUs, firstByteUs, recordEdgeUs;
   char line[900], txbuf[64][240], gpsbuf[192];
-  unsigned line_len, head, tail;
+  unsigned lineLen, head, tail;
   bool busy;
-} state_t;
+} StimulusState;
 
-static void drain(state_t *s) {
+static void drain(StimulusState *s) {
   if (!s->busy && s->head != s->tail) {
     s->busy = uart_write(s->trace, (uint8_t *)s->txbuf[s->head], strlen(s->txbuf[s->head]));
   }
 }
-static void trace(state_t *s, const char *text) {
+static void trace(StimulusState *s, const char *text) {
   unsigned next = (s->tail + 1) % 64;
   if (next == s->head) { printf("FALHA: fila da instrumentacao cheia\n"); return; }
   snprintf(s->txbuf[s->tail], 240, "%s\n", text);
@@ -27,37 +27,37 @@ static void trace(state_t *s, const char *text) {
   drain(s);
 }
 static void written(void *data) {
-  state_t *s = data;
+  StimulusState *s = data;
   s->head = (s->head + 1) % 64;
   s->busy = false;
   drain(s);
 }
 static void observe(void *data, uint8_t byte) {
-  state_t *s = data;
-  if (!s->line_len) {
-    s->first_byte_us = get_sim_nanos() / 1000;
-    s->record_edge_us = s->last_edge_us;
+  StimulusState *s = data;
+  if (!s->lineLen) {
+    s->firstByteUs = get_sim_nanos() / 1000;
+    s->recordEdgeUs = s->lastEdgeUs;
   }
   if (byte == '\n') {
-    s->line[s->line_len] = 0;
+    s->line[s->lineLen] = 0;
     if (s->line[0] == '{' && strstr(s->line, "\"type\":\"seal_changed\"")) {
       char msg[240];
       snprintf(msg, sizeof(msg), "MEDICAO ct=%u borda_us=%llu registro_us=%llu latencia_us=%llu nivel=%u autorizado=%u",
-        s->caso, s->record_edge_us, s->first_byte_us, s->first_byte_us - s->record_edge_us,
+        s->caso, s->recordEdgeUs, s->firstByteUs, s->firstByteUs - s->recordEdgeUs,
         pin_read(s->seal), strstr(s->line, "\"authorized_removal\":true") != NULL);
       trace(s, msg);
     }
-    s->line_len = 0;
-  } else if (s->line_len < sizeof(s->line) - 1) s->line[s->line_len++] = byte;
+    s->lineLen = 0;
+  } else if (s->lineLen < sizeof(s->line) - 1) s->line[s->lineLen++] = byte;
 }
-static void edge(state_t *s, unsigned level) {
+static void edge(StimulusState *s, unsigned level) {
   pin_write(s->seal, level);
-  s->last_edge_us = get_sim_nanos() / 1000;
+  s->lastEdgeUs = get_sim_nanos() / 1000;
   char msg[160];
-  snprintf(msg, sizeof(msg), "ESTIMULO ct=%u borda_us=%llu lacre=%u", s->caso, s->last_edge_us, level);
+  snprintf(msg, sizeof(msg), "ESTIMULO ct=%u borda_us=%llu lacre=%u", s->caso, s->lastEdgeUs, level);
   trace(s, msg);
 }
-static void gps_send(state_t *s) {
+static void gpsSend(StimulusState *s) {
   const unsigned t = s->ms;
   bool fix = true, mute = false;
   double lat = -23.55, lon = -46.6333;
@@ -72,15 +72,15 @@ static void gps_send(state_t *s) {
     if (t >= 65000) lat += 0.00135;
   }
   if (!mute) {
-    int n = make_gga(s->gpsbuf, sizeof(s->gpsbuf), lat, lon, fix, t / 1000);
+    int n = makeGga(s->gpsbuf, sizeof(s->gpsbuf), lat, lon, fix, t / 1000);
     uart_write(s->gps, (uint8_t *)s->gpsbuf, n);
   }
 }
 static void tick(void *data) {
-  state_t *s = data;
+  StimulusState *s = data;
   const unsigned t = ++s->ms;
   if (t == 1000) printf("Timer do gerador ativo, CT%u\n", s->caso);
-  if (t % 1000 == 0) gps_send(s);
+  if (t % 1000 == 0) gpsSend(s);
   if (s->caso == 18) {
     // Duas condições: espera por fix com rede disponível; mesma espera sem rede.
     unsigned local = t >= 40000 ? t - 40000 : t;
@@ -121,8 +121,8 @@ static void tick(void *data) {
   }
 }
 void chip_init(void) {
-  static state_t state;
-  state_t *s = &state;
+  static StimulusState state;
+  StimulusState *s = &state;
   s->caso = attr_read(attr_init("caso", 18));
   printf("Gerador CT%u inicializado\n", s->caso);
   s->seal = pin_init("SEAL", OUTPUT_LOW);
@@ -132,11 +132,11 @@ void chip_init(void) {
   const uart_config_t gps = {.tx=pin_init("TX", INPUT_PULLUP), .rx=pin_init("RX", INPUT), .baud_rate=9600, .user_data=s};
   s->gps = uart_init(&gps);
   printf("UART GPS inicializada\n");
-  const uart_config_t trace_uart = {.tx=pin_init("TRACE", INPUT_PULLUP), .rx=pin_init("MONITOR", INPUT), .baud_rate=115200, .rx_data=observe, .write_done=written, .user_data=s};
-  s->trace = uart_init(&trace_uart);
+  const uart_config_t traceUart = {.tx=pin_init("TRACE", INPUT_PULLUP), .rx=pin_init("MONITOR", INPUT), .baud_rate=115200, .rx_data=observe, .write_done=written, .user_data=s};
+  s->trace = uart_init(&traceUart);
   printf("UART sonda inicializada\n");
   const timer_config_t timer = {.callback=tick, .user_data=s};
-  timer_t clock_timer = timer_init(&timer);
-  printf("Timer id=%u\n", clock_timer);
-  timer_start(clock_timer, 1000, true);
+  timer_t clockTimer = timer_init(&timer);
+  printf("Timer id=%u\n", clockTimer);
+  timer_start(clockTimer, 1000, true);
 }
