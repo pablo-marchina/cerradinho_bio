@@ -53,7 +53,7 @@ Button cycleButton{Config::CycleButtonPin, false, false, 0, 0, false};
 IndicatorController indicators;  // LEDs de estado (classe propria, usada no setup e no loop)
 
 uint64_t clockMs() {
-  return simClock.elapsed_ms;
+  return simClock.elapsedMs;
 }
 
 uint32_t simulatedDay(uint64_t clock) {
@@ -73,15 +73,15 @@ void updateLeds(uint32_t now) {
   // Amarelo: piscando = atraso, fixo = permanencia. Vermelho: violacao do lacre.
   // Azul: rede simulada indisponivel. Desligado: tudo apagado.
   const bool blinkOn = (now / Config::BlinkHalfPeriodMs) % 2 == 0;
-  indicators.display(poweredOn, seal.violated, seal.removal_in_progress,
-                     cycleActive && cycle_yellow_led(&cycle, blinkOn),
+  indicators.display(poweredOn, seal.violated, seal.removalInProgress,
+                     cycleActive && cycleYellowLed(&cycle, blinkOn),
                      simulatedNetworkAvailable(), now);
 }
 
 bool freshFix() {
   return gps.location.isValid() && gps.location.age() <= Config::FixMaxAgeMs &&
          gps.satellites.isValid() && gps.satellites.value() > 0 &&
-         valid_coordinates(gps.location.lat(), gps.location.lng());
+         validCoordinates(gps.location.lat(), gps.location.lng());
 }
 
 int simulatedBatteryPercent() {
@@ -149,9 +149,9 @@ void samplePosition(bool valid) {
     record += ",\"latitude\":"; record += String(lat, 6);
     record += ",\"longitude\":"; record += String(lon, 6);
     record += ",\"distance_m\":";
-    record += havePrevious ? String(distance_m(previousLat, previousLon, lat, lon), 2) : "null";
+    record += havePrevious ? String(distanceM(previousLat, previousLon, lat, lon), 2) : "null";
     record += ",\"moved\":";
-    record += havePrevious ? (distance_m(previousLat, previousLon, lat, lon) >
+    record += havePrevious ? (distanceM(previousLat, previousLon, lat, lon) >
                              Config::MovementThresholdM ? "true" : "false") : "null";
     record += ",\"baseline_created\":";
     record += havePrevious ? "false" : "true";
@@ -230,8 +230,8 @@ struct StoredQueueMeta {
 
 void savePending() {
   if (!storageReady) return;
-  StoredQueueMeta meta{pending.count, {}, pending.lost, pending.overflow_count,
-                       pending.overflow_first_ms, pending.overflow_last_ms};
+  StoredQueueMeta meta{pending.count, {}, pending.lost, pending.overflowCount,
+                       pending.overflowFirstMs, pending.overflowLastMs};
   for (uint8_t i = 0; i < EVENT_QUEUE_CAPACITY; ++i) {
     const String key = "p" + String(i);
     if (i < pending.count) {
@@ -257,22 +257,22 @@ void restorePending() {
   for (uint8_t i = 0; i < meta.count; ++i) {
     const String text = storage.getString(("p" + String(i)).c_str(), "");
     if (text.length() == 0) break;  // entrada ausente: preserva so as anteriores
-    queue_push(&pending, text.c_str(), meta.critical[i], 0);
+    queuePush(&pending, text.c_str(), meta.critical[i], 0);
   }
   pending.lost = meta.lost;
-  pending.overflow_count = meta.overflowCount;
-  pending.overflow_first_ms = meta.overflowFirstMs;
-  pending.overflow_last_ms = meta.overflowLastMs;
+  pending.overflowCount = meta.overflowCount;
+  pending.overflowFirstMs = meta.overflowFirstMs;
+  pending.overflowLastMs = meta.overflowLastMs;
 }
 
 bool hasPending() {
-  return pending.count > 0 || pending.overflow_count > 0;
+  return pending.count > 0 || pending.overflowCount > 0;
 }
 
 void printPending() {
   Serial.printf("[FILA] %u %s", pending.count, pending.count == 1 ? "pendente" : "pendentes");
-  if (pending.overflow_count > 0) {
-    Serial.printf(" + resumo de %lu violacao(oes)", (unsigned long)pending.overflow_count);
+  if (pending.overflowCount > 0) {
+    Serial.printf(" + resumo de %lu violacao(oes)", (unsigned long)pending.overflowCount);
   }
   Serial.print("\r\n");
 }
@@ -281,12 +281,12 @@ void printPending() {
 // fila e sai na reconexao, na ordem e com o dia em que ocorreu (RF010; RN09).
 void publishEvent(const char *type, bool critical = false, const String &extra = "") {
   String record = baseRecord(type);
-  record += ",\"ciclo_id\":"; record += cycle.cycle_id;
+  record += ",\"ciclo_id\":"; record += cycle.cycleId;
   record += ",\"ciclo_ativo\":"; record += cycleActive ? "true" : "false";
-  record += ",\"dias_fora\":"; record += cycle.days_out;
+  record += ",\"dias_fora\":"; record += cycle.daysOut;
   record += ",\"dia_ocorrencia\":"; record += simulatedDay(clockMs());
-  record += ",\"atraso\":"; record += cycle_is_late(&cycle) ? "true" : "false";
-  record += ",\"permanencia\":"; record += cycle_in_stay(&cycle) ? "true" : "false";
+  record += ",\"atraso\":"; record += cycleIsLate(&cycle) ? "true" : "false";
+  record += ",\"permanencia\":"; record += cycleInStay(&cycle) ? "true" : "false";
   record += ",\"critico\":"; record += critical ? "true" : "false";
   record += extra;
   record += "}";
@@ -294,10 +294,10 @@ void publishEvent(const char *type, bool critical = false, const String &extra =
     Serial.println(record);
     return;
   }
-  const int result = queue_push(&pending, record.c_str(), critical, clockMs());
+  const int result = queuePush(&pending, record.c_str(), critical, clockMs());
   if (result == QUEUE_SUMMARIZED) {
     Serial.printf("[FILA] FILA_CHEIA: so ha violacoes; %s somado ao resumo (%lu no resumo)\r\n",
-                  type, (unsigned long)pending.overflow_count);
+                  type, (unsigned long)pending.overflowCount);
     savePending();
     printPending();
     return;
@@ -321,18 +321,18 @@ void flushPending() {
   Serial.printf("[FILA] rede disponivel; reenviando %u evento(s) na ordem\r\n", pending.count);
   while (pending.count > 0) {
     Serial.println(pending.text[0]);
-    queue_remove(&pending, 0);
+    queueRemove(&pending, 0);
   }
   // As violacoes do resumo ocorreram depois das guardadas na fila: saem por ultimo.
-  if (pending.overflow_count > 0) {
+  if (pending.overflowCount > 0) {
     String extra = ",\"quantidade\":";
-    extra += pending.overflow_count;
-    extra += ",\"dia_primeira\":"; extra += simulatedDay(pending.overflow_first_ms);
-    extra += ",\"dia_ultima\":"; extra += simulatedDay(pending.overflow_last_ms);
-    extra += ",\"primeira_ms\":"; extra += String((unsigned long long)pending.overflow_first_ms);
-    extra += ",\"ultima_ms\":"; extra += String((unsigned long long)pending.overflow_last_ms);
+    extra += pending.overflowCount;
+    extra += ",\"dia_primeira\":"; extra += simulatedDay(pending.overflowFirstMs);
+    extra += ",\"dia_ultima\":"; extra += simulatedDay(pending.overflowLastMs);
+    extra += ",\"primeira_ms\":"; extra += String((unsigned long long)pending.overflowFirstMs);
+    extra += ",\"ultima_ms\":"; extra += String((unsigned long long)pending.overflowLastMs);
     publishEvent("VIOLACAO_LACRE_RESUMO", true, extra);
-    queue_clear_summary(&pending);
+    queueClearSummary(&pending);
   }
   savePending();
   printPending();
@@ -345,7 +345,7 @@ void updateNetwork() {
 }
 
 void startCycle(uint64_t clock, uint32_t id) {
-  cycle_start(&cycle, id, Config::ExpectedReturnDays, Config::StayThresholdDays,
+  cycleStart(&cycle, id, Config::ExpectedReturnDays, Config::StayThresholdDays,
               Config::StatusIntervalDays);
   cycleStartedAt = clock;
   cycleActive = true;
@@ -357,9 +357,9 @@ void startCycle(uint64_t clock, uint32_t id) {
 void updateCycle(uint64_t clock) {
   if (!cycleActive) return;
   const uint64_t days = (clock - cycleStartedAt) / Config::DayMs;
-  while (cycle.days_out < days) {
+  while (cycle.daysOut < days) {
     contextDirty = true;
-    const unsigned events = cycle_advance_day(&cycle);
+    const unsigned events = cycleAdvanceDay(&cycle);
     if (events & CYCLE_EVENT_STATUS) publishEvent("STATUS_SEMANAL");
     if (events & CYCLE_EVENT_LATE) publishEvent("ALERTA_ATRASO");
     if (events & CYCLE_EVENT_STAY) publishEvent("ALERTA_PERMANENCIA");
@@ -377,7 +377,7 @@ void requestClose() {
   } else {
     ++closedCycles;
     cycleActive = false;
-    cycle.days_out = 0;
+    cycle.daysOut = 0;
     contextDirty = true;
     String extra = ",\"ciclos_encerrados\":";
     extra += closedCycles;
@@ -392,7 +392,7 @@ void requestLink(uint64_t clock) {
     publishEvent("VINCULO_RECUSADO", false, ",\"motivo\":\"ciclo_ativo\"");
     return;
   }
-  startCycle(clock, cycle.cycle_id + 1);
+  startCycle(clock, cycle.cycleId + 1);
   publishEvent("CICLO_INICIADO");
 }
 
@@ -413,7 +413,7 @@ bool updateButton(Button &button, uint32_t now) {
 
 void readButtons(uint32_t now, uint64_t clock) {
   if (updateButton(authorizeButton, now)) {
-    seal_authorize(&seal, clock);
+    sealAuthorize(&seal, clock);
     contextDirty = true;
     String extra = ",\"janela_dias\":";
     extra += Config::AuthorizationWindowDays;
@@ -434,7 +434,7 @@ void readBattery(uint32_t now) {
   if (now - lastBatteryCheck < Config::BatteryCheckMs) return;
   lastBatteryCheck = now;
   const int raw = analogRead(Config::BatteryPin);
-  const unsigned events = battery_update(&battery, raw, simulatedBatteryPercent());
+  const unsigned events = batteryUpdate(&battery, raw, simulatedBatteryPercent());
   if (events & BATTERY_EVENT_SENSOR_FAILURE) publishEvent("SENSOR_BATERIA_FALHA");
   if (events & BATTERY_EVENT_LOW) publishEvent("BATERIA_BAIXA");
 }
@@ -454,7 +454,7 @@ void readCommands() {
       const long days = serialLine.substring(7).toInt();
       if (days > 0) {
         // Nao rearma ALERTA_PERMANENCIA ja emitido neste ciclo (RN04).
-        cycle_set_stay_threshold(&cycle, days);
+        cycleSetStayThreshold(&cycle, days);
         contextDirty = true;
         String extra = ",\"limiar_dias\":";
         extra += days;
@@ -475,10 +475,10 @@ void readSeal(uint32_t now, uint64_t clock) {
   if (rawSeal != stableSeal && now - sealChangedAt >= Config::SealDebounceMs) {
     stableSeal = rawSeal;
     contextDirty = true;
-    const int event = stableSeal ? seal_opened(&seal, clock) : seal_closed(&seal);
+    const int event = stableSeal ? sealOpened(&seal, clock) : sealClosed(&seal);
     String record = baseRecord("seal_changed");
     record += ",\"authorized_removal\":";
-    record += seal.removal_in_progress ? "true" : "false";
+    record += seal.removalInProgress ? "true" : "false";
     record += "}";
     enqueue(record);
     // Violacao e critica e sai na hora, fora da rotina periodica (RF006; RN05).
@@ -511,7 +511,7 @@ void setup() {
   if (storageReady && storage.isKey("previous") &&
       storage.getBytesLength("previous") == sizeof(point) &&
       storage.getBytes("previous", point, sizeof(point)) == sizeof(point) &&
-      valid_coordinates(point[0], point[1])) {
+      validCoordinates(point[0], point[1])) {
     previousLat = latestLat = point[0]; previousLon = latestLon = point[1];
     havePrevious = true;
     // O ponto salvo e referencia historica, nao fix novo nem idade conhecida.
@@ -521,16 +521,16 @@ void setup() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(TRACKER_WIFI_SSID, TRACKER_WIFI_PASSWORD);
   requestAt = lastSample = lastWifiRetry = millis();
-  seal_init(&seal, (uint64_t)Config::AuthorizationWindowDays * Config::DayMs);
-  queue_init(&pending);
+  sealInit(&seal, (uint64_t)Config::AuthorizationWindowDays * Config::DayMs);
+  queueInit(&pending);
   restorePending();
-  battery_init(&battery, Config::BatteryLowPct, Config::BatteryRecoverPct);
+  batteryInit(&battery, Config::BatteryLowPct, Config::BatteryRecoverPct);
   networkWasAvailable = simulatedNetworkAvailable();
   poweredOn = powerSwitchOn();
   StoredContext context{};
   const bool restored = restoreContext(context);
   if (restored) {
-    sim_clock_init(&simClock, millis(), context.clockMs);
+    simClockInit(&simClock, millis(), context.clockMs);
     cycle = context.cycle;
     cycleStartedAt = context.cycleStartedAt;
     cycleActive = context.cycleActive;
@@ -539,7 +539,7 @@ void setup() {
     seal = context.seal;
     rawSeal = stableSeal = context.sealOpen;
   } else {
-    sim_clock_init(&simClock, millis(), 0);
+    simClockInit(&simClock, millis(), 0);
     rawSeal = stableSeal = false;
     startCycle(clockMs(), 1);
   }
@@ -570,7 +570,7 @@ void setup() {
 void loop() {
   const uint32_t now = millis();
   // O relogio do ciclo segue no desligamento logico da chave ON/OFF.
-  const uint64_t clock = sim_clock_update(&simClock, now);
+  const uint64_t clock = simClockUpdate(&simClock, now);
   // Chave ON/OFF: desligar registra o evento e suspende o dispositivo.
   const bool on = powerSwitchOn();
   if (on != poweredOn) {
@@ -615,6 +615,6 @@ void loop() {
                   connected ? "on" : "off", simulatedNetworkAvailable() ? "on" : "off",
                   digitalRead(Config::AuthorizeButtonPin) == LOW,
                   digitalRead(Config::CycleButtonPin) == LOW,
-                  (unsigned long)cycle.days_out, pending.count);
+                  (unsigned long)cycle.daysOut, pending.count);
   }
 }
