@@ -1,8 +1,8 @@
-"""Confere os índices de relatórios (document/outros/sprint-N/relatorios/README.md) contra os arquivos em disco.
+"""Confere os índices de relatórios (document/outros/reports/SprintNN/README.md) contra os arquivos em disco.
 
 Uso (da raiz do repositório):
     python skills/skills/report-index/scripts/check_report_index.py                        # todas as sprints
-    python skills/skills/report-index/scripts/check_report_index.py document/outros/sprint-1/relatorios
+    python skills/skills/report-index/scripts/check_report_index.py document/outros/reports/Sprint01
 
 Sai com código 1 se houver algum ERRO. Só lê arquivos.
 """
@@ -67,9 +67,9 @@ def check(folder):
 
 def main():
     sys.stdout.reconfigure(encoding='utf-8')
-    folders = [Path(a) for a in sys.argv[1:]] or sorted(ROOT.glob('sprint-*/relatorios'))
+    folders = [Path(a) for a in sys.argv[1:]] or sorted(ROOT.glob('reports/Sprint*'))
     if not folders:
-        print('Nenhuma pasta document/outros/sprint-N/relatorios encontrada. Nada a conferir.')
+        print('Nenhuma pasta document/outros/reports/SprintNN encontrada. Nada a conferir.')
         return 0
     total = 0
     for f in folders:

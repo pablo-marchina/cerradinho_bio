@@ -1,6 +1,6 @@
 # Registro aprofundado e resposta aos riscos — Sprint 1
 
-**Critério:** os percentuais 10/30/50/70/90 são níveis *ordinais ilustrativos* do template da disciplina, **não probabilidades estimadas estatisticamente**. Impactos avaliam custo, integridade, compliance e continuidade do projeto. Priorizar riscos com potencial de impedir o piloto, preservar histórico de versões e reclassificar com dados observados após os ensaios. A matriz gráfica está em `assets/negocios/matriz_riscos.png`.
+**Critério:** os percentuais 10/30/50/70/90 são níveis *ordinais ilustrativos* do template da disciplina, **não probabilidades estimadas estatisticamente**. Impactos avaliam custo, integridade, compliance e continuidade do projeto. Priorizar riscos com potencial de impedir o piloto, preservar histórico de versões e reclassificar com dados observados após os ensaios. A matriz gráfica está em `assets/3-desenvolvimento-resultados/3.1.5-matriz-riscos/matrizRiscos.png`.
 
 | ID | Justificativa para probabilidade/impacto iniciais | Indicador / gatilho de validação | Controle preventivo e contingência | Evidência / responsável |
 |---|---|---|---|---|

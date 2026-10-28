@@ -93,7 +93,7 @@ Cada linha de pessoa num dia tem, nesta ordem, a revisão e depois o build.
 
 **Build:** título curto, minutos, e uma instrução que diga:
 
-- os arquivos e caminhos exatos (`assets/negocios/swot.png`, `src/firmware/prototipo_wokwi/`);
+- os arquivos e caminhos exatos (`assets/3-desenvolvimento-resultados/3.1.2-swot/swot.png`, `src/firmware/prototipo_wokwi/`);
 - o conteúdo concreto, com os nomes que o grupo vai usar (classes, constantes, IDs, eventos);
 - o critério de pronto ("compila no Wokwi e já acende um LED ao apertar um botão");
 - as armadilhas que a rubrica ou o parceiro apontam ("o setor é o do parceiro, não IoT"; "não invente o contato do DPO").

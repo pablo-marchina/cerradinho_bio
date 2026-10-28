@@ -21,7 +21,7 @@ entrada/saída de backup e falhas de aquisição. A placa e a versão de firmwar
 do módulo ainda precisam ser definidas.
 
 O contrato de simulação e os CT26/CT28 estão no
-[planejamento de energia e GNSS](../../../document/outros/planejamento-energia-gnss.md).
+[planejamento de energia e GNSS](../../../document/outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md).
 Os 9600 baud da configuração atual descrevem o simulador; conferir a configuração
 da unidade física antes de integrar. Consumo e autonomia exigem ensaios físicos.
 
@@ -122,7 +122,7 @@ Compilação e testes locais não comprovam consumo, autonomia ou entrega ao ser
 
 ## Evidências anteriores
 
-- `assets/wokwi/circuito.png`: circuito anterior do teste de ligação, sem o GPS integrado.
+- `assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/circuito.png`: circuito anterior do teste de ligação, sem o GPS integrado.
 - Projeto público anterior: https://wokwi.com/projects/478276108359405569
 
 O projeto público e a captura anterior não foram atualizados por esta integração.
@@ -130,7 +130,7 @@ O roteiro acima descreve resultados esperados; não é evidência de execução 
 
 ## Teste de ligação
 
-Executado em 19/out/2026 no projeto público. Evidência: `assets/wokwi/circuito.png`.
+Executado em 19/out/2026 no projeto público. Evidência: `assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/circuito.png`.
 
 | Ação | Esperado | Resultado |
 |---|---|---|

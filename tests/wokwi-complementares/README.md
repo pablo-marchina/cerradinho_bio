@@ -51,4 +51,4 @@ Os diagramas gerados preservam ESP32, potenciômetro, LEDs e resistores do circu
 principal. Somente os três fios de entrada controlados pelo gerador são separados
 das chaves/botão visuais; o GPIO32 é exclusivo da sonda. Os binários e o cabeçalho
 SDK copiado são gerados localmente e ignorados pelo Git. Evidências e resultados
-ficam em `assets/wokwi/` e na seção 3.4.1 da documentação principal.
+ficam em `assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/` e na seção 3.4.1 da documentação principal.

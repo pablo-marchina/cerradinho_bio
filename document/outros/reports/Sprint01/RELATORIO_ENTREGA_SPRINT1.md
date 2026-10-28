@@ -49,7 +49,7 @@ As seções 1, 1.1, 1.2, 1.3 e 3.1.1–3.1.7 permanecem abaixo do limite de 300 
 | Wokwi integrado atualizado e novos CT18, CT22, CT09 | **NÃO EXECUTADO** | Requer ambiente de simulação, integração do chip custom e evidências |
 | LGPD, preço definitivo, identidade institucional, integração `main` | **NÃO HOMOLOGADO** | Dependências da instituição, fornecedores e conta GitLab/Wokwi |
 
-Arquivos: `scripts/verify-sprint1-local.sh`, `scripts/check-firmware-syntax.sh`, `scripts/audit_sprint1.py`, `scripts/validate-release.py`, `.gitlab-ci.yml`; evidências históricas `assets/wokwi/`.
+Arquivos: `scripts/verify-host.sh`, `scripts/check-firmware-syntax.sh`, `scripts/audit-docs.py`, `scripts/validate-release.py`, `.gitlab-ci.yml`; evidências históricas `assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/`.
 
 ## Como concluir sem mascarar falhas
 

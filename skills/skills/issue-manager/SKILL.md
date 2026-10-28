@@ -24,7 +24,7 @@ scripts/
 └── get_members.py    lista os membros do projeto
 references/
 ├── gitlab-api.md     endpoints, labels, pessoas e armadilhas
-└── model.md          cópia do template de card (.gitlab/issue_templates/Tempalte01.md)
+└── model.md          cópia do template de card (.gitlab/issue_templates/card-kanban.md)
 ```
 
 ## Fluxo: melhorar a descrição de uma issue
