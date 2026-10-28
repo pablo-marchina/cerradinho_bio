@@ -339,7 +339,17 @@ O layout também foi revisado pela equipe: o texto corrido deu lugar a um fluxo 
 
 ### 3.2.2. Jornada do Usuário e Storyboard (sprint 2)	
 
-_Coloque aqui seu Mapa de Jornada do Usuário (seguindo as instruções na descrição do artefato)_
+A jornada do usuário é um mapa da experiência de uma pessoa ao realizar uma atividade em um contexto específico. Ela organiza as etapas do início ao fim e relaciona ações, pensamentos, sentimentos e pontos de contato com pessoas, ferramentas ou serviços. Essa visão ajuda a identificar momentos de incerteza, dificuldades e oportunidades de melhoria. No projeto Guarátracking, a jornada atual mostra como Geraldo acompanha o envio de um equipamento para manutenção externa, permitindo compreender onde a solução proposta pode apoiar seu trabalho.
+
+#### Jornada atual de Geraldo
+
+A Figura 3.2.2.1 apresenta um dia de envio de equipamento para manutenção externa: em 28/10, Geraldo prepara a bomba fictícia AT-001, registra sua saída, confirma a chegada à Oficina Alfa e organiza o acompanhamento. A ansiedade enquanto aguarda a confirmação evidencia a dependência de contatos manuais; as oportunidades apontam onde o projeto pode melhorar a visibilidade e reunir os registros.
+
+![Jornada atual de Geraldo em um dia de envio da bomba fictícia AT-001: preparação às 8h, saída às 9h, confirmação de chegada às 11h30 e organização do acompanhamento às 16h, com ações, pensamentos, falas, touchpoints, sentimentos e oportunidades do projeto](../assets/ux/jornada-atual-geraldo.png)
+
+*Figura 3.2.2.1 — Jornada atual de Geraldo no envio de um ativo à manutenção externa. Fonte: autoria própria*
+
+O mapa adapta a persona da seção 3.2.1 a um cenário ilustrativo; horários, falas e sentimentos não são observações de usuários reais.
 
 _Coloque aqui seu Storyboard (seguindo as instruções na descrição do artefato)_
 
