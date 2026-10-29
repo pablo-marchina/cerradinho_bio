@@ -235,7 +235,7 @@ Corpo opcional explicando o porquê da mudança, não o como.
   GPS RX2/TX2 nos GPIO16/17, lacre no GPIO27 com pull-up e bateria no GPIO34/ADC1.
   UART0 e heartbeat são diagnóstico independente de GPS e internet.
 - LCD I2C (0x27) usa SDA/SCL nos GPIO21/22; botões avançar/voltar usam GPIO25/26;
-  buzzer usa GPIO23; botões de autorização e ciclo usam GPIO33/13 e exigem 3 s
+  buzzer usa GPIO23; botões de autorização e ciclo usam GPIO33/14 e exigem 3 s
   pressionados; chave de rede simulada (on/off do SIM) usa GPIO18 e chave ON/OFF
   usa GPIO19. GPIO32 fica livre para a instrumentação dos ensaios complementares.
   Preserve a separação entre rede simulada e Wi-Fi real.

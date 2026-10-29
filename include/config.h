@@ -29,7 +29,7 @@ constexpr int NextButtonPin = 25;
 constexpr int PreviousButtonPin = 26;
 constexpr int BuzzerPin = 23;  // GPIO27 permanece reservado ao lacre.
 constexpr int AuthorizeButtonPin = 33;
-constexpr int CycleButtonPin = 13;
+constexpr int CycleButtonPin = 14;
 constexpr int NetworkSwitchPin = 18;
 constexpr int PowerSwitchPin = 19;  // ON/OFF: esquerda = ligado, direita = desligado.
 constexpr uint32_t GpsBaud = 9600;
