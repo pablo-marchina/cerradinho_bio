@@ -63,9 +63,7 @@ Quando `platformio` estiver instalado globalmente, as duas compilações equival
 - `document/documentacao.md`, `document/outros/`: documento da disciplina, checklist de aceite e fundamentação.
 - `assets/negocios/`, `assets/personas/`, `assets/wokwi/`: templates, personas e evidências históricas.
 
-**Limite importante:** a `main` do export (2650e28) já incorpora a `develop`; não é necessário repetir o merge antigo. O patch desta revisão deve seguir para nova branch/MR e ter seu próprio CI e novos ensaios. O patch atual também contém ISR de lacre e teste host de 20/20 bordas, mas CT18 precisa ser repetido no Wokwi; a NVS continua sem garantia transacional de interrupção de energia e checagens de retorno/retentativas são mitigação parcial.
-
-**Checklist antes da entrega:** [relatório consolidado de evidências](document/outros/reports/Sprint01/RELATORIO_ENTREGA_SPRINT1.md), [validação e limites](document/outros/sprint1-validacao-e-limites.md) e [fechamento da sprint](document/outros/reports/Sprint01/FECHAMENTO-S1.md). Consolidar `develop` em `main` após revisão, build e reteste, sem sobrescrever evidências.
+**Condições de validação:** qualquer alteração do firmware exige compilação ESP32, testes locais e reteste no Wokwi. A captura por interrupção foi exercitada no host, mas o CT18 original deve ser repetido no simulador. A persistência NVS não é transacional sob perda de energia. Consulte a seção 3.4.1 da [documentação](document/documentacao.md) para resultados e limites; relatórios históricos não substituem os testes do commit final.
 
 ## Licença
 
@@ -75,4 +73,4 @@ A definição de licença de redistribuição deste repositório deve ser aprova
 
 `bash scripts/verify-sprint1-local.sh` executa os testes unitários das regras e da classe `IndicatorController` em host, e `bash scripts/check-firmware-syntax.sh` compila o `main.cpp` com dublês de Arduino. **É um teste em computador, não simulação oficial Wokwi**.
 
-A pipeline `.gitlab-ci.yml` contém jobs para compilação ESP32 (PlatformIO) e um smoke test condicional via Wokwi CLI. O segundo job só é habilitado se um mantenedor configurar `WOKWI_CLI_TOKEN` como variável **masked/protected** no GitLab; **não inserir o token em arquivo nem no chat**. Requer compilar o chip GNSS custom. Veja `tests/wokwi-ci/smoke.yaml` e [roteiro de aceite](document/outros/reports/Sprint01/FECHAMENTO-S1.md). O cenário só pode ser considerado aprovado após executar no Wokwi e arquivar o log do mesmo commit. `python3 scripts/audit_sprint1.py --strict-local` valida somente o que é reproduzível no repositório; LGPD e publicação Wokwi exigem evidências externas registradas no manifesto.
+A pipeline `.gitlab-ci.yml` contém jobs para compilação ESP32 (PlatformIO) e um smoke test condicional via Wokwi CLI. O segundo job só é habilitado se um mantenedor configurar `WOKWI_CLI_TOKEN` como variável **masked/protected** no GitLab; **não inserir o token em arquivo nem no chat**. Requer compilar o chip GNSS custom. Veja `tests/wokwi-ci/smoke.yaml` e a seção 3.4.1 da [documentação](document/documentacao.md). O cenário só pode ser considerado aprovado após executar no Wokwi e arquivar o log do mesmo commit. `python3 scripts/audit_sprint1.py --strict-local` valida somente o que é reproduzível no repositório; LGPD e publicação Wokwi exigem evidências externas registradas no manifesto.

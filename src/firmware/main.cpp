@@ -45,7 +45,10 @@ bool networkWasAvailable = true;
 String serialLine;
 bool contextDirty = false;  // ciclo/lacre mudou e precisa ir para a NVS
 bool pendingDirty = false;  // houve alteracao de fila sem gravacao confirmada
-uint32_t lastPersistenceAttempt = 0;
+bool contextRetryPending = false;
+uint32_t lastContextFailureAt = 0;
+bool pendingRetryPending = false;
+uint32_t lastPendingFailureAt = 0;
 
 // Captura de bordas do lacre independente de I/O de Serial/NVS no loop.
 // O buffer saturado é diagnosticado; a interrupção nunca grava na flash.
@@ -235,17 +238,26 @@ struct StoredContext {
 };
 constexpr uint32_t ContextVersion = 1;
 
-void saveContext() {
-  // Só liberar a pendência após a NVS confirmar a escrita completa.
+bool saveContext() {
+  // NVS permanece fora da ISR; uma transicao confirmada tenta gravar imediatamente.
+  // Somente falhas entram no intervalo de retentativa.
   contextDirty = true;
-  if (!storageReady) return;
+  if (!storageReady) {
+    contextRetryPending = true;
+    lastContextFailureAt = millis();
+    return false;
+  }
   const StoredContext context{ContextVersion, Config::DayMs, clockMs(), cycle, cycleStartedAt,
                               cycleActive, returnInvoiceIssued, closedCycles, seal, stableSeal};
   if (storage.putBytes("ctx", &context, sizeof(context)) != sizeof(context)) {
+    contextRetryPending = true;
+    lastContextFailureAt = millis();
     Serial.println("[memoria] falha ao salvar o contexto do ciclo; nova tentativa pendente");
-    return;
+    return false;
   }
   contextDirty = false;
+  contextRetryPending = false;
+  return true;
 }
 
 bool restoreContext(StoredContext &context) {
@@ -267,7 +279,11 @@ struct StoredQueueMeta {
 
 bool savePending() {
   pendingDirty = true;
-  if (!storageReady) return false;
+  if (!storageReady) {
+    pendingRetryPending = true;
+    lastPendingFailureAt = millis();
+    return false;
+  }
   bool allRecordsWritten = true;
   StoredQueueMeta meta{pending.count, {}, pending.lost, pending.overflow_count,
                        pending.overflow_first_ms, pending.overflow_last_ms};
@@ -283,14 +299,19 @@ bool savePending() {
     }
   }
   if (!allRecordsWritten) {
+    pendingRetryPending = true;
+    lastPendingFailureAt = millis();
     Serial.println("[memoria] falha ao gravar item da fila; metadados nao promovidos; nova tentativa pendente");
     return false;
   }
   if (storage.putBytes("pmeta", &meta, sizeof(meta)) != sizeof(meta)) {
+    pendingRetryPending = true;
+    lastPendingFailureAt = millis();
     Serial.println("[memoria] falha ao salvar metadados da fila; nova tentativa pendente");
     return false;
   }
   pendingDirty = false;
+  pendingRetryPending = false;
   return true;
 }
 
@@ -519,13 +540,14 @@ void readCommands() {
 }
 
 // A transição é datada na borda capturada, não na hora em que o loop acorda.
-void sealTransition(bool opened, uint32_t edgeAt) {
+void sealTransition(bool opened, uint32_t edgeAt, uint32_t now, uint64_t clock) {
   stableSeal = opened;
   contextDirty = true;
-  const uint32_t now = millis();
-  const uint64_t observedClock = sim_clock_update(&simClock, now);
-  const uint32_t elapsed = static_cast<uint32_t>(now - edgeAt);
-  const uint64_t atClock = observedClock >= elapsed ? observedClock - elapsed : 0;
+  // O loop ja atualizou o relogio; evita avanco duplicado ou leitura de tempo futuro.
+  // Uma borda pode chegar por ISR apos a captura de 'now'; nao subtrair
+  // timestamps futuros como unsigned (underflow + volta indevida do relogio).
+  const uint32_t elapsed = static_cast<int32_t>(now - edgeAt) >= 0 ? now - edgeAt : 0U;
+  const uint64_t atClock = clock >= elapsed ? clock - elapsed : 0;
   const int event = opened ? seal_opened(&seal, atClock) : seal_closed(&seal);
   String record = baseRecord("seal_changed");
   record += ",\"edge_at_ms\":"; record += edgeAt;
@@ -537,27 +559,28 @@ void sealTransition(bool opened, uint32_t edgeAt) {
   if (event == SEAL_EVENT_REMOVAL) publishEvent("RETIRADA_AUTORIZADA");
   if (event == SEAL_EVENT_RESEALED) publishEvent("LACRE_REAPLICADO");
   if (event == SEAL_EVENT_CLOSED) publishEvent("LACRE_FECHADO");
+  // Evita perder o estado critico em uma queda de energia logo apos a transicao.
+  if (!contextRetryPending) saveContext();
 }
 
-void readSeal(uint32_t now) {
+void readSeal(uint32_t now, uint64_t clock) {
   SealEdge edge{};
   SealDebounceEvent confirmed{};
   while (popSealEdge(edge)) {
     if (seal_on_edge(rawSeal, stableSeal, sealChangedAt, edge.opened,
                      edge.at, Config::SealDebounceMs, confirmed)) {
-      sealTransition(confirmed.opened, confirmed.confirmedAt);
+      sealTransition(confirmed.opened, confirmed.confirmedAt, now, clock);
     }
   }
-  now = millis();
   const bool physical = digitalRead(Config::SealPin) == HIGH;
   if (physical != rawSeal &&
       seal_on_edge(rawSeal, stableSeal, sealChangedAt, physical,
                    now, Config::SealDebounceMs, confirmed)) {
-    sealTransition(confirmed.opened, confirmed.confirmedAt);
+    sealTransition(confirmed.opened, confirmed.confirmedAt, now, clock);
   }
   if (seal_settle(rawSeal, stableSeal, sealChangedAt, now,
                   Config::SealDebounceMs, confirmed)) {
-    sealTransition(confirmed.opened, confirmed.confirmedAt);
+    sealTransition(confirmed.opened, confirmed.confirmedAt, now, clock);
   }
   static uint32_t reported = 0;
   noInterrupts();
@@ -668,20 +691,20 @@ void loop() {
   }
   updateLeds(now);
   if (!poweredOn) return;
-  readSeal(now);  // antes das operacoes potencialmente bloqueantes
+  readSeal(now, clock);  // antes das operacoes potencialmente bloqueantes
   readGps();
   readButtons(now, clock);
   readBattery(now);
   readCommands();
   updateNetwork();
   updateCycle(clock);
-  // Retentar a persistencia no maximo uma vez por segundo para nao bloquear o
-  // processamento das entradas repetidamente quando a flash estiver indisponivel.
-  if ((contextDirty || pendingDirty) && now - lastPersistenceAttempt >= 1000U) {
-    lastPersistenceAttempt = now;
-    if (contextDirty) saveContext();
-    if (pendingDirty) savePending();
-  }
+  // Persistencia imediata quando nao houve falha; intervalo de 1s apenas
+  // depois de falha de escrita na NVS (CT22). Os eventos de lacre tentam salvar
+  // no momento da transicao, fora da ISR.
+  if (contextDirty && (!contextRetryPending ||
+      static_cast<uint32_t>(now - lastContextFailureAt) >= 1000U)) saveContext();
+  if (pendingDirty && (!pendingRetryPending ||
+      static_cast<uint32_t>(now - lastPendingFailureAt) >= 1000U)) savePending();
   const bool connected = WiFi.status() == WL_CONNECTED;
   if (connected != wasConnected) {
     Serial.printf("[wifi] %s\r\n", connected ? "conectado" : "desconectado");

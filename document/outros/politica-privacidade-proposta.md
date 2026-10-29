@@ -20,7 +20,7 @@ Autenticar usuários, registrar ciclos de manutenção, emitir alertas aos respo
 
 #### 3.1.6.5 Bases legais
 
-Execução de contrato e legítimo interesse da controladora no controle dos seus ativos (art. 7º, V e IX) e cumprimento de obrigação legal para os registros fiscais (art. 7º, II) [40].
+Hipóteses a avaliar por finalidade: execução contratual, legítimo interesse com teste de balanceamento e obrigação legal relativa a documentos fiscais (art. 7º, II, V e IX) [40]; nenhuma base está homologada.
 
 #### 3.1.6.6 Armazenamento
 
@@ -48,11 +48,11 @@ O titular pode pedir confirmação do tratamento, acesso, correção, anonimiza�
 
 #### 3.1.6.12 Solicitações
 
-O site oficial da CerradinhoBio informa **lgpd@cerradinho.com.br** como contato institucional [fonte](https://www.cerradinhobio.com.br/politica-de-privacidade/), consultada em 24/10/2026. Antes do piloto, confirmar autorização de uso desse canal para o GuaráTracking, protocolo de verificação de identidade e prazos aplicáveis; evitar coleta de documentos de identidade sem necessidade.
+A CerradinhoBio publica uma política institucional de privacidade em seu [site oficial](https://www.cerradinhobio.com.br/politica-de-privacidade/). A aplicação do canal de atendimento ao GuaráTracking, os procedimentos de autenticação de solicitantes e os prazos de resposta **precisam ser confirmados com o parceiro** antes do piloto. Nenhum contato pessoal ou e-mail é divulgado aqui sem homologação.
 
 #### 3.1.6.13 Encarregado
 
-A política institucional consultada identifica **João Paulo Cândido da Silva**, contato **lgpd@cerradinho.com.br**, como encarregado publicado. **A designação atual e a competência sobre o GuaráTracking devem ser confirmadas diretamente com o parceiro**, antes de sua divulgação como canal do projeto.
+**Encarregado indicado pela CerradinhoBio (a confirmar).** A designação e o canal aplicável a este projeto ainda não foram formalmente comprovados; revisar com a equipe jurídica antes de publicar a política do produto.
 
 
 ## Aprovações obrigatórias antes do piloto

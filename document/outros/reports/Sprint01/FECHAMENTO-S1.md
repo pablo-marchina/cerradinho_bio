@@ -2,13 +2,13 @@
 
 > **Fonte de verdade para esta entrega:** `document/documentacao.md` e `document/outros/evidencias_externas_sprint1.json`, confrontados com `src/firmware/main.cpp`. Histórico de versões e testes anteriores permanece em `assets/wokwi/`. Este documento substitui checklists históricos que marcavam patches experimentais não integrados como concluídos.
 
-## Escopo observado no export de 24/10/2026
+## Escopo demonstrado e histórico de integração
 
-- `main` = `2650e28`; `develop` = `915a744`; árvores equivalentes no export analisado.
+- O status de integração deve ser conferido no GitLab no commit avaliado; registros de revisões anteriores não provam o estado atual.
 - Firmware integrado: `IndicatorController` usada em `setup()`/`loop()`, regras de ciclo/lacre, fila local NVS, mensagens JSON na Serial e circuito ESP32 de botões/LEDs com GNSS customizado.
-- **Não integrados à main exportada:** interrupção para o lacre, snapshots alternados de NVS/CRC e ACK manual de bancada. Esses recursos foram explorados em patches experimentais anteriores, não devem ser descritos como aprovados na versão atual.
-- **Correções preparadas nesta revisão (patch ainda não publicado):** captura ISR do lacre com debounce temporal (teste host 20/20; ainda sem Wokwi); persistência mantém flag de atualização quando escrita falha, verifica retornos dos registros de fila e tenta novamente, auditoria honesta, limites documentais e anexos de LGPD/BOM. **Ainda não tornam NVS transacional**.
-- CI do export: build ESP32 na `develop` aprovado; `main` estava em execução na hora do export. Qualquer nova alteração exige nova compilação oficial na branch de revisão.
+- O firmware desta linha possui captura ISR para lacre; snapshots alternados/CRC e ACK de servidor **não** estão implementados. O ensaio host da ISR não substitui o Wokwi.
+- O código da branch registra falhas de gravação NVS e captura bordas do lacre; as correções devem ser verificadas em CI no commit integrado. A NVS continua **não transacional**.
+- Builds anteriores não dispensam compilar a revisão final em `demo` e `weekly`.
 
 ## Critérios da rubrica
 
@@ -23,13 +23,13 @@
 
 ## Estado de CTs críticos — NÃO ALTERAR RETROATIVAMENTE
 
-- **CT18:** reprovado no ensaio original sem rede: 16/20 transições estáveis registradas. O patch desta revisão contém ISR e debounce com 20/20 no host, **mas isso não prova a correção no Wokwi**. Investigar e repetir o estímulo original antes de afirmar aprovação.
-- **CT22:** reprovado no ambiente: reinício não satisfez oráculo de `uptime_ms`. Testar reset controlado e watchdog com logs da mesma versão; a correção de flag de persistência no patch é somente uma proteção parcial.
+- **CT18:** reprovado no ensaio original sem rede: 16/20 transições estáveis registradas. A captura ISR e debounce registraram 20/20 no teste host, **mas isso não prova a correção no Wokwi**. Investigar e repetir o estímulo original antes de afirmar aprovação.
+- **CT22:** reprovado no ambiente: reinício não satisfez oráculo de `uptime_ms`. Testar reset controlado e watchdog com logs da mesma versão; a correção do sinalizador de persistência é somente uma proteção parcial.
 - **CT09:** bloqueado para confirmação externa; Serial e fila vazia não provam recebimento por servidor. MQTT não é requisito de implementação produtiva na Sprint 1, mas o critério existente exige delimitação/aceite da banca.
 
 ## Roteiro para completar aceite
 
-1. Aplicar patch em uma nova branch a partir de `2650e28`, executar `bash scripts/verify-sprint1-local.sh`, `bash scripts/check-firmware-syntax.sh` e `python3 scripts/audit_sprint1.py --strict-local`.
+1. Na branch sob revisão, executar `bash scripts/verify-sprint1-local.sh`, `bash scripts/check-firmware-syntax.sh` e `python3 scripts/audit_sprint1.py --strict-local`.
 2. CI oficial: `pio run -e demo`, `pio run -e weekly`, construir GPS customizado e simular no Wokwi. Assinar evidência do commit/ambiente/binário.
 3. Reexecutar CT18/CT22 com **os mesmos estímulos e esperados originais**, antes de quaisquer novas condições; manter logs históricos imutáveis. CT09 exige receptor com confirmação observável ou acordo escrito de escopo.
 4. Sincronizar projeto Wokwi público com o commit apresentado; verificar acesso anônimo e URL. Confirmar aceitação de GitLab institucional diante da rubrica que menciona GitHub.
@@ -37,3 +37,18 @@
 6. Solicitar MR para `main`; confirmar sucesso do CI no **commit de entrega**, revisar documentos e manter anexos auditáveis.
 
 **Regra de integridade:** passar em teste de host não equivale a CT aprovado no Wokwi; evidência externamente indisponível continua pendente.
+
+## Registro de testes e condições de conclusão
+
+| Caso | Evidência histórica | Resultado atual a demonstrar |
+|---|---|---|
+| CT18 — 20 transições de lacre sem rede | 16/20, **reprovado** | 20/20 em repetição Wokwi, sem modificar estímulos |
+| CT22 — NVS/reset | **Reprovado** no cenário original | Restaurar estado e confirmar reinício com logs |
+| CT09 — entrega externa | **Bloqueado** para ACK de servidor | Comprovação externa ou escopo formalmente aceito |
+| Testes host ISR/NVS | Exercícios locais em dublês | Aprovação em CI no commit final; não equivale a Wokwi |
+
+### Evidências exigidas para encerrar
+
+- Registrar SHA do commit, ambiente, versão do firmware e logs de cada CT.
+- Compilar firmware ESP32 nos modos `demo` e `weekly` e executar o circuito integrado.
+- Não alterar resultados históricos nem declarar homologação LGPD antes do aceite.

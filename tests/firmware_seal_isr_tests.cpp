@@ -38,8 +38,14 @@ int main(){
    fakeIsr();
    fakeMs+=200;
  }
- readSeal(millis());
+ const uint64_t initialClock = clockMs();
+ readSeal(millis(), initialClock + 4000);
  assert(!stableSeal && sealEdgeOverruns==0 && sealEdgeHead==sealEdgeTail);
+ // O processamento das bordas nao deve atualizar o relogio simulado novamente.
+ assert(clockMs() == initialClock);
+ // As 20 bordas foram confirmadas no host; o estado final deve estar em NVS.
+ StoredContext persisted{};
+ assert(restoreContext(persisted) && !persisted.sealOpen && !contextDirty);
  // 10 aberturas violadoras; todas representadas como individual ou resumo.
  unsigned individual=0;
  for (unsigned i=0;i<pending.count;i++){
@@ -47,5 +53,5 @@ int main(){
  }
  assert(individual+pending.overflow_count==10);
  assert(pending.overflow_count>0);
- std::puts("PASS: 20 bordas estaveis capturadas via ISR, sem perda de contagem no host");
+ std::puts("PASS: 20 bordas ISR, relogio unico, persistencia imediata da transicao em host");
 }

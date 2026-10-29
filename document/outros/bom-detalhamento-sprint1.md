@@ -39,3 +39,7 @@ O GNSS estava sem estoque na consulta, e a comunicação externa depende do test
 | **Total** | **7** |  | **34.105,60** |
 
 **Total estimado do protótipo:** R$ 34.839,59 (R$ 733,99 de materiais e R$ 34.105,60 de mão de obra), sem frete, tributos e encargos. Para cinco dispositivos, o custo não é cinco vezes o unitário, porque a mão de obra e parte dos materiais de bancada são compartilhados.
+
+## Referências e rastreabilidade das cotações
+
+As referências **[34]–[53]** usadas neste anexo correspondem aos itens de mesmo número na **seção 5 de `document/documentacao.md`**; esta vinculação não substitui conferência de estoque ou nova cotação. Fontes consultadas em 22–23/10/2026, PTAX [35] de 22/10/2026. Para fornecedores, códigos, URLs e valores, utilizar a planilha original e sua data de consulta.

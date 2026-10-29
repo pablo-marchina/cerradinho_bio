@@ -34,15 +34,18 @@ int main(){
   cycle.days_out++; contextDirty=true;
   FakeNVS::failNextWrite=true;
   saveContext();
-  assert(contextDirty && FakeNVS::bytes.at("ctx")==oldContext);
+  assert(contextDirty && contextRetryPending && FakeNVS::bytes.at("ctx")==oldContext);
+  const uint32_t failureTime = lastContextFailureAt;
+  // Enquanto nao passaram 1000ms, uma falha nao dispara nova tentativa automatica.
+  assert(fakeMs - failureTime < 1000U);
   saveContext();
-  assert(!contextDirty && FakeNVS::bytes.at("ctx")!=oldContext);
+  assert(!contextDirty && !contextRetryPending && FakeNVS::bytes.at("ctx")!=oldContext);
   auto oldMeta=FakeNVS::bytes.at("pmeta");
   queue_push(&pending, "{\"type\":\"INJETADO\"}", true, clockMs());
   FakeNVS::failNextWrite=true;
-  assert(!savePending() && pendingDirty);
+  assert(!savePending() && pendingDirty && pendingRetryPending);
   assert(FakeNVS::bytes.at("pmeta")==oldMeta);
-  assert(savePending() && !pendingDirty);
+  assert(savePending() && !pendingDirty && !pendingRetryPending);
   assert(FakeNVS::bytes.at("pmeta")!=oldMeta);
   std::puts("PASS: firmware real, gravacao NVS falha, dirty preservado e retentativa (host)");
 }

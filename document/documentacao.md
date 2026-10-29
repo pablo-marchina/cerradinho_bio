@@ -191,27 +191,52 @@ Matriz de riscos do projeto, com níveis estimados de 10%–90% e impacto qualit
 
 ### 3.1.6. Política de Privacidade de acordo com a LGPD (sprint 1)
 
-**Minuta não homologada.** A política integral, bases, pendências e critérios de aceite constam no [anexo de privacidade](outros/politica-privacidade-proposta.md). O protótipo utiliza dados fictícios e não comprova conformidade de um produto implantado.
+**Minuta não homologada.** Detalhamento no [anexo de privacidade](outros/politica-privacidade-proposta.md). A demonstração usa dados fictícios; proteção legal e organizacional para dados reais exige avaliação conforme LGPD [40] e orientações da ANPD [41].
 
-1. **Organização:** CerradinhoBio é o parceiro; definir formalmente controlador, equipe operadora e contratos.
-2. **Dados pessoais:** poderão incluir nome, contato profissional, identificador, perfil, IP, logs, responsável pela NF e localização que identifique indiretamente pessoas.
-3. **Origem:** cadastros de usuários, PCM/Fiscal, dispositivo e registros de acesso.
-4. **Finalidade:** autenticar, controlar remessas, informar ocorrências e auditar ciclos; não monitorar desempenho pessoal.
-5. **Base legal:** avaliar execução contratual, obrigação legal e legítimo interesse por finalidade com Jurídico/DPO; nenhuma base é presumida aprovada.
-6. **Armazenamento:** NVS e Serial na demonstração; nuvem, região e terceiros ainda não definidos no piloto.
-7. **Retenção:** prazos por categoria, backups e eliminação dependem de decisão documentada, sem período definitivo aprovado.
-8. **Cookies:** painel futuro poderá usar cookie de sessão; inventariar outros rastreadores antes de publicar.
-9. **Compartilhamento:** operadores contratados e autoridades quando necessário, sujeitos a confirmação e transparência.
-10. **Segurança:** dados sintéticos e armazenamento local são demonstrados; TLS, perfis, auditoria e gestão de incidentes são requisitos futuros.
-11. **Direitos:** acesso, correção, eliminação cabível e demais direitos da LGPD, com autenticação proporcional do solicitante.
-12. **Solicitação:** canal institucional [publicado pela CerradinhoBio](https://www.cerradinhobio.com.br/politica-de-privacidade/) precisa ter aplicação ao GuaráTracking confirmada.
-13. **Encarregado:** dados públicos estão transcritos no anexo; homologação e competência para este projeto pendentes.
+#### 3.1.6.1 Organização
+CerradinhoBio é parceira; controlador e operadores dependem de definição formal.
 
-**Condição de aceite:** aprovação do inventário, dos responsáveis, dos prazos e do canal antes de receber dados pessoais reais.
+#### 3.1.6.2 Dados
+Nome, contato profissional, usuário, perfil, IP, logs, identificadores, NF e localização potencialmente vinculável a pessoas.
+
+#### 3.1.6.3 Fontes
+Cadastros, PCM/Fiscal, dispositivo e registros de acesso.
+
+#### 3.1.6.4 Finalidades
+Controlar remessas, autenticar, alertar e auditar ciclos; não avaliar desempenho individual.
+
+#### 3.1.6.5 Bases legais
+Definir por finalidade com Jurídico/encarregado: contrato, obrigação legal ou legítimo interesse quando cabível [40].
+
+#### 3.1.6.6 Armazenamento
+NVS e Serial simuladas; servidor, região e fornecedores ainda não definidos.
+
+#### 3.1.6.7 Retenção
+Prazos, backups, exclusão e responsáveis aguardam aprovação.
+
+#### 3.1.6.8 Cookies
+Painel futuro poderá usar sessão; rastreadores dependem de inventário.
+
+#### 3.1.6.9 Compartilhamento
+Operadores contratados e autoridades, nos casos autorizados ou exigidos.
+
+#### 3.1.6.10 Segurança
+Demonstração sintética; autenticação, TLS, perfis e resposta a incidentes permanecem planejados.
+
+#### 3.1.6.11 Direitos
+Confirmação, acesso, correção, eliminação cabível e outros direitos do art. 18 [40].
+
+#### 3.1.6.12 Solicitações
+Canal institucional publicado precisa de validação específica para o GuaráTracking.
+
+#### 3.1.6.13 Encarregado
+Encarregado indicado pela CerradinhoBio (**a confirmar**), sem divulgar contato não homologado.
+
+**Aceite:** validar papéis, dados, bases, retenção, medidas e canal antes de tratar dados pessoais reais.
 
 ### 3.1.7. Bill of Material (BOM) (sprint 1)
 
-Foi preenchida a [planilha oficial](../assets/negocios/BOM-GuaraTracking-Sprint1.xlsx) com **16 itens**, referências, quantidades, valores unitários, fontes e data. O [detalhamento completo](outros/bom-detalhamento-sprint1.md) preserva tabelas, hipóteses e memória de custo.
+Foi preenchida a [planilha oficial](../assets/negocios/BOM-GuaraTracking-Sprint1.xlsx) [42] com **16 itens**, quantidades e valores. Preços de referência consultados em **22–23/10/2026**; conversões em dólar usam PTAX venda de **22/10/2026 (R$ 5,0383)** [35]. O [detalhamento completo](outros/bom-detalhamento-sprint1.md) preserva tabelas, hipóteses e memória de custo.
 
 | Parcela | Estimativa de referência | Limitação |
 |---|---:|---|
