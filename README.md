@@ -33,7 +33,7 @@
 
 O GuaráTracking é uma solução IoT desenvolvida com a **CerradinhoBio** para acompanhar equipamentos enviados à manutenção externa. Cada ciclo de manutenção recebe um dispositivo reutilizável, fixado ao equipamento com um lacre e vinculado à nota fiscal de remessa, ao fornecedor, ao responsável e ao prazo previsto. O dispositivo informa periodicamente a última localização GNSS válida e registra eventos de lacre; a plataforma calcula os dias fora, sinaliza atraso e permanência acima do limiar configurado (referência inicial de 150 dias) e preserva o histórico quando o dispositivo é reutilizado em outro equipamento. Os dados ficam disponíveis por API para análise em BI. A proposta reduz consultas dispersas e cobranças manuais entre PCM, Fiscal e Logística.
 
-O protótipo atual roda no simulador Wokwi com ESP32, GPS customizado, chave de lacre, bateria simulada, LCD 16x2 com botões de navegação, buzzer de violação e botões de autorização e de ciclo. As regras de ciclo, lacre, fila de eventos sem rede e bateria estão implementadas e testadas, com as evidências dos casos de teste CT01–CT23 e CT35 descritas na [documentação](document/documentacao.md); o CT18 e o CT22 seguem reprovados e o CT09 bloqueado (seção 3.4.1). Transporte por MQTT, interface web e API ficam para as próximas sprints. A rede simulada (`SW_REDE`) não representa o estado real do Wi-Fi, e o JSON impresso na Serial não equivale a uma publicação confirmada em servidor.
+O protótipo atual roda no simulador Wokwi com ESP32, GPS customizado, chave de lacre, bateria simulada, LCD 16x2 com botões de navegação, buzzer de violação e botões de autorização e de ciclo. As regras de ciclo, lacre, fila local de eventos e bateria estão implementadas e possuem testes em host, com as evidências dos casos de teste CT01–CT23 e CT35 descritas na [documentação](document/documentacao.md); o CT18 e CT22 mantêm reprovações históricas e CT09 permanece bloqueado (seção 3.4.1). Transporte por MQTT, interface web e API ficam para as próximas sprints. A rede simulada (`SW_REDE`) não representa o estado real do Wi-Fi, e o JSON impresso na Serial não equivale a uma publicação confirmada em servidor.
 
 Projeto no Wokwi: https://wokwi.com/projects/478276108359405569.
 
@@ -93,7 +93,7 @@ Com o PlatformIO instalado globalmente, as compilações equivalem a `pio run -e
 3. Para o ambiente `weekly`, selecione `wokwi.weekly.toml` e compile o ambiente correspondente.
 4. Para publicar no Wokwi web, prepare os arquivos com `python scripts/export-wokwi.py` e siga o [guia do circuito](src/firmware/prototipo_wokwi/README.md).
 
-No ambiente `demo`, a localização é coletada a cada 30 segundos e 1 s simula 1 dia nas regras de ciclo. No `weekly`, a coleta ocorre a cada sete dias reais. O protótipo não comprova autonomia, vedação nem cobertura em oficinas.
+No ambiente `demo`, a localização é coletada a cada 30 segundos e 1 s simula 1 dia nas regras de ciclo. No `weekly`, a coleta ocorre a cada sete dias reais. O protótipo não comprova autonomia real nem cobertura em oficinas; os retestes CT18/CT22 no Wokwi integrado ainda são necessários.
 
 ### Integração contínua
 

@@ -106,7 +106,7 @@ class ScreenController final {
       copy(bottom, "sem ciclo ativo");
       return;
     }
-    char text[32];
+    char text[64];
     snprintf(text, sizeof(text), "Prazo: dia %lu/%lu", (unsigned long)view.daysOut,
              (unsigned long)view.expectedDays);
     if (strlen(text) > Columns) {

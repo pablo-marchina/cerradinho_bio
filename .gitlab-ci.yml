@@ -11,7 +11,7 @@ validacao-host:
   script:
     - bash scripts/verify-host.sh
     - bash scripts/check-firmware-syntax.sh
-    - python3 scripts/audit-docs.py
+    - python3 scripts/audit-docs.py --strict-local
   artifacts:
     when: always
     expire_in: 14 days
