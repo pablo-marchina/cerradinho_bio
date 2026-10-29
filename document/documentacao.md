@@ -306,7 +306,21 @@ O layout também foi revisado pela equipe: o texto corrido deu lugar a um fluxo 
 
 _Coloque aqui seu Mapa de Jornada do Usuário (seguindo as instruções na descrição do artefato)_
 
-_Coloque aqui seu Storyboard (seguindo as instruções na descrição do artefato)_
+#### Storyboard 
+
+O storyboard acompanha Geraldo, analista de PCM responsável pelos equipamentos enviados à manutenção externa. A história mostra sua atuação após uma bomba ultrapassar o prazo de retorno combinado com a oficina e o GuaráTracking emitir um alerta de atraso, permitindo que ele consulte os dados e tome uma decisão.
+
+<div align="center">
+  <p><strong>Figura 3.2.2.3. - Storyboard do Geraldo</strong></p>
+  <img
+    src="../assets/3-desenvolvimento-resultados/guaratracking-storyboard.png"
+    alt="Storyboard do Geraldo- GuaráTracking"
+    width="100%"
+  >
+  <p><em>Fonte: elaboração do Grupo G01 (2026), com base no template da disciplina.</em></p>
+</div>
+
+
 
 ## 3.3. Solução Técnica	
 
