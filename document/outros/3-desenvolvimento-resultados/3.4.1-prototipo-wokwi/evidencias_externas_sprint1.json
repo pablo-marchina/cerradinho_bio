@@ -1,0 +1,17 @@
+{
+  "lgpd": {
+    "status": "pendente",
+    "responsavel": null,
+    "data": null,
+    "evidencia_url": null,
+    "observacao": "A política institucional é pública, mas não constitui aprovação do GuaráTracking."
+  },
+  "wokwi": {
+    "status": "pendente",
+    "responsavel": null,
+    "data": null,
+    "evidencia_url": null,
+    "commit": null,
+    "observacao": "Projeto histórico não contém o firmware integrado; CT18 e CT22 reprovados, CT09 bloqueado."
+  }
+}

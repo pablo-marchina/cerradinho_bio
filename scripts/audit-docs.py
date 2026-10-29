@@ -3,6 +3,7 @@
 import pathlib
 import re
 import subprocess
+from sprint1_evidence import evaluate_external, load_evidence
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -10,8 +11,8 @@ DOC = ROOT / 'document' / 'documentacao.md'
 text = DOC.read_text(encoding='utf-8')
 checks = []
 
-def check(ok, label, detail=''):
-    checks.append((bool(ok), label, detail))
+def check(ok, label, detail='', external=False):
+    checks.append((bool(ok), label, detail, external))
 
 for label in ['1. Introdução', '1.1 Objetivos', '1.2 Proposta', '1.3 Justificativa',
               '3.1.1. Contexto', '3.1.2. Análise SWOT', '3.1.3. Descrição',
@@ -20,9 +21,19 @@ for label in ['1. Introdução', '1.1 Objetivos', '1.2 Proposta', '1.3 Justifica
               '3.3.2. Regras', '3.3.4. Matriz', '3.4.1. Protótipo']:
     check(label in text, f'Seção presente: {label}')
 
-links = re.findall(r'!?\[[^]]*\]\(([^)]+)\)', text)
-missing = [p for p in links if not p.startswith(('http://', 'https://', '#', 'data:'))
-           and not (DOC.parent / p.split('#')[0]).exists()]
+annexes = [ROOT / 'document/outros/3-desenvolvimento-resultados' / folder / name
+           for folder,name in [('3.1.6-politica-privacidade','politica-privacidade-proposta.md'),
+                               ('3.1.7-bom','bom-detalhamento-sprint1.md')]]
+markdowns = [DOC, ROOT / 'README.md', *annexes]
+links=[]
+missing=[]
+for md in markdowns:
+    if not md.exists():
+        missing.append(f'arquivo ausente: {md}');continue
+    for link in re.findall(r'!?\[[^]]*\]\(([^)]+)\)', md.read_text(encoding='utf-8')):
+        links.append(link)
+        if link.startswith(('http://','https://','#','data:','mailto:')):continue
+        if not (md.parent/link.split('#')[0]).exists():missing.append(f'{md.relative_to(ROOT)}: {link}')
 check(not missing, f'Links Markdown locais ({len(links)} verificados)', str(missing[:10]))
 
 ids_rf = set(re.findall(r'^\|\s*(RF\d{3})\s*\|', text, re.M))
@@ -50,12 +61,13 @@ failed = sorted(set(re.findall(r'CT\d{2}', 'CT18 CT22')) & ct_ids)
 check('CT18' in rtm and 'REPROVADO' in rtm, 'CT18 marcado como reprovado')
 check('CT22' in rtm and 'REPROVADO' in rtm, 'CT22 marcado como reprovado')
 
-# Aprovação institucional não pode ser deduzida da ausência da expressão
-# "PENDENTE DE VALIDAÇÃO". A minuta emprega "a confirmar" e "a definir".
-lgpd = text[text.index('### 3.1.6.'):text.index('### 3.1.7.')]
-open_fields = re.findall(r'\ba (?:confirmar|definir|aprovar)\b|NÃO aprovada', lgpd, re.IGNORECASE)
-check(not open_fields, 'LGPD homologada pelo controlador',
-      f'{len(open_fields)} pendências explícitas; exige comprovação externa')
+# Homologação institucional e publicação Wokwi são dependências externas,
+# jamais inferidas a partir da ausência de expressões como "pendente".
+evidence = load_evidence(ROOT / 'document/outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/evidencias_externas_sprint1.json')
+for kind, label in [('lgpd','LGPD homologada pelo controlador'),
+                    ('wokwi','Wokwi público integrado e retestado')]:
+    ok, detail = evaluate_external(evidence.get(kind), kind)
+    check(ok, label, detail, external=True)
 
 # Contagem conservadora incluindo cabeçalhos e tabelas; links/Markdown podem
 # ser contados de outra forma pelo avaliador, logo manter margem de segurança.
@@ -70,14 +82,14 @@ for section, following in [('3.1.1.', '3.1.2.'), ('3.1.2.', '3.1.3.'),
     count = len(re.findall(r'\b[\wÀ-ÿ]+\b', visible))
     check(count <= 300, f'Limite 300 palavras: {section} ({count})')
 
-# Pendências com responsáveis externos nunca são contabilizadas como evidências
-# de teste funcional, mesmo que checagens sintáticas estejam verdes.
-check('A REALIZAR' not in text[text.index('### 3.4.1.'):text.index('### 3.4.2.')],
-      'Wokwi público integrado publicado', 'URL histórica não representa firmware atual')
-
-for ok, label, detail in checks:
+for ok, label, detail, external in checks:
     status = 'OK' if ok else 'PENDENTE'
-    print(f'[{status}] {label}' + (f' :: {detail}' if detail else ''))
-print(f'RESUMO: {sum(x[0] for x in checks)}/{len(checks)} verificações. '
-      'Pendências externas não são falhas de sintaxe, mas bloqueiam homologação.')
-sys.exit(1 if '--strict' in sys.argv and not all(x[0] for x in checks) else 0)
+    print(f'[{status}/{"EXTERNO" if external else "LOCAL"}] {label}' +
+          (f' :: {detail}' if detail else ''))
+local = [c for c in checks if not c[3]]
+print(f'LOCAL: {sum(c[0] for c in local)}/{len(local)}; '
+      f'EXTERNO: {sum(c[0] for c in checks if c[3])}/{len(checks)-len(local)}')
+if '--strict' in sys.argv:
+    sys.exit(0 if all(c[0] for c in checks) else 1)
+if '--strict-local' in sys.argv:
+    sys.exit(0 if all(c[0] for c in local) else 1)

@@ -1,4 +1,7 @@
 #include <Arduino.h>
+#include <cstring>
+#include <driver/gpio.h>
+#include <esp_system.h>
 #include <TinyGPS++.h>
 #include <WiFi.h>
 #include <Preferences.h>
@@ -11,6 +14,7 @@
 #include "battery_rules.h"
 #include "sim_clock.h"
 #include "screen_controller.h"
+#include "seal_debounce.h"
 
 namespace {
 TinyGPSPlus gps;
@@ -42,6 +46,35 @@ bool poweredOn = true;
 bool networkWasAvailable = true;
 String serialLine;
 bool contextDirty = false;  // ciclo/lacre mudou e precisa ir para a NVS
+bool pendingDirty = false;
+bool contextRetryPending = false, pendingRetryPending = false;
+uint32_t lastContextFailureAt = 0, lastPendingFailureAt = 0;
+
+// Bordas capturadas fora do loop; sem gravacoes nem serial na ISR.
+constexpr uint8_t SealEdgeCapacity = 64;
+struct SealEdge { uint32_t at; bool opened; };
+volatile SealEdge sealEdges[SealEdgeCapacity] = {};
+volatile uint8_t sealEdgeHead = 0, sealEdgeTail = 0;
+volatile uint32_t sealEdgeOverruns = 0;
+void IRAM_ATTR onSealEdge() {
+  const uint8_t head = sealEdgeHead;
+  const uint8_t next = static_cast<uint8_t>((head + 1U) % SealEdgeCapacity);
+  if (next == sealEdgeTail) { ++sealEdgeOverruns; return; }
+  sealEdges[head].at = millis();
+  sealEdges[head].opened = gpio_get_level(static_cast<gpio_num_t>(Config::SealPin)) != 0;
+  sealEdgeHead = next;
+}
+bool popSealEdge(SealEdge &edge) {
+  noInterrupts();
+  if (sealEdgeTail == sealEdgeHead) { interrupts(); return false; }
+  const uint8_t tail = sealEdgeTail;
+  edge.at = sealEdges[tail].at;
+  edge.opened = sealEdges[tail].opened;
+  sealEdgeTail = static_cast<uint8_t>((tail + 1U) % SealEdgeCapacity);
+  interrupts();
+  return true;
+}
+
 char shipmentInvoice[Config::InvoiceMaxLength + 1] = "";  // NF da remessa (comando REMESSA)
 bool alarmActive = false;   // buzzer da violacao, limitado a BuzzerAlarmMs
 uint32_t alarmStartedAt = 0;
@@ -204,15 +237,25 @@ struct StoredContext {
 };
 constexpr uint32_t ContextVersion = 2;  // V2 acrescentou a NF da remessa
 
-void saveContext() {
-  contextDirty = false;
-  if (!storageReady) return;
+bool saveContext() {
+  contextDirty = true;
+  if (!storageReady) {
+    contextRetryPending = true;
+    lastContextFailureAt = millis();
+    return false;
+  }
   StoredContext context{ContextVersion, Config::DayMs, clockMs(), cycle, cycleStartedAt,
                         cycleActive, returnInvoiceIssued, closedCycles, seal, stableSeal, {}};
   memcpy(context.invoice, shipmentInvoice, sizeof(context.invoice));
   if (storage.putBytes("ctx", &context, sizeof(context)) != sizeof(context)) {
-    Serial.println("[memoria] falha ao salvar o contexto do ciclo");
+    contextRetryPending = true;
+    lastContextFailureAt = millis();
+    Serial.println("[memoria] falha ao gravar contexto; retentativa pendente");
+    return false;
   }
+  contextDirty = false;
+  contextRetryPending = false;
+  return true;
 }
 
 bool restoreContext(StoredContext &context) {
@@ -232,22 +275,35 @@ struct StoredQueueMeta {
   uint64_t overflowFirstMs, overflowLastMs;
 };
 
-void savePending() {
-  if (!storageReady) return;
+bool savePending() {
+  pendingDirty = true;
+  if (!storageReady) {
+    pendingRetryPending = true;
+    lastPendingFailureAt = millis();
+    return false;
+  }
   StoredQueueMeta meta{pending.count, {}, pending.lost, pending.overflowCount,
                        pending.overflowFirstMs, pending.overflowLastMs};
+  bool complete = true;
   for (uint8_t i = 0; i < EVENT_QUEUE_CAPACITY; ++i) {
     const String key = "p" + String(i);
     if (i < pending.count) {
       meta.critical[i] = pending.critical[i];
-      storage.putString(key.c_str(), pending.text[i]);
+      if (storage.putString(key.c_str(), pending.text[i]) != strlen(pending.text[i])) complete = false;
     } else if (storage.isKey(key.c_str())) {
-      storage.remove(key.c_str());
+      if (!storage.remove(key.c_str())) complete = false;
     }
   }
-  if (storage.putBytes("pmeta", &meta, sizeof(meta)) != sizeof(meta)) {
-    Serial.println("[memoria] falha ao salvar a fila de eventos");
+  if (complete) complete = storage.putBytes("pmeta", &meta, sizeof(meta)) == sizeof(meta);
+  if (!complete) {
+    pendingRetryPending = true;
+    lastPendingFailureAt = millis();
+    Serial.println("[memoria] falha ao gravar fila; retentativa pendente, NVS nao transacional");
+    return false;
   }
+  pendingDirty = false;
+  pendingRetryPending = false;
+  return true;
 }
 
 void restorePending() {
@@ -260,7 +316,10 @@ void restorePending() {
   }
   for (uint8_t i = 0; i < meta.count; ++i) {
     const String text = storage.getString(("p" + String(i)).c_str(), "");
-    if (text.length() == 0) break;  // entrada ausente: preserva so as anteriores
+    if (text.length() == 0) {
+      Serial.printf("[memoria] ALERTA: item p%u ausente; restauracao parcial da fila\r\n", i);
+      break;  // metadados antigos nao contem checksum; nao afirmar entrega integra
+    }
     queuePush(&pending, text.c_str(), meta.critical[i], 0);
   }
   pending.lost = meta.lost;
@@ -545,39 +604,62 @@ void readCommands() {
   }
 }
 
-// A referencia e o ultimo estado estavel salvo (fechado na primeira inicializacao):
-// ligar com o lacre aberto passa pelo mesmo caminho e gera a violacao.
+// O relogio do ciclo ja foi calculado uma unica vez no loop(). O horario de
+// confirmacao do debounce serve ao diagnostico; nao avanca o relogio de novo.
+void sealTransition(bool opened, uint32_t confirmedAt, uint32_t now, uint64_t clock) {
+  stableSeal = opened;
+  contextDirty = true;
+  const int event = stableSeal ? sealOpened(&seal, clock) : sealClosed(&seal);
+  // Persistir imediatamente o estado critico; somente falhas sao atrasadas.
+  if (!contextRetryPending) saveContext();
+  String record = baseRecord("seal_changed");
+  record += ",\"authorized_removal\":";
+  record += seal.removalInProgress ? "true" : "false";
+  record += ",\"debounce_confirmed_at_ms\":"; record += confirmedAt;
+  record += "}";
+  enqueue(record);
+  if (event == SEAL_EVENT_VIOLATION) {
+    publishEvent("VIOLACAO_LACRE", true);
+    alarmActive = true;
+    alarmStartedAt = now;
+    showMessage("VIOLACAO", "registrada");
+  } else if (event == SEAL_EVENT_REMOVAL) {
+    publishEvent("RETIRADA_AUTORIZADA");
+    showMessage("Retirada", "autorizada");
+  } else if (event == SEAL_EVENT_RESEALED) {
+    publishEvent("LACRE_REAPLICADO");
+    showMessage("Lacre fechado", "reaplicado");
+  } else if (event == SEAL_EVENT_CLOSED) {
+    publishEvent("LACRE_FECHADO");
+    showMessage("Lacre fechado", "apos violacao");
+  }
+}
+
+// Captura historico de bordas do lacre, inclusive quando Serial/NVS ocupou o loop.
 void readSeal(uint32_t now, uint64_t clock) {
-  const bool value = digitalRead(Config::SealPin) == HIGH;
-  if (value != rawSeal) { rawSeal = value; sealChangedAt = now; }
-  if (rawSeal != stableSeal && now - sealChangedAt >= Config::SealDebounceMs) {
-    stableSeal = rawSeal;
-    contextDirty = true;
-    const int event = stableSeal ? sealOpened(&seal, clock) : sealClosed(&seal);
-    String record = baseRecord("seal_changed");
-    record += ",\"authorized_removal\":";
-    record += seal.removalInProgress ? "true" : "false";
-    record += "}";
-    enqueue(record);
-    // Violacao e critica e sai na hora, fora da rotina periodica (RF006; RN05).
-    if (event == SEAL_EVENT_VIOLATION) {
-      publishEvent("VIOLACAO_LACRE", true);
-      alarmActive = true;  // buzzer so na violacao, nunca na retirada autorizada
-      alarmStartedAt = now;
-      showMessage("VIOLACAO", "registrada");
+  SealEdge edge{};
+  SealDebounceEvent event{};
+  while (popSealEdge(edge)) {
+    if (seal_on_edge(rawSeal, stableSeal, sealChangedAt,
+                     edge.opened, edge.at, Config::SealDebounceMs, event)) {
+      sealTransition(event.opened, event.confirmedAt, now, clock);
     }
-    if (event == SEAL_EVENT_REMOVAL) {
-      publishEvent("RETIRADA_AUTORIZADA");
-      showMessage("Retirada", "autorizada");
-    }
-    if (event == SEAL_EVENT_RESEALED) {
-      publishEvent("LACRE_REAPLICADO");
-      showMessage("Lacre fechado", "reaplicado");
-    }
-    if (event == SEAL_EVENT_CLOSED) {
-      publishEvent("LACRE_FECHADO");
-      showMessage("Lacre fechado", "apos violacao");
-    }
+  }
+  // Reconcilia o nivel corrente se uma borda ocorreu antes da ativacao da ISR.
+  const bool actual = digitalRead(Config::SealPin) == HIGH;
+  if (actual != rawSeal && seal_on_edge(rawSeal, stableSeal, sealChangedAt,
+                                        actual, now, Config::SealDebounceMs, event)) {
+    sealTransition(event.opened, event.confirmedAt, now, clock);
+  }
+  if (seal_settle(rawSeal, stableSeal, sealChangedAt, now, Config::SealDebounceMs, event)) {
+    sealTransition(event.opened, event.confirmedAt, now, clock);
+  }
+  static uint32_t lastOverruns = 0;
+  noInterrupts(); const uint32_t overrunCount = sealEdgeOverruns; interrupts();
+  if (overrunCount != lastOverruns) {
+    Serial.printf("[lacre] ALERTA: buffer ISR cheio; total=%lu, verificar eventos ausentes\r\n",
+                  static_cast<unsigned long>(overrunCount));
+    lastOverruns = overrunCount;
   }
 }
 
@@ -657,6 +739,8 @@ void setup() {
   Serial.begin(Config::ConsoleBaud);
   delay(200);
   Serial.println("\n[boot] ESP32 executando - prototipo Cerradinho");
+  Serial.printf("[boot] uptime_inicio_ms=%lu reset_reason=%d\r\n",
+                static_cast<unsigned long>(millis()), static_cast<int>(esp_reset_reason()));
   Serial.printf("[config] modo=%s intervalo=%lu s tolerancia=%.0f m\r\n",
                 DEMO_MODE ? "demo" : "semanal", Config::SampleIntervalMs / 1000UL,
                 Config::MovementThresholdM);
@@ -715,6 +799,7 @@ void setup() {
     startCycle(clockMs(), 1);
   }
   sealChangedAt = millis();
+  attachInterrupt(digitalPinToInterrupt(Config::SealPin), onSealEdge, CHANGE);
   saveContext();
   if (hasPending()) {
     printPending();
@@ -760,14 +845,17 @@ void loop() {
   updateDisplay(now, clock);
   updateBuzzer(now);
   if (!poweredOn) return;
+  readSeal(now, clock);  // antes de I/O potencialmente bloqueante
   readGps();
-  readSeal(now, clock);
   readButtons(now, clock);
   readBattery(now);
   readCommands();
   updateNetwork();
   updateCycle(clock);
-  if (contextDirty) saveContext();
+  if (contextDirty && (!contextRetryPending ||
+      static_cast<uint32_t>(now - lastContextFailureAt) >= 1000U)) saveContext();
+  if (pendingDirty && (!pendingRetryPending ||
+      static_cast<uint32_t>(now - lastPendingFailureAt) >= 1000U)) savePending();
   const bool connected = WiFi.status() == WL_CONNECTED;
   if (connected != wasConnected) {
     Serial.printf("[wifi] %s\r\n", connected ? "conectado" : "desconectado");
