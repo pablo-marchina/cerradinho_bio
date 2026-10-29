@@ -1,17 +1,17 @@
-# Verificacao deterministica de Sprint 1. Nao afirma aprovacao Wokwi/ESP32.
+# Verificacao deterministica em host. Nao afirma aprovacao Wokwi/ESP32.
 stages:
   - validar
 
-validacao-sprint1-host:
+validacao-host:
   stage: validar
   image: python:3.12-bookworm
   before_script:
     - apt-get update -qq
     - apt-get install -y -qq --no-install-recommends gcc g++ make
   script:
-    - bash scripts/verify-sprint1-local.sh
+    - bash scripts/verify-host.sh
     - bash scripts/check-firmware-syntax.sh
-    - python3 scripts/audit_sprint1.py --strict-local
+    - python3 scripts/audit-docs.py --strict-local
   artifacts:
     when: always
     expire_in: 14 days

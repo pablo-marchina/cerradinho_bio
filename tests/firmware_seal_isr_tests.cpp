@@ -20,6 +20,8 @@ void digitalWrite(int,int){}
 int digitalRead(int p){return p>=0&&p<64?fakePins[p]:0;}
 int analogRead(int){return 2048;}
 void analogReadResolution(int){}
+void tone(int,unsigned int,unsigned long){}
+void noTone(int){}
 void noInterrupts(){}
 void interrupts(){}
 void attachInterrupt(int,void(*cb)(),int){fakeIsr=cb;}
@@ -51,7 +53,7 @@ int main(){
  for (unsigned i=0;i<pending.count;i++){
    if (std::string(pending.text[i]).find("VIOLACAO_LACRE")!=std::string::npos) individual++;
  }
- assert(individual+pending.overflow_count==10);
- assert(pending.overflow_count>0);
+ assert(individual+pending.overflowCount==10);
+ assert(pending.overflowCount>0);
  std::puts("PASS: 20 bordas ISR, relogio unico, persistencia imediata da transicao em host");
 }

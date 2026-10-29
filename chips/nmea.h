@@ -7,7 +7,7 @@
 
 // Arredonda em unidades de 0,0001 minuto antes de separar graus e minutos:
 // isso evita produzir o minuto invalido 60.0000 na fronteira entre graus.
-static inline void nmea_coordinate(double value, bool longitude,
+static inline void nmeaCoordinate(double value, bool longitude,
                                    char *out, size_t capacity) {
   int64_t units = (int64_t)llround(fabs(value) * 600000.0);
   int degrees = (int)(units / 600000);
@@ -16,16 +16,16 @@ static inline void nmea_coordinate(double value, bool longitude,
            degrees, minutes);
 }
 
-static inline int make_gga(char *out, size_t capacity, double lat, double lon,
+static inline int makeGga(char *out, size_t capacity, double lat, double lon,
                            bool fix, uint32_t seconds) {
   char latitude[24], longitude[24], body[150];
-  if (!valid_coordinates(lat, lon)) {
+  if (!validCoordinates(lat, lon)) {
     lat = 0.0;
     lon = 0.0;
     fix = false;
   }
-  nmea_coordinate(lat, false, latitude, sizeof(latitude));
-  nmea_coordinate(lon, true, longitude, sizeof(longitude));
+  nmeaCoordinate(lat, false, latitude, sizeof(latitude));
+  nmeaCoordinate(lon, true, longitude, sizeof(longitude));
   seconds %= 86400;
   snprintf(body, sizeof(body),
            "GPGGA,%02u%02u%02u,%s,%c,%s,%c,%d,%02d,1.0,0.0,M,0.0,M,,",

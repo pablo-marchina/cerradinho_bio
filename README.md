@@ -1,11 +1,16 @@
+# Inteli - Instituto de Tecnologia e Liderança
+
+<p align="center">
+<a href="https://www.inteli.edu.br/"><img src="assets/inteli.png" alt="Inteli - Instituto de Tecnologia e Liderança" border="0" width="40%"></a>
+</p>
+
 # GuaráTracking — rastreamento de equipamentos em manutenção externa
 
-**Inteli — Sprint 1, Grupo G01 (2026.2)** · Parceiro do desafio: **CerradinhoBio**.
+## G01
 
-O GuaráTracking propõe associar um dispositivo reutilizável a cada ciclo de manutenção externa de um equipamento. O fluxo de negócio reúne NF de remessa e de retorno, fornecedor, responsável, prazo esperado, última posição GNSS, eventos de lacre e alertas de atraso e permanência. A solução pretende reduzir consultas dispersas e apoiar PCM, Fiscal e Logística. A pesquisa de negócio e o escopo estão em [documentação](document/documentacao.md).
+## 👨‍🎓 Integrantes
 
-## Integrantes
-
+<!-- PENDENTE: adicionar o link do LinkedIn de cada integrante no formato [Nome](https://www.linkedin.com/in/...). -->
 - Arthur Dantas Pereira Loyola
 - Bruno Fernandes Ramos
 - Guilherme Nunes Fernandes e Silva
@@ -14,27 +19,63 @@ O GuaráTracking propõe associar um dispositivo reutilizável a cada ciclo de m
 - Pablo Marchina
 - Rachel Durante Silvestre
 
-**Orientadora:** Camila Naves Arantes
+## 👩‍🏫 Professores
 
-## Estado da Sprint 1 — importante
+### Orientadora
 
-| Componente | Implementado no protótipo local | Ainda não demonstrado / pendente |
-|---|---|---|
-| ESP32/Wokwi | `setup()` e `loop()`, classe `IndicatorController`, botões, LEDs, lacre, GPS custom, ADC de bateria | CT18 e CT22 reprovados; ver seção 3.4.1 |
-| Eventos e regras | Ciclo, autorização e debounce, status, atraso, permanência, JSON na Serial, fila sem rede na NVS | MQTT, confirmação de servidor e autenticação de dispositivos |
-| Plataforma | RF/RN/RTM preliminares documentados | Dashboard, BI/API, notificações, cadastro de usuários |
-| Testes | CT01–CT23 e CT35 no Wokwi, com evidências em `assets/wokwi/`; testes host de regras e da classe de LEDs | CT18 e CT22 reprovados; CT09 bloqueado |
-| Publicação | Código-fonte versionável e pacote de exportação local | Sincronizar o Wokwi público e confirmar GitLab versus GitHub com a disciplina |
+- Camila Naves Arantes
 
-**Não confundir** a rede simulada (`SW_REDE`) com o estado real do Wi-Fi, nem os JSONs da Serial com publicação MQTT. Projeto no Wokwi: https://wokwi.com/projects/478276108359405569.
+### Instrutores
 
-## Ambiente e compilação
+<!-- PENDENTE: listar os instrutores do módulo com o link do LinkedIn. -->
 
-- Placa `esp32dev`, framework Arduino, Espressif32 `6.12.0`, TinyGPSPlus `1.0.3`.
-- VS Code com PlatformIO e extensão Wokwi; Python 3.10+ e Node 22+ para scripts de bancada.
-- Senhas de Wi-Fi locais devem ficar fora do controle de versão (`include/config.local.h`).
+## 📜 Descrição
 
-Windows, PowerShell, na raiz do repositório:
+O GuaráTracking é uma solução IoT desenvolvida com a **CerradinhoBio** para acompanhar equipamentos enviados à manutenção externa. Cada ciclo de manutenção recebe um dispositivo reutilizável, fixado ao equipamento com um lacre e vinculado à nota fiscal de remessa, ao fornecedor, ao responsável e ao prazo previsto. O dispositivo informa periodicamente a última localização GNSS válida e registra eventos de lacre; a plataforma calcula os dias fora, sinaliza atraso e permanência acima do limiar configurado (referência inicial de 150 dias) e preserva o histórico quando o dispositivo é reutilizado em outro equipamento. Os dados ficam disponíveis por API para análise em BI. A proposta reduz consultas dispersas e cobranças manuais entre PCM, Fiscal e Logística.
+
+O protótipo atual roda no simulador Wokwi com ESP32, GPS customizado, chave de lacre, bateria simulada, LCD 16x2 com botões de navegação, buzzer de violação e botões de autorização e de ciclo. As regras de ciclo, lacre, fila local de eventos e bateria estão implementadas e possuem testes em host, com as evidências dos casos de teste CT01–CT23 e CT35 descritas na [documentação](document/documentacao.md); o CT18 e CT22 mantêm reprovações históricas e CT09 permanece bloqueado (seção 3.4.1). Transporte por MQTT, interface web e API ficam para as próximas sprints. A rede simulada (`SW_REDE`) não representa o estado real do Wi-Fi, e o JSON impresso na Serial não equivale a uma publicação confirmada em servidor.
+
+Projeto no Wokwi: https://wokwi.com/projects/478276108359405569.
+
+## 📁 Estrutura de pastas
+
+Dentre os arquivos e pastas presentes na raiz do projeto, definem-se:
+
+- <b>.gitlab</b>: template dos cards do Kanban (`issue_templates/card-kanban.md`).
+
+- <b>assets</b>: imagens e arquivos de apoio da documentação, com uma pasta por seção da `documentacao.md` (`1-introducao`, `2-metodologia`, `3-desenvolvimento-resultados`, `4-conclusoes-recomendacoes`, `5-referencias`). Dentro da seção, cada subseção tem a sua pasta (ex.: `3-desenvolvimento-resultados/3.1.2-swot/`). Itens comuns, como o logo do Inteli, ficam na raiz de `assets`.
+
+- <b>chips</b>: chip GPS/GNSS customizado do Wokwi (`gps.chip.c`, `gps.chip.json`) e o gerador de sentenças NMEA (`nmea.h`).
+
+- <b>document</b>: documentação do projeto (`documentacao.md`) e manual de instruções (`manual-de-instrucoes.md`). Em `outros/` ficam os documentos complementares, organizados pelas mesmas pastas de seção usadas em `assets`, e as orientações da disciplina (`orientacoes/`).
+
+- <b>include</b>: cabeçalhos do firmware com a configuração e as regras portáveis (ciclo, lacre, fila de eventos, bateria, relógio e indicadores).
+
+- <b>scripts</b>: preparação do ambiente, compilação, verificação e exportação para o Wokwi.
+
+- <b>skills</b>: instruções para agentes de IA usadas pelo grupo.
+
+- <b>src</b>: código-fonte. `firmware/` contém o firmware do ESP32 (`main.cpp`) e `firmware/prototipo_wokwi/` contém o circuito do Wokwi (`diagram.json`, `wokwi.toml`) e um sketch de teste de ligações (`sketch.ino`).
+
+- <b>tests</b>: testes das regras e dos indicadores executados em computador, dublês das bibliotecas do Arduino e cenários do Wokwi.
+
+- <b>README.md</b>: guia e visão geral do projeto (este arquivo).
+
+- <b>AGENT.md</b>: convenções do repositório para pessoas e agentes de IA.
+
+- <b>platformio.ini</b>: ambientes de compilação `demo` e `weekly` do firmware.
+
+## 🔧 Execução dos projetos
+
+### Ambiente
+
+- Placa `esp32dev`, framework Arduino, Espressif32 `6.12.0`, TinyGPSPlus `1.0.3` e LiquidCrystal_I2C `1.1.4` (LCD do protótipo V2).
+- VS Code com as extensões PlatformIO e Wokwi; Python 3.10+ e Node 22+ para os scripts.
+- Senhas de Wi-Fi ficam fora do controle de versão, em `include/config.local.h` (modelo em `include/config.local.example.h`).
+
+### Compilação e verificação
+
+No Windows, com PowerShell, na raiz do repositório:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup.ps1
@@ -43,34 +84,27 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1 -Environ
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify.ps1
 ```
 
-Quando `platformio` estiver instalado globalmente, as duas compilações equivalem a `pio run -e demo` e `pio run -e weekly`. O projeto configura ferramentas locais sob `.tools/`; não fixe caminhos pessoais de Python ou PlatformIO. A verificação host também executa o teste de NVS `tests/firmware_persistence_tests.cpp` e pode rodar na pipeline GitLab. Em Linux/macOS, com `g++` e Python disponíveis, `bash scripts/verify-sprint1-local.sh` executa verificações portáveis sem substituir os builds ESP32.
+Com o PlatformIO instalado globalmente, as compilações equivalem a `pio run -e demo` e `pio run -e weekly`. As ferramentas locais são instaladas em `.tools/`. Em Linux/macOS, com `g++` e Python, `bash scripts/verify-host.sh` executa os testes das regras e da classe `ScreenController` (telas do LCD), e `bash scripts/check-firmware-syntax.sh` compila o `main.cpp` com dublês do Arduino. São testes em computador e não substituem a compilação para ESP32 nem a simulação no Wokwi.
 
-## Execução no Wokwi
+### Simulação no Wokwi
 
-1. Compile **ambos os ambientes** e gere o chip GPS (`scripts/setup.ps1` e `scripts/build.ps1`).
-2. Abra o diretório raiz no VS Code, selecione `src/firmware/prototipo_wokwi/wokwi.toml` com **Wokwi: Select Config File** e inicie **Wokwi: Start Simulator**.
-3. Para `weekly`, selecione `wokwi.weekly.toml` e compile o respectivo ambiente.
-4. Para publicar no Wokwi web, prepare os arquivos com `python scripts/export-wokwi.py`, siga o [guia do circuito](src/firmware/prototipo_wokwi/README.md) e confira que a URL final corresponde ao commit e executa os CTs com o mesmo binário/código. A publicação requer ação na conta da equipe.
-5. Preserve os logs originais dos testes antigos; anexe novas evidências versionadas após os retestes. Os estímulos CT18/CT22 **não podem ser alterados para forçar aprovação**.
+1. Compile os dois ambientes e gere o chip GPS (`scripts/setup.ps1` e `scripts/build.ps1`).
+2. Abra a raiz do repositório no VS Code, selecione `src/firmware/prototipo_wokwi/wokwi.toml` com **Wokwi: Select Config File** e inicie **Wokwi: Start Simulator**.
+3. Para o ambiente `weekly`, selecione `wokwi.weekly.toml` e compile o ambiente correspondente.
+4. Para publicar no Wokwi web, prepare os arquivos com `python scripts/export-wokwi.py` e siga o [guia do circuito](src/firmware/prototipo_wokwi/README.md).
 
-`demo`: localização a cada 30 segundos, 1 s simulando 1 dia nas regras de ciclo. `weekly`: sete dias reais, com o ciclo em escala real. O protótipo não comprova autonomia real ou cobertura em oficinas.
+No ambiente `demo`, a localização é coletada a cada 30 segundos e 1 s simula 1 dia nas regras de ciclo. No `weekly`, a coleta ocorre a cada sete dias reais. O protótipo não comprova autonomia real nem cobertura em oficinas; os retestes CT18/CT22 no Wokwi integrado ainda são necessários.
 
-## Organização
+### Integração contínua
 
-- `src/firmware/main.cpp`, `include/`: firmware e regras portáveis.
-- `src/firmware/prototipo_wokwi/`, `chips/`: diagrama integrado, configuração e GPS custom.
-- `tests/`, `scripts/`: lógica, injeção de falhas e verificações.
-- `document/documentacao.md`, `document/outros/`: documento da disciplina, checklist de aceite e fundamentação.
-- `assets/negocios/`, `assets/personas/`, `assets/wokwi/`: templates, personas e evidências históricas.
+A pipeline (`.gitlab-ci.yml`) executa os testes em computador, a auditoria da documentação (`scripts/audit-docs.py`) e a compilação para ESP32. O teste de fumaça no Wokwi (`tests/wokwi-ci/smoke.yaml`) só roda quando a variável `WOKWI_CLI_TOKEN` está configurada como *masked/protected* no GitLab; o token nunca deve ser gravado em arquivo.
 
-**Condições de validação:** qualquer alteração do firmware exige compilação ESP32, testes locais e reteste no Wokwi. A captura por interrupção foi exercitada no host, mas o CT18 original deve ser repetido no simulador. A persistência NVS não é transacional sob perda de energia. Consulte a seção 3.4.1 da [documentação](document/documentacao.md) para resultados e limites; relatórios históricos não substituem os testes do commit final.
+## 🗃 Histórico de lançamentos
 
-## Licença
+* 0.1.0 - 24/10/2026
+    * Sprint 1: entendimento do negócio (contexto da indústria, Cinco Forças de Porter, SWOT, Value Proposition Canvas, matriz de riscos, política de privacidade e BOM), personas, requisitos funcionais, regras de negócio, matriz de rastreabilidade e protótipo inicial no Wokwi com os casos de teste CT01–CT23 e CT35.
 
-A definição de licença de redistribuição deste repositório deve ser aprovada pelos titulares do projeto. Nenhuma licença é presumida.
+## 📋 Licença
 
-### Ensaios adicionais e CI da Sprint 1
-
-`bash scripts/verify-sprint1-local.sh` executa os testes unitários das regras e da classe `IndicatorController` em host, e `bash scripts/check-firmware-syntax.sh` compila o `main.cpp` com dublês de Arduino. **É um teste em computador, não simulação oficial Wokwi**.
-
-A pipeline `.gitlab-ci.yml` contém jobs para compilação ESP32 (PlatformIO) e um smoke test condicional via Wokwi CLI. O segundo job só é habilitado se um mantenedor configurar `WOKWI_CLI_TOKEN` como variável **masked/protected** no GitLab; **não inserir o token em arquivo nem no chat**. Requer compilar o chip GNSS custom. Veja `tests/wokwi-ci/smoke.yaml` e a seção 3.4.1 da [documentação](document/documentacao.md). O cenário só pode ser considerado aprovado após executar no Wokwi e arquivar o log do mesmo commit. `python3 scripts/audit_sprint1.py --strict-local` valida somente o que é reproduzível no repositório; LGPD e publicação Wokwi exigem evidências externas registradas no manifesto.
+<!-- PENDENTE: aplicar a licença Creative Commons Attribution 4.0 International citando o Inteli e o grupo G01, conforme os critérios da disciplina, após aprovação do grupo. -->
+A definição da licença de redistribuição deste repositório deve ser aprovada pelos titulares do projeto. Nenhuma licença é presumida.

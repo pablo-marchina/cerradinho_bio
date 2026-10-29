@@ -18,6 +18,8 @@ void digitalWrite(int,int){}
 int digitalRead(int p){return p>=0&&p<64?fakePins[p]:0;}
 int analogRead(int){return 2048;}
 void analogReadResolution(int){}
+void tone(int,unsigned int,unsigned long){}
+void noTone(int){}
 void noInterrupts(){}
 void interrupts(){}
 void attachInterrupt(int,void(*)(),int){}
@@ -31,7 +33,7 @@ int main(){
   setup();
   assert(storageReady && !contextDirty);
   const auto oldContext = FakeNVS::bytes.at("ctx");
-  cycle.days_out++; contextDirty=true;
+  cycle.daysOut++; contextDirty=true;
   FakeNVS::failNextWrite=true;
   saveContext();
   assert(contextDirty && contextRetryPending && FakeNVS::bytes.at("ctx")==oldContext);
@@ -41,7 +43,7 @@ int main(){
   saveContext();
   assert(!contextDirty && !contextRetryPending && FakeNVS::bytes.at("ctx")!=oldContext);
   auto oldMeta=FakeNVS::bytes.at("pmeta");
-  queue_push(&pending, "{\"type\":\"INJETADO\"}", true, clockMs());
+  queuePush(&pending, "{\"type\":\"INJETADO\"}", true, clockMs());
   FakeNVS::failNextWrite=true;
   assert(!savePending() && pendingDirty && pendingRetryPending);
   assert(FakeNVS::bytes.at("pmeta")==oldMeta);

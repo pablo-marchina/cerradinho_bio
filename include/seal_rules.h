@@ -14,42 +14,47 @@ enum {
 
 // Tempos em ms do relogio do ciclo (sim_clock.h), nao em dias truncados.
 typedef struct {
-  uint64_t window_ms;
+  uint64_t windowMs;
   bool authorized;
-  uint64_t authorized_at_ms;
-  bool removal_in_progress;
+  uint64_t authorizedAtMs;
+  bool removalInProgress;
   bool violated;
 } SealState;
 
-static inline void seal_init(SealState *seal, uint64_t window_ms) {
-  seal->window_ms = window_ms;
+static inline void sealInit(SealState *seal, uint64_t windowMs) {
+  seal->windowMs = windowMs;
   seal->authorized = false;
-  seal->authorized_at_ms = 0;
-  seal->removal_in_progress = false;
+  seal->authorizedAtMs = 0;
+  seal->removalInProgress = false;
   seal->violated = false;
 }
 
-static inline void seal_authorize(SealState *seal, uint64_t now_ms) {
+static inline void sealAuthorize(SealState *seal, uint64_t nowMs) {
   seal->authorized = true;
-  seal->authorized_at_ms = now_ms;
+  seal->authorizedAtMs = nowMs;
 }
 
-// A autorizacao vale window_ms a partir do instante do registro e e consumida na abertura.
-static inline int seal_opened(SealState *seal, uint64_t now_ms) {
-  const bool valid = seal->authorized && now_ms >= seal->authorized_at_ms &&
-                     now_ms - seal->authorized_at_ms <= seal->window_ms;
+// A autorizacao vale windowMs a partir do instante do registro.
+static inline bool sealAuthorizationValid(const SealState *seal, uint64_t nowMs) {
+  return seal->authorized && nowMs >= seal->authorizedAtMs &&
+         nowMs - seal->authorizedAtMs <= seal->windowMs;
+}
+
+// A autorizacao vigente e consumida na abertura.
+static inline int sealOpened(SealState *seal, uint64_t nowMs) {
+  const bool valid = sealAuthorizationValid(seal, nowMs);
   seal->authorized = false;
   if (valid) {
-    seal->removal_in_progress = true;
+    seal->removalInProgress = true;
     return SEAL_EVENT_REMOVAL;
   }
   seal->violated = true;
   return SEAL_EVENT_VIOLATION;
 }
 
-static inline int seal_closed(SealState *seal) {
-  if (seal->removal_in_progress) {
-    seal->removal_in_progress = false;
+static inline int sealClosed(SealState *seal) {
+  if (seal->removalInProgress) {
+    seal->removalInProgress = false;
     return SEAL_EVENT_RESEALED;
   }
   if (seal->violated) {

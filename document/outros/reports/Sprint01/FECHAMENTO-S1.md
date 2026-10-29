@@ -1,11 +1,11 @@
 # Fechamento de Sprint 1 — estado fiel e critérios de aceite
 
-> **Fonte de verdade para esta entrega:** `document/documentacao.md` e `document/outros/evidencias_externas_sprint1.json`, confrontados com `src/firmware/main.cpp`. Histórico de versões e testes anteriores permanece em `assets/wokwi/`. Este documento substitui checklists históricos que marcavam patches experimentais não integrados como concluídos.
+> **Fonte de verdade para esta entrega:** `document/documentacao.md` e `document/outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/evidencias_externas_sprint1.json`, confrontados com `src/firmware/main.cpp`. Histórico de versões e testes anteriores permanece em `assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/`. Este documento substitui checklists históricos que marcavam patches experimentais não integrados como concluídos.
 
 ## Escopo demonstrado e histórico de integração
 
 - O status de integração deve ser conferido no GitLab no commit avaliado; registros de revisões anteriores não provam o estado atual.
-- Firmware integrado: `IndicatorController` usada em `setup()`/`loop()`, regras de ciclo/lacre, fila local NVS, mensagens JSON na Serial e circuito ESP32 de botões/LEDs com GNSS customizado.
+- Firmware integrado: `ScreenController` usada no LCD e no `loop()`, regras de ciclo/lacre, fila local NVS, mensagens JSON na Serial e circuito V2 com LCD, botões, buzzer e GNSS customizado.
 - O firmware desta linha possui captura ISR para lacre; snapshots alternados/CRC e ACK de servidor **não** estão implementados. O ensaio host da ISR não substitui o Wokwi.
 - O código da branch registra falhas de gravação NVS e captura bordas do lacre; as correções devem ser verificadas em CI no commit integrado. A NVS continua **não transacional**.
 - Builds anteriores não dispensam compilar a revisão final em `demo` e `weekly`.
@@ -29,12 +29,12 @@
 
 ## Roteiro para completar aceite
 
-1. Na branch sob revisão, executar `bash scripts/verify-sprint1-local.sh`, `bash scripts/check-firmware-syntax.sh` e `python3 scripts/audit_sprint1.py --strict-local`.
+1. Na branch sob revisão, executar `bash scripts/verify-host.sh`, `bash scripts/check-firmware-syntax.sh` e `python3 scripts/audit-docs.py --strict-local`.
 2. CI oficial: `pio run -e demo`, `pio run -e weekly`, construir GPS customizado e simular no Wokwi. Assinar evidência do commit/ambiente/binário.
 3. Reexecutar CT18/CT22 com **os mesmos estímulos e esperados originais**, antes de quaisquer novas condições; manter logs históricos imutáveis. CT09 exige receptor com confirmação observável ou acordo escrito de escopo.
 4. Sincronizar projeto Wokwi público com o commit apresentado; verificar acesso anônimo e URL. Confirmar aceitação de GitLab institucional diante da rubrica que menciona GitHub.
 5. Aprovar dados jurídicos institucionais e compras; só depois marcar evidências externas no manifesto. Executar auditoria `--strict` somente quando ambas tiverem realmente sido satisfeitas.
-6. Solicitar MR para `main`; confirmar sucesso do CI no **commit de entrega**, revisar documentos e manter anexos auditáveis.
+6. Integrar primeiro na `develop` por MR e, somente no fluxo de entrega, solicitar MR para `main`; confirmar sucesso do CI no **commit de entrega**, revisar documentos e manter anexos auditáveis.
 
 **Regra de integridade:** passar em teste de host não equivale a CT aprovado no Wokwi; evidência externamente indisponível continua pendente.
 
