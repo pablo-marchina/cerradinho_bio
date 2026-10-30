@@ -5,7 +5,7 @@ customizado, lacre, bateria simulada, display LCD 16x2 I2C, botões de avançar 
 voltar, buzzer, botões de autorização e de ciclo, chave de rede simulada (on/off do
 módulo SIM) e chave ON/OFF. No V1, quatro LEDs com resistores de 220 Ω indicavam os
 estados; no V2 eles deram lugar ao LCD e ao buzzer, e ficou só o LED vermelho de violação no
-GPIO13, mantido porque a rubrica do Art. 5 pede resultado em LED. Falhas do GNSS geram
+GPIO13, mantido porque a rubrica do Art. 5 pede resultado em LED. O dispositivo liga sem ciclo; segurar CICLO por 3 s faz o vínculo e abre o ciclo, e `REMESSA x` registra a NF. Falhas do GNSS geram
 `GNSS_SEM_FIX` (motivo `sem_fix`, `sem_dados` ou `sinal_fraco`) e `GNSS_RECUPERADO`, uma vez por falha.
 
 O firmware principal preserva a comparação de posições, o debounce do lacre e a

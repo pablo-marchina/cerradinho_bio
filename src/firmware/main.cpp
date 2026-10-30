@@ -833,7 +833,12 @@ void setup() {
   } else {
     simClockInit(&simClock, millis(), 0);
     rawSeal = stableSeal = false;
-    startCycle(clockMs(), 1);
+    // Primeiro boot sem ciclo: o ciclo nasce com a remessa (RF002, RN02), entao so
+    // comeca ao segurar CICLO por 3 s (vinculo, RF003); o proximo ciclo_id e o 1.
+    cycleStart(&cycle, 0, Config::ExpectedReturnDays, Config::StayThresholdDays,
+               Config::StatusIntervalDays);
+    cycleActive = false;
+    contextDirty = true;
   }
   sealChangedAt = millis();
   attachInterrupt(digitalPinToInterrupt(Config::SealPin), onSealEdge, CHANGE);
@@ -849,6 +854,7 @@ void setup() {
   lastInteractionAt = millis();
   updateDisplay(millis(), clockMs());
   Serial.println("[boot] aguardando GPS; heartbeat aparece a cada 2 s");
+  if (!cycleActive) Serial.println("[ciclo] sem ciclo ativo; segure CICLO por 3 s para iniciar e use REMESSA x para a NF");
   Serial.println("[transporte] JSON na serial + fila local; envio HTTP/MQTT pendente");
   Serial.printf("[ciclo] 1 dia = %lu s; status a cada %lu dias; prazo %lu; limiar %lu\r\n",
                 Config::DayMs / 1000UL, (unsigned long)Config::StatusIntervalDays,
