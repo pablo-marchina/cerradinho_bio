@@ -47,17 +47,17 @@ connections = {frozenset(connection[:2]) for connection in diagram['connections'
 for source, target in (
     ('esp:TX0', '$serialMonitor:RX'), ('esp:RX0', '$serialMonitor:TX'),
     ('gps:TX', 'esp:RX2'), ('gps:RX', 'esp:TX2'),
-    ('seal:2', 'esp:D27'), ('seal:1', 'esp:GND.1'),
+    ('seal:2', 'esp:D27'), ('seal:1', 'esp:GND.2'),
     ('battery:SIG', 'esp:D34'), ('gps:VCC', 'esp:3V3'),
     ('gps:GND', 'esp:GND.1'), ('battery:VCC', 'esp:3V3'),
-    ('battery:GND', 'esp:GND.1'),
-    ('btn_autorizar:1.l', 'esp:D33'), ('btn_autorizar:2.r', 'esp:GND.1'),
-    ('btn_ciclo:1.l', 'esp:D13'), ('btn_ciclo:2.r', 'esp:GND.1'),
+    ('battery:GND', 'esp:GND.2'),
+    ('btn_autorizar:1.r', 'esp:D33'), ('btn_autorizar:2.l', 'esp:GND.2'),
+    ('btn_ciclo:1.r', 'esp:D14'), ('btn_ciclo:2.l', 'esp:GND.2'),
     ('sw_rede:2', 'esp:D18'), ('sw_rede:1', 'esp:GND.1'),
     ('sw_energia:2', 'esp:D19'), ('sw_energia:1', 'esp:GND.1'),
-    ('lcd:SDA', 'esp:D21'), ('lcd:SCL', 'esp:D22'), ('lcd:VCC', 'esp:VIN'), ('lcd:GND', 'esp:GND.2'),
-    ('btn_avancar:1.l', 'esp:D25'), ('btn_avancar:2.r', 'esp:GND.1'),
-    ('btn_voltar:1.l', 'esp:D26'), ('btn_voltar:2.r', 'esp:GND.1'),
+    ('lcd:SDA', 'esp:D21'), ('lcd:SCL', 'esp:D22'), ('lcd:VCC', 'esp:VIN'), ('lcd:GND', 'esp:GND.1'),
+    ('btn_avancar:1.r', 'esp:D25'), ('btn_avancar:2.l', 'esp:GND.2'),
+    ('btn_voltar:1.r', 'esp:D26'), ('btn_voltar:2.l', 'esp:GND.2'),
     ('buzzer:2', 'esp:D23'), ('buzzer:1', 'esp:GND.1'),
 ):
     assert frozenset((source, target)) in connections, f'Ligacao ausente: {source} -> {target}'
@@ -70,7 +70,7 @@ config = (root / 'include/config.h').read_text(encoding='utf-8')
 pins = [('GpsRx', 16), ('GpsTx', 17), ('SealPin', 27), ('BatteryPin', 34),
         ('LcdSdaPin', 21), ('LcdSclPin', 22), ('NextButtonPin', 25), ('PreviousButtonPin', 26),
         ('BuzzerPin', 23),
-        ('AuthorizeButtonPin', 33), ('CycleButtonPin', 13), ('NetworkSwitchPin', 18),
+        ('AuthorizeButtonPin', 33), ('CycleButtonPin', 14), ('NetworkSwitchPin', 18),
         ('PowerSwitchPin', 19)]
 assert len({pin for _, pin in pins}) == len(pins), 'GPIO compartilhado entre funcoes'
 for name, pin in pins:

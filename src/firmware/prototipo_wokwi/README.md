@@ -59,7 +59,7 @@ da unidade física antes de integrar. Consumo e autonomia exigem ensaios físico
 | SW_REDE (`sw_rede`) | GPIO 18 | `INPUT_PULLUP` | Simula a chave on/off do módulo SIM: esquerda = disponível/LOW; direita = indisponível/HIGH |
 | SW_ENERGIA (`sw_energia`) | GPIO 19 | `INPUT_PULLUP` | ON/OFF: esquerda = ligado/LOW; direita = desligado/HIGH |
 | BTN_AUTORIZAR (`btn_autorizar`) | GPIO 33 | `INPUT_PULLUP` | Segurar 3 s registra a autorização de retirada, válida por 3 dias |
-| BTN_CICLO (`btn_ciclo`) | GPIO 13 | `INPUT_PULLUP` | Segurar 3 s inicia o ciclo (sem ciclo ativo) ou pede o encerramento (com ciclo ativo) |
+| BTN_CICLO (`btn_ciclo`) | GPIO 14 | `INPUT_PULLUP` | Segurar 3 s inicia o ciclo (sem ciclo ativo) ou pede o encerramento (com ciclo ativo) |
 
 GPS e potenciômetro têm VCC em 3V3 e GND comum. O buzzer tem o terminal positivo no
 GPIO23 e o negativo no GND. Botões ligam contatos de grupos opostos ao GPIO e ao GND. As chaves usam o terminal 2 no GPIO, o terminal 1 no GND
