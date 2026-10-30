@@ -57,6 +57,7 @@ struct SealEdge { uint32_t at; bool opened; };
 volatile SealEdge sealEdges[SealEdgeCapacity] = {};
 volatile uint8_t sealEdgeHead = 0, sealEdgeTail = 0;
 volatile uint32_t sealEdgeOverruns = 0;
+// ISR do lacre: guarda o instante e o nivel de cada borda no buffer circular.
 void IRAM_ATTR onSealEdge() {
   const uint8_t head = sealEdgeHead;
   const uint8_t next = static_cast<uint8_t>((head + 1U) % SealEdgeCapacity);
@@ -65,6 +66,7 @@ void IRAM_ATTR onSealEdge() {
   sealEdges[head].opened = gpio_get_level(static_cast<gpio_num_t>(Config::SealPin)) != 0;
   sealEdgeHead = next;
 }
+// Retira a borda mais antiga do buffer da ISR; false quando nao ha nenhuma.
 bool popSealEdge(SealEdge &edge) {
   noInterrupts();
   if (sealEdgeTail == sealEdgeHead) { interrupts(); return false; }
@@ -101,33 +103,40 @@ ScreenController::Line shownTop = "", shownBottom = "";
 bool lcdLit = true;
 uint32_t lastInteractionAt = 0;  // ultimo botao ou mensagem; o LCD apaga apos LcdTimeoutMs
 
+// Tempo do ciclo em ms, sem a volta do millis().
 uint64_t clockMs() {
   return simClock.elapsedMs;
 }
 
+// Dia do ciclo correspondente a um instante (no demo, 1 s = 1 dia).
 uint32_t simulatedDay(uint64_t clock) {
   return (uint32_t)(clock / Config::DayMs);
 }
 
+// Chave de rede (on/off do SIM): esquerda = com sinal.
 bool simulatedNetworkAvailable() {
   return digitalRead(Config::NetworkSwitchPin) == LOW;
 }
 
+// Chave ON/OFF: esquerda = ligado.
 bool powerSwitchOn() {
   return digitalRead(Config::PowerSwitchPin) == LOW;
 }
 
+// Fix recente, com satelites e coordenadas validas.
 bool freshFix() {
   return gps.location.isValid() && gps.location.age() <= Config::FixMaxAgeMs &&
          gps.satellites.isValid() && gps.satellites.value() > 0 &&
          validCoordinates(gps.location.lat(), gps.location.lng());
 }
 
+// Nivel de bateria de 0 a 100% lido no potenciometro (ADC1, GPIO34).
 int simulatedBatteryPercent() {
   // Entrada sintetica 0..3,3 V. Nao ligar uma celula diretamente ao GPIO34.
   return constrain((analogRead(Config::BatteryPin) * 100L) / 4095L, 0L, 100L);
 }
 
+// Registro de diagnostico na NVS (q0..q15); cheio, preserva os antigos e so imprime o novo.
 void enqueue(const String &record) {
   Serial.println(record);
   if (!storageReady) {
@@ -148,6 +157,7 @@ void enqueue(const String &record) {
                 Config::QueueCapacity);
 }
 
+// Inicio comum do JSON de todo registro e evento: dispositivo, tipo, tempo, lacre, bateria e rede.
 String baseRecord(const char *type) {
   String result;
   result.reserve(420);
@@ -170,6 +180,7 @@ String baseRecord(const char *type) {
   return result;
 }
 
+// Guarda a ultima coleta valida na NVS como referencia para o proximo reinicio.
 void savePrevious(double lat, double lon) {
   if (!storageReady) return;
   // Uma unica chave evita um par latitude/longitude parcialmente atualizado.
@@ -179,6 +190,7 @@ void savePrevious(double lat, double lon) {
   }
 }
 
+// Fecha uma coleta de posicao: com fix calcula distancia e movimento; sem fix mantem a referencia.
 void samplePosition(bool valid) {
   String record = baseRecord(valid ? "location_sample" : "location_unavailable");
   record += ",\"fix_valid\":";
@@ -213,6 +225,7 @@ void samplePosition(bool valid) {
   enqueue(record);
 }
 
+// Le o NMEA do GNSS e atualiza a ultima posicao valida.
 void readGps() {
   if (Serial2.available()) lastGpsCharsAt = millis();
   while (Serial2.available()) {
@@ -242,6 +255,7 @@ struct StoredContext {
 };
 constexpr uint32_t ContextVersion = 2;  // V2 acrescentou a NF da remessa
 
+// Grava ciclo, lacre e NF na NVS; em falha, marca nova tentativa.
 bool saveContext() {
   contextDirty = true;
   if (!storageReady) {
@@ -263,6 +277,7 @@ bool saveContext() {
   return true;
 }
 
+// Le o contexto salvo; false se nao existe, esta incompleto ou e de outra versao ou escala de dia.
 bool restoreContext(StoredContext &context) {
   return storageReady && storage.isKey("ctx") &&
          storage.getBytesLength("ctx") == sizeof(context) &&
@@ -280,6 +295,7 @@ struct StoredQueueMeta {
   uint64_t overflowFirstMs, overflowLastMs;
 };
 
+// Grava a fila de eventos sem rede na NVS (p0..p7 e metadados).
 bool savePending() {
   pendingDirty = true;
   if (!storageReady) {
@@ -311,6 +327,7 @@ bool savePending() {
   return true;
 }
 
+// Restaura a fila de eventos salva antes do reinicio.
 void restorePending() {
   StoredQueueMeta meta{};
   if (!storageReady || !storage.isKey("pmeta") ||
@@ -333,10 +350,12 @@ void restorePending() {
   pending.overflowLastMs = meta.overflowLastMs;
 }
 
+// Ha eventos ou resumo de violacoes esperando a rede.
 bool hasPending() {
   return pending.count > 0 || pending.overflowCount > 0;
 }
 
+// Mostra na Serial quantos eventos estao na fila.
 void printPending() {
   Serial.printf("[FILA] %u %s", pending.count, pending.count == 1 ? "pendente" : "pendentes");
   if (pending.overflowCount > 0) {
@@ -384,6 +403,7 @@ void publishEvent(const char *type, bool critical = false, const String &extra =
   printPending();
 }
 
+// Rede de volta: reenvia a fila na ordem e depois o resumo das violacoes excedentes.
 void flushPending() {
   if (!hasPending()) return;
   Serial.printf("[FILA] rede disponivel; reenviando %u evento(s) na ordem\r\n", pending.count);
@@ -407,6 +427,7 @@ void flushPending() {
 }
 
 
+// Abre um ciclo novo (vinculo): zera dias, NF de retorno e NF da remessa.
 void startCycle(uint64_t clock, uint32_t id) {
   cycleStart(&cycle, id, Config::ExpectedReturnDays, Config::StayThresholdDays,
               Config::StatusIntervalDays);
@@ -430,10 +451,12 @@ void updateCycle(uint64_t clock) {
   }
 }
 
+// LCD aceso enquanto houve uso nos ultimos LcdTimeoutMs.
 bool displayAwake(uint32_t now) {
   return now - lastInteractionAt < Config::LcdTimeoutMs;
 }
 
+// Mostra uma mensagem curta no LCD e acende o visor.
 void showMessage(const char *top, const char *bottom) {
   lastInteractionAt = millis();
   screens.flash(top, bottom, lastInteractionAt, Config::MessageMs);
@@ -524,6 +547,7 @@ bool holdCompleted(Button &button, uint32_t now, const char *name) {
   return true;
 }
 
+// Navegacao do LCD e acoes de 3 s (autorizacao e ciclo).
 void readButtons(uint32_t now, uint64_t clock) {
   // Com o LCD apagado, o primeiro toque em avancar/voltar so acende o visor.
   const bool awake = displayAwake(now);
@@ -546,6 +570,7 @@ void readButtons(uint32_t now, uint64_t clock) {
   }
 }
 
+// Le a bateria a cada BatteryCheckMs e emite alerta baixo ou falha do sensor (RN10).
 void readBattery(uint32_t now) {
   if (now - lastBatteryCheck < Config::BatteryCheckMs) return;
   lastBatteryCheck = now;
@@ -710,6 +735,7 @@ void updateGnssHealth(bool valid, uint32_t now, uint64_t clock) {
   }
 }
 
+// Estado do lacre para a tela do LCD.
 SealView sealView(uint64_t clock) {
   if (seal.violated) return SealView::Violated;
   if (seal.removalInProgress || sealAuthorizationValid(&seal, clock)) {
@@ -769,6 +795,7 @@ void updateDisplay(uint32_t now, uint64_t clock) {
 }
 }
 
+// Configura pinos, LCD, GNSS, NVS e Wi-Fi, restaura o contexto e publica o STATUS inicial.
 void setup() {
   Serial.begin(Config::ConsoleBaud);
   delay(200);
@@ -870,6 +897,7 @@ void setup() {
   Serial.println("[bancada] SW_REDE simula disponibilidade sem desligar o Wi-Fi; SW_ENERGIA liga/desliga");
 }
 
+// Uma volta: relogio, chave ON/OFF, LCD, buzzer, LED, entradas, ciclo, NVS, Wi-Fi e coleta de posicao.
 void loop() {
   const uint32_t now = millis();
   // O relogio do ciclo segue no desligamento logico da chave ON/OFF.
