@@ -12,6 +12,7 @@
 #include "seal_rules.h"
 #include "event_queue.h"
 #include "battery_rules.h"
+#include "gnss_rules.h"
 #include "sim_clock.h"
 #include "screen_controller.h"
 #include "seal_debounce.h"
@@ -79,6 +80,9 @@ char shipmentInvoice[Config::InvoiceMaxLength + 1] = "";  // NF da remessa (coma
 bool alarmActive = false;   // buzzer da violacao, limitado a BuzzerAlarmMs
 uint32_t alarmStartedAt = 0;
 bool buzzerOn = false;
+bool ledOn = false;
+GnssState gnssHealth;
+uint32_t lastGpsCharsAt = 0;  // ultimo byte NMEA recebido, para separar sem dados de sem fix
 
 // Botao com debounce e deteccao por borda: segurar nao repete o evento.
 struct Button {
@@ -210,6 +214,7 @@ void samplePosition(bool valid) {
 }
 
 void readGps() {
+  if (Serial2.available()) lastGpsCharsAt = millis();
   while (Serial2.available()) {
     gps.encode(Serial2.read());
     if (gps.location.isUpdated() && freshFix()) {
@@ -676,6 +681,35 @@ void updateBuzzer(uint32_t now) {
   else noTone(Config::BuzzerPin);
 }
 
+// LED vermelho: pulso curto a cada segundo enquanto o lacre segue violado.
+void updateLed(uint32_t now) {
+  const bool on = poweredOn && seal.violated && now % Config::LedBlinkPeriodMs < Config::LedBlinkOnMs;
+  if (on == ledOn) return;
+  ledOn = on;
+  digitalWrite(Config::ViolationLedPin, on ? HIGH : LOW);
+}
+
+// Ao fim de cada coleta: registra o inicio e o fim de cada falha do GNSS, uma vez cada.
+void updateGnssHealth(bool valid, uint32_t now, uint64_t clock) {
+  const bool receiving = now - lastGpsCharsAt < Config::GpsNoDataMs;
+  const uint8_t reason = gnssClassify(receiving, gps.satellites.isValid(), gps.satellites.value(),
+                                      Config::GpsWeakSatellites);
+  const int event = gnssSample(&gnssHealth, valid, reason, clock);
+  if (event == GNSS_EVENT_LOST) {
+    String extra = ",\"motivo\":\"";
+    extra += gnssReasonName(gnssHealth.reason);
+    extra += "\",\"satelites\":";
+    extra += gps.satellites.isValid() ? String(gps.satellites.value()) : String("null");
+    publishEvent("GNSS_SEM_FIX", false, extra);
+  } else if (event == GNSS_EVENT_RECOVERED) {
+    String extra = ",\"tempo_sem_posicao_s\":";
+    extra += (unsigned long)(gnssHealth.lastOutageMs / 1000ULL);
+    extra += ",\"coletas_sem_fix\":";
+    extra += gnssHealth.lastFailedSamples;
+    publishEvent("GNSS_RECUPERADO", false, extra);
+  }
+}
+
 SealView sealView(uint64_t clock) {
   if (seal.violated) return SealView::Violated;
   if (seal.removalInProgress || sealAuthorizationValid(&seal, clock)) {
@@ -753,6 +787,8 @@ void setup() {
   pinMode(Config::PreviousButtonPin, INPUT_PULLUP);
   pinMode(Config::BuzzerPin, OUTPUT);
   digitalWrite(Config::BuzzerPin, LOW);
+  pinMode(Config::ViolationLedPin, OUTPUT);
+  digitalWrite(Config::ViolationLedPin, LOW);
   lcd.init();
   lcd.backlight();
   pinMode(Config::BatteryPin, INPUT);
@@ -776,6 +812,7 @@ void setup() {
   requestAt = lastSample = lastWifiRetry = millis();
   sealInit(&seal, (uint64_t)Config::AuthorizationWindowDays * Config::DayMs);
   queueInit(&pending);
+  gnssInit(&gnssHealth);
   restorePending();
   batteryInit(&battery, Config::BatteryLowPct, Config::BatteryRecoverPct);
   networkWasAvailable = simulatedNetworkAvailable();
@@ -844,6 +881,7 @@ void loop() {
   }
   updateDisplay(now, clock);
   updateBuzzer(now);
+  updateLed(now);
   if (!poweredOn) return;
   readSeal(now, clock);  // antes de I/O potencialmente bloqueante
   readGps();
@@ -868,7 +906,9 @@ void loop() {
     sampleRequested = true; requestAt = now;
   }
   if (sampleRequested && (freshFix() || now - requestAt >= Config::GpsWaitMs)) {
-    samplePosition(freshFix());
+    const bool valid = freshFix();
+    samplePosition(valid);
+    updateGnssHealth(valid, now, clock);
     sampleRequested = false; lastSample = now;
   }
   if (now - lastHeartbeat >= Config::HeartbeatMs) {

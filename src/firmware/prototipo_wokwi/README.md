@@ -4,7 +4,9 @@ Esta pasta reúne o circuito principal do protótipo V2: ESP32 DevKit v1, GPS/GN
 customizado, lacre, bateria simulada, display LCD 16x2 I2C, botões de avançar e
 voltar, buzzer, botões de autorização e de ciclo, chave de rede simulada (on/off do
 módulo SIM) e chave ON/OFF. No V1, quatro LEDs com resistores de 220 Ω indicavam os
-estados; no V2 eles deram lugar ao LCD e ao buzzer.
+estados; no V2 eles deram lugar ao LCD e ao buzzer, e ficou só o LED vermelho de violação no
+GPIO13, mantido porque a rubrica do Art. 5 pede resultado em LED. Falhas do GNSS geram
+`GNSS_SEM_FIX` (motivo `sem_fix`, `sem_dados` ou `sinal_fraco`) e `GNSS_RECUPERADO`, uma vez por falha.
 
 O firmware principal preserva a comparação de posições, o debounce do lacre e a
 registro NVS de diagnóstico existentes, tem o ciclo (dias fora, status semanal e alertas de
@@ -55,6 +57,7 @@ da unidade física antes de integrar. Consumo e autonomia exigem ensaios físico
 | LCD 16x2 I2C (`lcd`) | GPIO 21 (SDA) e 22 (SCL) | I2C, endereço 0x27 | Telas de status; VCC no VIN e GND comum |
 | BTN_AVANCAR (`btn_avancar`) | GPIO 25 | `INPUT_PULLUP` | Próxima tela, em ordem circular |
 | BTN_VOLTAR (`btn_voltar`) | GPIO 26 | `INPUT_PULLUP` | Tela anterior, em ordem circular |
+| LED de violação (`led`, `r_led`) | GPIO 13 | saída, resistor de 220 Ω | LED vermelho pisca (pulso de 150 ms por segundo) enquanto o lacre está violado; apaga com a chave ON/OFF desligada |
 | Buzzer (`buzzer`) | GPIO 23 | saída (`tone`) | Bipe intermitente na violação do lacre; GPIO27 permanece exclusivo do lacre |
 | SW_REDE (`sw_rede`) | GPIO 18 | `INPUT_PULLUP` | Simula a chave on/off do módulo SIM: esquerda = disponível/LOW; direita = indisponível/HIGH |
 | SW_ENERGIA (`sw_energia`) | GPIO 19 | `INPUT_PULLUP` | ON/OFF: esquerda = ligado/LOW; direita = desligado/HIGH |

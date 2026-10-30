@@ -33,14 +33,16 @@ for name, kind in [('esp', 'wokwi-esp32-devkit-v1'), ('gps', 'chip-gps'),
                    ('seal', 'wokwi-slide-switch'), ('battery', 'wokwi-potentiometer')]:
     assert parts[name]['type'] == kind, f'Componente divergente: {name}'
 hardware_ids = {'esp', 'gps', 'seal', 'battery', 'sw_rede', 'sw_energia', 'btn_autorizar',
-                'btn_ciclo', 'btn_avancar', 'btn_voltar', 'lcd', 'buzzer'}
+                'btn_ciclo', 'btn_avancar', 'btn_voltar', 'lcd', 'buzzer', 'led', 'r_led'}
 for name, kind in [('sw_rede', 'wokwi-slide-switch'), ('sw_energia', 'wokwi-slide-switch'),
                    ('btn_autorizar', 'wokwi-pushbutton'), ('btn_ciclo', 'wokwi-pushbutton'),
                    ('btn_avancar', 'wokwi-pushbutton'), ('btn_voltar', 'wokwi-pushbutton'),
-                   ('lcd', 'wokwi-lcd1602'), ('buzzer', 'wokwi-buzzer')]:
+                   ('lcd', 'wokwi-lcd1602'), ('buzzer', 'wokwi-buzzer'),
+                   ('led', 'wokwi-led'), ('r_led', 'wokwi-resistor')]:
     assert parts[name]['type'] == kind, f'Componente divergente: {name}'
 assert parts['lcd']['attrs'].get('pins') == 'i2c', 'LCD deve usar o modulo I2C'
-assert not any(p['type'] == 'wokwi-led' for p in diagram['parts']), 'V2 nao usa LEDs de status'
+assert [p['id'] for p in diagram['parts'] if p['type'] == 'wokwi-led'] == ['led'], 'V2 usa um unico LED, o de violacao'
+assert parts['led']['attrs'].get('color') == 'red' and parts['r_led']['attrs'].get('value') == '220'
 assert all(p['type'] == 'wokwi-text' for key, p in parts.items()
            if key not in hardware_ids), 'Componente fora do escopo'
 connections = {frozenset(connection[:2]) for connection in diagram['connections']}
@@ -59,6 +61,7 @@ for source, target in (
     ('btn_avancar:1.r', 'esp:D25'), ('btn_avancar:2.l', 'esp:GND.2'),
     ('btn_voltar:1.r', 'esp:D26'), ('btn_voltar:2.l', 'esp:GND.2'),
     ('buzzer:2', 'esp:D23'), ('buzzer:1', 'esp:GND.1'),
+    ('esp:D13', 'r_led:2'), ('r_led:1', 'led:A'), ('led:C', 'esp:GND.2'),
 ):
     assert frozenset((source, target)) in connections, f'Ligacao ausente: {source} -> {target}'
 assert {'TX', 'RX', 'VCC', 'GND'} <= set(chip['pins'])
@@ -69,7 +72,7 @@ assert not any('sw_energia:3' in c for c in connections), 'Desligado deve ficar 
 config = (root / 'include/config.h').read_text(encoding='utf-8')
 pins = [('GpsRx', 16), ('GpsTx', 17), ('SealPin', 27), ('BatteryPin', 34),
         ('LcdSdaPin', 21), ('LcdSclPin', 22), ('NextButtonPin', 25), ('PreviousButtonPin', 26),
-        ('BuzzerPin', 23),
+        ('BuzzerPin', 23), ('ViolationLedPin', 13),
         ('AuthorizeButtonPin', 33), ('CycleButtonPin', 14), ('NetworkSwitchPin', 18),
         ('PowerSwitchPin', 19)]
 assert len({pin for _, pin in pins}) == len(pins), 'GPIO compartilhado entre funcoes'
@@ -80,6 +83,7 @@ for name, value in [('GpsBaud', 9600), ('ConsoleBaud', 115200), ('HeartbeatMs', 
     assert re.search(rf'\b{name}\s*=\s*{value}\s*;', config), f'Configuracao divergente: {name}'
 source = (root / 'src/firmware/main.cpp').read_text(encoding='utf-8')
 assert 'pinMode(Config::SealPin, INPUT_PULLUP)' in source
+assert 'pinMode(Config::ViolationLedPin, OUTPUT)' in source
 for name in ('AuthorizeButtonPin', 'CycleButtonPin', 'NetworkSwitchPin', 'PowerSwitchPin',
              'NextButtonPin', 'PreviousButtonPin'):
     assert f'pinMode(Config::{name}, INPUT_PULLUP)' in source

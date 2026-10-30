@@ -15,6 +15,25 @@
       "attrs": {}
     },
     {
+      "type": "wokwi-led",
+      "id": "led",
+      "top": 150,
+      "left": -95,
+      "attrs": {
+        "color": "red",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_led",
+      "top": 133.85,
+      "left": -68.8,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
       "type": "chip-gps",
       "id": "gps",
       "top": 250,
@@ -29,7 +48,7 @@
       "type": "wokwi-slide-switch",
       "id": "seal",
       "top": 235,
-      "left": -170,
+      "left": -185,
       "attrs": {
         "bounce": "0"
       }
@@ -38,7 +57,7 @@
       "type": "wokwi-potentiometer",
       "id": "battery",
       "top": -150,
-      "left": -200,
+      "left": -270,
       "attrs": {
         "value": "800"
       },
@@ -48,7 +67,7 @@
       "type": "wokwi-pushbutton",
       "id": "btn_autorizar",
       "top": -40,
-      "left": -197,
+      "left": -212,
       "attrs": {
         "color": "green"
       }
@@ -57,7 +76,7 @@
       "type": "wokwi-pushbutton",
       "id": "btn_ciclo",
       "top": 300,
-      "left": -197,
+      "left": -212,
       "attrs": {
         "color": "blue"
       }
@@ -75,7 +94,7 @@
       "type": "wokwi-pushbutton",
       "id": "btn_voltar",
       "top": 140,
-      "left": -197,
+      "left": -212,
       "attrs": {
         "color": "white"
       }
@@ -84,7 +103,7 @@
       "type": "wokwi-pushbutton",
       "id": "btn_avancar",
       "top": 50,
-      "left": -197,
+      "left": -212,
       "attrs": {
         "color": "white"
       }
@@ -120,7 +139,7 @@
       "type": "wokwi-text",
       "id": "title",
       "top": -270,
-      "left": -500,
+      "left": -590,
       "attrs": {
         "text": "GUARATRACKING | Prototipo V2 (LCD, botoes de navegacao e buzzer)"
       }
@@ -129,7 +148,7 @@
       "type": "wokwi-text",
       "id": "batteryLabel",
       "top": -130,
-      "left": -520,
+      "left": -590,
       "attrs": {
         "text": "BATERIA | GPIO34\npotenciometro = nivel"
       }
@@ -138,7 +157,7 @@
       "type": "wokwi-text",
       "id": "buttonLabel",
       "top": -32,
-      "left": -520,
+      "left": -590,
       "attrs": {
         "text": "AUTORIZAR | GPIO33\nsegurar 3 s"
       }
@@ -147,7 +166,7 @@
       "type": "wokwi-text",
       "id": "navLabel",
       "top": 58,
-      "left": -520,
+      "left": -590,
       "attrs": {
         "text": "AVANCAR | GPIO25\nproxima tela"
       }
@@ -156,7 +175,7 @@
       "type": "wokwi-text",
       "id": "navLabel2",
       "top": 148,
-      "left": -520,
+      "left": -590,
       "attrs": {
         "text": "VOLTAR | GPIO26\ntela anterior"
       }
@@ -165,7 +184,7 @@
       "type": "wokwi-text",
       "id": "sealLabel",
       "top": 238,
-      "left": -520,
+      "left": -590,
       "attrs": {
         "text": "LACRE | GPIO27\nesq. integro | dir. violado"
       }
@@ -174,9 +193,18 @@
       "type": "wokwi-text",
       "id": "cycleLabel",
       "top": 308,
-      "left": -520,
+      "left": -590,
       "attrs": {
         "text": "CICLO | GPIO14\nsegurar 3 s inicia/encerra"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "ledLabel",
+      "top": 216,
+      "left": -95,
+      "attrs": {
+        "text": "LED | GPIO13\n220 ohm"
       }
     },
     {
@@ -228,9 +256,9 @@
       "type": "wokwi-text",
       "id": "notes",
       "top": 530,
-      "left": -500,
+      "left": -590,
       "attrs": {
-        "text": "AVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nSerial: REMESSA x = NF da remessa | NF = lanca NF de retorno | LIMIAR n = muda o limiar\nChave de rede simula o SIM (on/off); Wi-Fi real independente. Sem transporte ao servidor.\nDemo: 1 s = 1 dia no ciclo, coleta GPS a cada 30 s. Nao valida consumo ou autonomia.\nFios: preto GND | vermelho 3V3 | laranja VIN 5V | amarelo botoes e chaves | ciano bateria\n      verde SDA | azul SCL | roxo buzzer | cinza GPS"
+        "text": "AVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nSerial: REMESSA x = NF da remessa | NF = lanca NF de retorno | LIMIAR n = muda o limiar\nChave de rede simula o SIM (on/off); Wi-Fi real independente. Sem transporte ao servidor.\nDemo: 1 s = 1 dia no ciclo, coleta GPS a cada 30 s. Nao valida consumo ou autonomia.\nFios: preto GND | vermelho 3V3 | laranja VIN 5V | amarelo botoes e chaves | ciano bateria\n      verde SDA | azul SCL | roxo buzzer | cinza GPS\nLED vermelho (GPIO13, 220 ohm) pisca enquanto o lacre esta violado"
       }
     }
   ],
@@ -252,7 +280,7 @@
       "esp:D34",
       "cyan",
       [
-        "h111.5",
+        "h181.5",
         "v166.5"
       ]
     ],
@@ -265,7 +293,7 @@
         "v41.4",
         "h-106",
         "v462",
-        "h220",
+        "h290",
         "v-251"
       ]
     ],
@@ -278,7 +306,7 @@
         "v-51.6",
         "h-126",
         "v675",
-        "h354",
+        "h424",
         "v-341.5"
       ]
     ],
@@ -287,7 +315,7 @@
       "esp:D33",
       "yellow",
       [
-        "h95",
+        "h110",
         "v108.7"
       ]
     ],
@@ -296,9 +324,9 @@
       "esp:GND.2",
       "black",
       [
-        "h-33",
+        "h-88",
         "v408",
-        "h220",
+        "h290",
         "v-251"
       ]
     ],
@@ -307,7 +335,7 @@
       "esp:D25",
       "yellow",
       [
-        "h80",
+        "h95",
         "v28.3"
       ]
     ],
@@ -316,9 +344,9 @@
       "esp:GND.2",
       "black",
       [
-        "h-33",
+        "h-88",
         "v318",
-        "h220",
+        "h290",
         "v-251"
       ]
     ],
@@ -327,7 +355,7 @@
       "esp:D26",
       "yellow",
       [
-        "h60",
+        "h15",
         "v-52"
       ]
     ],
@@ -336,9 +364,9 @@
       "esp:GND.2",
       "black",
       [
-        "h-33",
+        "h-88",
         "v228",
-        "h220",
+        "h290",
         "v-251"
       ]
     ],
@@ -347,7 +375,7 @@
       "esp:D14",
       "yellow",
       [
-        "h90",
+        "h45",
         "v-193"
       ]
     ],
@@ -356,9 +384,9 @@
       "esp:GND.2",
       "black",
       [
-        "h-33",
+        "h-88",
         "v68",
-        "h220",
+        "h290",
         "v-251"
       ]
     ],
@@ -368,7 +396,7 @@
       "yellow",
       [
         "v10",
-        "h99",
+        "h54",
         "v-168.2"
       ]
     ],
@@ -378,10 +406,36 @@
       "black",
       [
         "v16",
-        "h-66.5",
+        "h-121.5",
         "v115",
-        "h220",
+        "h290",
         "v-251"
+      ]
+    ],
+    [
+      "esp:D13",
+      "r_led:2",
+      "red",
+      []
+    ],
+    [
+      "r_led:1",
+      "led:A",
+      "red",
+      [
+        "h18.8",
+        "v62.5",
+        "h-20"
+      ]
+    ],
+    [
+      "led:C",
+      "esp:GND.2",
+      "black",
+      [
+        "v18",
+        "h70",
+        "v-61"
       ]
     ],
     [
