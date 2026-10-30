@@ -33,12 +33,12 @@ for name, kind in [('esp', 'wokwi-esp32-devkit-v1'), ('gps', 'chip-gps'),
                    ('seal', 'wokwi-slide-switch'), ('battery', 'wokwi-potentiometer')]:
     assert parts[name]['type'] == kind, f'Componente divergente: {name}'
 hardware_ids = {'esp', 'gps', 'seal', 'battery', 'sw_rede', 'sw_energia', 'btn_autorizar',
-                'btn_ciclo', 'btn_avancar', 'btn_voltar', 'lcd', 'buzzer', 'led', 'r_led'}
+                'btn_ciclo', 'btn_avancar', 'btn_voltar', 'lcd', 'buzzer', 'led', 'r_led', 'bb1'}
 for name, kind in [('sw_rede', 'wokwi-slide-switch'), ('sw_energia', 'wokwi-slide-switch'),
                    ('btn_autorizar', 'wokwi-pushbutton'), ('btn_ciclo', 'wokwi-pushbutton'),
                    ('btn_avancar', 'wokwi-pushbutton'), ('btn_voltar', 'wokwi-pushbutton'),
                    ('lcd', 'wokwi-lcd1602'), ('buzzer', 'wokwi-buzzer'),
-                   ('led', 'wokwi-led'), ('r_led', 'wokwi-resistor')]:
+                   ('led', 'wokwi-led'), ('r_led', 'wokwi-resistor'), ('bb1', 'wokwi-breadboard')]:
     assert parts[name]['type'] == kind, f'Componente divergente: {name}'
 assert parts['lcd']['attrs'].get('pins') == 'i2c', 'LCD deve usar o modulo I2C'
 assert [p['id'] for p in diagram['parts'] if p['type'] == 'wokwi-led'] == ['led'], 'V2 usa um unico LED, o de violacao'
@@ -46,6 +46,27 @@ assert parts['led']['attrs'].get('color') == 'red' and parts['r_led']['attrs'].g
 assert all(p['type'] == 'wokwi-text' for key, p in parts.items()
            if key not in hardware_ids), 'Componente fora do escopo'
 connections = {frozenset(connection[:2]) for connection in diagram['connections']}
+# Alimentacao pela protoboard: cada trilho e um no so; os GNDs do ESP32 sao o mesmo no.
+net = {}
+def find(pin):
+    net.setdefault(pin, pin)
+    while net[pin] != pin:
+        net[pin] = net[net[pin]]
+        pin = net[pin]
+    return pin
+def join(a, b):
+    net[find(a)] = find(b)
+for a, b, *_ in diagram['connections']:
+    join(a, b)
+for pin in list(net):
+    if pin.startswith('bb1:') and pin[4:6] in ('tp', 'tn', 'bp', 'bn'):
+        join(pin, 'bb1:' + pin[4:6])
+join('esp:GND.1', 'esp:GND.2')
+def linked(a, b):
+    return frozenset((a, b)) in connections or find(a) == find(b)
+assert linked('bb1:tn', 'bb1:bn') and linked('bb1:tn', 'esp:GND.1'), 'Trilhos de GND desligados'
+assert linked('bb1:tp', 'esp:3V3') and linked('bb1:bp', 'esp:VIN'), 'Trilhos de 3V3/5V desligados'
+assert not linked('bb1:tp', 'bb1:bp') and not linked('bb1:tp', 'bb1:tn'), '3V3, 5V e GND em curto'
 for source, target in (
     ('esp:TX0', '$serialMonitor:RX'), ('esp:RX0', '$serialMonitor:TX'),
     ('gps:TX', 'esp:RX2'), ('gps:RX', 'esp:TX2'),
@@ -63,7 +84,7 @@ for source, target in (
     ('buzzer:2', 'esp:D23'), ('buzzer:1', 'esp:GND.1'),
     ('esp:D13', 'r_led:2'), ('r_led:1', 'led:A'), ('led:C', 'esp:GND.2'),
 ):
-    assert frozenset((source, target)) in connections, f'Ligacao ausente: {source} -> {target}'
+    assert linked(source, target), f'Ligacao ausente: {source} -> {target}'
 assert {'TX', 'RX', 'VCC', 'GND'} <= set(chip['pins'])
 assert {c['id'] for c in chip['controls']} == set(parts['gps']['attrs'])
 assert not any('seal:3' in c for c in connections), 'Lacre violado deve ficar aberto'

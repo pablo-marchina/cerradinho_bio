@@ -64,7 +64,7 @@ da unidade física antes de integrar. Consumo e autonomia exigem ensaios físico
 | BTN_AUTORIZAR (`btn_autorizar`) | GPIO 33 | `INPUT_PULLUP` | Segurar 3 s registra a autorização de retirada, válida por 3 dias |
 | BTN_CICLO (`btn_ciclo`) | GPIO 14 | `INPUT_PULLUP` | Segurar 3 s inicia o ciclo (sem ciclo ativo) ou pede o encerramento (com ciclo ativo) |
 
-GPS e potenciômetro têm VCC em 3V3 e GND comum. O buzzer tem o terminal positivo no
+A alimentação passa por uma protoboard (`bb1`), como na montagem física: trilho de cima com 3V3 (+) e GND (−), trilho de baixo com 5 V do VIN (+, só o LCD) e GND (−), e um jumper unindo os dois GNDs na ponta esquerda. O GPS continua ligado direto no 3V3 e no GND do ESP32. O buzzer tem o terminal positivo no
 GPIO23 e o negativo no GND. Botões ligam contatos de grupos opostos ao GPIO e ao GND. As chaves usam o terminal 2 no GPIO, o terminal 1 no GND
 e o terminal 3 aberto. Não há segundo lacre nem segundo potenciômetro.
 
