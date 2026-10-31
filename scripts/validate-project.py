@@ -33,12 +33,13 @@ for name, kind in [('esp', 'wokwi-esp32-devkit-v1'), ('gps', 'chip-gps'),
                    ('seal', 'wokwi-slide-switch'), ('battery', 'wokwi-potentiometer')]:
     assert parts[name]['type'] == kind, f'Componente divergente: {name}'
 hardware_ids = {'esp', 'gps', 'seal', 'battery', 'sw_rede', 'sw_energia', 'btn_autorizar',
-                'btn_ciclo', 'btn_avancar', 'btn_voltar', 'lcd', 'buzzer', 'led', 'r_led', 'bb1'}
+                'btn_ciclo', 'btn_avancar', 'btn_voltar', 'lcd', 'buzzer', 'led', 'r_led', 'bb1', 'bb2'}
 for name, kind in [('sw_rede', 'wokwi-slide-switch'), ('sw_energia', 'wokwi-slide-switch'),
                    ('btn_autorizar', 'wokwi-pushbutton'), ('btn_ciclo', 'wokwi-pushbutton'),
                    ('btn_avancar', 'wokwi-pushbutton'), ('btn_voltar', 'wokwi-pushbutton'),
                    ('lcd', 'wokwi-lcd1602'), ('buzzer', 'wokwi-buzzer'),
-                   ('led', 'wokwi-led'), ('r_led', 'wokwi-resistor'), ('bb1', 'wokwi-breadboard')]:
+                   ('led', 'wokwi-led'), ('r_led', 'wokwi-resistor'), ('bb1', 'wokwi-breadboard'),
+                   ('bb2', 'wokwi-breadboard')]:
     assert parts[name]['type'] == kind, f'Componente divergente: {name}'
 assert parts['lcd']['attrs'].get('pins') == 'i2c', 'LCD deve usar o modulo I2C'
 assert [p['id'] for p in diagram['parts'] if p['type'] == 'wokwi-led'] == ['led'], 'V2 usa um unico LED, o de violacao'
@@ -55,6 +56,9 @@ def box(part):
         w, h = 8.2 * max(len(line) for line in lines), 24 * len(lines)
     else:
         w, h = CONTROL_SIZE[part['type']]
+        if part.get('rotate', 0) % 180:  # gira em torno do centro: troca largura e altura
+            dx = (w - h) / 2
+            return part['left'] + dx, part['top'] - dx, part['left'] + dx + h, part['top'] - dx + w
     return part['left'], part['top'], part['left'] + w, part['top'] + h
 texts = [p for p in diagram['parts'] if p['type'] == 'wokwi-text']
 for control in (p for p in diagram['parts'] if p['type'] in CONTROL_SIZE):
@@ -64,7 +68,7 @@ for control in (p for p in diagram['parts'] if p['type'] in CONTROL_SIZE):
         assert tx1 <= cx0 or tx0 >= cx1 or ty1 <= cy0 or ty0 >= cy1, \
             f"Texto {text['id']} cobre {control['id']} e bloqueia o clique no Wokwi"
 connections = {frozenset(connection[:2]) for connection in diagram['connections']}
-# Alimentacao pela protoboard: cada trilho e um no so; os GNDs do ESP32 sao o mesmo no.
+# Protoboards: cada trilho e um no so, e cada meia-coluna (a-e ou f-j) tambem; GNDs do ESP32 sao um no.
 net = {}
 def find(pin):
     net.setdefault(pin, pin)
@@ -77,14 +81,22 @@ def join(a, b):
 for a, b, *_ in diagram['connections']:
     join(a, b)
 for pin in list(net):
-    if pin.startswith('bb1:') and pin[4:6] in ('tp', 'tn', 'bp', 'bn'):
-        join(pin, 'bb1:' + pin[4:6])
+    hole = re.fullmatch(r'(bb\d):(tp|tn|bp|bn|\d+[tb])\.\w+', pin)
+    if hole:
+        join(pin, f'{hole[1]}:{hole[2]}')
 join('esp:GND.1', 'esp:GND.2')
+for key, part in parts.items():  # o botao liga 1.l a 1.r e 2.l a 2.r por dentro
+    if part['type'] == 'wokwi-pushbutton':
+        join(f'{key}:1.l', f'{key}:1.r')
+        join(f'{key}:2.l', f'{key}:2.r')
 def linked(a, b):
     return frozenset((a, b)) in connections or find(a) == find(b)
-assert linked('bb1:tn', 'bb1:bn') and linked('bb1:tn', 'esp:GND.1'), 'Trilhos de GND desligados'
-assert linked('bb1:tp', 'esp:3V3') and linked('bb1:bp', 'esp:VIN'), 'Trilhos de 3V3/5V desligados'
-assert not linked('bb1:tp', 'bb1:bp') and not linked('bb1:tp', 'bb1:tn'), '3V3, 5V e GND em curto'
+# Trilhos: de cima e do meio 3V3/GND; de baixo 5V (VIN)/GND.
+assert all(linked(r, 'esp:GND.1') for r in ('bb1:tn', 'bb1:bn', 'bb2:bn')), 'Trilhos de GND desligados'
+assert linked('bb1:tp', 'esp:3V3') and linked('bb1:bp', 'esp:3V3'), 'Trilhos de 3V3 desligados'
+assert linked('bb2:bp', 'esp:VIN'), 'Trilho de 5V desligado'
+assert not linked('esp:3V3', 'esp:VIN') and not linked('esp:3V3', 'esp:GND.1') \
+    and not linked('esp:VIN', 'esp:GND.1'), '3V3, 5V e GND em curto'
 for source, target in (
     ('esp:TX0', '$serialMonitor:RX'), ('esp:RX0', '$serialMonitor:TX'),
     ('gps:TX', 'esp:RX2'), ('gps:RX', 'esp:TX2'),
@@ -105,9 +117,11 @@ for source, target in (
     assert linked(source, target), f'Ligacao ausente: {source} -> {target}'
 assert {'TX', 'RX', 'VCC', 'GND'} <= set(chip['pins'])
 assert {c['id'] for c in chip['controls']} == set(parts['gps']['attrs'])
-assert not any('seal:3' in c for c in connections), 'Lacre violado deve ficar aberto'
-assert not any('sw_rede:3' in c for c in connections), 'Rede indisponivel deve ficar aberta'
-assert not any('sw_energia:3' in c for c in connections), 'Desligado deve ficar aberto'
+# Terminal 3 das chaves fica aberto: no maximo encaixado num furo sem mais nada.
+for switch, message in (('seal', 'Lacre violado'), ('sw_rede', 'Rede indisponivel'), ('sw_energia', 'Desligado')):
+    terminal = find(f'{switch}:3')
+    others = [p for p in list(net) if find(p) == terminal and not re.match(r'bb\d:', p)]
+    assert others == [f'{switch}:3'], f'{message} deve ficar aberto'
 config = (root / 'include/config.h').read_text(encoding='utf-8')
 pins = [('GpsRx', 16), ('GpsTx', 17), ('SealPin', 27), ('BatteryPin', 34),
         ('LcdSdaPin', 21), ('LcdSclPin', 22), ('NextButtonPin', 25), ('PreviousButtonPin', 26),
