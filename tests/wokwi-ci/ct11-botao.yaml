@@ -1,0 +1,33 @@
+# CT11 (V2): pulsos de 20 ms (ruido) nao contam; toques de 300 ms sao soltos antes de 3 s
+# e nao registram nada; segurar 6 s registra uma unica autorizacao.
+name: CT11 V2 - ruido e pressao mantida do botao
+version: 1
+steps:
+  - wait-serial: '"type":"STATUS"'
+  - delay: 500ms
+  - set-control: { part-id: btn_autorizar, control: pressed, value: 1 }
+  - delay: 20ms
+  - set-control: { part-id: btn_autorizar, control: pressed, value: 0 }
+  - delay: 20ms
+  - set-control: { part-id: btn_autorizar, control: pressed, value: 1 }
+  - delay: 20ms
+  - set-control: { part-id: btn_autorizar, control: pressed, value: 0 }
+  - delay: 300ms
+  - set-control: { part-id: btn_autorizar, control: pressed, value: 1 }
+  - delay: 300ms
+  - set-control: { part-id: btn_autorizar, control: pressed, value: 0 }
+  - delay: 300ms
+  - set-control: { part-id: btn_autorizar, control: pressed, value: 1 }
+  - delay: 300ms
+  - set-control: { part-id: btn_autorizar, control: pressed, value: 0 }
+  - delay: 300ms
+  - set-control: { part-id: btn_autorizar, control: pressed, value: 1 }
+  - delay: 300ms
+  - set-control: { part-id: btn_autorizar, control: pressed, value: 0 }
+  - delay: 300ms
+  - set-control: { part-id: btn_autorizar, control: pressed, value: 1 }
+  - delay: 1500ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct11-lcd-contagem.png }
+  - delay: 4500ms
+  - set-control: { part-id: btn_autorizar, control: pressed, value: 0 }
+  - delay: 500ms

@@ -1,0 +1,24 @@
+# CT12, CT13 e CT23 (V2): histerese 20%/25%, ADC zero como falha do sensor e faixa 0..100%.
+# Potenciometro: position 0..1 representa 0..3,3 V no GPIO34.
+name: CT12-CT13-CT23 V2 - bateria simulada
+version: 1
+steps:
+  - wait-serial: '"type":"STATUS"'
+  - set-control: { part-id: battery, control: position, value: 0.17 }
+  - delay: 2500ms
+  - set-control: { part-id: battery, control: position, value: 0.22 }
+  - delay: 2500ms
+  - set-control: { part-id: battery, control: position, value: 0.17 }
+  - delay: 2500ms
+  - set-control: { part-id: battery, control: position, value: 0.31 }
+  - delay: 2500ms
+  - set-control: { part-id: battery, control: position, value: 0.17 }
+  - delay: 2500ms
+  - set-control: { part-id: battery, control: position, value: 0.78 }
+  - delay: 2500ms
+  - set-control: { part-id: battery, control: position, value: 0 }
+  - delay: 2500ms
+  - set-control: { part-id: battery, control: position, value: 0.5 }
+  - delay: 2500ms
+  - set-control: { part-id: battery, control: position, value: 1 }
+  - delay: 2500ms
