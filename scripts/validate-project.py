@@ -91,9 +91,10 @@ for key, part in parts.items():  # o botao liga 1.l a 1.r e 2.l a 2.r por dentro
         join(f'{key}:2.l', f'{key}:2.r')
 def linked(a, b):
     return frozenset((a, b)) in connections or find(a) == find(b)
-# Trilhos: de cima e do meio 3V3/GND; de baixo 5V (VIN)/GND.
-assert all(linked(r, 'esp:GND.1') for r in ('bb1:tn', 'bb1:bn', 'bb2:bn')), 'Trilhos de GND desligados'
-assert linked('bb1:tp', 'esp:3V3') and linked('bb1:bp', 'esp:3V3'), 'Trilhos de 3V3 desligados'
+# bb2 cobre o trilho de baixo de bb1: o do meio e bb2:tp/tn. Trilhos: de cima e do meio 3V3/GND; de baixo 5V (VIN)/GND.
+assert not any(re.match(r'bb1:b[pn]\.', p) for p in net), 'Trilho de baixo de bb1 fica escondido sob bb2'
+assert all(linked(r, 'esp:GND.1') for r in ('bb1:tn', 'bb2:tn', 'bb2:bn')), 'Trilhos de GND desligados'
+assert linked('bb1:tp', 'esp:3V3') and linked('bb2:tp', 'esp:3V3'), 'Trilhos de 3V3 desligados'
 assert linked('bb2:bp', 'esp:VIN'), 'Trilho de 5V desligado'
 assert not linked('esp:3V3', 'esp:VIN') and not linked('esp:3V3', 'esp:GND.1') \
     and not linked('esp:VIN', 'esp:GND.1'), '3V3, 5V e GND em curto'

@@ -17,14 +17,14 @@
     {
       "type": "wokwi-breadboard",
       "id": "bb2",
-      "top": 207.9,
+      "top": 174.0,
       "left": 0,
       "attrs": {}
     },
     {
       "type": "wokwi-esp32-devkit-v1",
       "id": "esp",
-      "top": 105.75,
+      "top": 102.75,
       "left": 211.45,
       "attrs": {},
       "rotate": 90
@@ -101,7 +101,7 @@
     {
       "type": "wokwi-lcd1602",
       "id": "lcd",
-      "top": 450,
+      "top": 416,
       "left": 380,
       "attrs": {
         "pins": "i2c"
@@ -130,7 +130,7 @@
     {
       "type": "wokwi-buzzer",
       "id": "buzzer",
-      "top": 242.1,
+      "top": 208.2,
       "left": 373.4,
       "attrs": {
         "volume": "0.1"
@@ -139,7 +139,7 @@
     {
       "type": "wokwi-slide-switch",
       "id": "sw_rede",
-      "top": 292.1,
+      "top": 258.2,
       "left": 499.5,
       "attrs": {
         "bounce": "0"
@@ -148,7 +148,7 @@
     {
       "type": "wokwi-slide-switch",
       "id": "sw_energia",
-      "top": 292.1,
+      "top": 258.2,
       "left": 451.5,
       "attrs": {
         "bounce": "0"
@@ -274,10 +274,10 @@
     {
       "type": "wokwi-text",
       "id": "notes",
-      "top": 610,
+      "top": 576,
       "left": -10,
       "attrs": {
-        "text": "AVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nSerial: REMESSA x = NF da remessa | NF = lanca NF de retorno | LIMIAR n = muda o limiar\nChave de rede simula o SIM (on/off); Wi-Fi real independente. Sem transporte ao servidor.\nDemo: 1 s = 1 dia no ciclo, coleta GPS a cada 30 s. Nao valida consumo ou autonomia.\nFios: preto GND | vermelho 3V3 | laranja VIN 5V | amarelo botoes e chaves | ciano bateria\n      verde SDA | azul SCL | roxo buzzer | cinza GPS\nLED vermelho (GPIO13, 220 ohm) pisca enquanto o lacre esta violado\nProtoboard: duas de 830 furos; ESP32 na juncao (pinos da esquerda na linha j de cima, da direita na linha a de baixo)\nTrilhos: de cima +3V3/-GND; do meio +3V3/-GND; de baixo +5V (VIN, LCD)/-GND; placa de baixo, trilho de cima sem uso\nNo Wokwi a...e fica em cima em cada placa; na bancada a placa de cima tem a linha j no topo"
+        "text": "AVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nSerial: REMESSA x = NF da remessa | NF = lanca NF de retorno | LIMIAR n = muda o limiar\nChave de rede simula o SIM (on/off); Wi-Fi real independente. Sem transporte ao servidor.\nDemo: 1 s = 1 dia no ciclo, coleta GPS a cada 30 s. Nao valida consumo ou autonomia.\nFios: preto GND | vermelho 3V3 | laranja VIN 5V | amarelo botoes e chaves | ciano bateria\n      verde SDA | azul SCL | roxo buzzer | cinza GPS\nLED vermelho (GPIO13, 220 ohm) pisca enquanto o lacre esta violado\nProtoboard: duas de 830 furos com um trilho so no meio; ESP32 sobre ele (pinos na linha j de cima e na d de baixo)\nTrilhos: de cima +3V3/-GND; do meio +3V3/-GND; de baixo +5V (VIN, LCD)/-GND\nNo Wokwi a...e fica em cima em cada placa; na bancada a placa de cima tem a linha j no topo"
       }
     }
   ],
@@ -614,91 +614,91 @@
     ],
     [
       "esp:D23",
-      "bb2:34t.a",
+      "bb2:34t.d",
       "",
       []
     ],
     [
       "esp:D22",
-      "bb2:33t.a",
+      "bb2:33t.d",
       "",
       []
     ],
     [
       "esp:TX0",
-      "bb2:32t.a",
+      "bb2:32t.d",
       "",
       []
     ],
     [
       "esp:RX0",
-      "bb2:31t.a",
+      "bb2:31t.d",
       "",
       []
     ],
     [
       "esp:D21",
-      "bb2:30t.a",
+      "bb2:30t.d",
       "",
       []
     ],
     [
       "esp:D19",
-      "bb2:29t.a",
+      "bb2:29t.d",
       "",
       []
     ],
     [
       "esp:D18",
-      "bb2:28t.a",
+      "bb2:28t.d",
       "",
       []
     ],
     [
       "esp:D5",
-      "bb2:27t.a",
+      "bb2:27t.d",
       "",
       []
     ],
     [
       "esp:TX2",
-      "bb2:26t.a",
+      "bb2:26t.d",
       "",
       []
     ],
     [
       "esp:RX2",
-      "bb2:25t.a",
+      "bb2:25t.d",
       "",
       []
     ],
     [
       "esp:D4",
-      "bb2:24t.a",
+      "bb2:24t.d",
       "",
       []
     ],
     [
       "esp:D2",
-      "bb2:23t.a",
+      "bb2:23t.d",
       "",
       []
     ],
     [
       "esp:D15",
-      "bb2:22t.a",
+      "bb2:22t.d",
       "",
       []
     ],
     [
       "esp:GND.1",
-      "bb2:21t.a",
+      "bb2:21t.d",
       "",
       []
     ],
     [
       "esp:3V3",
-      "bb2:20t.a",
+      "bb2:20t.d",
       "",
       []
     ],
@@ -841,22 +841,23 @@
       []
     ],
     [
-      "bb2:20t.c",
-      "bb1:bp.10",
+      "bb2:20t.e",
+      "bb2:tp.10",
       "red",
       [
         "h-71.2",
-        "v-86.8",
+        "v-72.1",
         "h4.8"
       ]
     ],
     [
-      "bb2:21t.d",
-      "bb1:bn.9",
+      "bb2:21t.e",
+      "bb2:tn.9",
       "black",
       [
+        "v4.8",
         "h-90.4",
-        "v-86.4",
+        "v-66.9",
         "h4.8"
       ]
     ],
@@ -867,13 +868,13 @@
       [
         "v23",
         "h-90.4",
-        "v219.2",
+        "v185.3",
         "h4.8"
       ]
     ],
     [
       "bb1:tp.1",
-      "bb1:bp.1",
+      "bb2:tp.1",
       "red",
       [
         "h-56",
@@ -882,7 +883,7 @@
     ],
     [
       "bb1:tn.50",
-      "bb1:bn.50",
+      "bb2:tn.50",
       "black",
       [
         "h37.2",
@@ -891,11 +892,11 @@
     ],
     [
       "bb2:bn.50",
-      "bb1:bn.50",
+      "bb2:tn.50",
       "black",
       [
         "h43.2",
-        "v-207.9"
+        "v-174"
       ]
     ],
     [
@@ -964,7 +965,7 @@
       "green",
       [
         "h4.8",
-        "v203.7"
+        "v203.6"
       ]
     ],
     [
@@ -973,7 +974,7 @@
       "blue",
       [
         "h4.8",
-        "v213.2"
+        "v213.1"
       ]
     ],
     [
@@ -990,7 +991,7 @@
       "orange",
       [
         "h-26",
-        "v-92.3",
+        "v-92.2",
         "h4.8"
       ]
     ]
