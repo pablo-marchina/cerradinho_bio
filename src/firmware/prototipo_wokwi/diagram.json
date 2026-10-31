@@ -52,8 +52,8 @@
     {
       "type": "chip-gps",
       "id": "gps",
-      "top": 250,
-      "left": 720,
+      "top": 330,
+      "left": 700,
       "attrs": {
         "latitude": "-23.55",
         "longitude": "-46.6333",
@@ -101,7 +101,7 @@
     {
       "type": "wokwi-lcd1602",
       "id": "lcd",
-      "top": 416,
+      "top": 500,
       "left": 380,
       "attrs": {
         "pins": "i2c"
@@ -157,7 +157,7 @@
     {
       "type": "wokwi-text",
       "id": "title",
-      "top": -230,
+      "top": -300,
       "left": -10,
       "attrs": {
         "text": "GUARATRACKING | Prototipo V2 na protoboard dupla (LCD, botoes, buzzer)"
@@ -166,115 +166,205 @@
     {
       "type": "wokwi-text",
       "id": "navLabel2",
-      "top": -150,
-      "left": 44.0,
+      "top": -138,
+      "left": 28.1,
       "attrs": {
         "text": "VOLTAR\nGPIO26\nanterior"
       }
     },
     {
       "type": "wokwi-text",
+      "id": "navLabel2Arrow",
+      "top": -66,
+      "left": 56.1,
+      "attrs": {
+        "text": "▼"
+      }
+    },
+    {
+      "type": "wokwi-text",
       "id": "cycleLabel",
-      "top": -150,
-      "left": 119.2,
+      "top": -138,
+      "left": 104.3,
       "attrs": {
         "text": "CICLO\nGPIO14\n3 s"
       }
     },
     {
       "type": "wokwi-text",
+      "id": "cycleLabelArrow",
+      "top": -66,
+      "left": 123.3,
+      "attrs": {
+        "text": "▼"
+      }
+    },
+    {
+      "type": "wokwi-text",
       "id": "ledLabel",
-      "top": -150,
-      "left": 205.6,
+      "top": -114,
+      "left": 195.6,
       "attrs": {
         "text": "LED 13\n220R"
       }
     },
     {
       "type": "wokwi-text",
+      "id": "ledLabelArrow",
+      "top": -66,
+      "left": 214.6,
+      "attrs": {
+        "text": "▼"
+      }
+    },
+    {
+      "type": "wokwi-text",
       "id": "batteryLabel",
-      "top": -150,
-      "left": 370.4,
+      "top": -138,
+      "left": 368.1,
       "attrs": {
         "text": "BATERIA\nGPIO34\nnivel"
       }
     },
     {
       "type": "wokwi-text",
-      "id": "sealLabel",
-      "top": -150,
-      "left": 441.8,
+      "id": "batteryLabelArrow",
+      "top": -66,
+      "left": 391.6,
       "attrs": {
-        "text": "LACRE\nGPIO27\nesq=ok\ndir=viol"
+        "text": "▼"
       }
     },
     {
       "type": "wokwi-text",
       "id": "buttonLabel",
-      "top": -150,
-      "left": 514.4,
+      "top": -138,
+      "left": 503.0,
       "attrs": {
         "text": "AUTORIZ\nGPIO33\n3 s"
       }
     },
     {
       "type": "wokwi-text",
+      "id": "buttonLabelArrow",
+      "top": -66,
+      "left": 526.5,
+      "attrs": {
+        "text": "▼"
+      }
+    },
+    {
+      "type": "wokwi-text",
       "id": "navLabel",
-      "top": -150,
-      "left": 572.0,
+      "top": -234,
+      "left": 560.6,
       "attrs": {
         "text": "AVANCAR\nGPIO25\nproxima"
       }
     },
     {
       "type": "wokwi-text",
-      "id": "buzzerLabel",
-      "top": 380,
-      "left": 690,
+      "id": "navLabelArrow",
+      "top": -162,
+      "left": 584.1,
       "attrs": {
-        "text": "BUZZER | GPIO23\nbipa na violacao"
+        "text": "│\n│\n│\n│\n▼"
       }
     },
     {
       "type": "wokwi-text",
-      "id": "powerLabel",
-      "top": 440,
-      "left": 690,
+      "id": "sealLabel",
+      "top": -258,
+      "left": 450.75,
       "attrs": {
-        "text": "ON/OFF | GPIO19 | esq=on"
+        "text": "LACRE\nGPIO27\nesq=ok\ndir=viol"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "sealLabelArrow",
+      "top": -162,
+      "left": 478.75,
+      "attrs": {
+        "text": "│\n│\n│\n│\n▼"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "networkLabelArrow",
+      "top": 383.9,
+      "left": 507.55,
+      "attrs": {
+        "text": "▲"
       }
     },
     {
       "type": "wokwi-text",
       "id": "networkLabel",
-      "top": 470,
-      "left": 690,
+      "top": 407.9,
+      "left": 507.55,
       "attrs": {
         "text": "SIM | GPIO18 | esq=on"
       }
     },
     {
       "type": "wokwi-text",
-      "id": "lcdLabel",
-      "top": 510,
-      "left": 690,
+      "id": "powerLabelArrow",
+      "top": 383.9,
+      "left": 459.55,
       "attrs": {
-        "text": "LCD 16x2 I2C (0x27)\nSDA 21 | SCL 22 | VCC no VIN"
+        "text": "▲\n│"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "powerLabel",
+      "top": 431.9,
+      "left": 459.55,
+      "attrs": {
+        "text": "ON/OFF | GPIO19 | esq=on"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "buzzerLabelArrow",
+      "top": 383.9,
+      "left": 402.9,
+      "attrs": {
+        "text": "▲\n│\n│"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "buzzerLabel",
+      "top": 455.9,
+      "left": 402.9,
+      "attrs": {
+        "text": "BUZZER | GPIO23 | bipa na violacao"
       }
     },
     {
       "type": "wokwi-text",
       "id": "gpsLabel",
-      "top": 330,
-      "left": 720,
+      "top": 296,
+      "left": 700,
       "attrs": {
-        "text": "GPS SIMULADO\nTX->RX2 16 | RX->TX2 17"
+        "text": "▼ GPS SIMULADO | TX->RX2 16 | RX->TX2 17"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "lcdLabel",
+      "top": 556.05,
+      "left": 686.4,
+      "attrs": {
+        "text": "◀ LCD 16x2 I2C (0x27) | SDA 21 | SCL 22 | VCC no VIN"
       }
     },
     {
       "type": "wokwi-text",
       "id": "notes",
-      "top": 576,
+      "top": 660,
       "left": -10,
       "attrs": {
         "text": "AVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nSerial: REMESSA x = NF da remessa | NF = lanca NF de retorno | LIMIAR n = muda o limiar\nChave de rede simula o SIM (on/off); Wi-Fi real independente. Sem transporte ao servidor.\nDemo: 1 s = 1 dia no ciclo, coleta GPS a cada 30 s. Nao valida consumo ou autonomia.\nFios: preto GND | vermelho 3V3 | laranja VIN 5V | amarelo botoes e chaves | ciano bateria\n      verde SDA | azul SCL | roxo buzzer | cinza GPS\nLED vermelho (GPIO13, 220 ohm) pisca enquanto o lacre esta violado\nProtoboard: duas de 830 furos com um trilho so no meio; ESP32 sobre ele (pinos na linha j de cima e na d de baixo)\nTrilhos: de cima +3V3/-GND; do meio +3V3/-GND; de baixo +5V (VIN, LCD)/-GND\nNo Wokwi a...e fica em cima em cada placa; na bancada a placa de cima tem a linha j no topo"
@@ -965,7 +1055,7 @@
       "green",
       [
         "h4.8",
-        "v203.6"
+        "v287.6"
       ]
     ],
     [
@@ -974,7 +1064,7 @@
       "blue",
       [
         "h4.8",
-        "v213.1"
+        "v297.1"
       ]
     ],
     [
@@ -991,7 +1081,7 @@
       "orange",
       [
         "h-26",
-        "v-92.2",
+        "v-176.2",
         "h4.8"
       ]
     ]

@@ -46,10 +46,13 @@ assert [p['id'] for p in diagram['parts'] if p['type'] == 'wokwi-led'] == ['led'
 assert parts['led']['attrs'].get('color') == 'red' and parts['r_led']['attrs'].get('value') == '220'
 assert all(p['type'] == 'wokwi-text' for key, p in parts.items()
            if key not in hardware_ids), 'Componente fora do escopo'
-# Texto por cima de um controle rouba o clique no Wokwi (o voltar ficou inacessivel assim).
+# Texto por cima de um controle rouba o clique no Wokwi (o voltar ficou inacessivel assim);
+# sobre LCD, ESP32 ou resistor, esconde a peca.
 # Medidas do Wokwi: texto com ~8,2 unidades por caractere e 24 por linha.
 CONTROL_SIZE = {'wokwi-pushbutton': (67.3, 45.4), 'wokwi-slide-switch': (32.1, 34.9),
-                'wokwi-potentiometer': (75.6, 75.6), 'wokwi-buzzer': (75, 83.6), 'wokwi-led': (40, 50)}
+                'wokwi-potentiometer': (75.6, 75.6), 'wokwi-buzzer': (75, 83.6), 'wokwi-led': (40, 50),
+                'wokwi-lcd1602': (302.4, 136.1), 'wokwi-esp32-devkit-v1': (106.6, 204.3),
+                'wokwi-resistor': (58.8, 11.3)}
 def box(part):
     if part['type'] == 'wokwi-text':
         lines = part['attrs']['text'].split('\n')
@@ -66,7 +69,7 @@ for control in (p for p in diagram['parts'] if p['type'] in CONTROL_SIZE):
     for text in texts:
         tx0, ty0, tx1, ty1 = box(text)
         assert tx1 <= cx0 or tx0 >= cx1 or ty1 <= cy0 or ty0 >= cy1, \
-            f"Texto {text['id']} cobre {control['id']} e bloqueia o clique no Wokwi"
+            f"Texto {text['id']} cobre {control['id']} no Wokwi"
 connections = {frozenset(connection[:2]) for connection in diagram['connections']}
 # Protoboards: cada trilho e um no so, e cada meia-coluna (a-e ou f-j) tambem; GNDs do ESP32 sao um no.
 net = {}
