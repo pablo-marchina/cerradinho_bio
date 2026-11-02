@@ -343,13 +343,20 @@ A jornada do usuário é um mapa da experiência de uma pessoa ao realizar uma a
 
 #### Jornada atual de Geraldo
 
-A Figura 3.2.2.1 apresenta um dia de envio de equipamento para manutenção externa: em 28/10, Geraldo prepara a bomba fictícia AT-001, registra sua saída, confirma a chegada à Oficina Alfa e organiza o acompanhamento. A ansiedade enquanto aguarda a confirmação evidencia a dependência de contatos manuais; as oportunidades apontam onde o projeto pode melhorar a visibilidade e reunir os registros.
+A Figura 3.2.2.1 apresenta o ciclo atual de manutenção externa pela perspectiva de Geraldo: seis etapas — preparar, escolher oficina, aprovar e enviar, acompanhar reparo, tratar atraso, retornar e encerrar. Essas etapas cobrem o recebimento da demanda até a conferência do equipamento e a confirmação da regularização fiscal. O cenário usa o motor fictício AT-001 e a Oficina Skibidy, nome fictício sem relação com fornecedor real.
 
-![Jornada atual de Geraldo em um dia de envio da bomba fictícia AT-001: preparação às 8h, saída às 9h, confirmação de chegada às 11h30 e organização do acompanhamento às 16h, com ações, pensamentos, falas, touchpoints, sentimentos e oportunidades do projeto](../assets/ux/jornada-atual-geraldo.png)
+![Jornada atual de Geraldo, da demanda ao encerramento fiscal, com seis fases e curva emocional](../assets/ux/jornada-atual-geraldo.png)
 
-*Figura 3.2.2.1 — Jornada atual de Geraldo no envio de um ativo à manutenção externa. Fonte: autoria própria*
+*Figura 3.2.2.1 — Jornada atual de Geraldo. Fonte: elaboração própria com base no kick-off da Cerradinho, na persona da seção 3.2.1 e no TAPI [6].*
 
-O mapa adapta a persona da seção 3.2.1 a um cenário ilustrativo; horários, falas e sentimentos não são observações de usuários reais.
+O mapa relaciona as responsabilidades e dificuldades relatadas pelo parceiro aos objetivos de Geraldo, organizando o ciclo em seis etapas. Pensamentos, sentimentos e curva emocional são interpretações ilustrativas, não resultados de entrevistas ou medições. O responsável pela embalagem e a rotina de confirmação de chegada ao fornecedor permanecem a validar com o parceiro.
+
+Os principais insights são:
+
+- **Fragmentação:** dados distribuídos entre SAP, planilhas, e-mail e telefone exigem conciliação manual; reunir os registros facilita o acompanhamento por responsável.
+- **Dependência do fornecedor:** informações sobre reparo e previsão de retorno dependem de respostas externas; o histórico de cumprimento pode apoiar decisões diante de atraso.
+- **Risco de esquecimento:** itens menos críticos podem deixar de receber acompanhamento; a régua fiscal não informa onde estão nem o andamento do reparo.
+- **Fechamento físico e fiscal separados:** receber o equipamento não encerra a remessa; a conferência e a confirmação do lançamento fiscal precisam estar relacionadas para evitar pendências.
 
 _Coloque aqui seu Storyboard (seguindo as instruções na descrição do artefato)_
 
