@@ -4,7 +4,9 @@ Esta pasta reúne o circuito principal do protótipo V2: ESP32 DevKit v1, GPS/GN
 customizado, lacre, bateria simulada, display LCD 16x2 I2C, botões de avançar e
 voltar, buzzer, botões de autorização e de ciclo, chave de rede simulada (on/off do
 módulo SIM) e chave ON/OFF. No V1, quatro LEDs com resistores de 220 Ω indicavam os
-estados; no V2 eles deram lugar ao LCD e ao buzzer.
+estados; no V2 eles deram lugar ao LCD e ao buzzer, e ficou só o LED vermelho de violação no
+GPIO13, mantido porque a rubrica do Art. 5 pede resultado em LED. O dispositivo liga sem ciclo; segurar CICLO por 3 s faz o vínculo e abre o ciclo, e `REMESSA x` registra a NF. Falhas do GNSS geram
+`GNSS_SEM_FIX` (motivo `sem_fix`, `sem_dados` ou `sinal_fraco`) e `GNSS_RECUPERADO`, uma vez por falha.
 
 O firmware principal preserva a comparação de posições, o debounce do lacre e a
 registro NVS de diagnóstico existentes, tem o ciclo (dias fora, status semanal e alertas de
@@ -55,14 +57,15 @@ da unidade física antes de integrar. Consumo e autonomia exigem ensaios físico
 | LCD 16x2 I2C (`lcd`) | GPIO 21 (SDA) e 22 (SCL) | I2C, endereço 0x27 | Telas de status; VCC no VIN e GND comum |
 | BTN_AVANCAR (`btn_avancar`) | GPIO 25 | `INPUT_PULLUP` | Próxima tela, em ordem circular |
 | BTN_VOLTAR (`btn_voltar`) | GPIO 26 | `INPUT_PULLUP` | Tela anterior, em ordem circular |
+| LED de violação (`led`, `r_led`) | GPIO 13 | saída, resistor de 220 Ω | LED vermelho pisca (pulso de 150 ms por segundo) enquanto o lacre está violado; apaga com a chave ON/OFF desligada |
 | Buzzer (`buzzer`) | GPIO 23 | saída (`tone`) | Bipe intermitente na violação do lacre; GPIO27 permanece exclusivo do lacre |
 | SW_REDE (`sw_rede`) | GPIO 18 | `INPUT_PULLUP` | Simula a chave on/off do módulo SIM: esquerda = disponível/LOW; direita = indisponível/HIGH |
 | SW_ENERGIA (`sw_energia`) | GPIO 19 | `INPUT_PULLUP` | ON/OFF: esquerda = ligado/LOW; direita = desligado/HIGH |
 | BTN_AUTORIZAR (`btn_autorizar`) | GPIO 33 | `INPUT_PULLUP` | Segurar 3 s registra a autorização de retirada, válida por 3 dias |
 | BTN_CICLO (`btn_ciclo`) | GPIO 14 | `INPUT_PULLUP` | Segurar 3 s inicia o ciclo (sem ciclo ativo) ou pede o encerramento (com ciclo ativo) |
 
-GPS e potenciômetro têm VCC em 3V3 e GND comum. O buzzer tem o terminal positivo no
-GPIO23 e o negativo no GND. Botões ligam contatos de grupos opostos ao GPIO e ao GND. As chaves usam o terminal 2 no GPIO, o terminal 1 no GND
+O diagrama reproduz a bancada: duas protoboards de 830 furos empilhadas (`bb1` em cima, `bb2` embaixo) com um único trilho de alimentação no meio, e o ESP32 e os componentes encaixados nos furos, com jumpers entre eles. Para isso `bb2` fica sobreposta a `bb1`: o trilho de cima de `bb2` cobre o de baixo de `bb1`, que fica escondido e sem uso (o validador cobra isso). O ESP32 fica sobre o trilho do meio, com os pinos da esquerda (VIN…EN) na linha j de `bb1` e os da direita (3V3…D23) na linha d de `bb2`; embaixo sobra só a linha e livre, como na bancada. Botões, lacre, potenciômetro e LED ficam em `bb1`; chaves de rede e ON/OFF e o buzzer em `bb2`; LCD e GPS fora das placas. Trilhos: o de cima (`bb1:tp/tn`) e o do meio (`bb2:tp/tn`) levam 3V3 e GND; o de baixo (`bb2:bp/bn`) leva 5 V do VIN (só o LCD) e GND. Jumpers nas bordas unem os trilhos de mesma tensão. Em cada placa do Wokwi a linha a fica em cima; na bancada a placa de cima tem a linha j no topo. O GPS continua ligado direto no 3V3 e no GND do ESP32. O buzzer tem o terminal positivo no
+GPIO23 e o negativo no GND. Os botões atravessam o canal central; o GPIO vai na coluna dos contatos 1 e o GND na dos contatos 2. As chaves usam o terminal 2 no GPIO, o terminal 1 no GND
 e o terminal 3 aberto. Não há segundo lacre nem segundo potenciômetro.
 
 `network_sim_available` informa a chave; `wifi_connected` informa a conexão real
