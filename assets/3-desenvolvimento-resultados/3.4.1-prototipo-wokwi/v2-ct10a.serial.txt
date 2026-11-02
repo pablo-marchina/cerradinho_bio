@@ -1,0 +1,65 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:1156
+load:0x40078000,len:11456
+ho 0 tail 12 room 4
+load:0x40080400,len:2972
+entry 0x400805dc
+
+[boot] ESP32 executando - prototipo Cerradinho
+[boot] uptime_inicio_ms=1419 reset_reason=1
+[config] modo=demo intervalo=30 s tolerancia=100 m
+[memoria] NVS=ok; diagnostico limitado a 16 registros; fila de eventos de 8
+{"device_id":"prototipo-001","type":"STATUS","uptime_ms":2773,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":false,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":0,"dia_ocorrencia":0,"atraso":false,"permanencia":false,"critico":false,"contexto_restaurado":false}
+[boot] aguardando GPS; heartbeat aparece a cada 2 s
+[transporte] JSON na serial + fila local; envio HTTP/MQTT pendente
+[ciclo] 1 dia = 1 s; status a cada 7 dias; prazo 5; limiar 150
+[regras] janela de autorizacao 3 dias; fila sem rede de 8 eventos; bateria 20%/25%
+[comandos] NF = lanca NF de retorno; REMESSA x = NF da remessa; LIMIAR n = muda o limiar de permanencia
+[interface] LCD 16x2 I2C 0x27; AVANCAR/VOLTAR trocam a tela; CICLO e AUTORIZAR exigem 3 s; LCD apaga apos 15 s sem uso
+[bancada] SW_REDE simula disponibilidade sem desligar o Wi-Fi; SW_ENERGIA liga/desliga
+[vivo] tempo=2 s gps_chars=0 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+{"device_id":"prototipo-001","type":"location_sample","uptime_ms":3068,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":false,"network_sim_available":true,"fix_valid":true,"latitude":-23.550000,"longitude":-46.633300,"distance_m":null,"moved":null,"baseline_created":true}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+[wifi] conectado
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":3648,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":3638}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+[FILA] guardado: VIOLACAO_LACRE[FILA] 1 pendente
+[FILA] guardado: LIMIAR_ALTERADO
+[FILA] 2 pendentes
+[FILA] guardado: LIMIAR_ALTERADO
+[FILA] 3 pendentes
+[FILA] guardado: LIMIAR_ALTERADO
+[FILA] 4 pendentes
+[FILA] guardado: LIMIAR_ALTERADO
+[FILA] 5 pendentes
+[FILA] guardado: LIMIAR_ALTERADO
+[FILA] 6 pendentes
+[FILA] guardado: LIMIAR_ALTERADO
+[FILA] 7 pendentes
+[FILA] guardado: LIMIAR_ALTERADO
+[FILA] 8 pendentes[FILA] FILA_CHEIA: descartado o evento nao critico mais antigo
+[FILA] guardado: LIMIAR_ALTERADO
+[FILA] 8 pendentes
+[FILA] FILA_CHEIA: descartado o evento nao critico mais antigo
+[FILA] guardado: LIMIAR_ALTERADO
+[FILA] 8 pendentes
+[FILA] FILA_CHEIA: descartado o evento nao critico mais antigo
+[FILA] guardado: LIMIAR_ALTERADO
+[FILA] 8 pendentes
+E (7292) ledc: ledc_get_duty(745): LEDC is not initialized
+[vivo] tempo=4 s gps_chars=132 fix=valido lacre=violado bateria_sim=78% wifi=on rede_sim=off autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=2 fila=8
+[FILA] rede disponivel; reenviando 8 evento(s) na ordem
+{"device_id":"prototipo-001","type":"VIOLACAO_LACRE","uptime_ms":3681,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":0,"dia_ocorrencia":0,"atraso":false,"permanencia":false,"critico":true}
+{"device_id":"prototipo-001","type":"LIMIAR_ALTERADO","uptime_ms":3827,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":0,"dia_ocorrencia":0,"atraso":false,"permanencia":false,"critico":false,"limiar_dias":204}
+{"device_id":"prototipo-001","type":"LIMIAR_ALTERADO","uptime_ms":3872,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":0,"dia_ocorrencia":0,"atraso":false,"permanencia":false,"critico":false,"limiar_dias":205}
+{"device_id":"prototipo-001","type":"LIMIAR_ALTERADO","uptime_ms":3916,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":0,"dia_ocorrencia":0,"atraso":false,"permanencia":false,"critico":false,"limiar_dias":206}
+{"device_id":"prototipo-001","type":"LIMIAR_ALTERADO","uptime_ms":3964,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":0,"dia_ocorrencia":0,"atraso":false,"permanencia":false,"critico":false,"limiar_dias":207}
+{"device_id":"prototipo-001","type":"LIMIAR_ALTERADO","uptime_ms":4012,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":0,"dia_ocorrencia":0,"atraso":false,"permanencia":false,"critico":false,"limiar_dias":208}
+{"device_id":"prototipo-001","type":"LIMIAR_ALTERADO","uptime_ms":4093,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":0,"dia_ocorrencia":0,"atraso":false,"permanencia":false,"critico":false,"limiar_dias":209}
+{"device_id":"prototipo-001","type":"LIMIAR_ALTERADO","uptime_ms":4169,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":0,"dia_ocorrencia":0,"atraso":false,"permanencia":false,"critico":false,"limiar_dias":210}
+[FILA] 0 pendentes

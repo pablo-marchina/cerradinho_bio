@@ -1,0 +1,8 @@
+# CT04 (V2), rodada com o limiar de referencia de 150 dias (150 s no demo).
+name: CT04 V2 - permanencia com limiar 150
+version: 1
+steps:
+  - wait-serial: '"type":"STATUS"'
+  - wait-serial: '"type":"ALERTA_PERMANENCIA"'
+  - wait-serial: 'dias_fora=154'
+  - delay: 500ms

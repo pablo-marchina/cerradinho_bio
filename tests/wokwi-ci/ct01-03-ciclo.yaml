@@ -1,0 +1,19 @@
+# CT01-CT03 (V2): boot com lacre integro, status semanal nos dias 7 e 14, atraso no dia 6.
+# Contagens e "uma unica vez" sao conferidas no log por run_cts.py.
+name: CT01-CT03 V2 - boot, status semanal e atraso
+version: 1
+steps:
+  - wait-serial: '"type":"STATUS"'
+  - delay: 500ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct01-lcd.png }
+  - wait-serial: '"type":"ALERTA_ATRASO"'
+  - wait-serial: '"type":"STATUS_SEMANAL"'
+  # Tela de prazo (NF -> prazo); LCD ainda aceso (< 15 s do boot).
+  - set-control: { part-id: btn_avancar, control: pressed, value: 1 }
+  - delay: 150ms
+  - set-control: { part-id: btn_avancar, control: pressed, value: 0 }
+  - delay: 300ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct03-lcd-prazo.png }
+  - wait-serial: '"type":"STATUS_SEMANAL"'
+  - wait-serial: 'dias_fora=16'
+  - delay: 500ms
