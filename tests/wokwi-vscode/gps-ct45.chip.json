@@ -1,0 +1,6 @@
+{
+  "name": "GPS do CT45 (estimulos no tempo)",
+  "author": "Projeto Cerradinho",
+  "pins": ["VCC", "GND", "TX", "RX", "NET"],
+  "controls": []
+}

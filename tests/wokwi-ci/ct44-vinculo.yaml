@@ -1,0 +1,25 @@
+# CT44: o dispositivo liga sem ciclo; REMESSA e recusada antes do vinculo; CICLO segurado
+# 3 s abre o ciclo 1, e os dias passam a contar a partir do vinculo (RF002, RF003; RN02).
+name: CT44 - vinculo inicial
+version: 1
+steps:
+  - wait-serial: '"type":"STATUS"'
+  - delay: 500ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct44-lcd-boot.png }
+  # Tela de prazo sem ciclo (NF -> prazo).
+  - set-control: { part-id: btn_avancar, control: pressed, value: 1 }
+  - delay: 150ms
+  - set-control: { part-id: btn_avancar, control: pressed, value: 0 }
+  - delay: 300ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct44-lcd-sem-ciclo.png }
+  - write-serial: "REMESSA NF-000123\n"
+  - wait-serial: 'sem ciclo ativo; inicie o ciclo antes da REMESSA'
+  # Quatro dias de relogio sem ciclo: nenhum deles pode entrar na contagem.
+  - delay: 4000ms
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 1 }
+  - wait-serial: '"type":"CICLO_INICIADO"'
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 0 }
+  - delay: 300ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct44-lcd-iniciado.png }
+  - wait-serial: '"type":"STATUS_SEMANAL"'
+  - delay: 500ms
