@@ -8,17 +8,52 @@
   },
   "parts": [
     {
-      "type": "wokwi-esp32-devkit-v1",
-      "id": "esp",
+      "type": "wokwi-breadboard",
+      "id": "bb1",
       "top": 0,
       "left": 0,
       "attrs": {}
     },
     {
+      "type": "wokwi-breadboard",
+      "id": "bb2",
+      "top": 174.0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp",
+      "top": 102.75,
+      "left": 211.45,
+      "attrs": {},
+      "rotate": 90
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led",
+      "top": 9,
+      "left": 202.6,
+      "attrs": {
+        "color": "red",
+        "label": ""
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_led",
+      "top": 83.75,
+      "left": 198.2,
+      "attrs": {
+        "value": "220"
+      },
+      "rotate": 90
+    },
+    {
       "type": "chip-gps",
       "id": "gps",
-      "top": 250,
-      "left": 150,
+      "top": 330,
+      "left": 700,
       "attrs": {
         "latitude": "-23.55",
         "longitude": "-46.6333",
@@ -28,8 +63,8 @@
     {
       "type": "wokwi-slide-switch",
       "id": "seal",
-      "top": 235,
-      "left": -170,
+      "top": 17.0,
+      "left": 470.7,
       "attrs": {
         "bounce": "0"
       }
@@ -37,36 +72,37 @@
     {
       "type": "wokwi-potentiometer",
       "id": "battery",
-      "top": -150,
-      "left": -200,
+      "top": -17.5,
+      "left": 361.8,
       "attrs": {
         "value": "800"
-      },
-      "rotate": 270
+      }
     },
     {
       "type": "wokwi-pushbutton",
       "id": "btn_autorizar",
-      "top": -40,
-      "left": -197,
+      "top": 100.35,
+      "left": 500.85,
       "attrs": {
         "color": "green"
-      }
+      },
+      "rotate": 90
     },
     {
       "type": "wokwi-pushbutton",
       "id": "btn_ciclo",
-      "top": 300,
-      "left": -197,
+      "top": 100.35,
+      "left": 97.65,
       "attrs": {
         "color": "blue"
-      }
+      },
+      "rotate": 90
     },
     {
       "type": "wokwi-lcd1602",
       "id": "lcd",
-      "top": 11.9,
-      "left": 300,
+      "top": 500,
+      "left": 380,
       "attrs": {
         "pins": "i2c"
       }
@@ -74,26 +110,28 @@
     {
       "type": "wokwi-pushbutton",
       "id": "btn_voltar",
-      "top": 140,
-      "left": -197,
+      "top": 100.35,
+      "left": 30.45,
       "attrs": {
         "color": "white"
-      }
+      },
+      "rotate": 90
     },
     {
       "type": "wokwi-pushbutton",
       "id": "btn_avancar",
-      "top": 50,
-      "left": -197,
+      "top": 100.35,
+      "left": 558.45,
       "attrs": {
         "color": "white"
-      }
+      },
+      "rotate": 90
     },
     {
       "type": "wokwi-buzzer",
       "id": "buzzer",
-      "top": -130,
-      "left": 150,
+      "top": 208.2,
+      "left": 373.4,
       "attrs": {
         "volume": "0.1"
       }
@@ -101,8 +139,8 @@
     {
       "type": "wokwi-slide-switch",
       "id": "sw_rede",
-      "top": 130,
-      "left": 140,
+      "top": 258.2,
+      "left": 499.5,
       "attrs": {
         "bounce": "0"
       }
@@ -110,8 +148,8 @@
     {
       "type": "wokwi-slide-switch",
       "id": "sw_energia",
-      "top": 130,
-      "left": 230,
+      "top": 258.2,
+      "left": 451.5,
       "attrs": {
         "bounce": "0"
       }
@@ -119,118 +157,217 @@
     {
       "type": "wokwi-text",
       "id": "title",
-      "top": -270,
-      "left": -500,
+      "top": -300,
+      "left": -10,
       "attrs": {
-        "text": "GUARATRACKING | Prototipo V2 (LCD, botoes de navegacao e buzzer)"
-      }
-    },
-    {
-      "type": "wokwi-text",
-      "id": "batteryLabel",
-      "top": -130,
-      "left": -520,
-      "attrs": {
-        "text": "BATERIA | GPIO34\npotenciometro = nivel"
-      }
-    },
-    {
-      "type": "wokwi-text",
-      "id": "buttonLabel",
-      "top": -32,
-      "left": -520,
-      "attrs": {
-        "text": "AUTORIZAR | GPIO33\nsegurar 3 s"
-      }
-    },
-    {
-      "type": "wokwi-text",
-      "id": "navLabel",
-      "top": 58,
-      "left": -520,
-      "attrs": {
-        "text": "AVANCAR | GPIO25\nproxima tela"
+        "text": "GUARATRACKING | Prototipo V2 na protoboard dupla (LCD, botoes, buzzer)"
       }
     },
     {
       "type": "wokwi-text",
       "id": "navLabel2",
-      "top": 148,
-      "left": -520,
+      "top": -138,
+      "left": 28.1,
       "attrs": {
-        "text": "VOLTAR | GPIO26\ntela anterior"
+        "text": "VOLTAR\nGPIO26\nanterior"
       }
     },
     {
       "type": "wokwi-text",
-      "id": "sealLabel",
-      "top": 238,
-      "left": -520,
+      "id": "navLabel2Arrow",
+      "top": -66,
+      "left": 56.1,
       "attrs": {
-        "text": "LACRE | GPIO27\nesq. integro | dir. violado"
+        "text": "▼"
       }
     },
     {
       "type": "wokwi-text",
       "id": "cycleLabel",
-      "top": 308,
-      "left": -520,
+      "top": -138,
+      "left": 104.3,
       "attrs": {
-        "text": "CICLO | GPIO14\nsegurar 3 s inicia/encerra"
+        "text": "CICLO\nGPIO14\n3 s"
       }
     },
     {
       "type": "wokwi-text",
-      "id": "buzzerLabel",
-      "top": -120,
-      "left": 245,
+      "id": "cycleLabelArrow",
+      "top": -66,
+      "left": 123.3,
       "attrs": {
-        "text": "BUZZER | GPIO23\nbipa na violacao"
+        "text": "▼"
       }
     },
     {
       "type": "wokwi-text",
-      "id": "lcdLabel",
-      "top": 160,
-      "left": 310,
+      "id": "ledLabel",
+      "top": -114,
+      "left": 195.6,
       "attrs": {
-        "text": "LCD 16x2 I2C (0x27)\nSDA 21 | SCL 22 | VCC no VIN"
+        "text": "LED 13\n220R"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "ledLabelArrow",
+      "top": -66,
+      "left": 214.6,
+      "attrs": {
+        "text": "▼"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "batteryLabel",
+      "top": -138,
+      "left": 368.1,
+      "attrs": {
+        "text": "BATERIA\nGPIO34\nnivel"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "batteryLabelArrow",
+      "top": -66,
+      "left": 391.6,
+      "attrs": {
+        "text": "▼"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "buttonLabel",
+      "top": -138,
+      "left": 503.0,
+      "attrs": {
+        "text": "AUTORIZ\nGPIO33\n3 s"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "buttonLabelArrow",
+      "top": -66,
+      "left": 526.5,
+      "attrs": {
+        "text": "▼"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "navLabel",
+      "top": -234,
+      "left": 560.6,
+      "attrs": {
+        "text": "AVANCAR\nGPIO25\nproxima"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "navLabelArrow",
+      "top": -162,
+      "left": 584.1,
+      "attrs": {
+        "text": "│\n│\n│\n│\n▼"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "sealLabel",
+      "top": -258,
+      "left": 450.75,
+      "attrs": {
+        "text": "LACRE\nGPIO27\nesq=ok\ndir=viol"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "sealLabelArrow",
+      "top": -162,
+      "left": 478.75,
+      "attrs": {
+        "text": "│\n│\n│\n│\n▼"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "networkLabelArrow",
+      "top": 383.9,
+      "left": 507.55,
+      "attrs": {
+        "text": "▲"
       }
     },
     {
       "type": "wokwi-text",
       "id": "networkLabel",
-      "top": 200,
-      "left": 112,
+      "top": 407.9,
+      "left": 507.55,
       "attrs": {
-        "text": "REDE | GPIO18\nesq. = sinal"
+        "text": "SIM | GPIO18 | esq=on"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "powerLabelArrow",
+      "top": 383.9,
+      "left": 459.55,
+      "attrs": {
+        "text": "▲\n│"
       }
     },
     {
       "type": "wokwi-text",
       "id": "powerLabel",
-      "top": 200,
-      "left": 226,
+      "top": 431.9,
+      "left": 459.55,
       "attrs": {
-        "text": "ON/OFF | GPIO19\nesq. = ligado"
+        "text": "ON/OFF | GPIO19 | esq=on"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "buzzerLabelArrow",
+      "top": 383.9,
+      "left": 402.9,
+      "attrs": {
+        "text": "▲\n│\n│"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "buzzerLabel",
+      "top": 455.9,
+      "left": 402.9,
+      "attrs": {
+        "text": "BUZZER | GPIO23 | bipa na violacao"
       }
     },
     {
       "type": "wokwi-text",
       "id": "gpsLabel",
-      "top": 300,
-      "left": 150,
+      "top": 296,
+      "left": 700,
       "attrs": {
-        "text": "GPS SIMULADO\nTX->RX2 16 | RX->TX2 17"
+        "text": "▼ GPS SIMULADO | TX->RX2 16 | RX->TX2 17"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "lcdLabel",
+      "top": 556.05,
+      "left": 686.4,
+      "attrs": {
+        "text": "◀ LCD 16x2 I2C (0x27) | SDA 21 | SCL 22 | VCC no VIN"
       }
     },
     {
       "type": "wokwi-text",
       "id": "notes",
-      "top": 530,
-      "left": -500,
+      "top": 660,
+      "left": -10,
       "attrs": {
-        "text": "AVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nSerial: REMESSA x = NF da remessa | NF = lanca NF de retorno | LIMIAR n = muda o limiar\nChave de rede simula o SIM (on/off); Wi-Fi real independente. Sem transporte ao servidor.\nDemo: 1 s = 1 dia no ciclo, coleta GPS a cada 30 s. Nao valida consumo ou autonomia.\nFios: preto GND | vermelho 3V3 | laranja VIN 5V | amarelo botoes e chaves | ciano bateria\n      verde SDA | azul SCL | roxo buzzer | cinza GPS"
+        "text": "AVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nSerial: REMESSA x = NF da remessa | NF = lanca NF de retorno | LIMIAR n = muda o limiar\nChave de rede simula o SIM (on/off); Wi-Fi real independente. Sem transporte ao servidor.\nDemo: 1 s = 1 dia no ciclo, coleta GPS a cada 30 s. Nao valida consumo ou autonomia.\nFios: preto GND | vermelho 3V3 | laranja VIN 5V | amarelo botoes e chaves | ciano bateria\n      verde SDA | azul SCL | roxo buzzer | cinza GPS\nLED vermelho (GPIO13, 220 ohm) pisca enquanto o lacre esta violado\nProtoboard: duas de 830 furos com um trilho so no meio; ESP32 sobre ele (pinos na linha j de cima e na d de baixo)\nTrilhos: de cima +3V3/-GND; do meio +3V3/-GND; de baixo +5V (VIN, LCD)/-GND\nNo Wokwi a...e fica em cima em cada placa; na bancada a placa de cima tem a linha j no topo"
       }
     }
   ],
@@ -246,246 +383,6 @@
       "$serialMonitor:TX",
       "",
       []
-    ],
-    [
-      "battery:SIG",
-      "esp:D34",
-      "cyan",
-      [
-        "h111.5",
-        "v166.5"
-      ]
-    ],
-    [
-      "battery:GND",
-      "esp:GND.2",
-      "black",
-      [
-        "h7.5",
-        "v41.4",
-        "h-106",
-        "v462",
-        "h220",
-        "v-251"
-      ]
-    ],
-    [
-      "battery:VCC",
-      "esp:3V3",
-      "red",
-      [
-        "h7.5",
-        "v-51.6",
-        "h-126",
-        "v675",
-        "h354",
-        "v-341.5"
-      ]
-    ],
-    [
-      "btn_autorizar:1.r",
-      "esp:D33",
-      "yellow",
-      [
-        "h95",
-        "v108.7"
-      ]
-    ],
-    [
-      "btn_autorizar:2.l",
-      "esp:GND.2",
-      "black",
-      [
-        "h-33",
-        "v408",
-        "h220",
-        "v-251"
-      ]
-    ],
-    [
-      "btn_avancar:1.r",
-      "esp:D25",
-      "yellow",
-      [
-        "h80",
-        "v28.3"
-      ]
-    ],
-    [
-      "btn_avancar:2.l",
-      "esp:GND.2",
-      "black",
-      [
-        "h-33",
-        "v318",
-        "h220",
-        "v-251"
-      ]
-    ],
-    [
-      "btn_voltar:1.r",
-      "esp:D26",
-      "yellow",
-      [
-        "h60",
-        "v-52"
-      ]
-    ],
-    [
-      "btn_voltar:2.l",
-      "esp:GND.2",
-      "black",
-      [
-        "h-33",
-        "v228",
-        "h220",
-        "v-251"
-      ]
-    ],
-    [
-      "btn_ciclo:1.r",
-      "esp:D14",
-      "yellow",
-      [
-        "h90",
-        "v-193"
-      ]
-    ],
-    [
-      "btn_ciclo:2.l",
-      "esp:GND.2",
-      "black",
-      [
-        "h-33",
-        "v68",
-        "h220",
-        "v-251"
-      ]
-    ],
-    [
-      "seal:2",
-      "esp:D27",
-      "yellow",
-      [
-        "v10",
-        "h99",
-        "v-168.2"
-      ]
-    ],
-    [
-      "seal:1",
-      "esp:GND.2",
-      "black",
-      [
-        "v16",
-        "h-66.5",
-        "v115",
-        "h220",
-        "v-251"
-      ]
-    ],
-    [
-      "esp:D23",
-      "buzzer:2",
-      "purple",
-      [
-        "h85.7"
-      ]
-    ],
-    [
-      "buzzer:1",
-      "esp:GND.1",
-      "black",
-      [
-        "v6",
-        "h-52",
-        "v-120",
-        "h495",
-        "v580",
-        "h-512",
-        "v-271"
-      ]
-    ],
-    [
-      "esp:D21",
-      "lcd:SDA",
-      "green",
-      []
-    ],
-    [
-      "esp:D22",
-      "lcd:SCL",
-      "blue",
-      [
-        "h183.7",
-        "v38.4"
-      ]
-    ],
-    [
-      "lcd:GND",
-      "esp:GND.1",
-      "black",
-      [
-        "h-9",
-        "v-53.9",
-        "h325",
-        "v430",
-        "h-512",
-        "v-271"
-      ]
-    ],
-    [
-      "lcd:VCC",
-      "esp:VIN",
-      "orange",
-      [
-        "h-14",
-        "v-73.4",
-        "h350",
-        "v480",
-        "h-644",
-        "v-301.5"
-      ]
-    ],
-    [
-      "esp:D18",
-      "sw_rede:2",
-      "yellow",
-      [
-        "h83.7",
-        "v92.3",
-        "h-29"
-      ]
-    ],
-    [
-      "sw_rede:1",
-      "esp:GND.1",
-      "black",
-      [
-        "v16",
-        "h-26.5",
-        "v-31"
-      ]
-    ],
-    [
-      "esp:D19",
-      "sw_energia:2",
-      "yellow",
-      [
-        "h173.7",
-        "v101.8",
-        "h-29"
-      ]
-    ],
-    [
-      "sw_energia:1",
-      "esp:GND.1",
-      "black",
-      [
-        "v26",
-        "h-124.5",
-        "v-41"
-      ]
     ],
     [
       "gps:VCC",
@@ -510,6 +407,683 @@
       "esp:TX2",
       "gray",
       []
+    ],
+    [
+      "btn_voltar:1.l",
+      "bb1:6t.e",
+      "",
+      []
+    ],
+    [
+      "btn_voltar:1.r",
+      "bb1:6b.j",
+      "",
+      []
+    ],
+    [
+      "btn_voltar:2.l",
+      "bb1:4t.e",
+      "",
+      []
+    ],
+    [
+      "btn_voltar:2.r",
+      "bb1:4b.j",
+      "",
+      []
+    ],
+    [
+      "btn_ciclo:1.l",
+      "bb1:13t.e",
+      "",
+      []
+    ],
+    [
+      "btn_ciclo:1.r",
+      "bb1:13b.j",
+      "",
+      []
+    ],
+    [
+      "btn_ciclo:2.l",
+      "bb1:11t.e",
+      "",
+      []
+    ],
+    [
+      "btn_ciclo:2.r",
+      "bb1:11b.j",
+      "",
+      []
+    ],
+    [
+      "btn_autorizar:1.l",
+      "bb1:55t.e",
+      "",
+      []
+    ],
+    [
+      "btn_autorizar:1.r",
+      "bb1:55b.j",
+      "",
+      []
+    ],
+    [
+      "btn_autorizar:2.l",
+      "bb1:53t.e",
+      "",
+      []
+    ],
+    [
+      "btn_autorizar:2.r",
+      "bb1:53b.j",
+      "",
+      []
+    ],
+    [
+      "btn_avancar:1.l",
+      "bb1:61t.e",
+      "",
+      []
+    ],
+    [
+      "btn_avancar:1.r",
+      "bb1:61b.j",
+      "",
+      []
+    ],
+    [
+      "btn_avancar:2.l",
+      "bb1:59t.e",
+      "",
+      []
+    ],
+    [
+      "btn_avancar:2.r",
+      "bb1:59b.j",
+      "",
+      []
+    ],
+    [
+      "battery:GND",
+      "bb1:39t.a",
+      "",
+      []
+    ],
+    [
+      "battery:SIG",
+      "bb1:40t.a",
+      "",
+      []
+    ],
+    [
+      "battery:VCC",
+      "bb1:41t.a",
+      "",
+      []
+    ],
+    [
+      "seal:1",
+      "bb1:48t.a",
+      "",
+      []
+    ],
+    [
+      "seal:2",
+      "bb1:49t.a",
+      "",
+      []
+    ],
+    [
+      "seal:3",
+      "bb1:50t.a",
+      "",
+      []
+    ],
+    [
+      "r_led:2",
+      "bb1:22b.f",
+      "",
+      []
+    ],
+    [
+      "r_led:1",
+      "bb1:22t.b",
+      "",
+      []
+    ],
+    [
+      "led:A",
+      "bb1:22t.a",
+      "",
+      []
+    ],
+    [
+      "led:C",
+      "bb1:21t.a",
+      "",
+      []
+    ],
+    [
+      "buzzer:1",
+      "bb2:40b.f",
+      "",
+      []
+    ],
+    [
+      "buzzer:2",
+      "bb2:41b.f",
+      "",
+      []
+    ],
+    [
+      "sw_energia:1",
+      "bb2:46b.f",
+      "",
+      []
+    ],
+    [
+      "sw_energia:2",
+      "bb2:47b.f",
+      "",
+      []
+    ],
+    [
+      "sw_energia:3",
+      "bb2:48b.f",
+      "",
+      []
+    ],
+    [
+      "sw_rede:1",
+      "bb2:51b.f",
+      "",
+      []
+    ],
+    [
+      "sw_rede:2",
+      "bb2:52b.f",
+      "",
+      []
+    ],
+    [
+      "sw_rede:3",
+      "bb2:53b.f",
+      "",
+      []
+    ],
+    [
+      "esp:EN",
+      "bb1:34b.j",
+      "",
+      []
+    ],
+    [
+      "esp:VP",
+      "bb1:33b.j",
+      "",
+      []
+    ],
+    [
+      "esp:VN",
+      "bb1:32b.j",
+      "",
+      []
+    ],
+    [
+      "esp:D34",
+      "bb1:31b.j",
+      "",
+      []
+    ],
+    [
+      "esp:D35",
+      "bb1:30b.j",
+      "",
+      []
+    ],
+    [
+      "esp:D32",
+      "bb1:29b.j",
+      "",
+      []
+    ],
+    [
+      "esp:D33",
+      "bb1:28b.j",
+      "",
+      []
+    ],
+    [
+      "esp:D25",
+      "bb1:27b.j",
+      "",
+      []
+    ],
+    [
+      "esp:D26",
+      "bb1:26b.j",
+      "",
+      []
+    ],
+    [
+      "esp:D27",
+      "bb1:25b.j",
+      "",
+      []
+    ],
+    [
+      "esp:D14",
+      "bb1:24b.j",
+      "",
+      []
+    ],
+    [
+      "esp:D12",
+      "bb1:23b.j",
+      "",
+      []
+    ],
+    [
+      "esp:D13",
+      "bb1:22b.j",
+      "",
+      []
+    ],
+    [
+      "esp:GND.2",
+      "bb1:21b.j",
+      "",
+      []
+    ],
+    [
+      "esp:VIN",
+      "bb1:20b.j",
+      "",
+      []
+    ],
+    [
+      "esp:D23",
+      "bb2:34t.d",
+      "",
+      []
+    ],
+    [
+      "esp:D22",
+      "bb2:33t.d",
+      "",
+      []
+    ],
+    [
+      "esp:TX0",
+      "bb2:32t.d",
+      "",
+      []
+    ],
+    [
+      "esp:RX0",
+      "bb2:31t.d",
+      "",
+      []
+    ],
+    [
+      "esp:D21",
+      "bb2:30t.d",
+      "",
+      []
+    ],
+    [
+      "esp:D19",
+      "bb2:29t.d",
+      "",
+      []
+    ],
+    [
+      "esp:D18",
+      "bb2:28t.d",
+      "",
+      []
+    ],
+    [
+      "esp:D5",
+      "bb2:27t.d",
+      "",
+      []
+    ],
+    [
+      "esp:TX2",
+      "bb2:26t.d",
+      "",
+      []
+    ],
+    [
+      "esp:RX2",
+      "bb2:25t.d",
+      "",
+      []
+    ],
+    [
+      "esp:D4",
+      "bb2:24t.d",
+      "",
+      []
+    ],
+    [
+      "esp:D2",
+      "bb2:23t.d",
+      "",
+      []
+    ],
+    [
+      "esp:D15",
+      "bb2:22t.d",
+      "",
+      []
+    ],
+    [
+      "esp:GND.1",
+      "bb2:21t.d",
+      "",
+      []
+    ],
+    [
+      "esp:3V3",
+      "bb2:20t.d",
+      "",
+      []
+    ],
+    [
+      "bb1:24b.f",
+      "bb1:13t.a",
+      "yellow",
+      [
+        "v-130.2",
+        "h-110.4",
+        "v58",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb1:26b.f",
+      "bb1:6t.a",
+      "yellow",
+      [
+        "v-140.2",
+        "h-196.8",
+        "v68",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb1:28b.f",
+      "bb1:55t.a",
+      "yellow",
+      [
+        "v-148.2",
+        "h254.4",
+        "v76",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb1:27b.f",
+      "bb1:61t.a",
+      "yellow",
+      [
+        "v-158.2",
+        "h321.6",
+        "v86",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb1:31b.f",
+      "bb1:40t.e",
+      "cyan",
+      [
+        "v14.4",
+        "h86.4"
+      ]
+    ],
+    [
+      "bb1:25b.f",
+      "bb1:49t.e",
+      "yellow",
+      [
+        "v24",
+        "h230.4"
+      ]
+    ],
+    [
+      "bb1:4t.b",
+      "bb1:tn.2",
+      "black",
+      [
+        "h-4",
+        "v-33.3",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb1:11t.b",
+      "bb1:tn.8",
+      "black",
+      [
+        "h-4",
+        "v-33.3",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb1:53t.b",
+      "bb1:tn.43",
+      "black",
+      [
+        "h-4",
+        "v-33.3",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb1:59t.b",
+      "bb1:tn.48",
+      "black",
+      [
+        "h-4",
+        "v-33.3",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb1:39t.c",
+      "bb1:tn.27",
+      "black",
+      [
+        "h-52",
+        "v-42.9",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb1:48t.c",
+      "bb1:tn.36",
+      "black",
+      [
+        "h-32.8",
+        "v-42.9",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb1:41t.d",
+      "bb1:tp.36",
+      "red",
+      [
+        "h34.4",
+        "v-62.5",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb1:21t.e",
+      "bb1:21b.g",
+      "black",
+      []
+    ],
+    [
+      "bb2:20t.e",
+      "bb2:tp.10",
+      "red",
+      [
+        "h-71.2",
+        "v-72.1",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb2:21t.e",
+      "bb2:tn.9",
+      "black",
+      [
+        "v4.8",
+        "h-90.4",
+        "v-66.9",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb1:20b.i",
+      "bb2:bp.8",
+      "orange",
+      [
+        "v23",
+        "h-90.4",
+        "v185.3",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb1:tp.1",
+      "bb2:tp.1",
+      "red",
+      [
+        "h-56",
+        "v174"
+      ]
+    ],
+    [
+      "bb1:tn.50",
+      "bb2:tn.50",
+      "black",
+      [
+        "h37.2",
+        "v174"
+      ]
+    ],
+    [
+      "bb2:bn.50",
+      "bb2:tn.50",
+      "black",
+      [
+        "h43.2",
+        "v-174"
+      ]
+    ],
+    [
+      "bb2:34t.e",
+      "bb2:41b.g",
+      "purple",
+      [
+        "v43.2",
+        "h67.2"
+      ]
+    ],
+    [
+      "bb2:29t.e",
+      "bb2:47b.g",
+      "yellow",
+      [
+        "v52.8",
+        "h172.8"
+      ]
+    ],
+    [
+      "bb2:28t.e",
+      "bb2:52b.g",
+      "yellow",
+      [
+        "v62.4",
+        "h230.4"
+      ]
+    ],
+    [
+      "bb2:40b.j",
+      "bb2:bn.32",
+      "black",
+      [
+        "v15.5",
+        "h-4",
+        "v19.2",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb2:46b.j",
+      "bb2:bn.37",
+      "black",
+      [
+        "v15.5",
+        "h-4",
+        "v19.2",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb2:51b.j",
+      "bb2:bn.41",
+      "black",
+      [
+        "v15.5",
+        "h-4",
+        "v19.2",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb2:30t.e",
+      "lcd:SDA",
+      "green",
+      [
+        "h4.8",
+        "v287.6"
+      ]
+    ],
+    [
+      "bb2:33t.e",
+      "lcd:SCL",
+      "blue",
+      [
+        "h4.8",
+        "v297.1"
+      ]
+    ],
+    [
+      "lcd:GND",
+      "bb2:bn.30",
+      "black",
+      [
+        "h-11.6"
+      ]
+    ],
+    [
+      "lcd:VCC",
+      "bb2:bp.29",
+      "orange",
+      [
+        "h-26",
+        "v-176.2",
+        "h4.8"
+      ]
     ]
   ]
 }

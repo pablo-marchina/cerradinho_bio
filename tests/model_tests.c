@@ -8,6 +8,7 @@
 #include "../include/event_queue.h"
 #include "../include/battery_rules.h"
 #include "../include/sim_clock.h"
+#include "../include/gnss_rules.h"
 
 #define DAY_MS (24ULL * 60ULL * 60ULL * 1000ULL)
 
@@ -202,6 +203,23 @@ int main(void) {
   assert(batteryUpdate(&battery, 700, 17) == BATTERY_EVENT_LOW);
   assert(batteryUpdate(&battery, 0, 0) == BATTERY_EVENT_SENSOR_FAILURE);
   assert(batteryUpdate(&battery, 0, 0) == 0);
-  puts("PASS: coordenadas, distancia, tolerancia, fronteiras NMEA, checksum, fix invalido e regras do ciclo, relogio, limiar, lacre, fila com resumo e bateria");
+  assert(gnssClassify(false, true, 6, 3) == GNSS_REASON_NO_DATA);
+  assert(gnssClassify(true, true, 2, 3) == GNSS_REASON_WEAK_SIGNAL);
+  assert(gnssClassify(true, true, 0, 3) == GNSS_REASON_NO_FIX);
+  assert(gnssClassify(true, false, 0, 3) == GNSS_REASON_NO_FIX);
+  assert(gnssClassify(true, true, 8, 3) == GNSS_REASON_NO_FIX);
+  GnssState gnss;
+  gnssInit(&gnss);
+  assert(gnssSample(&gnss, true, GNSS_REASON_NO_FIX, 1000) == GNSS_EVENT_NONE);
+  assert(gnssSample(&gnss, false, GNSS_REASON_WEAK_SIGNAL, 31000) == GNSS_EVENT_LOST);
+  assert(gnss.reason == GNSS_REASON_WEAK_SIGNAL && gnss.lostAtMs == 31000);
+  assert(gnssSample(&gnss, false, GNSS_REASON_NO_DATA, 61000) == GNSS_EVENT_NONE);  // um evento por falha
+  assert(gnssSample(&gnss, false, GNSS_REASON_NO_FIX, 91000) == GNSS_EVENT_NONE);
+  assert(gnssSample(&gnss, true, GNSS_REASON_NO_FIX, 121000) == GNSS_EVENT_RECOVERED);
+  assert(gnss.lastOutageMs == 90000 && gnss.lastFailedSamples == 3 && !gnss.outage);
+  assert(gnssSample(&gnss, true, GNSS_REASON_NO_FIX, 151000) == GNSS_EVENT_NONE);
+  assert(gnssSample(&gnss, false, GNSS_REASON_NO_FIX, 181000) == GNSS_EVENT_LOST);  // nova falha, novo evento
+  assert(strcmp(gnssReasonName(GNSS_REASON_NO_DATA), "sem_dados") == 0);
+  puts("PASS: coordenadas, distancia, tolerancia, fronteiras NMEA, checksum, fix invalido e regras do ciclo, relogio, limiar, lacre, fila com resumo, bateria e falhas do GNSS");
   return 0;
 }
