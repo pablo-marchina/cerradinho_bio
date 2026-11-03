@@ -325,22 +325,22 @@ Os principais insights são:
 
 #### Jornada futura de Geraldo
 
-A Figura 3.2.2.2 mantém as seis etapas da jornada atual, o motor fictício AT-001 e a Oficina Skibidy. A experiência proposta reúne o vínculo equipamento–dispositivo–NF, a última localização válida, os alertas e o histórico para apoiar o acompanhamento de Geraldo até o encerramento fiscal.
+A Figura 3.2.2.2 segue Geraldo (P1), persona principal, nas mesmas seis fases da jornada atual, com o motor fictício AT-001 e a Oficina Skibidy. Fiscal, gestor, transportadora e logística aparecem nos pontos de contato conforme suas atribuições. A plataforma proposta apoia Geraldo com dados do ciclo, última localização válida e alertas até o encerramento fiscal.
 
-![Jornada futura de Geraldo em seis etapas, da preparação ao encerramento fiscal, com curva emocional](../assets/ux/jornada-futura-geraldo.png)
+![Jornada futura de Geraldo em seis fases, com curvas ilustrativas atual e futura](../assets/ux/jornada-futura-geraldo.png)
 
 *Figura 3.2.2.2 — Jornada futura de Geraldo. Fonte: elaboração própria com base no kick-off da Cerradinho de 16/10/2026, na persona da seção 3.2.1, no TAPI [6] e nos requisitos da seção 3.3.1.*
 
-Pensamentos, sentimentos e curva são hipóteses, não resultados medidos. A localização é semanal e exibe data e hora; não comprova entrega nem avanço do reparo. O status do fornecedor ainda exige contato humano, e o Fiscal continua responsável pela emissão e pelo lançamento das NFs. Sem conexão, os eventos são armazenados para envio posterior. A embalagem, os critérios de escolha e a rotina de confirmação de entrega permanecem a validar com o parceiro.
+Pensamentos, sentimentos e curvas são hipóteses, não resultados medidos. A curva atual tracejada permite comparar os mesmos marcos; o ponto −1 da fase 05 representa preocupação com o atraso. A posição é semanal e datada: não comprova entrega nem progresso do reparo. A confirmação com a oficina e a embalagem permanecem a validar. Gestor e Fiscal mantêm suas atribuições de aprovação, emissão e lançamento das NFs; Geraldo acompanha essas confirmações.
 
 Os principais insights do contraste são:
 
-- **Registros reunidos:** o ciclo associa ativo, dispositivo, NF, prazo e responsável, reduzindo a conciliação entre controles dispersos.
-- **Acompanhamento direcionado:** posição datada e alertas ajudam a priorizar pendências; dados antigos e falta de comunicação continuam visíveis, sem presumir que o item está seguro.
-- **Decisão apoiada:** o histórico e o registro do tratamento ajudam Geraldo a decidir sobre atraso; fornecedor e Fiscal continuam necessários para executar a decisão.
-- **Encerramento verificável:** o retorno físico fica separado da baixa fiscal; o encerramento exige confirmação da NF de retorno e lacre fechado, preservando o histórico para reutilizar o dispositivo.
+- **Registros reunidos:** o vínculo entre ativo, dispositivo, NF, prazo e responsável reduz a conciliação manual (RF002–RF004, RF012 e RF015).
+- **Acompanhamento direcionado:** posição válida com data, alertas e armazenamento sem rede ajudam a priorizar pendências (RF005, RF006, RF010, RF013, RF025 e RF028); dados não recebidos não são apresentados como atuais.
+- **Decisão registrada:** Geraldo registra decisão e justificativa (RF023). Consulta de estoque e execução de prorrogação continuam em processos externos; a plataforma não os automatiza.
+- **Encerramento verificável:** Geraldo confere o retorno e acompanha a baixa do Fiscal; o ciclo só encerra com NF de retorno registrada e lacre fechado, liberando o dispositivo com histórico preservado (RF016, RF017 e RF029).
 
-O histórico para escolha do fornecedor e os ganhos emocionais dependem de dados consistentes e validação. A jornada representa o comportamento pretendido; não comprova que todos os recursos já estejam implementados.
+Histórico de cumprimento de fornecedores para escolha, consulta de estoque, execução de prorrogação e registro da entrega à oficina com identificação de quem recebeu são hipóteses sem RF específico; não representam funções asseguradas nesta versão. Devem ser validadas com o parceiro e confrontadas com os RNFs quando sua definição estiver concluída.
 
 _Coloque aqui seu Storyboard (seguindo as instruções na descrição do artefato)_
 
