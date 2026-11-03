@@ -10,7 +10,6 @@ Mapa das skills do projeto. Use para escolher o que carregar antes de trabalhar;
 | Criar ou conferir o índice de relatórios de uma sprint | `report-index` | [skills/skills/report-index/SKILL.md](skills/report-index/SKILL.md) |
 | Preparar a branch limpa (sem material de IA) que vai para a `main` | `repo-snapshot` | [skills/skills/repo-snapshot/SKILL.md](skills/repo-snapshot/SKILL.md) |
 | Planejar ou dividir uma sprint entre os integrantes (planning em HTML no formato runbook) | `planning-sprint` | [skills/skills/planning-sprint/SKILL.md](skills/planning-sprint/SKILL.md) |
-| Montar ou atualizar a apresentação HTML animada do GuaráTracking (slides por clique, personas, placa 3D, roteiro, deploy na Vercel) | `apresentacao-guaratracking` | [skills/skills/apresentacao-guaratracking/SKILL.md](skills/apresentacao-guaratracking/SKILL.md) |
 
 ## Ao adicionar uma skill
 
