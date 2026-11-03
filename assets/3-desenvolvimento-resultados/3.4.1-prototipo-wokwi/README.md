@@ -31,7 +31,7 @@ Capturas reais e logs Serial dos CT01–CT23 e CT35 no protótipo V1 (22 e 23/10
 
 As capturas originais são de 22/10/2026. O reteste do CT14/CT16, em 23/10/2026, confirmou dois encerramentos com ciclo inativo, dias zero, contadores 1/2, reutilização e as duas recusas. Os arquivos anteriores do CT14 foram preservados como histórico; a evidência atual usa os arquivos `CT14-corrigido*.png`. A aprovação integral do CT09 continua bloqueada pela ausência de confirmação de servidor.
 
-CT17–CT23 executados em 23/10/2026: CT17, CT19, CT20, CT21 e CT23 aprovados no simulador; CT18 e CT22 reprovados. CT18 perdeu transições de 200 ms sem rede; CT22 reteve os dados, mas não reiniciou o uptime no ambiente. Os CT43–CT45 estão ao final, depois da rodada V2. CT24–CT34 permanecem reservados para o planejamento de energia e GNSS.
+CT17–CT23 executados em 23/10/2026: CT17, CT19, CT20, CT21 e CT23 aprovados no simulador; CT18 e CT22 reprovados. CT18 perdeu transições de 200 ms sem rede; CT22 reteve os dados, mas não reiniciou o uptime no ambiente. Os registros dos CT36–CT42 e dos CT43–CT45 estão nas seções do V2, abaixo. CT24–CT34 permanecem reservados para o planejamento de energia e GNSS.
 
 ## Rodada do protótipo V2 — 02 e 03/11/2026
 
@@ -56,6 +56,20 @@ Critérios adaptados, resultados e limitações estão na [rodada V2 da seção 
 | CT18 — REPROVADO | — | [Lacre cronometrado](v2-ct18.serial.txt) |
 
 Os CT19–CT22 não foram repetidos no V2; os resultados da primeira tabela, de 23/10/2026, referem-se ao V1.
+
+## CT36–CT42 — interface local do V2
+
+Capturas e vídeos dos CT36–CT42 no protótipo V2, com LCD, buzzer e LED vermelho no GPIO13. Critérios, resultados e limitações estão na [seção 3.4.1](../../../document/documentacao.md#cts36-42-interface-v2).
+
+| CT | Capturas | Vídeos |
+|---|---|---|
+| CT36 | [NF](ct36Nf.png) · [Prazo](ct36Prazo.png) · [Posição](ct36Posicao.png) · [Bateria](ct36Bateria.png) · [Lacre](ct36Lacre.png) | — |
+| CT37 | [Antes do prazo](ct37AntesPrazo.png) · [Um dia restante](ct37FaltaUmDia.png) · [Vence hoje](ct37VenceHoje.png) · [Atraso](ct37Atraso.png) · [Sem ciclo ativo](ct37SemCiclo.png) | — |
+| CT38 | [Violação](ct38Violacao.png) · [Lacre fechado](ct38Fechado.png) · [Limite de 30 s](ct38Limite30s.png) · [Retirada autorizada](ct38RetiradaAutorizada.png) | [ct38-limite-30s](ct38-limite-30s.mkv) · [ct38-retirada-autorizada](ct38-retirada-autorizada.mkv) · [ct38-violacao-fechamento](ct38-violacao-fechamento.mkv) |
+| CT39 | [NF registrada](ct39NfRegistrada.png) · [Tela da NF](ct39TelaNf.png) · [Limite de 15 caracteres](ct39Limite15.png) · [Recusa por caractere inválido — entrada do roteiro: REMESSA NF@123](ct39CaractereInvalido.png) · [Recusa por comprimento — entrada do roteiro: REMESSA 1234567890123456](ct39LongaDemais.png) · [Recusa sem ciclo ativo](ct39SemCiclo.png) | — |
+| CT40 | [LCD aceso](ct40Antes.png) · [LCD apagado](ct40Apagado.png) · [Primeiro toque em avançar](ct40PrimeiroAvancar.png) · [Segundo toque em avançar](ct40SegundoAvancar.png) · [Primeiro toque em voltar](ct40PrimeiroVoltar.png) · [Segundo toque em voltar](ct40SegundoVoltar.png) | [ct40-apagamento-despertar](ct40-apagamento-despertar.mkv) |
+| CT41 | [Contagem para autorizar](ct41ContagemAutorizar.png) · [Contagem para iniciar](ct41ContagemIniciar.png) · [Contagem para encerrar](ct41ContagemEncerrar.png) · [Soltura antes de autorizar](ct41SolturaAutorizar.png) · [Soltura antes de iniciar](ct41SolturaIniciar.png) · [Soltura antes de encerrar](ct41SolturaEncerrar.png) | [ct41-contagem-autorizar](ct41-contagem-autorizar.mkv) · [ct41-contagem-encerrar](ct41-contagem-encerrar.mkv) · [ct41-contagem-iniciar](ct41-contagem-iniciar.mkv) |
+| CT42 | [Lacre reaplicado](ct42Reaplicado.png) · [Fechamento após violação](ct42AposViolacao.png) · [Sem sinal](ct42SemSinal.png) · [Sinal recuperado](ct42SinalOk.png) | [ct42-lacre-apos-violacao](ct42-lacre-apos-violacao.mkv) · [ct42-lacre-reaplicado](ct42-lacre-reaplicado.mkv) · [ct42-sem-sinal](ct42-sem-sinal.mkv) · [ct42-sinal-recuperado](ct42-sinal-recuperado.mkv) |
 
 ## CT43–CT45 — posição, vínculo e GNSS no V2 (03/11/2026)
 

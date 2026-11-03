@@ -1058,6 +1058,232 @@ Capturas complementares: [CT04 com limiar 150](../assets/3-desenvolvimento-resul
 
 </details>
 
+#### <a name="cts36-42-interface-v2"></a>CT36–CT42 — interface local do V2
+
+Esta rodada acrescenta os comportamentos da interface do V2: navegação, prazo no LCD, alarme local, comando REMESSA, apagamento do visor, contagem dos botões e mensagens temporárias. As definições e evidências abaixo são independentes dos resultados históricos das rodadas anteriores.
+
+**Ambiente e reprodução.** Ensaios manuais no Wokwi for VS Code, com ESP32, LCD 16x2, botões, buzzer e LED vermelho externo no GPIO13, na montagem atualizada em protoboard. O ambiente `demo` usa 1 s simulado por dia do ciclo, prazo de 5 dias e início manual por pressão de 3 s em CICLO. O encerramento exige lacre fechado e comando `NF` aceito. Os tempos de botões, mensagens, apagamento e alarme são referidos ao relógio da simulação.
+
+**Situação dos CT36–CT42:** executados manualmente no Wokwi, com resultados resumidos abaixo, capturas e vídeos. A aprovação se limita ao comportamento funcional observado no simulador. A Serial está registrada nas capturas, sem arquivo de log separado.
+
+| CT# | Bloco | Componente de entrada | Leitura da entrada | Componente de saída | Leitura da saída | Descrição |
+|---|---|---|---|---|---|---|
+| CT36 | Navegação do LCD | BTN_AVANCAR e BTN_VOLTAR | Toques curtos com o LCD aceso, percorrendo as telas nos dois sentidos | LCD 16x2 | NF → prazo → posição → bateria → lacre; retorno circular nos dois sentidos | Consultar as cinco telas; avançar da última retorna à primeira e voltar da primeira leva à última. |
+| CT37 | Prazo no LCD | BTN_CICLO, relógio simulado e comando NF | Iniciar ciclo segurando CICLO por 3 s; acompanhar o prazo de 5 dias; lançar NF e encerrar com lacre fechado | LCD 16x2 | Faltam N dias; Falta 1 dia; vence hoje; ATRASO: N dias; sem ciclo ativo | Verificar a apresentação do prazo contado a partir do início manual do ciclo. |
+| CT38 | Alarme local | SW_LACRE e BTN_AUTORIZAR | Abrir sem autorização; fechar antes de 30 s; em outra violação manter aberto por mais de 30 s; repetir abertura com autorização válida | Buzzer GPIO23, LED vermelho GPIO13 e LCD | Buzzer com 500 ms ligado e 500 ms desligado; para ao fechar ou após 30 s. LED pulsa enquanto violado. Retirada autorizada sem alarme | Verificar o alarme local e as duas condições de parada do buzzer; o LED continua sinalizando a violação após o limite sonoro. |
+| CT39 | NF da remessa | Comando REMESSA na Serial | Enviar NF válida e 15 caracteres; testar caractere proibido, 16 caracteres e comando sem ciclo ativo | LCD e Serial | NF registrada e NF exibida; entradas inválidas recusadas, preservando a NF anterior no ciclo ativo; recusa sem ciclo | Verificar aceitação e recusas do comando. Entradas do roteiro: REMESSA NF-000123, REMESSA 123456789012345, REMESSA NF@123, REMESSA 1234567890123456 e REMESSA NF-000999 sem ciclo. |
+| CT40 | Apagamento do LCD | BTN_AVANCAR e BTN_VOLTAR | Aguardar 15 s sem interação; tocar duas vezes em AVANÇAR; repetir a espera e tocar duas vezes em VOLTAR | LCD e luz de fundo | Apaga após 15 s; primeiro toque acende na mesma tela; segundo navega | Manter a chave ON/OFF ligada durante todo o ensaio; verificar despertar com ambos os botões. |
+| CT41 | Contagem dos botões | BTN_AUTORIZAR e BTN_CICLO | Para autorizar, iniciar e encerrar: soltar com cerca de 1 s; depois manter por 3 s. Encerramento com NF lançada e lacre fechado | LCD e Serial | Autorizar lacre, Iniciar ciclo ou Encerrar ciclo com segure mais N s; soltura antecipada sem ação; confirmação aos 3 s | Verificar o feedback da contagem e o cancelamento antes de completar o tempo necessário. |
+| CT42 | Mensagens temporárias | SW_LACRE, BTN_AUTORIZAR e SW_REDE | Fechar após retirada autorizada e após violação; retirar sinal; gerar eventos sem rede e restabelecer sinal | LCD e Serial | Lacre fechado / reaplicado; Lacre fechado / apos violacao; Sem sinal / na fila: N; Sinal ok / enviados: N; retorno após 2 s | Verificar mensagem correspondente à ação e retorno à tela normal sem nova interação. |
+
+**Resultados medidos e evidências**
+
+| CT | Situação | Resultado observado | Evidência e log |
+|---|---|---|---|
+| CT36 | APROVADO no simulador | As cinco telas foram registradas; a navegação nos dois sentidos e o retorno circular foram confirmados na execução manual. | [Captura 1](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Nf.png) · [Captura 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Prazo.png) · [Captura 3](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Posicao.png) · [Captura 4](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Bateria.png) · [Captura 5](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Lacre.png) |
+| CT37 | APROVADO no simulador | Registrados prazo antes do vencimento, um dia restante, vencimento no dia, atraso e ausência de ciclo após encerramento. | [Captura 1](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37AntesPrazo.png) · [Captura 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37FaltaUmDia.png) · [Captura 3](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37VenceHoje.png) · [Captura 4](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37Atraso.png) · [Captura 5](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37SemCiclo.png) |
+| CT38 | APROVADO no simulador | Alarme na violação, interrupção ao fechar e após 30 s, manutenção da sinalização luminosa com lacre violado e ausência de alarme na retirada autorizada. Fotos mostram a montagem com LED externo; os três vídeos registram os cenários sonoros. | [Captura 1](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38Violacao.png) · [Captura 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38Fechado.png) · [Captura 3](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38Limite30s.png) · [Captura 4](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38RetiradaAutorizada.png) · [Vídeo 5](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38-limite-30s.mkv) · [Vídeo 6](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38-retirada-autorizada.mkv) · [Vídeo 7](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38-violacao-fechamento.mkv) |
+| CT39 | APROVADO no simulador | Registradas confirmação e exibição da NF, aceitação de 15 caracteres e as três recusas. Caractere proibido e comprimento excedido usam a mesma mensagem; a identificação da entrada aplicada acompanha cada captura. | [Captura 1](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39NfRegistrada.png) · [Captura 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39TelaNf.png) · [Captura 3](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39Limite15.png) · [Captura 4](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39CaractereInvalido.png) · [Captura 5](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39LongaDemais.png) · [Captura 6](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39SemCiclo.png) |
+| CT40 | APROVADO no simulador | Registrados LCD aceso e apagado, despertar sem mudança de tela e navegação no segundo toque, para ambos os botões. | [Captura 1](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40Antes.png) · [Captura 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40Apagado.png) · [Captura 3](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40PrimeiroAvancar.png) · [Captura 4](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40SegundoAvancar.png) · [Captura 5](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40PrimeiroVoltar.png) · [Captura 6](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40SegundoVoltar.png) · [Vídeo 7](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40-apagamento-despertar.mkv) |
+| CT41 | APROVADO no simulador | Registradas as três contagens e as mensagens de soltura antecipada; os vídeos documentam as tentativas curtas e os acionamentos completos de autorização, início e encerramento. | [Captura 1](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41ContagemAutorizar.png) · [Captura 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41ContagemIniciar.png) · [Captura 3](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41ContagemEncerrar.png) · [Captura 4](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41SolturaAutorizar.png) · [Captura 5](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41SolturaIniciar.png) · [Captura 6](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41SolturaEncerrar.png) · [Vídeo 7](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41-contagem-autorizar.mkv) · [Vídeo 8](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41-contagem-encerrar.mkv) · [Vídeo 9](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41-contagem-iniciar.mkv) |
+| CT42 | APROVADO no simulador | Registradas as quatro mensagens. Retorno à tela normal após a exibição temporária. O número N corresponde ao estado da fila na rodada. | [Captura 1](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42Reaplicado.png) · [Captura 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42AposViolacao.png) · [Captura 3](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42SemSinal.png) · [Captura 4](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42SinalOk.png) · [Vídeo 5](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42-lacre-apos-violacao.mkv) · [Vídeo 6](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42-lacre-reaplicado.mkv) · [Vídeo 7](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42-sem-sinal.mkv) · [Vídeo 8](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42-sinal-recuperado.mkv) |
+
+**Limitações.** As capturas do CT39 usam a mesma mensagem para caractere inválido e comprimento excedido; os comandos indicados no procedimento distinguem os subcenários. Os registros não constituem medição de consumo nem de precisão elétrica da cadência do buzzer. A mensagem “enviados” representa reenvio simulado, sem confirmação de servidor. A data de cada tomada e a identificação do binário não acompanham este conjunto de evidências.
+
+<a name="evidencias-ct36"></a>
+<details>
+<summary>CT36 — Navegação do LCD: evidências</summary>
+
+![CT36: NF](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Nf.png)
+
+*Figura 3.4.1-CT36-1 — NF. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT36: Prazo](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Prazo.png)
+
+*Figura 3.4.1-CT36-2 — Prazo. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT36: Posição](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Posicao.png)
+
+*Figura 3.4.1-CT36-3 — Posição. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT36: Bateria](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Bateria.png)
+
+*Figura 3.4.1-CT36-4 — Bateria. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT36: Lacre](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Lacre.png)
+
+*Figura 3.4.1-CT36-5 — Lacre. Fonte: captura do simulador Wokwi for VS Code.*
+
+</details>
+
+<a name="evidencias-ct37"></a>
+<details>
+<summary>CT37 — Prazo no LCD: evidências</summary>
+
+![CT37: Antes do prazo](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37AntesPrazo.png)
+
+*Figura 3.4.1-CT37-1 — Antes do prazo. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT37: Um dia restante](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37FaltaUmDia.png)
+
+*Figura 3.4.1-CT37-2 — Um dia restante. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT37: Vence hoje](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37VenceHoje.png)
+
+*Figura 3.4.1-CT37-3 — Vence hoje. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT37: Atraso](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37Atraso.png)
+
+*Figura 3.4.1-CT37-4 — Atraso. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT37: Sem ciclo ativo](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37SemCiclo.png)
+
+*Figura 3.4.1-CT37-5 — Sem ciclo ativo. Fonte: captura do simulador Wokwi for VS Code.*
+
+</details>
+
+<a name="evidencias-ct38"></a>
+<details>
+<summary>CT38 — Alarme local: evidências</summary>
+
+![CT38: Violação](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38Violacao.png)
+
+*Figura 3.4.1-CT38-1 — Violação. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT38: Lacre fechado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38Fechado.png)
+
+*Figura 3.4.1-CT38-2 — Lacre fechado. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT38: Limite de 30 s](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38Limite30s.png)
+
+*Figura 3.4.1-CT38-3 — Limite de 30 s. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT38: Retirada autorizada](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38RetiradaAutorizada.png)
+
+*Figura 3.4.1-CT38-4 — Retirada autorizada. Fonte: captura do simulador Wokwi for VS Code.*
+
+Vídeos: [ct38-limite-30s](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38-limite-30s.mkv) · [ct38-retirada-autorizada](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38-retirada-autorizada.mkv) · [ct38-violacao-fechamento](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38-violacao-fechamento.mkv).
+
+</details>
+
+<a name="evidencias-ct39"></a>
+<details>
+<summary>CT39 — NF da remessa: evidências</summary>
+
+![CT39: NF registrada](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39NfRegistrada.png)
+
+*Figura 3.4.1-CT39-1 — NF registrada. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT39: Tela da NF](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39TelaNf.png)
+
+*Figura 3.4.1-CT39-2 — Tela da NF. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT39: Limite de 15 caracteres](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39Limite15.png)
+
+*Figura 3.4.1-CT39-3 — Limite de 15 caracteres. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT39: Recusa por caractere inválido — entrada do roteiro: REMESSA NF@123](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39CaractereInvalido.png)
+
+*Figura 3.4.1-CT39-4 — Recusa por caractere inválido — entrada do roteiro: REMESSA NF@123. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT39: Recusa por comprimento — entrada do roteiro: REMESSA 1234567890123456](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39LongaDemais.png)
+
+*Figura 3.4.1-CT39-5 — Recusa por comprimento — entrada do roteiro: REMESSA 1234567890123456. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT39: Recusa sem ciclo ativo](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39SemCiclo.png)
+
+*Figura 3.4.1-CT39-6 — Recusa sem ciclo ativo. Fonte: captura do simulador Wokwi for VS Code.*
+
+</details>
+
+<a name="evidencias-ct40"></a>
+<details>
+<summary>CT40 — Apagamento do LCD: evidências</summary>
+
+![CT40: LCD aceso](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40Antes.png)
+
+*Figura 3.4.1-CT40-1 — LCD aceso. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT40: LCD apagado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40Apagado.png)
+
+*Figura 3.4.1-CT40-2 — LCD apagado. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT40: Primeiro toque em avançar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40PrimeiroAvancar.png)
+
+*Figura 3.4.1-CT40-3 — Primeiro toque em avançar. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT40: Segundo toque em avançar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40SegundoAvancar.png)
+
+*Figura 3.4.1-CT40-4 — Segundo toque em avançar. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT40: Primeiro toque em voltar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40PrimeiroVoltar.png)
+
+*Figura 3.4.1-CT40-5 — Primeiro toque em voltar. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT40: Segundo toque em voltar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40SegundoVoltar.png)
+
+*Figura 3.4.1-CT40-6 — Segundo toque em voltar. Fonte: captura do simulador Wokwi for VS Code.*
+
+Vídeos: [ct40-apagamento-despertar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40-apagamento-despertar.mkv).
+
+</details>
+
+<a name="evidencias-ct41"></a>
+<details>
+<summary>CT41 — Contagem dos botões: evidências</summary>
+
+![CT41: Contagem para autorizar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41ContagemAutorizar.png)
+
+*Figura 3.4.1-CT41-1 — Contagem para autorizar. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT41: Contagem para iniciar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41ContagemIniciar.png)
+
+*Figura 3.4.1-CT41-2 — Contagem para iniciar. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT41: Contagem para encerrar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41ContagemEncerrar.png)
+
+*Figura 3.4.1-CT41-3 — Contagem para encerrar. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT41: Soltura antes de autorizar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41SolturaAutorizar.png)
+
+*Figura 3.4.1-CT41-4 — Soltura antes de autorizar. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT41: Soltura antes de iniciar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41SolturaIniciar.png)
+
+*Figura 3.4.1-CT41-5 — Soltura antes de iniciar. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT41: Soltura antes de encerrar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41SolturaEncerrar.png)
+
+*Figura 3.4.1-CT41-6 — Soltura antes de encerrar. Fonte: captura do simulador Wokwi for VS Code.*
+
+Vídeos: [ct41-contagem-autorizar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41-contagem-autorizar.mkv) · [ct41-contagem-encerrar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41-contagem-encerrar.mkv) · [ct41-contagem-iniciar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41-contagem-iniciar.mkv).
+
+</details>
+
+<a name="evidencias-ct42"></a>
+<details>
+<summary>CT42 — Mensagens temporárias: evidências</summary>
+
+![CT42: Lacre reaplicado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42Reaplicado.png)
+
+*Figura 3.4.1-CT42-1 — Lacre reaplicado. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT42: Fechamento após violação](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42AposViolacao.png)
+
+*Figura 3.4.1-CT42-2 — Fechamento após violação. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT42: Sem sinal](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42SemSinal.png)
+
+*Figura 3.4.1-CT42-3 — Sem sinal. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT42: Sinal recuperado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42SinalOk.png)
+
+*Figura 3.4.1-CT42-4 — Sinal recuperado. Fonte: captura do simulador Wokwi for VS Code.*
+
+Vídeos: [ct42-lacre-apos-violacao](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42-lacre-apos-violacao.mkv) · [ct42-lacre-reaplicado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42-lacre-reaplicado.mkv) · [ct42-sem-sinal](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42-sem-sinal.mkv) · [ct42-sinal-recuperado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42-sinal-recuperado.mkv).
+
+</details>
+
 #### <a name="cts43-45"></a>CT43–CT45 — posição, vínculo e GNSS no V2
 
 CTs novos para comportamentos que o V2 acrescentou: a idade da última posição no LCD, o boot sem ciclo e os eventos de falha do GNSS. Usam o mesmo binário e o mesmo ambiente da [rodada V2](#rodada-v2), no Wokwi for VS Code, em 03/11/2026.
