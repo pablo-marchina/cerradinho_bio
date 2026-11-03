@@ -325,9 +325,9 @@ Os principais insights são:
 
 #### Jornada futura de Geraldo
 
-A Figura 3.2.2.2 segue Geraldo (P1), persona principal, nas mesmas seis fases da jornada atual, com o motor fictício AT-001 e a Oficina Skibidy. Fiscal, gestor, transportadora e logística aparecem nos pontos de contato conforme suas atribuições. A plataforma proposta apoia Geraldo com dados do ciclo, última localização válida e alertas até o encerramento fiscal.
+A Figura 3.2.2.2 segue Geraldo (P1), persona principal, nas mesmas seis fases da jornada atual, com o motor fictício AT-001 e a Oficina Skibidy. Fiscal, gestor, transportadora e logística aparecem nos pontos de contato conforme suas atribuições. A plataforma proposta apoia Geraldo com dados do ciclo, última localização válida e alertas até o encerramento fiscal. A última linha do mapa explicita as responsabilidades do projeto em cada fase.
 
-![Jornada futura de Geraldo em seis fases, com curvas ilustrativas atual e futura](../assets/ux/jornada-futura-geraldo.png)
+![Jornada futura de Geraldo em seis fases, com responsabilidades do projeto e curvas atual e futura](../assets/ux/jornada-futura-geraldo.png)
 
 *Figura 3.2.2.2 — Jornada futura de Geraldo. Fonte: elaboração própria com base no kick-off da Cerradinho de 16/10/2026, na persona da seção 3.2.1, no TAPI [6] e nos requisitos da seção 3.3.1.*
 
