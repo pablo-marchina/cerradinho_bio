@@ -304,7 +304,24 @@ O layout também foi revisado pela equipe: o texto corrido deu lugar a um fluxo 
 
 ### 3.2.2. Jornada do Usuário e Storyboard (sprint 2)	
 
-_Coloque aqui seu Mapa de Jornada do Usuário (seguindo as instruções na descrição do artefato)_
+A jornada do usuário é um mapa da experiência de uma pessoa ao realizar uma atividade em um contexto específico. Ela organiza as etapas do início ao fim e relaciona ações, pensamentos, sentimentos e pontos de contato com pessoas, ferramentas ou serviços. Essa visão ajuda a identificar momentos de incerteza, dificuldades e oportunidades de melhoria. No projeto Guarátracking, a jornada atual mostra como Geraldo acompanha o envio de um equipamento para manutenção externa, permitindo compreender onde a solução proposta pode apoiar seu trabalho.
+
+#### Jornada atual de Geraldo
+
+A Figura 3.2.2.1 apresenta o ciclo atual de manutenção externa pela perspectiva de Geraldo: seis etapas — preparar, escolher oficina, aprovar e enviar, acompanhar reparo, tratar atraso, retornar e encerrar. Essas etapas cobrem o recebimento da demanda até a conferência do equipamento e a confirmação da regularização fiscal. O cenário usa o motor fictício AT-001 e a Oficina Skibidy, nome fictício sem relação com fornecedor real.
+
+![Jornada atual de Geraldo, da demanda ao encerramento fiscal, com seis fases e curva emocional](../assets/ux/jornada-atual-geraldo.png)
+
+*Figura 3.2.2.1 — Jornada atual de Geraldo. Fonte: elaboração própria com base no kick-off da Cerradinho, na persona da seção 3.2.1 e no TAPI [6].*
+
+O mapa relaciona as responsabilidades e dificuldades relatadas pelo parceiro aos objetivos de Geraldo, organizando o ciclo em seis etapas. Pensamentos, sentimentos e curva emocional são interpretações ilustrativas, não resultados de entrevistas ou medições. O responsável pela embalagem e a rotina de confirmação de chegada ao fornecedor permanecem a validar com o parceiro.
+
+Os principais insights são:
+
+- **Fragmentação:** dados distribuídos entre SAP, planilhas, e-mail e telefone exigem conciliação manual; reunir os registros facilita o acompanhamento por responsável.
+- **Dependência do fornecedor:** informações sobre reparo e previsão de retorno dependem de respostas externas; o histórico de cumprimento pode apoiar decisões diante de atraso.
+- **Risco de esquecimento:** itens menos críticos podem deixar de receber acompanhamento; a régua fiscal não informa onde estão nem o andamento do reparo.
+- **Fechamento físico e fiscal separados:** receber o equipamento não encerra a remessa; a conferência e a confirmação do lançamento fiscal precisam estar relacionadas para evitar pendências.
 
 _Coloque aqui seu Storyboard (seguindo as instruções na descrição do artefato)_
 
@@ -531,8 +548,9 @@ de rede no GPIO18. O [guia do circuito](../src/firmware/prototipo_wokwi/README.m
 contém a pinagem e o roteiro de diagnóstico. As configurações `wokwi.toml` e
 `wokwi.weekly.toml` ficam nessa mesma pasta e são selecionadas por **Wokwi: Select Config File**.
 O projeto público acima representa a versão anterior; a Figura 1 e as evidências dos CTs abaixo mostram o circuito local integrado usado nas execuções de 22/10/2026. A publicação da versão integrada segue o [procedimento do guia do circuito](../src/firmware/prototipo_wokwi/README.md#publicação-no-wokwi-web).
+Em 28/10/2026 o circuito passou ao **protótipo V2**: os quatro LEDs deram lugar a um LCD 16x2 I2C (GPIO21/22), aos botões de avançar e voltar (GPIO25/26) e a um buzzer (GPIO23); o botão de ciclo passou ao GPIO14, e lacre, chaves, bateria, GNSS e o botão de autorização mantiveram a pinagem. A descrição do circuito e as rodadas de 22 e 23/10/2026 referem-se ao V1; a validação do V2 está na [rodada V2](#rodada-v2).
 
-**Estrutura do código.** O firmware (`src/firmware/main.cpp`) tem `setup()` e `loop()` e funções auxiliares chamadas por eles, como `readSeal()`, `readButtons()`, `updateCycle()` e `updateLeds()`. Os LEDs de estado são controlados pela classe própria `IndicatorController` (`include/indicator_controller.h`): a instância `indicators` configura os pinos com `begin()` no `setup()` e atualiza os quatro LEDs com `display()` a cada passagem do `loop()`. A classe só reorganizou o código de LEDs que já existia, sem mudar o comportamento verificado nos CTs. **Revisão posterior, ainda sem reteste Wokwi:** o firmware passa a capturar bordas do lacre em ISR e processar debounce temporal em função auxiliar. Teste host com 20 transições foi aprovado, mas CT18 continua REPROVADO até novo ensaio oficial. CT22 permanece REPROVADO e CT09 BLOQUEADO. Em 24/10/2026, a versão com a classe compilou nos ambientes `demo` e `weekly` e passou no teste em host da classe (`tests/indicator_controller_tests.cpp`). Como a lógica dos LEDs não mudou, os CTs de LED (CT01, CT03–CT08 e CT35) mantêm a aprovação das execuções de 22/10/2026; CT18 e CT22 continuam reprovados.
+**Estrutura do código.** O firmware (`src/firmware/main.cpp`) tem `setup()` e `loop()` e funções auxiliares chamadas por eles, como `readSeal()`, `readButtons()`, `updateCycle()` e `updateDisplay()`. No V2, a interface local é controlada pela classe própria `ScreenController` (`include/screen_controller.h`): a instância `screens` monta as cinco telas do LCD e a navegação circular, e é usada no `setup()` e a cada passagem do `loop()` por `updateDisplay()`. A classe tem teste em host (`tests/screen_controller_tests.cpp`). No V1, a classe própria era a `IndicatorController`, que controlava os quatro LEDs; as aprovações de 22 e 23/10/2026 valem para aquela versão, e CT18 e CT22 continuam reprovados. O firmware atual captura as bordas do lacre em ISR, com o debounce temporal decidido em função auxiliar (`include/seal_debounce.h`); o teste em host com 20 transições foi aprovado e a rodada V2 usou essa versão, mas o CT18 continua REPROVADO até novo ensaio cronometrado no Wokwi.
 
 Na Sprint 1 o dispositivo é simulado no Wokwi com um ESP32 DevKit, placa suportada pelo simulador [25]. Cada entrada do circuito representa uma situação física do rastreador: o lacre (`SW_LACRE`), a disponibilidade de conexão (`SW_REDE`), a autorização de retirada (`BTN_AUTORIZAR`), o encerramento ou vínculo de ciclo (`BTN_CICLO`) e o nível da bateria (`POT_BATERIA`). Os LEDs representam estados para inspeção e o Monitor Serial mostra os registros JSON. Não há transporte implementado para servidor ou broker. A integração local inclui GNSS simulado; a validação do hardware GNSS permanece para a Sprint 2.
 
@@ -589,7 +607,7 @@ A chave de rede não desliga o Wi-Fi virtual; os estados são apresentados separ
 A versão inicial pública não inclui localização. O circuito principal local inclui
 GPS/GNSS customizado nos GPIO16/17, feito com a API de chips customizados do Wokwi [26]; ele não modela recepção de satélites nem consumo real.
 
-**Situação dos CT01–CT16 e do CT35:** executados no Wokwi em 22/10/2026, com resultados resumidos abaixo, prints e logs externos. A aprovação indicada se limita ao comportamento funcional observado no simulador. O CT09 permanece **BLOQUEADO** para confirmação de entrega pelo servidor; o CT14 foi corrigido e **APROVADO no reteste de 23/10/2026**, com confirmação das duas recusas do CT16 na mesma versão. As medições exatas de 1 Hz e das fronteiras de debounce não foram realizadas. Os RF/RN e IDs foram preservados, sem alterar o esperado para aprovar falhas. CT17–CT23 foram executados em 23/10/2026, com resultados na tabela complementar abaixo, e CT24–CT34 permanecem reservados no [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md). Testes de lógica em `tests/model_tests.c` são evidência separada da execução no Wokwi e da validação física.
+**Situação dos CT01–CT16 e do CT35:** executados no Wokwi em 22/10/2026, com resultados resumidos abaixo, prints e logs externos. A aprovação indicada se limita ao comportamento funcional observado no simulador. O CT09 permanece **BLOQUEADO** para confirmação de entrega pelo servidor; o CT14 foi corrigido e **APROVADO no reteste de 23/10/2026**, com confirmação das duas recusas do CT16 na mesma versão. As medições exatas de 1 Hz e das fronteiras de debounce não foram realizadas. Os RF/RN e IDs foram preservados, sem alterar o esperado para aprovar falhas. CT17–CT23 foram executados em 23/10/2026, com resultados na tabela complementar abaixo, e CT24–CT34 permanecem reservados no [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md). Testes de lógica em `tests/model_tests.c` são evidência separada da execução no Wokwi e da validação física. O protótipo V2 foi executado novamente em 30/10/2026, na [rodada V2](#rodada-v2).
 
 ![CT01: circuito integrado com verde aceso e STATUS de inicialização no Monitor Serial](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct01.png)
 
@@ -940,6 +958,96 @@ Capturas complementares: [Ponto B comparado com A após reinício](../assets/3-d
 *Figura 3.4.1-CT23 — Potenciômetro no máximo com leitura sintética de 100%. Fonte: captura real do simulador Wokwi for VS Code, 23/10/2026.*
 
 Capturas complementares: [Mínimo e falha do sensor](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct23Minimo.png) · [Meio em 50%](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct23Meio.png).
+
+</details>
+
+#### <a name="rodada-v2"></a>Rodada do protótipo V2 — 30/10/2026
+
+O V2 trocou a interface local (LEDs por LCD, botões de navegação e buzzer) e passou a exigir 3 s pressionados nos botões de autorização e de ciclo. Os eventos JSON e as regras de negócio são os do V1, já cobertos por `tests/model_tests.c` e por `tests/screen_controller_tests.cpp`. Por isso, os CTs foram repetidos com os mesmos RF/RN e o mesmo critério de negócio, e apenas os componentes de entrada e saída foram adaptados à nova interface. As aprovações do V1 ficam preservadas acima.
+
+| CT | Procedimento ou saída no V2 | O que permanece do critério |
+|---|---|---|
+| CT01 | LCD aceso na tela "NF da remessa" no lugar do verde fixo | `STATUS` com `dias_fora=0` e lacre íntegro |
+| CT03 | Tela de prazo com "ATRASO: N dias" no lugar do amarelo piscando | Um único `ALERTA_ATRASO` |
+| CT04 | Sem indicação no LCD; o alerta aparece só na Serial | Um único `ALERTA_PERMANENCIA` no limiar |
+| CT05, CT07 | Mensagem "VIOLACAO registrada" e buzzer intermitente por até 30 s no lugar do vermelho | `VIOLACAO_LACRE` crítico, fora da rotina |
+| CT06 | Autorização exige segurar o botão por 3 s; mensagem "Retirada autorizada" no lugar do verde piscando | `RETIRADA_AUTORIZADA` sem violação e `LACRE_REAPLICADO` |
+| CT08, CT09 | Mensagens "Sem sinal / na fila: N" e "Sinal ok / enviados: N" no lugar do azul | Violação guardada e reenvio na ordem, com o dia original |
+| CT11 | Toques curtos não registram nada; segurar 3 s registra uma autorização | Ruído e pressão mantida não duplicam a autorização |
+| CT14, CT16 | Encerrar e iniciar o ciclo exigem segurar 3 s, no lugar de 2 s e do toque curto | Encerramento só com lacre fechado e NF de retorno |
+| CT15 | O mesmo gesto inicia ou encerra; com ciclo ativo ele cai no encerramento | Nenhum segundo ciclo simultâneo (RN01) |
+| CT17 | Navegação circular pelas cinco telas e leitura bruta de AVANÇAR/VOLTAR no heartbeat | Diagnóstico das entradas |
+| CT35 | LCD e luz de fundo apagados e buzzer mudo no lugar dos LEDs apagados | `DISPOSITIVO_DESLIGADO`, silêncio e novo `STATUS` |
+
+CT02, CT10, CT12, CT13 e CT23 não mudaram, porque suas saídas já eram só a Serial.
+
+**Ambiente e reprodução.** Wokwi CLI 0.29.0; circuito `src/firmware/prototipo_wokwi/diagram.json` (V2); ESP32 DevKit v1; firmware `demo` com 1 s simulado = 1 dia, prazo de 5 dias, autorização de 3 dias e fila de 8 eventos. SHA-256 do binário: `EF905DB9E8DD0BD71407006E46EBB0801AB2FF41DF03504048DB11B3C0DEBA1F`. As entradas foram acionadas pelos controles do próprio circuito (chaves, botões e potenciômetro) e pelos comandos `NF` e `LIMIAR` na Serial, conforme os cenários de [`tests/wokwi-ci/`](../tests/wokwi-ci/run_cts.py). O script `run_cts.py` confere em cada log as contagens, a ordem, a não repetição e o silêncio no desligamento. As capturas são o conteúdo do LCD lido do simulador, não a tela inteira do circuito. Todas as rodadas usam o mesmo binário, sem ajuste de constantes ou de esperados; os cenários do CT11, dos CT12/CT13/CT23 e dos CT14–CT16 foram repetidos depois de uma queda de conexão com o servidor do simulador, que deixou seus primeiros logs vazios.
+
+| CT | Situação | Resultado observado | Evidência e log |
+|---|---|---|---|
+| CT01 | APROVADO no simulador | `STATUS` com `dias_fora=0`, lacre íntegro e contexto não restaurado; LCD em "NF da remessa / nao informada". | [LCD](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct01V2.png) · [Log][v2-ciclo] |
+| CT02 | APROVADO no simulador | `STATUS_SEMANAL` somente nos dias 7 e 14. | [Log][v2-ciclo] |
+| CT03 | APROVADO no simulador | Um único `ALERTA_ATRASO`, no dia 6; LCD "Prazo: dia 7/5 / ATRASO: 2 dias". | [LCD](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct03V2.png) · [Log][v2-ciclo] |
+| CT04 | APROVADO com limiar 10; **NÃO EXECUTADO** com 150 | Um único `ALERTA_PERMANENCIA`, no dia 10. A rodada de 150 dias chegou ao dia 92 e foi interrompida pelo limite de 5 min de conexão do plano do Wokwi CLI. | [LCD](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct04Limiar10V2.png) · [Log][v2-limiar10] |
+| CT05 | APROVADO na detecção local | `VIOLACAO_LACRE` com `critico=true` e `LACRE_FECHADO` ao fechar; LCD "VIOLACAO registrada". | [LCD](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct05V2.png) · [Log][v2-lacre] |
+| CT06 | APROVADO no simulador | Autorização após 3 s pressionado, `RETIRADA_AUTORIZADA` sem violação e `LACRE_REAPLICADO`; LCD "Retirada autorizada". | [LCD](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct06V2.png) · [Log][v2-lacre] |
+| CT07 | APROVADO no simulador | Abertura 4,5 s após a autorização gerou `VIOLACAO_LACRE`, sem `RETIRADA_AUTORIZADA`. | [Log][v2-lacre] |
+| CT08 | APROVADO no armazenamento simulado | Sem rede, a violação foi guardada (`[FILA] 1 pendente`) e nenhum JSON foi publicado antes da reconexão. | [LCD](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct08V2.png) · [Log][v2-fila] |
+| CT09 | **BLOQUEADO** para aprovação integral | Dois eventos reenviados na ordem, com o dia e o uptime da ocorrência; fila zero e LCD "Sinal ok / enviados: 2". Continua faltando a confirmação do servidor. | [LCD](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct09V2.png) · [Log][v2-fila] |
+| CT10 | APROVADO na fila/reenvio simulado | A: três descartes de não críticos, violação preservada e `LIMIAR` 204–210 reenviados. B: oito violações individuais e `VIOLACAO_LACRE_RESUMO` com `quantidade=4`. | [Log A][v2-fila-a] · [Log B][v2-fila-b] |
+| CT11 | APROVADO nos estímulos aplicados | Dois pulsos de 20 ms ignorados, três toques de 300 ms soltos antes de 3 s sem registro e uma única autorização em 6 s pressionado; LCD com a contagem "segure mais 2 s". | [LCD](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct11V2Contagem.png) · [Log][v2-botao] |
+| CT12 | APROVADO no simulador | Sequência 16% → 22% → 16% → 30% → 16% gerou dois `BATERIA_BAIXA`, com rearme acima de 25%. | [Log][v2-bateria] |
+| CT13 | APROVADO no diagnóstico simulado | Partindo de 77%, entrada zero gerou um `SENSOR_BATERIA_FALHA` e nenhum `BATERIA_BAIXA`. | [Log][v2-bateria] |
+| CT14 | APROVADO no simulador | `CICLO_ENCERRADO` com `ciclo_ativo=false`, `dias_fora=0` e contador 1; novo gesto abriu o ciclo 2 com dias zero. | [LCD](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct14V2.png) · [Log][v2-ciclo-fim] |
+| CT15 | APROVADO no critério do V2 | Com o ciclo 2 ativo, o gesto gerou `ENCERRAMENTO_RECUSADO` (`nf_retorno_ausente`) e nenhum segundo ciclo; `VINCULO_RECUSADO` não ocorreu. | [Log][v2-ciclo-fim] |
+| CT16 | APROVADO nas duas recusas | `nf_retorno_ausente` com lacre fechado e `lacre_aberto` com NF lançada; ciclo mantido ativo. | [Log][v2-ciclo-fim] |
+| CT17 | APROVADO no simulador | Cinco toques em AVANÇAR voltaram à tela 1 e um em VOLTAR levou à tela 5; o heartbeat mostrou `avancar=1 voltar=1` com os dois pressionados. | [Prazo](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct17V2Tela2.png) · [Posição](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct17V2Tela3.png) · [Bateria](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct17V2Tela4.png) · [Lacre](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct17V2Tela5.png) · [Log][v2-interface] |
+| CT23 | APROVADO no simulador | Entrada mínima, média e máxima resultaram em 0%, 50% e 100%, sempre dentro de 0 a 100%. | [Log][v2-bateria] |
+| CT35 | APROVADO no desligamento lógico observado | `DISPOSITIVO_DESLIGADO`, LCD apagado e 5 s simulados sem heartbeat nem JSON; ao religar, novo `STATUS` e LCD de volta. | [Desligado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct35V2Desligado.png) · [Religado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct35V2Religado.png) · [Log][v2-interface] |
+
+[v2-ciclo]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct01-ct03.serial.txt
+[v2-limiar10]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct04-limiar10.serial.txt
+[v2-lacre]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct05-ct07.serial.txt
+[v2-fila]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct08-ct09.serial.txt
+[v2-fila-a]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct10a.serial.txt
+[v2-fila-b]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct10b.serial.txt
+[v2-botao]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct11.serial.txt
+[v2-bateria]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct12-ct13-ct23.serial.txt
+[v2-ciclo-fim]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct14-ct16.serial.txt
+[v2-interface]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct17-ct35.serial.txt
+
+**Achados e limitações.** Os resultados caracterizam o comportamento funcional simulado do V2. Ficaram registrados:
+
+- **RN01 sem teste de recusa.** Como o mesmo gesto inicia ou encerra o ciclo, a recusa `VINCULO_RECUSADO` do firmware não é mais alcançável por nenhuma entrada. O CT15 comprova que não se abre um segundo ciclo, mas a recusa em si fica sem teste até existir outra origem de vínculo, como um comando da plataforma.
+- **Permanência sem indicação local.** No V1, o amarelo fixo indicava a permanência. No V2, o LCD mostra só o atraso, como na captura do CT04, e o `ALERTA_PERMANENCIA` aparece apenas na Serial.
+- **Buzzer não medido.** O som e a duração de 30 s não foram verificados automaticamente. Na primeira violação de cada rodada, o log registra uma vez `ledc_get_duty: LEDC is not initialized`, emitido pela biblioteca do ESP32 no primeiro `tone()`; as violações seguintes não repetem o aviso e nenhum evento foi afetado.
+- **Não repetidos no V2.** O CT04 com 150 dias, por limite do plano do Wokwi CLI, e os CT18–CT22, que dependem da [instrumentação complementar](../tests/wokwi-complementares/README.md). Os resultados de 23/10/2026 continuam valendo para o V1, inclusive as reprovações do CT18 e do CT22.
+- **Continua fora do alcance destas capturas:** entrega ao servidor, precisão de 1 Hz e das fronteiras de debounce, consumo e validação elétrica.
+
+<details>
+<summary>Capturas do LCD na rodada V2</summary>
+
+![CT01 V2: LCD na tela da NF da remessa, ainda não informada.](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct01V2.png)
+
+*Figura 3.4.1-CT01-V2 — LCD na inicialização, tela da NF da remessa. Fonte: captura do LCD no simulador Wokwi (Wokwi CLI), 30/10/2026.*
+
+![CT03 V2: tela de prazo com atraso de dois dias.](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct03V2.png)
+
+*Figura 3.4.1-CT03-V2 — Tela de prazo no dia 7 com atraso de dois dias. Fonte: captura do LCD no simulador Wokwi (Wokwi CLI), 30/10/2026.*
+
+![CT04 V2: tela de prazo no dia 10, sem indicação de permanência.](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct04Limiar10V2.png)
+
+*Figura 3.4.1-CT04-V2 — Tela de prazo após o alerta de permanência com limiar 10; o LCD não indica a permanência. Fonte: captura do LCD no simulador Wokwi (Wokwi CLI), 30/10/2026.*
+
+![CT11 V2: contagem do botão de autorização segurado.](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct11V2Contagem.png)
+
+*Figura 3.4.1-CT11-V2 — Contagem exibida enquanto o botão de autorização está pressionado. Fonte: captura do LCD no simulador Wokwi (Wokwi CLI), 30/10/2026.*
+
+![CT35 V2: LCD apagado no desligamento lógico.](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct35V2Desligado.png)
+
+*Figura 3.4.1-CT35-V2 — LCD e luz de fundo apagados com a chave ON/OFF desligada. Fonte: captura do LCD no simulador Wokwi (Wokwi CLI), 30/10/2026.*
+
+Capturas complementares: [CT05 violação](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct05V2.png) · [CT06 retirada autorizada](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct06V2.png) · [CT08 violação sem rede](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct08V2.png) · [CT09 reenvio](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct09V2.png) · [CT14 encerramento](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct14V2.png) · [CT35 religado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct35V2Religado.png).
 
 </details>
 
