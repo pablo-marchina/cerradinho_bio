@@ -649,7 +649,7 @@ GPS/GNSS customizado nos GPIO16/17, feito com a API de chips customizados do Wok
 
 **Limitações e pendências.** CT09 depende de transporte e confirmação do servidor: a saída na Serial e o esvaziamento da fila não comprovam entrega. Não foram validados precisão de 1 Hz/debounce, retenção após corte de energia, autonomia, diagnóstico elétrico da bateria ou contagem de dias por NF real. CT04 tem logs por intervalo: a rodada de 150 dias foi gravada aproximadamente do dia 84 até depois do limiar; o log do ciclo 2 cobre o limiar 10. No primeiro `STATUS` após religar no CT35, os dias ainda eram os anteriores ao desligamento; os registros seguintes atualizaram a contagem para incluir o intervalo desligado.
 
-Os limites exatos de bateria em 20% e 25% e os demais novos cenários de falha combinada continuam pendentes, com numeração a partir do CT36; CT24–CT34 permanecem reservados. Abrir e fechar o lacre enquanto o dispositivo está desligado não foi ensaiado nesta rodada e continua como discussão de regra com o grupo.
+Os limites exatos de bateria em 20% e 25% e os demais novos cenários de falha combinada continuam pendentes, ainda sem numeração; CT24–CT34 permanecem reservados, e CT36–CT45 cobrem a interface, o vínculo e o GNSS do V2. Abrir e fechar o lacre enquanto o dispositivo está desligado não foi ensaiado nesta rodada e continua como discussão de regra com o grupo.
 
 Os logs ficam em `assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/`, acessíveis pelos links de cada CT. O Log A contém dois boots; as contagens usam o segundo, a partir do segundo `ets Jul 29 2019`. O log do reteste de 23/10 começa na confirmação de NF do ciclo 1 e segue até depois do segundo encerramento. Os blocos a seguir exibem as capturas sem reproduzir a Serial inteira no documento; o CT01 já aparece na Figura 1.
 
@@ -1031,6 +1031,34 @@ CT02, CT10, CT12, CT13 e CT23 não mudaram, porque suas saídas já eram só a S
 Capturas complementares: [CT05 violação](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct05V2.png) · [CT06 retirada autorizada](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct06V2.png) · [CT08 violação sem rede](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct08V2.png) · [CT09 reenvio](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct09V2.png) · [CT14 encerramento](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct14V2.png) · [CT35 religado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct35V2Religado.png).
 
 </details>
+
+#### <a name="ct36-ct42"></a>CT36–CT42 — interface local do V2
+
+Casos de teste dos comportamentos novos da interface local do V2: LCD, botões de navegação, botões de 3 s, buzzer e LED de violação. O dispositivo liga sem ciclo, então nos CTs que precisam de ciclo o vínculo é feito antes, segurando BTN_CICLO por 3 s.
+
+**CT#** | **Bloco** | **Componente de entrada** | **Leitura da entrada** | **Componente de saída** | **Leitura da saída** | **Descrição**
+|----------|----------|----------|----------|----------|----------|----------|
+|CT36|Navegação do LCD|BTN_AVANCAR e BTN_VOLTAR|Toques curtos com o LCD aceso; voltar estando na tela de NF|LCD 16x2|Cinco telas em ordem: NF da remessa, prazo, última posição, bateria e lacre. Avançar na quinta leva à primeira, e voltar na primeira leva à quinta|Esperado: o operador consulta NF, prazo, posição, bateria e lacre no próprio dispositivo, sem computador (RF005, RF006, RF012, RF019).|
+|CT37|Prazo no LCD|Relógio simulado (1 s = 1 dia) e BTN_CICLO|Ciclo vinculado, do dia 0 até depois do dia 5; depois ciclo encerrado|LCD (tela de prazo)|"Faltam N dias" antes do dia 4, "Falta 1 dia" no dia 4, "vence hoje" no dia 5, "ATRASO: N dias" depois e "sem ciclo ativo" com o ciclo encerrado|Esperado: o prazo mostrado no dispositivo usa os mesmos dias que geram o `ALERTA_ATRASO` (RF012, RF013; RN04).|
+|CT38|Alarme local|SW_LACRE e BTN_AUTORIZAR|Violação encerrada pelo fechamento; violação mantida aberta por mais de 30 s; abertura com autorização válida|Buzzer (GPIO23), LED vermelho (GPIO13), LCD; Serial|Bipes de 500 ms a 1 Hz da violação até fechar o lacre ou completar 30 s; LED vermelho pulsando enquanto o lacre está violado; nenhum bipe e LED apagado na retirada autorizada|Esperado: a violação chama atenção no local sem depender de rede, e a retirada autorizada não dispara alarme (RF006, RF007; RN05, RN06).|
+|CT39|NF da remessa|Comando `REMESSA` no Monitor Serial|`NF-000123` com ciclo ativo; 15 caracteres; caractere inválido (`NF@123`); 16 caracteres; sem ciclo ativo|LCD; Serial|Aceitas: "NF registrada" e depois a tela "NF da remessa / NF-000123". Recusas: `[comando] NF invalida…` ou `[comando] sem ciclo ativo…`, com a NF anterior mantida|Esperado: só uma NF de até 15 caracteres válidos fica associada ao ciclo ativo (RF002; RN02).|
+|CT40|Economia do LCD|BTN_AVANCAR e BTN_VOLTAR|15 s sem interação; depois um toque e um segundo toque|LCD e luz de fundo|O LCD apaga após 15 s. O primeiro toque só acende o visor, na mesma tela; o segundo navega|Esperado: o visor só gasta energia quando alguém está olhando, sem perder a tela em que estava (RF019).|
+|CT41|Botões de 3 s|BTN_AUTORIZAR e BTN_CICLO|Botão segurado até 3 s; botão solto com cerca de 1 s|LCD; Serial|"Autorizar lacre", "Iniciar ciclo" ou "Encerrar ciclo", com "segure mais N s". Ao soltar antes: `[botao] … solto antes de 3 s; nada registrado`|Esperado: ações que mudam o ciclo ou o lacre exigem intenção clara do operador (RF003, RF007, RF016).|
+|CT42|Mensagens temporárias|SW_LACRE, BTN_AUTORIZAR e SW_REDE|Fechar após retirada autorizada; fechar após violação; desligar a rede; religar a rede com eventos na fila|LCD; Serial|"Lacre fechado / reaplicado", "Lacre fechado / apos violacao", "Sem sinal / na fila: N" e "Sinal ok / enviados: N", cada uma por 2 s antes de voltar à tela normal|Esperado: o operador vê na hora o resultado do lacre e da rede (RF007, RF010).|
+
+**Resultados:** pendente.
+
+#### <a name="ct43-ct45"></a>CT43–CT45 — posição, vínculo e GNSS no V2
+
+Casos de teste da tela de posição, do vínculo inicial (o dispositivo liga sem ciclo e só entra em ciclo ao ser vinculado) e dos eventos de falha do GNSS.
+
+**CT#** | **Bloco** | **Componente de entrada** | **Leitura da entrada** | **Componente de saída** | **Leitura da saída** | **Descrição**
+|----------|----------|----------|----------|----------|----------|----------|
+|CT43|Última posição no LCD|GPS (controle `fixValid`) e reinício do ESP32|Sem posição salva; posição válida e depois `fixValid=0` por segundos, minutos, horas e dias; reinício preservando a NVS|LCD (tela "Ultima posicao"); Serial|"sem fix ainda"; "ha N s", "ha N min", "ha N h" e "ha N dias"; depois do reinício, "salva, sem idade" e a indicação de restauração na Serial|Esperado: o dispositivo mostra a idade da última posição válida e não inventa um horário quando ela é desconhecida (RF005; RN08).|
+|CT44|Vínculo inicial|ESP32 (primeiro boot, NVS vazia), BTN_CICLO e comando `REMESSA`|Ligar sem ciclo; `REMESSA` antes do vínculo; CICLO segurado por 3 s|LCD; Serial|`STATUS` com `ciclo_ativo=false` e `dias_fora=0`; tela de prazo "sem ciclo ativo"; `REMESSA` recusada; após 3 s, `CICLO_INICIADO` com `ciclo_id=1`, "Ciclo iniciado / aguardando NF" e dias contando a partir do vínculo|Esperado: o dispositivo só entra em ciclo quando é vinculado a uma remessa (RF002, RF003; RN02).|
+|CT45|Falha do GNSS|GPS (controle `fixValid`) e SW_REDE|Coleta com fix; `fixValid=0` por duas coletas ou mais; `fixValid=1`; repetir sem rede|Serial|Um `GNSS_SEM_FIX` (`motivo=sem_fix`, `satelites=0`) na primeira coleta sem posição, sem repetir nas seguintes; um `GNSS_RECUPERADO` na primeira coleta válida, com `tempo_sem_posicao_s` e `coletas_sem_fix`; sem rede, os dois entram na fila como não críticos|Esperado: perda e retorno da posição ficam registrados uma vez cada, sem encher a fila (RF005, RF010; RN08, RN09).|
+
+**Resultados:** pendente.
 
 **Próximas sprints.** As seções seguintes mantêm as orientações e os exemplos originais do template. Seus exemplos de CT não são resultados de execução. A proposta de evolução do circuito e os CT24–CT34 estão no [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md).
 

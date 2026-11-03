@@ -50,3 +50,11 @@ Capturas do LCD e logs Serial da repetição dos CTs no V2 (LCD, botões de nave
 | CT17, CT35 | [Prazo](ct17V2Tela2.png), [posição](ct17V2Tela3.png), [bateria](ct17V2Tela4.png), [lacre](ct17V2Tela5.png), [desligado](ct35V2Desligado.png), [religado](ct35V2Religado.png) | [Interface](v2-ct17-ct35.serial.txt) |
 
 O CT04 com 150 dias e os CT18–CT22 não foram repetidos no V2; os resultados da primeira tabela, de 22 e 23/10/2026, referem-se ao V1.
+
+## CT36–CT42 — interface local do V2
+
+Evidências pendentes. Critérios na [subseção CT36–CT42 da seção 3.4.1](../../../document/documentacao.md#ct36-ct42).
+
+## CT43–CT45 — posição, vínculo e GNSS no V2
+
+Evidências pendentes. Critérios na [subseção CT43–CT45 da seção 3.4.1](../../../document/documentacao.md#ct43-ct45).
