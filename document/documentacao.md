@@ -323,6 +323,25 @@ Os principais insights são:
 - **Risco de esquecimento:** itens menos críticos podem deixar de receber acompanhamento; a régua fiscal não informa onde estão nem o andamento do reparo.
 - **Fechamento físico e fiscal separados:** receber o equipamento não encerra a remessa; a conferência e a confirmação do lançamento fiscal precisam estar relacionadas para evitar pendências.
 
+#### Jornada futura de Geraldo
+
+A Figura 3.2.2.2 mantém as seis etapas da jornada atual, o motor fictício AT-001 e a Oficina Skibidy. A experiência proposta reúne o vínculo equipamento–dispositivo–NF, a última localização válida, os alertas e o histórico para apoiar o acompanhamento de Geraldo até o encerramento fiscal.
+
+![Jornada futura de Geraldo em seis etapas, da preparação ao encerramento fiscal, com curva emocional](../assets/ux/jornada-futura-geraldo.png)
+
+*Figura 3.2.2.2 — Jornada futura de Geraldo. Fonte: elaboração própria com base no kick-off da Cerradinho de 16/10/2026, na persona da seção 3.2.1, no TAPI [6] e nos requisitos da seção 3.3.1.*
+
+Pensamentos, sentimentos e curva são hipóteses, não resultados medidos. A localização é semanal e exibe data e hora; não comprova entrega nem avanço do reparo. O status do fornecedor ainda exige contato humano, e o Fiscal continua responsável pela emissão e pelo lançamento das NFs. Sem conexão, os eventos são armazenados para envio posterior. A embalagem, os critérios de escolha e a rotina de confirmação de entrega permanecem a validar com o parceiro.
+
+Os principais insights do contraste são:
+
+- **Registros reunidos:** o ciclo associa ativo, dispositivo, NF, prazo e responsável, reduzindo a conciliação entre controles dispersos.
+- **Acompanhamento direcionado:** posição datada e alertas ajudam a priorizar pendências; dados antigos e falta de comunicação continuam visíveis, sem presumir que o item está seguro.
+- **Decisão apoiada:** o histórico e o registro do tratamento ajudam Geraldo a decidir sobre atraso; fornecedor e Fiscal continuam necessários para executar a decisão.
+- **Encerramento verificável:** o retorno físico fica separado da baixa fiscal; o encerramento exige confirmação da NF de retorno e lacre fechado, preservando o histórico para reutilizar o dispositivo.
+
+O histórico para escolha do fornecedor e os ganhos emocionais dependem de dados consistentes e validação. A jornada representa o comportamento pretendido; não comprova que todos os recursos já estejam implementados.
+
 _Coloque aqui seu Storyboard (seguindo as instruções na descrição do artefato)_
 
 ## 3.3. Solução Técnica	
