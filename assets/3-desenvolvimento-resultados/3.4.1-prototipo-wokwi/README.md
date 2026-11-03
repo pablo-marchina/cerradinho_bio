@@ -1,6 +1,6 @@
 # Evidências dos testes no Wokwi
 
-Capturas reais e logs Serial dos CT01–CT23 e CT35 no protótipo V1 (22 e 23/10/2026) e da rodada do V2 (30/10/2026), ao final. Critérios, configuração, resultados e limitações estão na [seção 3.4.1 da documentação](../../../document/documentacao.md). As etapas complementares de cada CT ficam neste diretório e estão vinculadas nessa seção.
+Capturas reais e logs Serial dos CT01–CT23 e CT35 no protótipo V1 (22 e 23/10/2026) e da rodada do V2 (02 e 03/11/2026), com os CT43–CT45, ao final. Critérios, configuração, resultados e limitações estão na [seção 3.4.1 da documentação](../../../document/documentacao.md). As etapas complementares de cada CT ficam neste diretório e estão vinculadas nessa seção.
 
 | CT | Captura principal / etapas | Log Serial |
 |---|---|---|
@@ -31,16 +31,21 @@ Capturas reais e logs Serial dos CT01–CT23 e CT35 no protótipo V1 (22 e 23/10
 
 As capturas originais são de 22/10/2026. O reteste do CT14/CT16, em 23/10/2026, confirmou dois encerramentos com ciclo inativo, dias zero, contadores 1/2, reutilização e as duas recusas. Os arquivos anteriores do CT14 foram preservados como histórico; a evidência atual usa os arquivos `CT14-corrigido*.png`. A aprovação integral do CT09 continua bloqueada pela ausência de confirmação de servidor.
 
-CT17–CT23 executados em 23/10/2026: CT17, CT19, CT20, CT21 e CT23 aprovados no simulador; CT18 e CT22 reprovados. CT18 perdeu transições de 200 ms sem rede; CT22 reteve os dados, mas não reiniciou o uptime no ambiente. Os novos cenários a partir de CT36 ainda não têm execução registrada neste conjunto. CT24–CT34 permanecem reservados para o planejamento de energia e GNSS.
+CT17–CT23 executados em 23/10/2026: CT17, CT19, CT20, CT21 e CT23 aprovados no simulador; CT18 e CT22 reprovados. CT18 perdeu transições de 200 ms sem rede; CT22 reteve os dados, mas não reiniciou o uptime no ambiente. Os CT43–CT45 estão ao final, depois da rodada V2. CT24–CT34 permanecem reservados para o planejamento de energia e GNSS.
 
-## Rodada do protótipo V2 — 30/10/2026
+## Rodada do protótipo V2 — 02 e 03/11/2026
 
-Capturas do LCD e logs Serial da repetição dos CTs no V2 (LCD, botões de navegação e buzzer), feita com os cenários de `tests/wokwi-ci/`. Critérios adaptados, resultados e limitações estão na [rodada V2 da seção 3.4.1](../../../document/documentacao.md#rodada-v2).
+Capturas do LCD e logs Serial da repetição dos CTs no V2, com LCD, botões de navegação, buzzer, LED de violação e boot sem ciclo. As execuções foram duas:
+
+- **CT01–CT10 e CT18:** pelos cenários de `tests/wokwi-ci/` no Wokwi CLI, em 02/11/2026.
+- **Demais CTs:** à mão no Wokwi for VS Code, em 03/11/2026, com a Serial gravada por `tests/wokwi-vscode/capturar.py`.
+
+Critérios adaptados, resultados e limitações estão na [rodada V2 da seção 3.4.1](../../../document/documentacao.md#rodada-v2). Esta rodada substitui a de 30/10/2026, feita antes do boot sem ciclo.
 
 | CT | Captura do LCD | Log Serial |
 |---|---|---|
 | CT01–CT03 | [Inicialização](ct01V2.png), [atraso](ct03V2.png) | [Ciclo](v2-ct01-ct03.serial.txt) |
-| CT04 (limiar 10) | [Prazo sem indicação de permanência](ct04Limiar10V2.png) | [Limiar 10](v2-ct04-limiar10.serial.txt) |
+| CT04 | [Limiar 10](ct04Limiar10V2.png), [limiar 150](ct04Limiar150V2.png) | [Limiar 10](v2-ct04-limiar10.serial.txt), [limiar 150](v2-ct04-limiar150.serial.txt) |
 | CT05–CT07 | [Violação](ct05V2.png), [retirada autorizada](ct06V2.png) | [Lacre](v2-ct05-ct07.serial.txt) |
 | CT08–CT09 | [Violação sem rede](ct08V2.png), [reenvio](ct09V2.png) | [Fila](v2-ct08-ct09.serial.txt) |
 | CT10 | — | [A](v2-ct10a.serial.txt), [B](v2-ct10b.serial.txt) |
@@ -48,5 +53,16 @@ Capturas do LCD e logs Serial da repetição dos CTs no V2 (LCD, botões de nave
 | CT12, CT13, CT23 | — | [Bateria](v2-ct12-ct13-ct23.serial.txt) |
 | CT14–CT16 | [Ciclo encerrado](ct14V2.png) | [Encerramento](v2-ct14-ct16.serial.txt) |
 | CT17, CT35 | [Prazo](ct17V2Tela2.png), [posição](ct17V2Tela3.png), [bateria](ct17V2Tela4.png), [lacre](ct17V2Tela5.png), [desligado](ct35V2Desligado.png), [religado](ct35V2Religado.png) | [Interface](v2-ct17-ct35.serial.txt) |
+| CT18 — REPROVADO | — | [Lacre cronometrado](v2-ct18.serial.txt) |
 
-O CT04 com 150 dias e os CT18–CT22 não foram repetidos no V2; os resultados da primeira tabela, de 22 e 23/10/2026, referem-se ao V1.
+Os CT19–CT22 não foram repetidos no V2; os resultados da primeira tabela, de 23/10/2026, referem-se ao V1.
+
+## CT43–CT45 — posição, vínculo e GNSS no V2 (03/11/2026)
+
+Definição, resultados e limitações estão nos [CT43–CT45 da seção 3.4.1](../../../document/documentacao.md#cts43-45).
+
+| CT | Captura | Log Serial |
+|---|---|---|
+| CT43 | [Sem fix](ct43SemFix.png), [segundos](ct43Segundos.png), [minutos](ct43Minutos.png) | [Posição](ct43-posicao.serial.txt) |
+| CT44 | [Boot](ct44Boot.png), [sem ciclo](ct44SemCiclo.png), [ciclo iniciado](ct44Iniciado.png) | [Vínculo](ct44-vinculo.serial.txt) |
+| CT45 | [Fila zerada](ct45Fila.png) | [Sem rede](ct45-gnss.serial.txt), [com rede](ct45-gnss-rede.serial.txt) |
