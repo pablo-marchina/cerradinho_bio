@@ -133,7 +133,13 @@ bool freshFix() {
 // Nivel de bateria de 0 a 100% lido no potenciometro (ADC1, GPIO34).
 int simulatedBatteryPercent() {
   // Entrada sintetica 0..3,3 V. Nao ligar uma celula diretamente ao GPIO34.
-  return constrain((analogRead(Config::BatteryPin) * 100L) / 4095L, 0L, 100L);
+  // Media de 16 leituras e histerese de 1 ponto: o ruido do ADC nao faz o valor tremer.
+  long sum = 0;
+  for (int i = 0; i < 16; ++i) sum += analogRead(Config::BatteryPin);
+  const int percent = constrain((sum / 16 * 100L) / 4095L, 0L, 100L);
+  static int shown = -100;
+  if (shown < 0 || abs(percent - shown) >= 2 || percent == 0 || percent == 100) shown = percent;
+  return shown;
 }
 
 // Registro de diagnostico na NVS (q0..q15); cheio, preserva os antigos e so imprime o novo.
@@ -576,6 +582,13 @@ void readBattery(uint32_t now) {
   lastBatteryCheck = now;
   const int raw = analogRead(Config::BatteryPin);
   batteryPct = simulatedBatteryPercent();
+  // Girar o potenciometro (bateria simulada) mantem o LCD aceso. Compara com o ultimo valor
+  // que contou como uso (nao com a leitura anterior), com folga de 3 pontos contra o ruido do ADC.
+  static int wakeReferencePct = -100;
+  if (abs(batteryPct - wakeReferencePct) >= 3) {
+    if (wakeReferencePct != -100) { lastInteractionAt = now; screens.show(Screen::Battery); }
+    wakeReferencePct = batteryPct;
+  }
   const unsigned events = batteryUpdate(&battery, raw, batteryPct);
   if (events & BATTERY_EVENT_SENSOR_FAILURE) publishEvent("SENSOR_BATERIA_FALHA");
   if (events & BATTERY_EVENT_LOW) publishEvent("BATERIA_BAIXA");

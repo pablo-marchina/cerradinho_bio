@@ -44,6 +44,7 @@ class ScreenController final {
     index_ = (index_ + ScreenCount - 1) % ScreenCount;
     messageMs_ = 0;
   }
+  void show(Screen screen) { index_ = static_cast<uint8_t>(screen); }
   Screen current() const { return static_cast<Screen>(index_); }
 
   // Mensagem curta por cima da tela atual (resultado de um botao), por durationMs.
