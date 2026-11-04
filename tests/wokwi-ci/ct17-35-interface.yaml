@@ -5,6 +5,12 @@ version: 1
 steps:
   - wait-serial: '"type":"STATUS"'
   - delay: 500ms
+  # Vinculo (RF003): o dispositivo liga sem ciclo; CICLO segurado 3 s abre o ciclo 1.
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 1 }
+  - wait-serial: '"type":"CICLO_INICIADO"'
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 0 }
+  # Espera a mensagem "Ciclo iniciado" (2 s) sair do LCD.
+  - delay: 2500ms
   - set-control: { part-id: btn_avancar, control: pressed, value: 1 }
   - delay: 100ms
   - set-control: { part-id: btn_avancar, control: pressed, value: 0 }

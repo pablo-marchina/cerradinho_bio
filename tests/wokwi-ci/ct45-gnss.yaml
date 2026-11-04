@@ -1,0 +1,17 @@
+# CT45: falha e recuperacao do GNSS registradas uma vez cada (RF005, RF010; RN08, RN09).
+# Liga sem fix e sem rede: duas coletas sem posicao geram um so GNSS_SEM_FIX; com o fix
+# de volta, um GNSS_RECUPERADO. Os dois ficam na fila e saem ao religar a rede.
+# So o motivo sem_fix e alcancavel: o chip GPS sempre envia NMEA e informa 8 ou 0 satelites.
+name: CT45 - falha e recuperacao do GNSS
+version: 1
+steps:
+  - set-control: { part-id: gps, control: fixValid, value: 0 }
+  - set-control: { part-id: sw_rede, control: value, value: 1 }
+  - wait-serial: '[FILA] guardado: GNSS_SEM_FIX'
+  # Segunda coleta sem posicao: nao pode gerar outro GNSS_SEM_FIX.
+  - wait-serial: '"type":"location_unavailable"'
+  - set-control: { part-id: gps, control: fixValid, value: 1 }
+  - wait-serial: '[FILA] guardado: GNSS_RECUPERADO'
+  - set-control: { part-id: sw_rede, control: value, value: 0 }
+  - wait-serial: '[FILA] 0 pendentes'
+  - delay: 500ms

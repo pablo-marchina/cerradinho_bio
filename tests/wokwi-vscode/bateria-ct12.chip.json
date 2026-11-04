@@ -1,0 +1,6 @@
+{
+  "name": "Bateria do CT12 (niveis no tempo)",
+  "author": "Projeto Cerradinho",
+  "pins": ["GND", "OUT"],
+  "controls": []
+}
