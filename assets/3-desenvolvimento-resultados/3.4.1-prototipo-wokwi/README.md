@@ -37,8 +37,8 @@ CT17–CT23 executados em 23/10/2026: CT17, CT19, CT20, CT21 e CT23 aprovados no
 
 Capturas do LCD e logs Serial da repetição dos CTs no V2, com LCD, botões de navegação, buzzer, LED de violação e boot sem ciclo. As execuções foram duas:
 
-- **CT01–CT10 e CT18:** pelos cenários de `tests/wokwi-ci/` no Wokwi CLI, em 02/11/2026.
-- **Demais CTs:** à mão no Wokwi for VS Code, em 03/11/2026, com a Serial gravada por `tests/wokwi-vscode/capturar.py`.
+- **CT01–CT10 e CT18, exceto o CT04 com limiar 150:** pelos cenários de `tests/wokwi-ci/` no Wokwi CLI, em 02/11/2026.
+- **Demais CTs e CT04 com limiar 150:** à mão no Wokwi for VS Code, em 03/11/2026, com a Serial gravada por `tests/wokwi-vscode/capturar.py`.
 
 Critérios adaptados, resultados e limitações estão na [rodada V2 da seção 3.4.1](../../../document/documentacao.md#rodada-v2). Esta rodada substitui a de 30/10/2026, feita antes do boot sem ciclo.
 
@@ -47,7 +47,7 @@ Critérios adaptados, resultados e limitações estão na [rodada V2 da seção 
 | CT01–CT03 | [Inicialização](ct01V2.png), [atraso](ct03V2.png) | [Ciclo](v2-ct01-ct03.serial.txt) |
 | CT04 | [Limiar 10](ct04Limiar10V2.png), [limiar 150](ct04Limiar150V2.png) | [Limiar 10](v2-ct04-limiar10.serial.txt), [limiar 150](v2-ct04-limiar150.serial.txt) |
 | CT05–CT07 | [Violação](ct05V2.png), [retirada autorizada](ct06V2.png) | [Lacre](v2-ct05-ct07.serial.txt) |
-| CT08–CT09 | [Violação sem rede](ct08V2.png), [reenvio](ct09V2.png) | [Fila](v2-ct08-ct09.serial.txt) |
+| CT08–CT09 | [Reenvio](ct09V2.png); tela "Sem sinal" do CT08 sem captura | [Fila](v2-ct08-ct09.serial.txt) |
 | CT10 | — | [A](v2-ct10a.serial.txt), [B](v2-ct10b.serial.txt) |
 | CT11 | [Contagem de 3 s](ct11V2Contagem.png) | [Botão](v2-ct11.serial.txt) |
 | CT12, CT13, CT23 | — | [Bateria](v2-ct12-ct13-ct23.serial.txt) |
@@ -78,5 +78,5 @@ Definição, resultados e limitações estão nos [CT43–CT45 da seção 3.4.1]
 | CT | Captura | Log Serial |
 |---|---|---|
 | CT43 | [Sem fix](ct43SemFix.png), [segundos](ct43Segundos.png), [minutos](ct43Minutos.png) | [Posição](ct43-posicao.serial.txt) |
-| CT44 | [Boot](ct44Boot.png), [sem ciclo](ct44SemCiclo.png), [ciclo iniciado](ct44Iniciado.png) | [Vínculo](ct44-vinculo.serial.txt) |
+| CT44 | [Boot](ct44Boot.png), [sem ciclo](ct44SemCiclo.png), [ciclo iniciado](ct44Iniciado.png) (execução no Wokwi CLI, 02/11/2026) | [Vínculo](ct44-vinculo.serial.txt) (repetição no Wokwi for VS Code, 03/11/2026) |
 | CT45 | [Fila zerada](ct45Fila.png) | [Sem rede](ct45-gnss.serial.txt), [com rede](ct45-gnss-rede.serial.txt) |
