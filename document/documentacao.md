@@ -473,7 +473,7 @@ Valores ditos pelo parceiro no kick-off [33] aparecem como **referência do parc
 
 #### Requisitos não funcionais e critérios de aceitação (RNF01 a RNF08)
 
-A prioridade segue o método MoSCoW em português: **Deve ter** é o que o uso do sistema exige, e **Deveria ter** é o que importa, mas não impede o ciclo de funcionar. A tabela resume cada RNF por categoria. A meta mensurável, o método de verificação e as relações com os RFs (seção 3.3.1) e as RNs (seção 3.3.2) estão na ficha de cada RNF logo abaixo da tabela. Os critérios RNF-* do [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md) entram como critérios dentro dos oito RNFs.
+A prioridade segue o método MoSCoW em português: **Deve ter** é o que o uso do sistema exige, e **Deveria ter** é o que importa, mas não impede o ciclo de funcionar. Algumas demandas sustentam mais de um RNF: a bateria alimenta o RNF02 e o RNF05, o alerta de lacre alimenta o RNF01, o RNF02, o RNF05 e o RNF06, a LGPD vale para o RNF06 e a API para BI vale para o RNF03. A ligação de cada RNF com as personas e com os casos de teste está na matriz de rastreabilidade (seção 3.3.4). A tabela resume cada RNF por categoria. A meta mensurável, o método de verificação e as relações com os RFs (seção 3.3.1) e as RNs (seção 3.3.2) estão na ficha de cada RNF logo abaixo da tabela. Os critérios RNF-* do [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md) entram como critérios dentro dos oito RNFs.
 
 | ID | Categoria (subcaracterística) | Requisito | Prioridade (MoSCoW) | Justificativa da prioridade | Fonte |
 |---|---|---|---|---|---|
@@ -488,6 +488,7 @@ A prioridade segue o método MoSCoW em português: **Deve ter** é o que o uso d
 
 ##### RNF01 — Adequação funcional (corretude funcional)
 
+- **Demanda do negócio:** o parceiro chamou de indispensáveis a geolocalização e o alerta de lacre e citou o risco de equipamentos esquecidos e de retorno físico sem baixa fiscal [33]; o TAPI [6] (MVP 2 e 5) pede localização válida e histórico do lacre.
 - **Meta mensurável:** (a) 100% das posições gravadas como última localização válida cumprem a RN08 (fix, data e hora do GNSS, HDOP de no máximo 2,0 a validar), e nenhuma coleta sem fix vira coordenada: meta da equipe, a medir. (b) Zero transições estáveis do lacre ausentes ou com estado trocado em um lote controlado de 20 transições: meta da equipe, a medir. (c) Distância máxima entre a posição registrada e o ponto de referência de um percurso externo controlado: limite a validar.
 - **Verificação:** comparar os registros com o roteiro conhecido (pontos de referência do percurso e transições aplicadas à chave do lacre). Casos de teste: CT05, CT07, CT18, CT19, CT20, CT22, CT24, CT31 e CT43.
 - **Situação:** CT19, CT20 e CT43 aprovados no simulador; CT18 e CT22 reprovados (seção 3.4.1); CT24 e CT31 não executados no protótipo físico.
@@ -495,6 +496,7 @@ A prioridade segue o método MoSCoW em português: **Deve ter** é o que o uso d
 
 ##### RNF02 — Eficiência de desempenho (comportamento no tempo e utilização de recursos)
 
+- **Demanda do negócio:** aviso de violação do lacre "o mais imediato possível" e bateria que cubra o período fora [33]; o TAPI [6] (MVP 4 e 7) prevê status semanal e ensaio de consumo.
 - **Meta mensurável:** (a) Percentil 95 do tempo entre a estabilização do contato do lacre e o recebimento do alerta pelo painel de até 30 minutos em um lote de 30 estímulos com conexão. A faixa de 10 a 30 minutos é referência do parceiro [33]; a meta formal é limite a validar, e o alerta sem conexão fica guardado e não entra nessa conta. (b) Autonomia estimada de pelo menos 365 dias no perfil de status semanal, calculada da carga diária medida na alimentação do conjunto. A autonomia de até 1 ano é referência do parceiro [33], que a associou a cerca de 99% dos períodos fora; a meta formal é limite a validar. (c) Espera de fix de até 10 s por coleta (valor atual do firmware); orçamento de GNSS e de rádio por ciclo: limite a validar.
 - **Verificação:** medir a latência com relógios sincronizados (CT32), a carga na alimentação do conjunto, sem USB em paralelo (CT27), e os tempos ativos de GNSS e rádio (CT26 e CT28). A autonomia é estimada a partir do consumo medido; um ensaio curto não comprova um ano de operação.
 - **Situação:** nenhuma medição física feita; CT26 a CT34 não executados.
@@ -502,13 +504,15 @@ A prioridade segue o método MoSCoW em português: **Deve ter** é o que o uso d
 
 ##### RNF03 — Compatibilidade (interoperabilidade)
 
+- **Demanda do negócio:** o TAPI [6] (MVP 6) pede API para BI, e o kick-off [33] citou o SAP (remessa, NF e retorno), o sistema fiscal Gama Soft e o BI da diretoria, com o campo complementar da NF levando o número da TAG.
 - **Meta mensurável:** (a) 100% dos campos do ciclo (equipamento, TAG, NF de remessa e de retorno, última localização, dias fora, alertas, bateria e estado do lacre) disponíveis em JSON na API documentada e lidos por um cliente de teste ou BI de teste sem tratamento manual: meta da equipe, a medir. (b) O número da TAG cabe no campo complementar da NF e é recuperado nos dados do ciclo: limite a validar com o Fiscal.
-- **Verificação:** chamar a API com credencial válida e dados fictícios, validar o esquema JSON contra a documentação e conferir a TAG em uma NF fictícia. SAP, o sistema fiscal Gama Soft e o BI da diretoria, citados no kick-off [33], são os sistemas de destino; a integração produtiva com eles não faz parte do escopo.
+- **Verificação:** chamar a API com credencial válida e dados fictícios, validar o esquema JSON contra a documentação e conferir a TAG em uma NF fictícia. A integração produtiva com os sistemas do parceiro não faz parte do escopo.
 - **Situação:** contrato, autenticação e esquema da API ainda não definidos; sem CT.
 - **Relações:** RF002, RF009, RF017, RF024; RN15.
 
 ##### RNF04 — Usabilidade (operabilidade)
 
+- **Demanda do negócio:** o kick-off [33] descreveu um acompanhamento hoje manual, e o TAPI [6] (MVP 6) pede consulta de status, localização e alertas por quem não é especialista em IoT.
 - **Meta mensurável:** (a) Com 5 pessoas sem treino, ao menos 80% das tarefas (ver o prazo, o estado do lacre, a bateria, a última posição e reconhecer um atraso) concluídas sem ajuda, cada uma em até 60 s: meta da equipe, a medir. (b) Nenhuma posição sem fix mostrada como atual, e a idade da última posição sempre visível (RNF-USAB01 do planejamento).
 - **Verificação:** teste de tarefas com roteiro e cronômetro, no LCD e no painel, e registro das ajudas pedidas. Casos de teste do LCD: CT36, CT37, CT40, CT41, CT42 e CT43.
 - **Situação:** CT36, CT37 e CT40 a CT43 aprovados no simulador; o teste com pessoas ainda não foi feito, e o painel não existe.
@@ -516,6 +520,7 @@ A prioridade segue o método MoSCoW em português: **Deve ter** é o que o uso d
 
 ##### RNF05 — Confiabilidade (tolerância a falhas e recuperabilidade)
 
+- **Demanda do negócio:** os caminhões não têm internet garantida nos trajetos [33], e o TAPI [6] (MVP 5) pede guardar os eventos sem rede e enviá-los depois.
 - **Meta mensurável:** (a) Lacre: zero eventos ausentes ou duplicados por transição estável e zero eventos para pulsos menores que 60 ms (debounce atual) em um lote controlado: meta da equipe, a medir. (b) Persistência: zero registros já confirmados como gravados perdidos e zero referência de posição inválida aceita em um lote de reinícios: meta da equipe, a medir. (c) Reenvio: zero eventos perdidos ou duplicados depois da reconexão, na ordem em que ocorreram e com a hora da ocorrência (RN09). (d) Capacidade sem rede de 8 eventos (RN09) e duração máxima sem conexão: limite a validar.
 - **Verificação:** contar eventos ausentes, extras e falsos alertas e comparar o conteúdo da memória antes e depois dos reinícios. Casos de teste: CT08, CT09, CT10, CT18, CT21, CT22, CT24, CT29, CT31 e CT33.
 - **Situação:** CT21 aprovado no simulador; CT18 reprovado (4 de 20 transições estáveis perdidas sem rede) e repetido no V2 também reprovado (pulsos curtos lidos como abertura); CT22 reprovado no ambiente; CT09 bloqueado, por falta da confirmação de entrega pelo servidor.
@@ -523,6 +528,7 @@ A prioridade segue o método MoSCoW em português: **Deve ter** é o que o uso d
 
 ##### RNF06 — Segurança (confidencialidade e responsabilização)
 
+- **Demanda do negócio:** o parceiro disse que só a Cerradinho deveria retirar o lacre e pediu registro separado de abertura autorizada e de violação [33]; o TAPI [6] (MVP 5 e 6) prevê aviso de lacre e acesso controlado; localização, NF e identificadores são dados sob a LGPD [40] e a orientação da ANPD [41].
 - **Meta mensurável:** (a) Zero acessos ao painel e à API sem credencial válida em um lote de tentativas negativas (RN15): meta da equipe, a medir. (b) 100% dos tratamentos de alerta registrados com `usuario_id`, data e hora, decisão e justificativa (RN17 e RN18): meta da equipe, a medir. (c) Zero comandos de autorização de retirada adulterados, de outro dispositivo ou ciclo, ou expirados aceitos, e zero mensagens de dispositivo não cadastrado ou com credencial inválida alterando um ciclo (RN16): meta da equipe, a medir. (d) Retenção, base legal e criptografia dos dados de localização, NF e identificadores: limite a validar com TI e Jurídico, conforme a seção 3.1.6.
 - **Verificação:** tentativas de acesso sem credencial e com credencial inválida, revisão do histórico de tratamento dos alertas e ensaio de comandos de autorização válidos e inválidos (CT34). Os dados de ensaio são fictícios.
 - **Situação:** CT34 não executado; hoje a autorização de retirada é um botão de bancada, o que não comprova segurança; painel e autenticação ainda não existem.
@@ -530,6 +536,7 @@ A prioridade segue o método MoSCoW em português: **Deve ter** é o que o uso d
 
 ##### RNF07 — Manutenibilidade (analisabilidade, modificabilidade e testabilidade)
 
+- **Demanda do negócio:** o TAPI [6] prevê reutilizar o mesmo dispositivo em vários ciclos, o que exige diagnosticar e corrigir firmware e software ao longo do tempo sem perder histórico nem vínculos.
 - **Meta mensurável:** (a) 100% dos ensaios executados registram a versão do firmware, a configuração, os estímulos, o resultado medido e a evidência anonimizada: meta da equipe, a medir. (b) As regras do ciclo em `include/` rodam e são verificadas em computador, e a verificação em computador (`scripts/verify.ps1`) passa antes de cada entrega: meta da equipe, a medir. (c) Um defeito observado em ensaio é reproduzido a partir do registro, sem acesso ao dispositivo físico: meta da equipe, a medir.
 - **Verificação:** revisar os registros dos casos de teste executados (CT17, CT24 e CT29) e rodar a verificação em computador. Os logs não podem conter credenciais nem dados reais.
 - **Situação:** CT17 aprovado no simulador; CT24 e CT29 não executados.
@@ -537,6 +544,7 @@ A prioridade segue o método MoSCoW em português: **Deve ter** é o que o uso d
 
 ##### RNF08 — Portabilidade (adaptabilidade e substituibilidade)
 
+- **Demanda do negócio:** o TAPI [6] pede comparar alternativas de comunicação, e o Wi-Fi vale só para o protótipo, porque as oficinas não têm Wi-Fi como premissa; a troca de canal ou de módulo GNSS não pode obrigar a refazer o ciclo.
 - **Meta mensurável:** (a) A troca do Wi-Fi do protótipo por um canal de produção altera apenas o código de acesso à comunicação, sem tocar nas regras do ciclo (alertas, fila e vínculo): meta da equipe, a medir. (b) A troca do Quectel LC76G-PA pelo u-blox MAX-M10S [23, 24], ou o inverso, altera apenas o código de acesso ao módulo, e os casos de posição (CT19 e CT20) passam com os dois módulos: meta da equipe, a medir. (c) Canal de comunicação de produção: limite a validar, porque o Wi-Fi não é premissa nas oficinas.
 - **Verificação:** revisar a lista de arquivos alterados em cada troca e repetir os casos de ciclo (CT03, CT04 e CT14) e de posição (CT19 e CT20) com cada canal e cada módulo. O contrato de simulação do módulo GNSS é conferido nos CT26 e CT28.
 - **Situação:** canal de produção e equivalência de interfaces GNSS não validados; CT26 e CT28 não executados; adaptação do simulador pendente.
