@@ -1,0 +1,214 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:1156
+load:0x40078000,len:11456
+ho 0 tail 12 room 4
+load:0x40080400,len:2972
+entry 0x400805dc
+
+[boot] ESP32 executando - prototipo Cerradinho
+[boot] uptime_inicio_ms=1419 reset_reason=1
+[config] modo=demo intervalo=30 s tolerancia=100 m
+[memoria] NVS=ok; diagnostico limitado a 16 registros; fila de eventos de 8
+{"device_id":"prototipo-001","type":"STATUS","uptime_ms":2773,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":false,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":0,"atraso":false,"permanencia":false,"critico":false,"contexto_restaurado":false}
+[boot] aguardando GPS; heartbeat aparece a cada 2 s
+[ciclo] sem ciclo ativo; segure CICLO por 3 s para iniciar e use REMESSA x para a NF
+[transporte] JSON na serial + fila local; envio HTTP/MQTT pendente
+[ciclo] 1 dia = 1 s; status a cada 7 dias; prazo 5; limiar 150
+[regras] janela de autorizacao 3 dias; fila sem rede de 8 eventos; bateria 20%/25%
+[comandos] NF = lanca NF de retorno; REMESSA x = NF da remessa; LIMIAR n = muda o limiar de permanencia
+[interface] LCD 16x2 I2C 0x27; AVANCAR/VOLTAR trocam a tela; CICLO e AUTORIZAR exigem 3 s; LCD apaga apos 15 s sem uso
+[bancada] SW_REDE simula disponibilidade sem desligar o Wi-Fi; SW_ENERGIA liga/desliga
+[vivo] tempo=2 s gps_chars=0 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[wifi] conectado
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":4071,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":4060}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"VIOLACAO_LACRE","uptime_ms":4100,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":1,"atraso":false,"permanencia":false,"critico":true}
+E (6464) ledc: ledc_get_duty(745): LEDC is not initialized
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":4236,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":4260}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"LACRE_FECHADO","uptime_ms":4270,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":1,"atraso":false,"permanencia":false,"critico":false}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":4471,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":4460}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"VIOLACAO_LACRE","uptime_ms":4508,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":1,"atraso":false,"permanencia":false,"critico":true}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":4634,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":4660}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"LACRE_FECHADO","uptime_ms":4676,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":1,"atraso":false,"permanencia":false,"critico":false}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":4871,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":4860}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"VIOLACAO_LACRE","uptime_ms":4916,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":2,"atraso":false,"permanencia":false,"critico":true}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":5053,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":5060}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"LACRE_FECHADO","uptime_ms":5102,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":2,"atraso":false,"permanencia":false,"critico":false}
+[vivo] tempo=4 s gps_chars=198 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":5257,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":5260}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"VIOLACAO_LACRE","uptime_ms":5311,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":2,"atraso":false,"permanencia":false,"critico":true}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":5438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":5460}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"LACRE_FECHADO","uptime_ms":5498,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":2,"atraso":false,"permanencia":false,"critico":false}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":5625,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":5660}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"VIOLACAO_LACRE","uptime_ms":5689,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":2,"atraso":false,"permanencia":false,"critico":true}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":5827,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":5860}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"LACRE_FECHADO","uptime_ms":5895,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":2,"atraso":false,"permanencia":false,"critico":false}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":6023,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":6060}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"VIOLACAO_LACRE","uptime_ms":6098,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":3,"atraso":false,"permanencia":false,"critico":true}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":6230,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":6260}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"LACRE_FECHADO","uptime_ms":6306,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":3,"atraso":false,"permanencia":false,"critico":false}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":6434,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":6460}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"VIOLACAO_LACRE","uptime_ms":6515,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":3,"atraso":false,"permanencia":false,"critico":true}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":6652,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":6660}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"LACRE_FECHADO","uptime_ms":6738,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":3,"atraso":false,"permanencia":false,"critico":false}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":6865,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":6860}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"VIOLACAO_LACRE","uptime_ms":6956,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":3,"atraso":false,"permanencia":false,"critico":true}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":7084,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":7060}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"LACRE_FECHADO","uptime_ms":7182,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":4,"atraso":false,"permanencia":false,"critico":false}
+[vivo] tempo=6 s gps_chars=330 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":7328,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":7260}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+{"device_id":"prototipo-001","type":"VIOLACAO_LACRE","uptime_ms":7422,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":4,"atraso":false,"permanencia":false,"critico":true}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":7560,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":7460}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+{"device_id":"prototipo-001","type":"LACRE_FECHADO","uptime_ms":7655,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":4,"atraso":false,"permanencia":false,"critico":false}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":7792,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":7660}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+{"device_id":"prototipo-001","type":"VIOLACAO_LACRE","uptime_ms":7888,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":4,"atraso":false,"permanencia":false,"critico":true}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":8025,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":7860}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+{"device_id":"prototipo-001","type":"LACRE_FECHADO","uptime_ms":8121,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":5,"atraso":false,"permanencia":false,"critico":false}
+[vivo] tempo=8 s gps_chars=396 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=10 s gps_chars=528 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[gps] sem fix recente; referencia anterior preservada
+{"device_id":"prototipo-001","type":"location_unavailable","uptime_ms":12764,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"fix_valid":false,"latitude":null,"longitude":null,"moved":null}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+{"device_id":"prototipo-001","type":"GNSS_SEM_FIX","uptime_ms":12860,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":9,"atraso":false,"permanencia":false,"critico":false,"motivo":"sem_fix","satelites":0}
+[vivo] tempo=12 s gps_chars=660 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=14 s gps_chars=792 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=16 s gps_chars=924 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=18 s gps_chars=1056 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=20 s gps_chars=1188 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=22 s gps_chars=1320 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=24 s gps_chars=1452 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=26 s gps_chars=1584 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=28 s gps_chars=1716 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=30 s gps_chars=1848 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=32 s gps_chars=1980 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=34 s gps_chars=2112 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=36 s gps_chars=2244 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=38 s gps_chars=2376 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=40 s gps_chars=2508 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=42 s gps_chars=2640 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=off autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":43011,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":43060}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] guardado: VIOLACAO_LACRE
+[FILA] 1 pendente
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":43256,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":43080}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] guardado: LACRE_FECHADO
+[FILA] 2 pendentes
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":44071,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":44060}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] guardado: VIOLACAO_LACRE
+[FILA] 3 pendentes
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":44318,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":44260}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] guardado: LACRE_FECHADO
+[FILA] 4 pendentes
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":44568,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":44460}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] guardado: VIOLACAO_LACRE
+[FILA] 5 pendentes
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":44816,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":44660}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] guardado: LACRE_FECHADO
+[FILA] 6 pendentes
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":44973,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":44860}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] guardado: VIOLACAO_LACRE
+[FILA] 7 pendentes
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":45141,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":45060}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] guardado: LACRE_FECHADO
+[FILA] 8 pendentes
+[vivo] tempo=45 s gps_chars=2838 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=off autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=8
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":45404,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":45260}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] FILA_CHEIA: descartado o evento nao critico mais antigo
+[FILA] guardado: VIOLACAO_LACRE
+[FILA] 8 pendentes
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":45768,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":45460}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] FILA_CHEIA: descartado o evento nao critico mais antigo
+[FILA] guardado: LACRE_FECHADO
+[FILA] 8 pendentes
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":45993,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":45662}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] FILA_CHEIA: descartado o evento nao critico mais antigo
+[FILA] guardado: VIOLACAO_LACRE
+[FILA] 8 pendentes
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":46240,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":45860}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] FILA_CHEIA: descartado o evento nao critico mais antigo
+[FILA] guardado: LACRE_FECHADO
+[FILA] 8 pendentes
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":46423,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":46060}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] FILA_CHEIA: descartado o evento nao critico mais antigo
+[FILA] guardado: VIOLACAO_LACRE
+[FILA] 8 pendentes
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":46662,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":46260}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] FILA_CHEIA: descartado o evento nao critico mais antigo
+[FILA] guardado: LACRE_FECHADO
+[FILA] 8 pendentes
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":46833,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":46460}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] FILA_CHEIA: descartado o evento nao critico mais antigo
+[FILA] guardado: VIOLACAO_LACRE
+[FILA] 8 pendentes
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":47000,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":46660}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] FILA_CHEIA: so ha eventos criticos; LACRE_FECHADO nao coube (perdidos=1)
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":47252,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":46860}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] FILA_CHEIA: so ha violacoes; VIOLACAO_LACRE somado ao resumo (1 no resumo)
+[FILA] 8 pendentes + resumo de 1 violacao(oes)
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":47414,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":47060}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] FILA_CHEIA: so ha eventos criticos; LACRE_FECHADO nao coube (perdidos=2)
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":47576,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":47260}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] FILA_CHEIA: so ha violacoes; VIOLACAO_LACRE somado ao resumo (2 no resumo)
+[FILA] 8 pendentes + resumo de 2 violacao(oes)
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":47739,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":47460}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] FILA_CHEIA: so ha eventos criticos; LACRE_FECHADO nao coube (perdidos=3)
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":47902,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":47660}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] FILA_CHEIA: so ha violacoes; VIOLACAO_LACRE somado ao resumo (3 no resumo)
+[FILA] 8 pendentes + resumo de 3 violacao(oes)
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":48070,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"authorized_removal":false,"debounce_confirmed_at_ms":47860}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[FILA] FILA_CHEIA: so ha eventos criticos; LACRE_FECHADO nao coube (perdidos=4)
+[vivo] tempo=48 s gps_chars=3036 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=off autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=8
+[vivo] tempo=50 s gps_chars=3168 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=off autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=8
+[vivo] tempo=52 s gps_chars=3300 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=off autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=8
+[gps] sem fix recente; referencia anterior preservada
+{"device_id":"prototipo-001","type":"location_unavailable","uptime_ms":52764,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":78,"wifi_connected":true,"network_sim_available":false,"fix_valid":false,"latitude":null,"longitude":null,"moved":null}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[vivo] tempo=54 s gps_chars=3432 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=off autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=8
+[vivo] tempo=56 s gps_chars=3564 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=off autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=8
+[vivo] tempo=58 s gps_chars=3696 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=off autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=8
+[vivo] tempo=60 s gps_chars=3828 fix=ausente lacre=integro bateria_sim=78% wifi=on rede_sim=off autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=8
