@@ -308,7 +308,7 @@ _Coloque aqui seu Mapa de Jornada do Usuário (seguindo as instruções na descr
 
 #### Storyboard 
 
-O storyboard acompanha Geraldo, analista de PCM responsável pelos equipamentos enviados à manutenção externa. A história mostra sua atuação após uma bomba ultrapassar o prazo de retorno combinado com a oficina e o GuaráTracking emitir um alerta de atraso, permitindo que ele consulte os dados e tome uma decisão.
+O storyboard acompanha Geraldo, analista de PCM responsável pelos equipamentos enviados à manutenção externa. A história mostra sua atuação após uma bomba centrífuga ultrapassar o prazo de retorno combinado com a oficina e o GuaráTracking emitir um alerta de atraso, permitindo que ele consulte os dados e tome uma decisão.
 
 <div align="center">
   <p><strong>Figura 3.2.2.3. - Storyboard do Geraldo</strong></p>
