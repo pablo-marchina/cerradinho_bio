@@ -325,22 +325,22 @@ Os principais insights são:
 
 #### Jornada futura de Geraldo
 
-A Figura 3.2.2.2 segue Geraldo (P1), persona principal, nas mesmas seis fases da jornada atual, com o motor fictício AT-001 e a Oficina Skibidy. Fiscal, gestor, transportadora e logística aparecem nos pontos de contato conforme suas atribuições. A plataforma proposta apoia Geraldo com dados do ciclo, última localização válida e alertas até o encerramento fiscal. A última linha do mapa explicita as responsabilidades do projeto em cada fase.
+A Figura 3.2.2.2 acompanha Geraldo (P1) nas seis fases da jornada atual, com o motor fictício AT-001 e a Oficina Skibidy. Gestor, Fiscal, transportadora e fornecedor aparecem nos pontos de contato; a última linha explicita as responsabilidades do projeto.
 
-![Jornada futura de Geraldo em seis fases, com responsabilidades do projeto e curvas atual e futura](../assets/ux/jornada-futura-geraldo.png)
+![Jornada futura de Geraldo: seis fases, responsabilidades e comparação emocional](../assets/ux/jornada-futura-geraldo.png)
 
-*Figura 3.2.2.2 — Jornada futura de Geraldo. Fonte: elaboração própria com base no kick-off da Cerradinho, na persona da seção 3.2.1, no TAPI [6] e nos requisitos da seção 3.3.1.*
+*Figura 3.2.2.2 — Jornada futura de Geraldo. Fonte: elaboração própria com base no kick-off da Cerradinho, na persona da seção 3.2.1 e no TAPI [6].*
 
-Pensamentos, sentimentos e curvas são hipóteses, não resultados medidos. A curva atual tracejada permite comparar os mesmos marcos; o ponto −1 da fase 05 representa preocupação com o atraso. A posição é semanal e datada: não comprova entrega nem progresso do reparo. A confirmação com a oficina e a embalagem permanecem a validar. Gestor e Fiscal mantêm suas atribuições de aprovação, emissão e lançamento das NFs; Geraldo acompanha essas confirmações.
+A experiência é proposta; sentimentos e curvas são ilustrativos. A posição semanal e datada não comprova entrega nem andamento do reparo. Perda de sinal GNSS e falta de rede são situações distintas: a última posição válida é preservada, e eventos sem conexão aguardam envio.
 
-Os principais insights do contraste são:
+| O que muda | Requisitos |
+|---|---|
+| Dados reunidos por equipamento e responsável. | Cadastro do ciclo, RF002; vínculo exclusivo, RF003–RF004; dias desde a NF, RF012. |
+| Consulta com indicação de atualidade e falhas. | Posição datada, RF005; consulta de status, RF015; fila sem rede, RF010; perda e recuperação GNSS, RF031. |
+| Pendências orientam a decisão do PCM. | Alerta de atraso, RF013; tratamento com justificativa, RF023; escalonamento por e-mail, RF030. |
+| Retorno conferido até a baixa fiscal e reutilização. | Encerramento condicionado, RF016; histórico do dispositivo, RF017; retorno e baixa separados, RF029. |
 
-- **Registros reunidos:** o vínculo entre ativo, dispositivo, NF, prazo e responsável reduz a conciliação manual (RF002–RF004, RF012 e RF015).
-- **Acompanhamento direcionado:** posição válida com data, alertas e armazenamento sem rede ajudam a priorizar pendências (RF005, RF006, RF010, RF013, RF025 e RF028); dados não recebidos não são apresentados como atuais.
-- **Decisão registrada:** Geraldo registra decisão e justificativa (RF023). Consulta de estoque e execução de prorrogação continuam em processos externos; a plataforma não os automatiza.
-- **Encerramento verificável:** Geraldo confere o retorno e acompanha a baixa do Fiscal; o ciclo só encerra com NF de retorno registrada e lacre fechado, liberando o dispositivo com histórico preservado (RF016, RF017 e RF029).
-
-Histórico de cumprimento de fornecedores para escolha, consulta de estoque, execução de prorrogação e registro da entrega à oficina com identificação de quem recebeu são hipóteses sem RF específico; não representam funções asseguradas nesta versão. Devem ser validadas com o parceiro e confrontadas com os RNFs quando sua definição estiver concluída.
+Embalagem e confirmação manual de entrega exigem validação. Histórico de fornecedores, consulta de estoque, execução da prorrogação e registro de quem recebeu na oficina são hipóteses sem RF específico; sua inclusão depende de validação e compatibilidade com os RNFs.
 
 #### Storyboard
 
