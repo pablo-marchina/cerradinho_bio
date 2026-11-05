@@ -1474,6 +1474,29 @@ As fotos ilustram as telas; o resultado de cada CT vem dos vídeos e da Serial. 
 - **Bateria simulada.** O potenciômetro não representa bateria, divisor nem tensão real.
 - **GNSS.** O primeiro fix do CT52 levou cerca de 9 minutos. A placa reiniciou entre a transição para `fix=valido` e as coletas registradas, e o fix se manteve. Perda e recuperação do fix não foram ensaiadas, e a precisão da posição não foi medida. O módulo é um NEO-6M, não o LC76G-PA escolhido para o dispositivo. As coordenadas estão mascaradas no log.
 
+#### Casos planejados para a próxima sprint
+
+Os casos abaixo estão **PLANEJADOS** e **NÃO EXECUTADOS**. As colunas descrevem o que será ensaiado no protótipo físico; nenhuma linha é resultado de teste.
+
+| CT | Caso | Pré-condição | Procedimento de teste | Resultado esperado | Observações |
+|---|---|---|---|---|---|
+| CT53 | Autorização isolada | Ciclo aberto, lacre fechado | Segurar AUTORIZAR por 3 s | "Autorizacao ok / vale 3 dias"; `AUTORIZACAO_REGISTRADA` | Complementa o CT49 |
+| CT54 | ON/OFF | Ligado, Serial aberta | Segurar ON/OFF por 3 s, esperar 10 s e segurar de novo | LCD apagado e buzzer mudo; `DISPOSITIVO_DESLIGADO`; nenhum heartbeat ou JSON enquanto desligado; novo `STATUS` | Cobre no físico a pendência do CT35 |
+| CT55 | LCD apaga e acorda | Ligado, potenciômetro parado | Esperar 15 s; tocar AVANÇAR; esperar apagar; girar o potenciômetro | Apaga em 15 s; o toque acende na mesma tela; a variação acende na tela de bateria | Depende de corrigir o mau contato do potenciômetro |
+| CT56 | Recusa sem NF de retorno | Ciclo aberto, lacre fechado, sem NF | Segurar CICLO por 3 s | "Nao encerrado / falta NF retorno"; `ENCERRAMENTO_RECUSADO` com `nf_retorno_ausente` | Caso de falha |
+| CT57 | Recusa com lacre aberto | Ciclo aberto, lacre aberto com autorização | Segurar CICLO por 3 s | "Nao encerrado / lacre aberto"; motivo `lacre_aberto` | Caso de falha |
+| CT58 | Encerrar ciclo | Ciclo aberto, lacre fechado | Enviar `NF`; segurar CICLO por 3 s | `NF_RETORNO_LANCADA`; `CICLO_ENCERRADO`; `dias_fora=0` | — |
+| CT59 | NF inválida | Ciclo aberto | Enviar `REMESSA NF@1`; depois `REMESSA NF-000123` | Mensagem de NF inválida, sem mudança; depois "NF registrada" | Caso de falha |
+| CT60 | Limiares da bateria | Potenciômetro em cerca de 78% | Parar em cerca de 17%, 22%, 17%, 31% e 17% | Dois `BATERIA_BAIXA`, o segundo só depois de passar de 25% | Potenciômetro, sem divisor nem bateria real; relação com o CT30 |
+| CT61 | Contato do lacre | Ciclo aberto, rede ligada | Tocar LACRE 40 vezes, devagar | 40 `seal_changed`, sem duplicação | Botão no lugar do contato real; relação com o CT31 e o CT32 |
+| CT62 | Reinício real | Ciclo aberto, lacre aberto | Anotar fila e dias; cortar o USB; religar | `uptime_ms` volta perto de zero; ciclo e lacre voltam da memória | Repete no físico o que reprovou no CT22 |
+| CT63 | Fila e reenvio | Ciclo aberto, rede desligada | Gerar eventos de lacre e de status; voltar a rede | `fila=` sobe; reenvio na ordem; fila zera; nenhuma violação falsa | Sem confirmação do servidor; relação com o CT33 |
+| CT64 | Fila cheia | Rede desligada | Encher com eventos não críticos; depois gerar violações | Descarte do não crítico mais antigo; depois resumo e `VIOLACAO_LACRE_RESUMO` ao reenviar | Caso de falha |
+| CT65 | Pulsos curtos do lacre | Jumper do GPIO32 ao GPIO27, memória limpa | Gravar [`tests/bancada-ct65`](../tests/bancada-ct65/main.cpp) e seguir o aviso da Serial | Nenhum evento nos pulsos de 20 e 40 ms; 20 `seal_changed` por lote | Repete no físico o CT18 |
+| CT66 | GNSS sem dados | Fix obtido | Tirar o fio do TX; religar e esperar o fix | `GNSS_SEM_FIX` com `sem_dados`; `GNSS_RECUPERADO` só com fix válido | Caso de falha |
+| CT67 | Sem fix e sem rede | Rede desligada | Bloquear o sinal; restaurar e voltar a rede | `GNSS_SEM_FIX` na fila; `GNSS_RECUPERADO`; fila zera | Relação com o CT26 |
+| CT68 | Corte durante a gravação | Evento recém-gerado | Cortar o USB logo depois do evento e religar | Fila e contexto consistentes | Só entra se for repetível; relação com o CT29 |
+
 ### 3.4.3. Protótipo do Projeto com MQTT e I2C (sprint 3)	
 
 _Aqui você deve registrar diversas situações de uso de seu sistema como um todo, indicando exemplos de ação do usuário e resposta do sistema, apontando como o ambiente deverá estar configurado para receber a ação e produzir a resposta. Estes registros serão utilizados para testar seu sistema, portanto, descreva várias situações, incluindo não apenas casos de sucesso, mas também de falha nos comportamentos do sistema. <br>
