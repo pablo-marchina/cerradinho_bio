@@ -6,6 +6,10 @@ steps:
   - wait-serial: '"type":"STATUS"'
   - delay: 500ms
   - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct01-lcd.png }
+  # Vinculo (RF003): o dispositivo liga sem ciclo; CICLO segurado 3 s abre o ciclo 1.
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 1 }
+  - wait-serial: '"type":"CICLO_INICIADO"'
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 0 }
   - wait-serial: '"type":"ALERTA_ATRASO"'
   - wait-serial: '"type":"STATUS_SEMANAL"'
   # Tela de prazo (NF -> prazo); LCD ainda aceso (< 15 s do boot).

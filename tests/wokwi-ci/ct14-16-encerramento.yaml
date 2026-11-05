@@ -6,6 +6,10 @@ version: 1
 steps:
   - wait-serial: '"type":"STATUS"'
   - delay: 500ms
+  # Vinculo (RF003): o dispositivo liga sem ciclo; CICLO segurado 3 s abre o ciclo 1.
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 1 }
+  - wait-serial: '"type":"CICLO_INICIADO"'
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 0 }
   # CT16 B: lacre fechado, sem NF de retorno.
   - set-control: { part-id: btn_ciclo, control: pressed, value: 1 }
   - wait-serial: '"type":"ENCERRAMENTO_RECUSADO"'
