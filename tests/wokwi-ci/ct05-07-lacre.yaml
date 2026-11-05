@@ -1,0 +1,37 @@
+# CT05-CT07 (V2): violacao, retirada autorizada (segurar 3 s) e autorizacao vencida.
+name: CT05-CT07 V2 - lacre e autorizacao
+version: 1
+steps:
+  - wait-serial: '"type":"STATUS"'
+  - delay: 500ms
+  # CT05: abrir sem autorizacao.
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: '"type":"VIOLACAO_LACRE"'
+  - delay: 300ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct05-lcd.png }
+  - set-control: { part-id: seal, control: value, value: 0 }
+  - wait-serial: '"type":"LACRE_FECHADO"'
+  - delay: 500ms
+  # CT06: segurar 3 s, abrir dentro da janela de 3 dias (3 s) e fechar.
+  - set-control: { part-id: btn_autorizar, control: pressed, value: 1 }
+  - wait-serial: '"type":"AUTORIZACAO_REGISTRADA"'
+  - set-control: { part-id: btn_autorizar, control: pressed, value: 0 }
+  - delay: 300ms
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: '"type":"RETIRADA_AUTORIZADA"'
+  - delay: 300ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct06-lcd.png }
+  - set-control: { part-id: seal, control: value, value: 0 }
+  - wait-serial: '"type":"LACRE_REAPLICADO"'
+  - delay: 500ms
+  # CT07: autorizar e abrir depois de vencer a janela.
+  - set-control: { part-id: btn_autorizar, control: pressed, value: 1 }
+  - wait-serial: '"type":"AUTORIZACAO_REGISTRADA"'
+  - set-control: { part-id: btn_autorizar, control: pressed, value: 0 }
+  - delay: 4500ms
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: '"type":"VIOLACAO_LACRE"'
+  - delay: 300ms
+  - set-control: { part-id: seal, control: value, value: 0 }
+  - wait-serial: '"type":"LACRE_FECHADO"'
+  - delay: 500ms

@@ -22,7 +22,7 @@ for caso in range(18, 23):
             part['attrs']['text'] = 'LACRE | GPIO27 controlado pelo gerador de estimulos'
         if part['id'] == 'networkLabel':
             part['attrs']['text'] = 'REDE | GPIO18 controlado pelo gerador de estimulos'
-    removed = {'gps:VCC', 'gps:GND', 'seal:2', 'sw_rede:2', 'btn_autorizar:1.l'}
+    removed = {'gps:VCC', 'gps:GND', 'seal:2', 'sw_rede:2', 'btn_autorizar:1.r'}
     diagram['connections'] = [c for c in diagram['connections'] if not removed.intersection(c[:2])]
     diagram['connections'] += [[a, b, color, []] for a, b, color in (
         ('gps:SEAL', 'esp:D27', 'orange'), ('gps:NET', 'esp:D18', 'violet'),

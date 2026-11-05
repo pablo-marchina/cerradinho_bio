@@ -229,13 +229,15 @@ Corpo opcional explicando o porquê da mudança, não o como.
 - Preserve ESP32 DevKit v1, GPS/GNSS customizado, chave para lacre e potenciômetro
   para bateria simulada. Não acrescente acelerômetro. IR físico e modem continuam
   pendentes de definição. Desde o protótipo V2 (cards #65 e #67), os LEDs de status
-  deram lugar a um LCD 16x2 I2C, dois botões de navegação e um buzzer.
+  deram lugar a um LCD 16x2 I2C, dois botões de navegação e um buzzer; só o LED vermelho
+  de violação continua (card #87).
 - O circuito principal e os arquivos `wokwi*.toml` ficam em `src/firmware/prototipo_wokwi/`.
   Mantenha `src/firmware/main.cpp`, `include/config.h` e o `diagram.json` dessa pasta coerentes:
   GPS RX2/TX2 nos GPIO16/17, lacre no GPIO27 com pull-up e bateria no GPIO34/ADC1.
   UART0 e heartbeat são diagnóstico independente de GPS e internet.
 - LCD I2C (0x27) usa SDA/SCL nos GPIO21/22; botões avançar/voltar usam GPIO25/26;
-  buzzer usa GPIO23; botões de autorização e ciclo usam GPIO33/13 e exigem 3 s
+  buzzer usa GPIO23; o LED vermelho de violação (exigido pela rubrica do Art. 5) usa GPIO13
+  com resistor de 220 Ω; botões de autorização e ciclo usam GPIO33/14 e exigem 3 s
   pressionados; chave de rede simulada (on/off do SIM) usa GPIO18 e chave ON/OFF
   usa GPIO19. GPIO32 fica livre para a instrumentação dos ensaios complementares.
   Preserve a separação entre rede simulada e Wi-Fi real.

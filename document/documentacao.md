@@ -304,47 +304,103 @@ O layout também foi revisado pela equipe: o texto corrido deu lugar a um fluxo 
 
 ### 3.2.2. Jornada do Usuário e Storyboard (sprint 2)	
 
-_Coloque aqui seu Mapa de Jornada do Usuário (seguindo as instruções na descrição do artefato)_
+A jornada do usuário é um mapa da experiência de uma pessoa ao realizar uma atividade em um contexto específico. Ela organiza as etapas do início ao fim e relaciona ações, pensamentos, sentimentos e pontos de contato com pessoas, ferramentas ou serviços. Essa visão ajuda a identificar momentos de incerteza, dificuldades e oportunidades de melhoria. No projeto Guarátracking, a jornada atual mostra como Geraldo acompanha o envio de um equipamento para manutenção externa, permitindo compreender onde a solução proposta pode apoiar seu trabalho.
 
-_Coloque aqui seu Storyboard (seguindo as instruções na descrição do artefato)_
+#### Jornada atual de Geraldo
+
+A Figura 3.2.2.1 apresenta o ciclo atual de manutenção externa pela perspectiva de Geraldo: seis etapas — preparar, escolher oficina, aprovar e enviar, acompanhar reparo, tratar atraso, retornar e encerrar. Essas etapas cobrem o recebimento da demanda até a conferência do equipamento e a confirmação da regularização fiscal. O cenário usa o motor fictício AT-001 e a Oficina Skibidy, nome fictício sem relação com fornecedor real.
+
+![Jornada atual de Geraldo, da demanda ao encerramento fiscal, com seis fases e curva emocional](../assets/ux/jornada-atual-geraldo.png)
+
+*Figura 3.2.2.1 — Jornada atual de Geraldo. Fonte: elaboração própria com base no kick-off da Cerradinho, na persona da seção 3.2.1 e no TAPI [6].*
+
+O mapa relaciona as responsabilidades e dificuldades relatadas pelo parceiro aos objetivos de Geraldo, organizando o ciclo em seis etapas. Pensamentos, sentimentos e curva emocional são interpretações ilustrativas, não resultados de entrevistas ou medições. O responsável pela embalagem e a rotina de confirmação de chegada ao fornecedor permanecem a validar com o parceiro.
+
+Os principais insights são:
+
+- **Fragmentação:** dados distribuídos entre SAP, planilhas, e-mail e telefone exigem conciliação manual; reunir os registros facilita o acompanhamento por responsável.
+- **Dependência do fornecedor:** informações sobre reparo e previsão de retorno dependem de respostas externas; o histórico de cumprimento pode apoiar decisões diante de atraso.
+- **Risco de esquecimento:** itens menos críticos podem deixar de receber acompanhamento; a régua fiscal não informa onde estão nem o andamento do reparo.
+- **Fechamento físico e fiscal separados:** receber o equipamento não encerra a remessa; a conferência e a confirmação do lançamento fiscal precisam estar relacionadas para evitar pendências.
+
+#### Jornada futura de Geraldo
+
+A Figura 3.2.2.2 acompanha Geraldo (P1) nas seis fases da jornada atual, com o motor fictício AT-001 e a Oficina Skibidy. Gestor, Fiscal, transportadora e fornecedor aparecem nos pontos de contato; a última linha explicita as responsabilidades do projeto.
+
+![Jornada futura de Geraldo: seis fases, responsabilidades e comparação emocional](../assets/ux/jornada-futura-geraldo.png)
+
+*Figura 3.2.2.2 — Jornada futura de Geraldo. Fonte: elaboração própria com base no kick-off da Cerradinho, na persona da seção 3.2.1 e no TAPI [6].*
+
+A experiência é proposta; sentimentos e curvas são ilustrativos. A posição semanal e datada não comprova entrega nem andamento do reparo. Perda de sinal GNSS e falta de rede são situações distintas: a última posição válida é preservada, e eventos sem conexão aguardam envio.
+
+| O que muda | Requisitos |
+|---|---|
+| Dados reunidos por equipamento e responsável. | Cadastro do ciclo, RF002; vínculo exclusivo, RF003–RF004; dias desde a NF, RF012. |
+| Consulta com indicação de atualidade e falhas. | Posição datada, RF005; consulta de status, RF015; fila sem rede, RF010; perda e recuperação GNSS, RF031. |
+| Pendências orientam a decisão do PCM. | Alerta de atraso, RF013; tratamento com justificativa, RF023; escalonamento por e-mail, RF030. |
+| Retorno conferido até a baixa fiscal e reutilização. | Encerramento condicionado, RF016; histórico do dispositivo, RF017; retorno e baixa separados, RF029. |
+
+Embalagem e confirmação manual de entrega exigem validação. Histórico de fornecedores, consulta de estoque, execução da prorrogação e registro de quem recebeu na oficina são hipóteses sem RF específico; sua inclusão depende de validação e compatibilidade com os RNFs.
+
+#### Storyboard
+
+O storyboard acompanha Geraldo, analista de PCM responsável pelos equipamentos enviados à manutenção externa. A história mostra sua atuação após uma bomba centrífuga ultrapassar o prazo de retorno combinado com a oficina e o GuaráTracking emitir um alerta de atraso, permitindo que ele consulte os dados e tome uma decisão.
+
+<div align="center">
+  <p><strong>Figura 3.2.2.3. - Storyboard do Geraldo</strong></p>
+  <img
+    src="../assets/3-desenvolvimento-resultados/guaratracking-storyboard.png"
+    alt="Storyboard do Geraldo- GuaráTracking"
+    width="100%"
+  >
+  <p><em>Fonte: elaboração do Grupo G01 (2026), com base no template da disciplina.</em></p>
+</div>
+
+
 
 ## 3.3. Solução Técnica	
 
 ### 3.3.1. Requisitos Funcionais (sprint 1, refinar e atualizar até sprint 5)
 
-Os requisitos abaixo saem do TAPI (MVP 1 a 7 e fluxo básico), da avaliação do protótipo e do kick-off com a Cerradinho (16/10/2026). A prioridade segue o que o parceiro chamou de indispensável no kick-off: alerta de lacre, alerta de prazo e geolocalização. Um RF só passa a `Simulado no Wokwi` depois que o caso de teste correspondente (seção 3.4.1) é executado e passa. Fica `Parcialmente simulado` quando parte dos CTs passou e outra parte foi reprovada ou bloqueada (ver a RTM na seção 3.3.4). Os IDs estão congelados: um RF removido não libera o número, e um RF novo entra no fim da lista.
+Os requisitos abaixo saem do TAPI (MVP 1 a 7 e fluxo básico), da avaliação do protótipo e do kick-off com a Cerradinho (16/10/2026). A prioridade segue o que o parceiro chamou de indispensável no kick-off: alerta de lacre, alerta de prazo e geolocalização. Um RF só passa a `Simulado no Wokwi` depois que o caso de teste correspondente (seção 3.4.1) é executado e passa. Fica `Parcialmente simulado` quando parte dos CTs passou e outra parte foi reprovada ou bloqueada (ver a RTM na seção 3.3.4). Os IDs estão congelados: um RF removido não libera o número, e um RF novo entra no fim da lista. Até 03/11/2026 nenhum RF foi verificado no protótipo físico, porque os CTs físicos ainda não foram executados; a coluna Status reflete só o simulador. A coluna "Wokwi V2 e protótipo físico" separa o que a rodada V2 da seção 3.4.1 (30/10/2026) comprovou no simulador do que ainda depende do hardware: todo RF continua com o protótipo físico pendente, e nada nela vale como validação no hardware. Essa rodada foi feita antes de o firmware passar a ligar sem ciclo (RN21); as células marcadas "rodada de 02 e 03/11/2026" vêm da repetição com o boot sem ciclo, e os CT36 a CT42 vêm da execução da interface local do V2.
 
-| ID    | Descrição | Origem | Prioridade | Status |
-|-------|-----------|--------|------------|--------|
-| RF001 | O sistema deve cadastrar o equipamento com identificador próprio, descrição e foto. | TAPI MVP 1 | Alta | Planejado |
-| RF002 | O sistema deve abrir um ciclo de manutenção externa com NF de remessa (número e data de emissão), fornecedor, responsável e prazo previsto de retorno. | TAPI MVP 3 | Alta | Planejado |
-| RF003 | O sistema deve vincular um dispositivo a um ciclo de manutenção aberto. | TAPI MVP 3 | Alta | Planejado |
-| RF004 | O sistema deve recusar o vínculo de um dispositivo que já está em um ciclo ativo. | Fluxo básico | Alta | Simulado no Wokwi |
-| RF005 | O sistema deve coletar a posição GNSS na rotina de envio e guardar a última localização válida com data e hora. | TAPI MVP 2 | Alta | Parcialmente simulado |
-| RF006 | O sistema deve monitorar o lacre e detectar sua abertura ou rompimento. | TAPI MVP 5 | Alta | Parcialmente simulado |
-| RF007 | O sistema deve registrar a retirada autorizada e a reaplicação do lacre sem gerar alerta de violação. | TAPI MVP 5 | Alta | Simulado no Wokwi |
-| RF008 | O sistema deve conectar-se à rede Wi‑Fi e reconectar automaticamente quando a conexão cair. | Avaliação do protótipo | Alta | Planejado |
-| RF009 | O sistema deve publicar status e eventos no broker MQTT, em JSON, no tópico do dispositivo. | TAPI MVP 6 | Alta | Planejado |
-| RF010 | O sistema deve guardar os eventos gerados sem conexão e enviá-los na ordem em que ocorreram quando a conexão voltar. | TAPI MVP 5 | Alta | Parcialmente simulado |
-| RF011 | O sistema deve enviar um status periódico, semanal por padrão e configurável. | TAPI MVP 4 | Alta | Simulado no Wokwi |
-| RF012 | O sistema deve calcular os dias fora a partir da data de emissão da NF de remessa. | TAPI MVP 4; Kick-off com a Cerradinho (16/10/2026) | Alta | Planejado |
-| RF013 | O sistema deve emitir um alerta de atraso quando os dias fora passam do prazo previsto de retorno. | TAPI MVP 3 | Alta | Simulado no Wokwi |
-| RF014 | O sistema deve emitir um alerta de permanência quando os dias fora atingem o limiar do ciclo (150 dias por padrão, configurável). | TAPI MVP 4 | Alta | Simulado no Wokwi |
-| RF015 | O sistema deve listar os equipamentos fora com última localização válida, dias fora, prazo, bateria e estado do lacre. | TAPI MVP 6 | Alta | Planejado |
-| RF016 | O sistema deve encerrar o ciclo somente com a NF de retorno lançada e o lacre fechado. | Fluxo básico | Alta | Simulado no Wokwi |
-| RF017 | O sistema deve liberar o dispositivo do ciclo encerrado para um novo vínculo, preservando o histórico. | TAPI MVP 3; fluxo básico | Alta | Planejado |
-| RF018 | O sistema deve notificar o responsável do ciclo a cada alerta, com o e-mail como canal inicial. | Fluxo básico; Kick-off com a Cerradinho (16/10/2026) | Alta | Planejado |
-| RF019 | O sistema deve medir o nível de bateria e enviá-lo em cada mensagem. | TAPI MVP 6 | Média | Simulado no Wokwi |
-| RF020 | O sistema deve cadastrar os dispositivos na plataforma, cada um com identificador e credencial próprios. | TAPI MVP 3 | Média | Planejado |
-| RF021 | O sistema deve atribuir a cada usuário um `usuario_id` único e permanente, gerado pela plataforma, vinculado à sua credencial individual e ao seu perfil de acesso, e autenticar esse usuário para acessar o painel. | TAPI MVP 6 | Média | Planejado |
-| RF022 | O sistema deve exibir gráficos e mapa com equipamentos por faixa de dias fora, alertas por tipo e última posição de cada equipamento. | TAPI MVP 6 | Média | Planejado |
-| RF023 | O sistema deve atribuir cada alerta ao responsável pelo ciclo e permitir que esse responsável, após autenticação, registre a ciência e o tratamento com decisão, data e justificativa. | Fluxo básico | Média | Planejado |
-| RF024 | O sistema deve oferecer uma API autenticada e documentada para consulta dos dados por ferramentas de BI. | TAPI MVP 6 | Média | Planejado |
-| RF025 | O sistema deve emitir um alerta quando um dispositivo passa do período esperado sem se comunicar. | Kick-off com a Cerradinho (16/10/2026) | Média | Planejado |
-| RF026 | O sistema deve emitir um alerta quando os dias fora atingem a data limite legal do ciclo. | Kick-off com a Cerradinho (16/10/2026) | Média | Planejado |
-| RF027 | O sistema deve emitir um alerta quando o nível de bateria fica abaixo do limite mínimo. | TAPI MVP 6 | Média | Simulado no Wokwi |
-| RF028 | O sistema deve avisar antecipadamente ao vencimento do prazo de retorno, com antecedência configurada pelo parceiro. | Necessidade das personas; VPC | Média | Planejado (não simulado) |
-| RF029 | O sistema deve marcar retorno físico recebido e pendência de baixa fiscal como estados distintos, sem encerrar o ciclo. | Kick-off; P2-C2 | Alta | Planejado (não simulado) |
+| ID    | Descrição | Origem | Prioridade | Status | Wokwi V2 e protótipo físico |
+|-------|-----------|--------|------------|--------|---|
+| RF001 | O sistema deve cadastrar o equipamento com identificador próprio, descrição e foto. | TAPI MVP 1 | Alta | Planejado | Sem CT no V2; protótipo físico pendente |
+| RF002 | O sistema deve abrir um ciclo de manutenção externa com NF de remessa (número e data de emissão), fornecedor, responsável e prazo previsto de retorno. | TAPI MVP 3 | Alta | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT39: registro, exibição e recusas da NF da remessa); fornecedor, responsável e prazo previsto não exercitados; protótipo físico pendente |
+| RF003 | O sistema deve vincular um dispositivo a um ciclo de manutenção aberto. | TAPI MVP 3 | Alta | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT14: novo vínculo após o encerramento; CT44: vínculo no boot sem ciclo, rodada de 02 e 03/11/2026); protótipo físico pendente |
+| RF004 | O sistema deve recusar o vínculo de um dispositivo que já está em um ciclo ativo. | Fluxo básico | Alta | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT15: não abre um segundo ciclo; a recusa `VINCULO_RECUSADO` não é alcançável por nenhuma entrada e fica sem teste); protótipo físico pendente |
+| RF005 | O sistema deve coletar a posição GNSS na rotina de envio e guardar a última localização válida com data e hora. | TAPI MVP 2 | Alta | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT43: idade da última posição no LCD em segundos e minutos, rodada de 02 e 03/11/2026); horas, dias e restauração após reinício pendentes; protótipo físico pendente |
+| RF006 | O sistema deve monitorar o lacre e detectar sua abertura ou rompimento. | TAPI MVP 5 | Alta | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT05, CT07, CT38); CT18 repetido no V2 REPROVADO (rodada de 02 e 03/11/2026): sem rede, pulsos curtos lidos como abertura; protótipo físico pendente |
+| RF007 | O sistema deve registrar a retirada autorizada e a reaplicação do lacre sem gerar alerta de violação. | TAPI MVP 5 | Alta | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT06, CT07, CT11; CT38 e CT42 para a retirada autorizada sem alarme e a mensagem de lacre reaplicado); protótipo físico pendente |
+| RF008 | O sistema deve conectar-se à rede Wi‑Fi e reconectar automaticamente quando a conexão cair. | Avaliação do protótipo | Alta | Planejado | Sem CT no V2; protótipo físico pendente |
+| RF009 | O sistema deve publicar status e eventos no broker MQTT, em JSON, no tópico do dispositivo. | TAPI MVP 6 | Alta | Planejado | Sem CT no V2; protótipo físico pendente |
+| RF010 | O sistema deve guardar os eventos gerados sem conexão e enviá-los na ordem em que ocorreram quando a conexão voltar. | TAPI MVP 5 | Alta | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT08, CT10, CT42); no CT08 a violação foi guardada na fila, mas a tela "Sem sinal" não foi executada; CT09 bloqueado; protótipo físico pendente |
+| RF011 | O sistema deve enviar um status periódico, semanal por padrão e configurável. | TAPI MVP 4 | Alta | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT02); protótipo físico pendente |
+| RF012 | O sistema deve calcular os dias fora a partir da data de emissão da NF de remessa. | TAPI MVP 4; Kick-off com a Cerradinho (16/10/2026) | Alta | Planejado | Sem CT no V2; protótipo físico pendente |
+| RF013 | O sistema deve emitir um alerta de atraso quando os dias fora passam do prazo previsto de retorno. | TAPI MVP 3 | Alta | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT03, CT37); protótipo físico pendente |
+| RF014 | O sistema deve emitir um alerta de permanência quando os dias fora atingem o limiar do ciclo (150 dias por padrão, configurável). | TAPI MVP 4 | Alta | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT04 com limiar 10 e com 150, rodada de 02 e 03/11/2026); protótipo físico pendente |
+| RF015 | O sistema deve listar os equipamentos fora com última localização válida, dias fora, prazo, bateria e estado do lacre. | TAPI MVP 6 | Alta | Planejado | Sem CT no V2; protótipo físico pendente |
+| RF016 | O sistema deve encerrar o ciclo somente com a NF de retorno lançada e o lacre fechado. | Fluxo básico | Alta | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT14, CT16); protótipo físico pendente |
+| RF017 | O sistema deve liberar o dispositivo do ciclo encerrado para um novo vínculo, preservando o histórico. | TAPI MVP 3; fluxo básico | Alta | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT14); histórico após corte de energia pendente; protótipo físico pendente |
+| RF018 | O sistema deve notificar o responsável do ciclo a cada alerta, com o e-mail como canal inicial. | Fluxo básico; Kick-off com a Cerradinho (16/10/2026) | Alta | Planejado | Sem CT no V2; protótipo físico pendente |
+| RF019 | O sistema deve medir o nível de bateria e enviá-lo em cada mensagem. | TAPI MVP 6 | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT12, CT13, CT23); diagnóstico elétrico da bateria depende do protótipo físico |
+| RF020 | O sistema deve cadastrar os dispositivos na plataforma, cada um com identificador e credencial próprios. | TAPI MVP 3 | Média | Planejado | Sem CT no V2; protótipo físico pendente |
+| RF021 | O sistema deve atribuir a cada usuário um `usuario_id` único e permanente, gerado pela plataforma, vinculado à sua credencial individual e ao seu perfil de acesso, e autenticar esse usuário para acessar o painel. | TAPI MVP 6 | Média | Planejado | Sem CT no V2; protótipo físico pendente |
+| RF022 | O sistema deve exibir gráficos e mapa com equipamentos por faixa de dias fora, alertas por tipo e última posição de cada equipamento. | TAPI MVP 6 | Média | Planejado | Sem CT no V2; protótipo físico pendente |
+| RF023 | O sistema deve atribuir cada alerta ao responsável pelo ciclo e permitir que esse responsável, após autenticação, registre a ciência e o tratamento com decisão, data e justificativa. | Fluxo básico | Média | Planejado | Sem CT no V2; protótipo físico pendente |
+| RF024 | O sistema deve oferecer uma API autenticada e documentada para consulta dos dados por ferramentas de BI. | TAPI MVP 6 | Média | Planejado | Sem CT no V2; protótipo físico pendente |
+| RF025 | O sistema deve emitir um alerta quando um dispositivo passa do período esperado sem se comunicar. | Kick-off com a Cerradinho (16/10/2026) | Média | Planejado | Sem CT no V2; protótipo físico pendente |
+| RF026 | O sistema deve emitir um alerta quando os dias fora atingem a data limite legal do ciclo. | Kick-off com a Cerradinho (16/10/2026) | Média | Planejado | Sem CT no V2; protótipo físico pendente |
+| RF027 | O sistema deve emitir um alerta quando o nível de bateria fica abaixo do limite mínimo. | TAPI MVP 6 | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT12, CT13); protótipo físico pendente |
+| RF028 | O sistema deve avisar antecipadamente ao vencimento do prazo de retorno, com antecedência configurada pelo parceiro. | Necessidade das personas; VPC | Média | Planejado (não simulado) | Sem CT no V2; protótipo físico pendente |
+| RF029 | O sistema deve marcar retorno físico recebido e pendência de baixa fiscal como estados distintos, sem encerrar o ciclo. | Kick-off; P2-C2 | Alta | Planejado (não simulado) | Sem CT no V2; protótipo físico pendente |
+| RF030 | O sistema deve escalar o alerta por e-mail conforme os dias restantes para o vencimento, do requisitante ao coordenador e depois ao diretor, nos moldes do escalonamento que o parceiro já usa. | Kick-off com a Cerradinho (16/10/2026) | Média | Planejado (não simulado) | Sem CT no V2; protótipo físico pendente |
+| RF031 | O sistema deve registrar a perda da posição GNSS uma única vez, no início da falha e com o motivo, e a recuperação uma única vez, no retorno da posição, com o tempo sem posição e a contagem de coletas sem fix; os dois eventos são não críticos e seguem a fila sem conexão (RN22). | Firmware V2 (`GNSS_SEM_FIX`, `GNSS_RECUPERADO`); TAPI MVP 2; persona P1-C4 Falha | Média | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT45, rodada de 02 e 03/11/2026): só o motivo `sem_fix` é alcançável, e `sem_dados` e `sinal_fraco` dependem do protótipo físico; protótipo físico pendente |
+| RF032 | O dispositivo deve sinalizar localmente a violação do lacre: LED vermelho com pulso curto a cada segundo enquanto o lacre estiver violado e buzzer intermitente por no máximo 30 s, parando antes se o lacre fechar. Duração de 30 s: `PENDENTE DE VALIDAÇÃO` | TAPI MVP 5; rubrica do protótipo físico (Artefato 5) | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT38: alarme na violação, parada ao fechar e aos 30 s, LED pulsando com o lacre violado, [vídeo do LED](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38-led.mkv)); a cadência elétrica do buzzer não foi medida; protótipo físico pendente |
+| RF033 | O dispositivo deve registrar a NF da remessa informada pela plataforma (simulada pelo comando `REMESSA` na Serial), com até 15 caracteres entre letras, dígitos, hífen, ponto e barra, somente com ciclo ativo, exibi-la no LCD e recusar entrada inválida ou sem ciclo, preservando a NF anterior. | Firmware V2; TAPI MVP 3; persona P1-C1 | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT39); a plataforma ainda não envia a NF; protótipo físico pendente |
+| RF034 | O dispositivo deve permitir consultar no LCD, por dois botões de navegação circular, a NF da remessa, o prazo (dias restantes, vence hoje, atraso ou sem ciclo ativo), a última posição, a bateria e o estado do lacre, e apagar o LCD e a luz de fundo após 15 s sem interação, com o primeiro toque só acendendo a tela. Tempo de 15 s: `PENDENTE DE VALIDAÇÃO` | Firmware V2; TAPI MVP 6; persona P1-C2 | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT36, CT37, CT40); a economia de energia do apagamento não foi medida; protótipo físico pendente |
+| RF035 | O dispositivo deve mostrar no LCD a contagem "segure mais N s" ao segurar os botões de autorizar, iniciar e encerrar o ciclo, cancelar a ação se o botão for solto antes de 3 s e exibir por 2 s uma mensagem para lacre reaplicado, lacre fechado após violação, sem sinal e sinal recuperado. | Firmware V2; persona P1-C3 | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT41, CT42); a mensagem "enviados" é reenvio simulado, sem confirmação de servidor; protótipo físico pendente |
 
 Itens técnicos da avaliação: coleta de dados via sensor (RF005, RF006, RF019) · definição de devices na plataforma (RF003, RF020) · chave de identificação de usuário e acesso ao dashboard (RF021) · conexão Wi‑Fi (RF008) · formatação de dados para MQTT (RF009) · representação gráfica dos dados coletados (RF015, RF022).
 
@@ -355,18 +411,18 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 | ID   | Descrição | Origem | RF associado |
 |------|-----------|--------|--------------|
 | RN01 | Um dispositivo só pode estar vinculado a um ciclo ativo por vez, e um equipamento só pode ter um ciclo ativo por vez. | Fluxo básico | RF003, RF004 |
-| RN02 | Um ciclo só pode ser aberto com NF de remessa (número e data de emissão), fornecedor, responsável e prazo previsto de retorno preenchidos. | TAPI MVP 3 | RF002 |
+| RN02 | Um ciclo só pode ser aberto com NF de remessa (número e data de emissão), fornecedor, responsável e prazo previsto de retorno preenchidos. | TAPI MVP 3 | RF002, RF033 |
 | RN03 | O limiar de permanência é de 150 dias por padrão e pode ser alterado em cada ciclo para qualquer número inteiro de dias maior que zero. | TAPI MVP 4; Kick-off com a Cerradinho (16/10/2026) | RF014 |
 | RN04 | Atraso e permanência são alertas distintos, podem estar ativos ao mesmo tempo e cada um é emitido uma única vez por ciclo. | TAPI MVP 3 e 4 | RF013, RF014 |
-| RN05 | A abertura do lacre sem autorização vigente é violação crítica e é enviada na hora, fora da rotina de status periódico. | TAPI MVP 5 | RF006 |
+| RN05 | A abertura do lacre sem autorização vigente é violação crítica e é enviada na hora, fora da rotina de status periódico. | TAPI MVP 5 | RF006, RF032 |
 | RN06 | A autorização de retirada vale por 3 dias a partir do registro; a abertura do lacre depois desse prazo é tratada como violação. Prazo de 3 dias: `PENDENTE DE VALIDAÇÃO` | TAPI MVP 5 | RF007 |
 | RN07 | O status periódico é enviado a cada 7 dias por padrão, com frequência configurável até diária. | TAPI MVP 4 | RF011 |
-| RN08 | Uma posição GNSS é válida quando o receptor tem fix, a posição traz data e hora do próprio GNSS e o HDOP é de no máximo 2,0. A última localização válida só é atualizada com uma posição válida; sem ela, a anterior é mantida. Última comunicação e última localização válida são registradas em campos distintos. HDOP máximo de 2,0: `PENDENTE DE VALIDAÇÃO` | TAPI MVP 6 | RF005, RF015 |
-| RN09 | Sem conexão, o dispositivo guarda até 8 eventos; com a fila cheia, descarta o evento não crítico mais antigo e preserva individualmente as violações enquanto houver espaço; excedentes críticos são **agregados por quantidade e primeira/última ocorrência**, sem manter todos os payloads individuais. Cada evento individual mantém a hora em que ocorreu, e a plataforma registra a hora de recebimento à parte. Capacidade de 8 eventos: `PENDENTE DE VALIDAÇÃO` | TAPI MVP 5 | RF010 |
+| RN08 | Uma posição GNSS é válida quando o receptor tem fix, a posição traz data e hora do próprio GNSS e o HDOP é de no máximo 2,0. A última localização válida só é atualizada com uma posição válida; sem ela, a anterior é mantida. Última comunicação e última localização válida são registradas em campos distintos. HDOP máximo de 2,0: `PENDENTE DE VALIDAÇÃO` | TAPI MVP 6 | RF005, RF015, RF031 |
+| RN09 | Sem conexão, o dispositivo guarda até 8 eventos; com a fila cheia, descarta o evento não crítico mais antigo e preserva individualmente as violações enquanto houver espaço; excedentes críticos são **agregados por quantidade e primeira/última ocorrência**, sem manter todos os payloads individuais. Cada evento individual mantém a hora em que ocorreu, e a plataforma registra a hora de recebimento à parte. Capacidade de 8 eventos: `PENDENTE DE VALIDAÇÃO` | TAPI MVP 5 | RF010, RF031 |
 | RN10 | O alerta de bateria baixa é emitido uma vez quando o nível fica abaixo de 20% e só volta a ser emitido depois que o nível passa de 25%. Leitura zero é falha do sensor, não bateria vazia. Limites de 20% e 25%: `PENDENTE DE VALIDAÇÃO` | TAPI MVP 6 | RF019, RF027 |
 | RN11 | O encerramento do ciclo é recusado enquanto o lacre estiver aberto ou a NF de retorno não estiver lançada, e o histórico do ciclo encerrado nunca é apagado. | Fluxo básico | RF016, RF017 |
 | RN12 | Uma prorrogação (retorno e nova remessa simbólicos) abre um novo ciclo do mesmo equipamento e do mesmo dispositivo, e os dias fora passam a contar da emissão da nova NF de remessa. | Kick-off com a Cerradinho (16/10/2026) | RF012, RF017 |
-| RN13 | Os limites fiscais variam com UF, tipo de operação, legislação vigente e eventuais prorrogações; a plataforma só aplicará regra parametrizada e validada pelo Fiscal. Os exemplos históricos de 270/360 dias **não são prazos universais** e estão `PENDENTES DE VALIDAÇÃO` | RCTE/GO (Decreto nº 4.852/1997), art. 79, I, "s", 1 (270 dias, saída interna) e Anexo IX, art. 6º, IV (360 dias, saída interestadual), na redação do Decreto nº 7.815/2013; Kick-off com a Cerradinho (16/10/2026) | RF012, RF026 |
+| RN13 | Os limites fiscais variam com UF, tipo de operação, legislação vigente e eventuais prorrogações; a plataforma só aplicará regra parametrizada e validada pelo Fiscal. No kick-off, o parceiro confirmou 270 dias para remessa dentro de GO e 360 dias para fora de GO como prazos do caso apresentado; eles **não são prazos universais**, e a parametrização final fica sob validação do Fiscal | RCTE/GO (Decreto nº 4.852/1997), art. 79, I, "s", 1 (270 dias, saída interna) e Anexo IX, art. 6º, IV (360 dias, saída interestadual), na redação do Decreto nº 7.815/2013; Kick-off com a Cerradinho (16/10/2026) | RF012, RF026 |
 | RN14 | Um dispositivo é considerado sem comunicação quando passa de dois intervalos de status periódico sem enviar nenhuma mensagem (14 dias com o padrão de 7 dias); o alerta é emitido uma vez e só volta a ser emitido depois de uma nova comunicação. Dois intervalos: `PENDENTE DE VALIDAÇÃO` | Kick-off com a Cerradinho (16/10/2026) | RF025 |
 | RN15 | O painel e a API só respondem a usuário autenticado; sem credencial válida, o acesso é negado e nenhum dado é exibido. | TAPI MVP 6 | RF021, RF024 |
 | RN16 | Mensagem de dispositivo não cadastrado ou com credencial inválida é rejeitada e não altera nenhum ciclo. | TAPI MVP 3 | RF020 |
@@ -374,16 +430,22 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 | RN18 | Cada alerta é atribuído ao responsável do ciclo. Esse responsável deve registrar, após autenticação, a ciência e uma decisão de tratamento com justificativa em até 1 dia útil após a emissão. O prazo de 1 dia útil é `PENDENTE DE VALIDAÇÃO` com a Cerradinho. O registro inclui o `usuario_id` do responsável e data/hora, é preservado no histórico e não substitui registros anteriores; alertas sem tratamento dentro do prazo permanecem pendentes e são destacados no painel. | RF018, RF023; Fluxo básico. Prazo de 1 dia útil: `PENDENTE DE VALIDAÇÃO` com a Cerradinho | RF018, RF021, RF023 |
 | RN19 | O alerta preventivo é diferente do atraso e requer antecedência configurada por ciclo; sem parâmetro aprovado, não emitir nem apresentar como implementado. | VPC; hipótese UX | RF013, RF028 |
 | RN20 | Retorno físico registrado não significa baixa fiscal. O ciclo continua pendente até registro válido da NF de retorno e conferência do lacre. | Fluxo Fiscal; P2-C2 | RF016, RF029 |
+| RN21 | O dispositivo liga sem ciclo ativo (`ciclo_ativo=false`, `dias_fora=0`) e só abre o ciclo quando o responsável mantém o botão de ciclo pressionado por 3 s (vínculo); sem ciclo ativo, os dias fora não são contados. Gesto de 3 s: `PENDENTE DE VALIDAÇÃO` | TAPI MVP 3; firmware V2 | RF002, RF003 |
+| RN22 | A perda da posição GNSS gera um único `GNSS_SEM_FIX` na primeira coleta sem posição válida, com o motivo (`sem_fix`, `sem_dados` ou `sinal_fraco`), sem repetir nas coletas seguintes; o retorno gera um único `GNSS_RECUPERADO`. Os dois são não críticos e entram na fila da RN09. Critérios dos motivos (5 s sem dados NMEA; até 3 satélites visíveis é sinal fraco): `PENDENTE DE VALIDAÇÃO` | TAPI MVP 2; firmware V2 (`include/gnss_rules.h`) | RF031, RF005, RF010 |
 
 **Compatibilidade entre as regras de negócio e o protótipo atual.** A tabela abaixo mostra como o firmware da seção 3.4.1 trata as regras que ele já cobre; as diferenças indicadas não representam requisitos já atendidos.
 
 | Regra | Situação no protótipo atual |
 |---|---|
-| RN05 — envio da violação fora da rotina periódica | Preservar registro local independente de GNSS/rede. Entrega ao servidor ainda não implementada; manter limites de latência pendentes com o parceiro. “Na hora” não define SLA nem garante entrega sem conexão. |
-| RN08 — data/hora GNSS e HDOP máximo de 2,0 | O firmware atual verifica validade, idade e satélites, mas não aplica esse limite de HDOP nem persiste data/hora absoluta. Registrar adequação futura do driver LC76G-PA [24]; limite de HDOP ainda pendente. |
+| RN05 — envio da violação fora da rotina periódica | Preservar registro local independente de GNSS/rede. Entrega ao servidor ainda não implementada. No kick-off, o parceiro pediu o aviso “o mais imediato possível”, aceitando 10 a 30 minutos; isso é referência, não SLA formal, e não garante entrega sem conexão. |
+| RN08 — data/hora GNSS e HDOP máximo de 2,0 | O firmware atual verifica validade, idade e satélites, mas não aplica esse limite de HDOP nem persiste data/hora absoluta. Registrar adequação futura do driver LC76G-PA [24]; limite de HDOP ainda pendente. O firmware V2 passou a registrar a perda e o retorno da posição (RN22), mas isso não substitui o critério de HDOP. |
 | RN09 — fila de 8 com prioridade para críticos | Implementada na fila de eventos sem rede (8 eventos, descarte do não crítico mais antigo, reenvio na ordem com `dia_ocorrencia`). Com a fila só de violações, a 9ª violação em diante entra num único registro de resumo (`VIOLACAO_LACRE_RESUMO`, com quantidade e primeira/última ocorrência), persistido na NVS e enviado depois das 8 no reenvio; o resumo preserva somente contagem e extremos temporais, **não cada violação individual**. Só eventos não críticos que não cabem são contados em `perdidos`. A política de agregação deve ser confirmada com o parceiro. O registro local de 16 entradas na NVS (CT21) continua separado. |
 | RN10 — leitura zero considerada falha | Implementada: ADC = 0 gera `SENSOR_BATERIA_FALHA` e nenhum `BATERIA_BAIXA` (CT13). No dispositivo físico, o diagnóstico elétrico do divisor ainda depende do CT30 previsto no [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md). |
-| RN11 — encerramento exige lacre fechado e NF de retorno | As duas recusas foram verificadas no CT16. No simulador, `NF` no Serial representa o lançamento da NF de retorno e segurar `BTN_CICLO` por 2 s solicita o encerramento. No reteste de 23/10/2026, o CT14 confirmou JSON com ciclo inativo e dias zero, reutilização e contador acumulado. A persistência do histórico após corte de energia não foi verificada. |
+| RN06 — autorização de retirada por 3 dias | Implementada no `demo` com janela de 3 dias simulados (1 s = 1 dia): a abertura 4,5 s depois da autorização gerou violação (CT07). O prazo de 3 dias é valor de teste, sem confirmação do parceiro; a autorização ainda é um botão de bancada, sem canal da plataforma. |
+| RN11 — encerramento exige lacre fechado e NF de retorno | As duas recusas foram verificadas no CT16. No simulador, `NF` no Serial representa o lançamento da NF de retorno e segurar `BTN_CICLO` por 2 s (V1) ou 3 s (V2) solicita o encerramento. No reteste de 23/10/2026, o CT14 confirmou JSON com ciclo inativo e dias zero, reutilização e contador acumulado. A persistência do histórico após corte de energia não foi verificada. |
+| RN14 — dispositivo sem comunicação | Não implementada no firmware: não há controle de silêncio do dispositivo nem CT. Depende da plataforma, que recebe as mensagens. |
+| RN21 — boot sem ciclo e vínculo por 3 s | Implementada no firmware V2. O `STATUS` de boot informa `ciclo_ativo=false`, e o ciclo 1 só começa com CICLO segurado por 3 s. CT44 aprovado no simulador na rodada de 02 e 03/11/2026; a rodada V2 de 30/10/2026 foi anterior a esse comportamento. |
+| RN22 — eventos de falha do GNSS | Implementada no firmware V2 (`GNSS_SEM_FIX` e `GNSS_RECUPERADO`, não críticos). CT45 aprovado no simulador para o motivo `sem_fix` (rodada de 02 e 03/11/2026). No simulador, o chip GPS só alterna entre fix e sem fix, então os motivos `sem_dados` e `sinal_fraco` só podem ser verificados no protótipo físico. |
 
 ### 3.3.3. Requisitos Não Funcionais — ISO/IEC 25010:2011 (sprints 2 a 5)
 
@@ -395,8 +457,8 @@ As oito características de qualidade do produto adotadas aqui seguem a **ISO/IE
 |---|---|---|---|
 | **Adequação funcional — RNF01** | O TAPI [6] (MVP 2–6) prevê localização válida, vínculo TAG–ciclo–NF, histórico e alertas de prazo e lacre; o kick-off [33] destacou equipamentos esquecidos e retorno físico sem baixa fiscal. | A completude das funções permite a P1 Geraldo acompanhar pendências, a P2 Clarice reconciliar retornos e a P3 Izidio consolidar o histórico. Relação: RF002, RF005, RF006, RF014, RF016, RF017 e RF029. | A cobertura funcional depende de verificação dos fluxos e das regras de encerramento; funcionalidades planejadas não são consideradas implementadas. |
 | **Eficiência de desempenho — RNF02** | O TAPI [6] (MVP 4 e 7) prevê status semanal configurável e ensaio de consumo. No kick-off [33], o parceiro indicou **autonomia de até 1 ano** como referência para cobrir cerca de **99% dos períodos fora**, sem fixar meta formal. Para violação do lacre, pediu aviso o mais imediato possível e considerou **10 a 30 minutos aceitáveis** como referência, sem esperar o ciclo semanal [33]. | P1 Geraldo precisa de informação útil antes que a bateria se esgote e de alerta de lacre em tempo oportuno. Tempo de resposta (detecção local versus entrega ao servidor), uso de GNSS, transmissão e repouso determinam latência e consumo. Relação: RF005, RF006, RF008, RF011, RF019, RF027, RN05, RN07 e RN08. | Autonomia mínima, condições de ensaio e limite de latência ponta a ponta **pendentes de validação**. Sem cobertura, a ocorrência é armazenada para envio posterior; a faixa de 10–30 min não é garantia offline. Consumo físico exige CT27, e latências exigem ensaio separado de detecção e entrega. |
-| **Compatibilidade — RNF03** | O TAPI [6] (MVP 6) requer API para BI. No kick-off [33], foram mencionados **SAP** (remessas, NF e retorno), **Gama Soft** no fiscal e o **BI da diretoria**; o campo complementar da NF foi considerado para levar o número da TAG. | A interoperabilidade entre dados de ciclo, NF e TAG deve permitir a P2 Clarice conferir pendências e a P3 Izidio consumir indicadores sem recadastro. Relação: RF002, RF017, RF024 e RN15. | Contrato, autenticação e esquema de dados da API ainda não foram definidos; a solução não declara integração produtiva com SAP, Gama Soft ou BI corporativo. |
-| **Usabilidade — RNF04** | O TAPI [6] exige consulta de status, localização e alertas; o kick-off [33] descreveu o acompanhamento manual. Os cenários das personas distinguem tarefas de PCM, Fiscal e Logística. | P1 Geraldo precisa priorizar pendências; P2 Clarice, diferenciar retorno físico de baixa fiscal; P3 Izidio, consultar histórico. A interface deve reduzir ambiguidades e erros de interpretação. Relação: RF015, RF018, RF022, RF023 e RF029. | Tempo de execução, acessibilidade e compreensão das tarefas não foram testados com usuários reais. |
+| **Compatibilidade — RNF03** | O TAPI [6] (MVP 6) requer API para BI. No kick-off [33], foram mencionados **SAP** (remessas, NF e retorno), **Gama Soft** no fiscal e o **BI da diretoria**; o campo complementar da NF foi considerado para levar o número da TAG. | A interoperabilidade entre dados de ciclo, NF e TAG deve permitir a P2 Clarice conferir pendências e a P3 Izidio consumir indicadores sem recadastro. Relação: RF002, RF005, RF017, RF024 e RF029; RN08, RN15 e RN20. | Os limites de publicação e resposta, o formato JSON e os campos mínimos são propostas a homologar; endpoints, versionamento, autorização detalhada e contrato completo da API ainda não foram definidos. Não há integração produtiva comprovada com SAP, Gama Soft ou BI corporativo. |
+| **Usabilidade — RNF04** | O TAPI [6] exige consulta de status, localização e alertas; o kick-off [33] descreveu o acompanhamento manual. Os cenários das personas distinguem tarefas de PCM, Fiscal e Logística. | P1 Geraldo precisa priorizar pendências; P2 Clarice, diferenciar retorno físico de baixa fiscal; P3 Izidio, consultar histórico. A interface deve reduzir ambiguidades e erros de interpretação. Relação: RF015, RF017, RF022, RF023 e RF029; RN08 e RN20. | Tempo de execução, acessibilidade e compreensão das tarefas não foram testados com usuários reais; os limiares propostos para usabilidade ainda dependem de validação com o parceiro. |
 | **Confiabilidade — RNF05** | O TAPI [6] (MVP 5) prevê armazenar eventos durante períodos sem rede e reenviá-los após a reconexão; o kick-off [33] indicou que os caminhões não têm internet garantida nos trajetos. | A disponibilidade dos registros, a tolerância a falhas de comunicação e a recuperação após desconexão permitem a P1 Geraldo acompanhar ocorrências e a P3 Izidio consultar um histórico íntegro. Relação: RF005, RF006, RF010, RF025 e RN08–RN09. | Capacidade e saturação da fila, perdas, confirmação de entrega e duração offline ainda exigem validação. CT18 e CT22 registram limitações (seção 3.3.4); não há demonstração de entrega fim a fim. |
 | **Segurança — RNF06** | O TAPI [6] (MVP 5–6) prevê aviso de lacre e acesso controlado. O kick-off [33] distinguiu abertura autorizada de violação. Identificadores, localização e registros fiscais exigem avaliação segundo a LGPD [40] e orientações da ANPD [41]. | A integridade dos eventos e a confidencialidade dos dados permitem a P1 Geraldo investigar violações, a P2 Clarice confiar nos vínculos e a P3 Izidio consumir dados pertinentes. Relação: RF006, RF007, RF020, RF021, RF023, RF024, RN05 e RN15–RN18. | Lacre físico e cibersegurança são controles distintos. Perfis, retenção, base legal, criptografia e resposta a incidentes ainda exigem definição com TI/Jurídico; os controles de produção não estão comprovados. |
 | **Manutenibilidade — RNF07** | O uso repetido do dispositivo, previsto no TAPI [6], exige diagnosticar e corrigir firmware e software ao longo dos ciclos. O [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md) define o **RNF-SUP01**, com ensaios reproduzíveis por versão, configuração e estímulos; a reutilização física prevista no TAPI [6] é contexto operacional. | **Analisabilidade, modificabilidade e testabilidade** (ISO/IEC 25010:2011 [54]) permitem localizar defeitos, alterar regras e repetir testes sem comprometer histórico e vínculos de P1 Geraldo e P3 Izidio. Relação: RF017, RF025, RN01 e RN11. | Diagnósticos, testes de regressão, separação de componentes e critérios de manutenção técnica permanecem em definição. Manutenção externa do ativo não equivale à manutenibilidade do software. |
@@ -414,10 +476,10 @@ As justificativas de negócio estão relacionadas acima. Os critérios preenchid
 |---|---|---|---|---|---|
 | Adequação Funcional | RNF01 | O sistema deve cobrir de ponta a ponta o fluxo de um ciclo de manutenção externa: abrir o ciclo com a NF de remessa, vincular a TAG, registrar a última localização válida, emitir os alertas de atraso, permanência e lacre e encerrar o ciclo com a NF de retorno e o lacre fechado, preservando o histórico. | Todos os RFs de prioridade Alta (RF001 a RF018 e RF029) com caso de teste aprovado na RTM (3.3.4) e ao menos um ciclo completo executado, da abertura ao encerramento, sem nenhuma etapa fora do sistema. RF sem teste aprovado fica registrado como pendente. | Acompanhamento de ativos, alertas e reconciliação fiscal; P1/P2/P3 ([6], [33], seção 3.2.1). | |
 | Eficiência de Desempenho | RNF02 | O sistema deve entregar à plataforma o alerta de violação do lacre em até 30 minutos após a detecção, quando houver conexão, e o dispositivo deve ter autonomia estimada de pelo menos 1 ano no perfil de status semanal. | Latência: percentil 95 do tempo entre a estabilização do contato do lacre e o recebimento pela plataforma de até 30 minutos em um lote controlado de 30 estímulos (ensaio de latência CT32 do planejamento de energia e GNSS). Autonomia: carga diária medida na alimentação do conjunto (CT27) que leve a autonomia estimada a pelo menos 365 dias com a bateria adotada. Os valores de 30 minutos e 1 ano são as referências do kick-off [33]; os limites formais e a bateria dependem de validação com o parceiro. | Autonomia de referência até 1 ano e latência de alerta de lacre de referência 10–30 min, ambas pendentes de meta formal; P1 ([6], [33]). | |
-| Compatibilidade | RNF03 | O sistema deve permitir o consumo dos registros dos ciclos por ferramentas de BI por meio de API autenticada e documentada (RF024, RN15). Cada registro consultável deve preservar os identificadores de ciclo, equipamento e TAG, os vínculos com NF de remessa e NF de retorno (quando existir), as datas de saída, retorno físico e baixa fiscal, o estado do ciclo e a última localização válida com data/hora, distinta da última comunicação. Campos sem dado devem permanecer explicitamente ausentes; a consulta não pode confundir retorno físico com encerramento nem associar a TAG ao ciclo errado após reutilização. | Em homologação, validar o esquema documentado da API e reconciliar uma massa controlada de **12 ciclos de teste**, contemplando ciclos abertos e encerrados, retorno físico com NF pendente, ausência de posição válida e TAG reutilizada em ciclos sucessivos: **12/12 registros** devem atender ao esquema; **100% dos identificadores, vínculos, datas e estados** retornados devem coincidir com a massa de origem, sem duplicatas nem associações incorretas; um cliente de BI deve consultar os 12 ciclos somente pela API, sem redigitação. Registrar consultas, resultado do teste de contrato e reconciliação. Esquema, autenticação e formato de integração com TI/Fiscal ainda precisam ser definidos e homologados; não há integração produtiva comprovada com SAP, Gama Soft ou BI. | O TAPI [6] pede API para BI, e o kick-off [33] identifica SAP, Gama Soft e NF como fontes do processo. Preservar TAG–ciclo–NF e separar retorno físico de baixa fiscal permite a P2 Clarice conferir pendências e a P3 Izidio consolidar o histórico sem recadastro (RF002, RF017, RF024, RF029; RN15, RN20; seção 3.2.1). | |
-| Usabilidade | RNF04 | O painel deve permitir que cada perfil identifique, sem ambiguidade, as informações necessárias às suas tarefas: P1 Geraldo (PCM) deve localizar equipamentos com alertas e interpretar a última localização válida e seu horário; P2 Clarice (Fiscal) deve reconhecer o retorno físico com baixa fiscal pendente e diferenciá-lo do ciclo encerrado; P3 Izidio (Logística) deve consultar o histórico e as pendências por ciclo. Estados e horários devem ser identificados por rótulos explícitos; ausência de posição válida não pode aparecer como coordenada zero e retorno físico não pode ser apresentado como encerramento fiscal. | Conduzir **teste moderado com 9 participantes representativos** (3 por perfil), com **2 tarefas por participante** (18 execuções): PCM — localizar alerta e interpretar localização/horário; Fiscal — localizar retorno físico e identificar pendência fiscal; Logística — consultar histórico e filtrar pendências. Com dados e roteiro padronizados, sem ajuda durante cada tarefa, exigir **ao menos 15/18 tarefas concluídas corretamente**, **mediana de tempo por tarefa de até 3 minutos** e **zero interpretações de retorno físico com NF pendente como ciclo encerrado** nas tarefas fiscais. Registrar roteiro, acertos, tempos, erros e dificuldades. Esses limiares são propostas de teste e dependem de validação com o parceiro; não há teste de usabilidade concluído. | O acompanhamento manual descrito no kick-off [33] e os cenários P1/P2/P3 (seção 3.2.1) exigem interpretação rápida de alertas, posição, NF e pendências sem confusão entre retorno e baixa fiscal (RF015, RF022, RF023, RF029; RN08, RN20; [6]). | |
-| Confiabilidade | RNF05 | ... | ... | Persistência de eventos sem conexão e recuperação após reconexão; P1/P3 ([6], [33]). | |
-| Segurança | RNF06 | ... | ... | Controle de lacre e acesso responsável aos dados; P1/P2/P3 ([6], [33], [40]). | |
+| Compatibilidade | RNF03 | O sistema deve disponibilizar, por API autenticada e documentada para ferramentas de BI (RF024, RN15), registros de ciclos em **JSON codificado em UTF-8**, com datas e horários no padrão **ISO 8601 com indicação de fuso horário**. Cada alteração já persistida na plataforma deve estar visível na API em **até 5 minutos**; o **percentil 95 do tempo de resposta das consultas deve ser de no máximo 2 segundos**, nas condições de homologação estabelecidas na métrica. O retorno deve corresponder **integralmente (100%)** aos registros de origem e preservar IDs de ciclo, equipamento e TAG, vínculos com NF de remessa/retorno quando existentes, datas de saída, retorno físico e baixa fiscal, estado do ciclo e última localização GNSS válida com data/hora (RF002, RF005, RF017, RF029; RN08, RN20). Dados desconhecidos devem ser apresentados como `null` segundo o contrato, sem inventar posições ou confundir retorno físico com encerramento fiscal; a reutilização de TAG não pode trocar vínculos entre ciclos. A meta de publicação se inicia na persistência na plataforma e **não** cobre o período offline do dispositivo. | Homologar com massa de **12 ciclos de teste**, incluindo ciclos abertos/encerrados, retorno físico sem baixa fiscal, posição GNSS ausente e reutilização de TAG: **12/12 respostas** conformes ao contrato JSON/UTF-8 e à representação ISO 8601; **100% dos IDs, vínculos, datas e estados** reconciliados com a origem, sem duplicações nem associações erradas. Após **5 alterações controladas** já persistidas, consultar a API até refletir cada alteração e registrar a latência (**≤ 5 min**); executar **30 consultas autenticadas** sobre a massa de homologação, computar o **p95 ≤ 2 s** e registrar tempos, HTTP status e payloads. Um cliente de BI deve obter os 12 ciclos somente pela API. Os limites, o contrato detalhado e as condições de carga são **propostas pendentes de homologação** por parceiro/TI/Fiscal, sem alegar integração produtiva com SAP, Gama Soft ou BI. | O TAPI [6] pede API para BI, e o kick-off [33] identifica SAP, Gama Soft e NF como fontes do processo. Preservar TAG–ciclo–NF, a última posição válida e a separação entre retorno físico e baixa fiscal permite a P2 Clarice conferir pendências e a P3 Izidio consolidar histórico sem recadastro (RF002, RF005, RF017, RF024 e RF029; RN08, RN15 e RN20; seção 3.2.1). | |
+| Usabilidade | RNF04 | O painel deve permitir que P1 Geraldo (PCM) localize alertas e interprete a última posição válida com seu horário; P2 Clarice (Fiscal) identifique retorno físico com baixa fiscal pendente sem confundi-lo com ciclo encerrado; e P3 Izidio (Logística) consulte o histórico e filtre pendências por ciclo. Com rótulos explícitos para estados, datas e ausência de localização, o painel deve permitir **pelo menos 80% de acerto nas tarefas de cada perfil**, com **mediana de conclusão de no máximo 3 minutos por tarefa em cada perfil** e **zero interpretações de retorno físico sem baixa fiscal como ciclo encerrado** nas tarefas fiscais, conforme protocolo de homologação. Posição GNSS desconhecida não pode ser exibida como coordenada zero (RF015, RF017, RF022, RF023, RF029; RN08, RN20). | Realizar teste moderado com **9 participantes representativos** (**3 por perfil**) e **2 tarefas por participante** (**6 tarefas por perfil; 18 no total**): PCM — localizar alerta e interpretar posição/horário; Fiscal — localizar retorno físico e reconhecer pendência fiscal; Logística — consultar histórico e filtrar pendências. Com dados e roteiro padronizados e sem ajuda durante cada tarefa, exigir **≥ 5/6 acertos por perfil (≥ 80%)**, equivalentes a **≥ 15/18 acertos no total**, **mediana ≤ 3 minutos por perfil** e **zero erros críticos de encerramento fiscal** nas tarefas fiscais. Registrar por perfil roteiros, tempos, acertos, erros e dificuldades. Esses limiares são propostas pendentes de validação com o parceiro; não há ensaio com usuários concluído. | O acompanhamento manual descrito no kick-off [33] e os cenários P1/P2/P3 (seção 3.2.1) exigem interpretação rápida de alertas, localização, NF, histórico e pendências sem confusão entre retorno e baixa fiscal (RF015, RF017, RF022, RF023 e RF029; RN08 e RN20; [6]). | |
+| Confiabilidade | RNF05 | O dispositivo deve registrar cada mudança estável do lacre uma única vez, sem duplicações por ruído de contato, e preservar na memória não volátil os registros já confirmados e a referência da última posição válida, inclusive após reinício. Corresponde ao **RNF-CONF01** (lacre) e ao **RNF-CONF02** (registros e posição) do [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md). | **(a) Lacre:** zero eventos ausentes e zero eventos duplicados por transição estável, e zero eventos para pulsos observados menores que 60 ms (debounce atual), no lote controlado; contar eventos ausentes, extras e falsos alertas (CT18, CT24, CT31). **(b) Persistência:** zero registros já confirmados como gravados perdidos e zero referência de posição inválida aceita no lote de reinícios, comparando o conteúdo antes e depois (CT21, CT22, CT29, CT33). **(c) Reenvio:** zero eventos perdidos ou duplicados no reenvio após a reconexão, na ordem em que ocorreram e com a hora da ocorrência (RN09), conferidos no recebimento pela plataforma (CT09, **BLOQUEADO**: o reenvio ordenado e a fila zero foram observados na Serial do simulador, mas falta a confirmação de entrega pelo servidor; critério **pendente**). **Situação:** critérios propostos, ainda sem meta aprovada pelo parceiro. No simulador, o CT21 foi aprovado; o CT18 foi reprovado (4 de 20 transições estáveis perdidas sem rede, sem duplicação), o CT18 repetido no V2 também foi reprovado (pulsos curtos lidos como abertura sem rede, o que fere o critério (a)) e o CT22 foi reprovado no ambiente (memória retida, mas `uptime_ms` não reiniciou). Os testes em hardware físico (CT24 a CT33) ainda não foram executados. | Os caminhões não têm internet garantida nos trajetos [33] e o TAPI [6] (MVP 5) pede guardar os eventos sem rede e enviá-los depois; o pior caso para o parceiro é esquecer o equipamento no fornecedor [33]. Um lacre que perde ou duplica eventos, ou registros que somem num reinício, tiram do PCM (P1) e da Logística (P3) a base para distinguir violação de abertura autorizada e cobrar o retorno; P1/P3. O reenvio ordenado após a reconexão (RN09) entra no critério (c), pendente da confirmação do servidor (CT09). | |
+| Segurança | RNF06 | O dispositivo só deve aceitar autorização de retirada de lacre emitida pela plataforma para aquele dispositivo e aquele ciclo, dentro da validade, e rejeitar qualquer outra autorização; mensagens de dispositivo não cadastrado ou com credencial inválida não podem alterar nenhum ciclo (RN16). Corresponde ao **RNF-SEG01** do planejamento. | **(a) Autorização:** zero comandos adulterados, de outro dispositivo ou ciclo, ou expirados aceitos no lote de ensaio (CT34, que exige o canal de autorização implementado). **(b) Dispositivo não cadastrado (RN16):** zero mensagens de dispositivo não cadastrado ou com credencial inválida alterando ciclo no lote de ensaio (CT a definir, **pendente**: a plataforma e o cadastro de dispositivos ainda não existem). **(c) Confidencialidade (LGPD):** sem métrica por ora; o critério para localização, NF e identificadores de usuário fica **pendente** de CT e de definição com o parceiro. **Situação:** critérios propostos, nenhum executado (CT34 não executado). Hoje a autorização é simulada por botão de bancada, o que não comprova segurança; política sem rede, revogação e relógio incerto: `PENDENTE DE VALIDAÇÃO` com o parceiro. | No kick-off, o parceiro disse que só a Cerradinho deveria retirar o lacre e pediu registro separado de abertura autorizada e de violação [33]; o TAPI [6] (MVP 5 e 6) prevê aviso de lacre e acesso controlado. Uma autorização forjada ou reaproveitada deixaria uma violação passar por abertura legítima, e localização, NF e identificadores de usuário são dados tratados sob a LGPD [40]; P1/P2/P3. | |
 | Manutenibilidade | RNF07 | ... | ... | Diagnóstico reproduzível e evolução de firmware/software (RNF-SUP01); P1/P3 ([6], [54]). | |
 | Portabilidade | RNF08 | ... | ... | Troca de canal de comunicação e substituição de módulo GNSS sem alterar a lógica do ciclo; P1 ([6], [23], [24], [54]). | |
 
@@ -428,19 +490,19 @@ A Matriz de Rastreabilidade (RTM) relaciona os requisitos funcionais (RF) e as r
 | Persona | RF    | RN   | Caso de Teste | Evidência        |
 |---------|-------|------|---------------|------------------|
 | P1 Geraldo — P1-C1 Saída com TAG e lacre | RF001 | Não se aplica — o cadastro do equipamento não tem restrição própria; as restrições começam na abertura do ciclo (RN02) | Planejado — CT a definir | Planejado, sprint a definir |
-| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF002 | RN02 | Planejado — CT a definir | Planejado, sprint a definir |
-| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF003 | RN01 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF002 | RN02, RN21 | CT39 (NF da remessa); CT a definir para fornecedor, responsável e prazo previsto | [CT39](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39NfRegistrada.png) — APROVADO no simulador: registro, exibição e recusas da NF da remessa |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF003 | RN01, RN21 | CT14, CT44 | [CT14 corrigido](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct14CorrigidoReutilizado.png) — APROVADO: reutilização no ciclo 2; CT44 — APROVADO no simulador: boot com `ciclo_ativo=false` e vínculo por 3 s ([iniciado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct44Iniciado.png), [log](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct44-vinculo.serial.txt); rodada de 02 e 03/11/2026) |
 | P1 Geraldo — P1-C1 Saída com TAG e lacre | RF004 | RN01 | CT15 | [CT15](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct15.png) |
-| P1 Geraldo — P1-C4 Falha | RF005 | RN08 | CT19, CT20, CT22 | [CT19](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct19.png) e [CT20](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct20.png) — APROVADOS no simulador; [CT22](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct22.png) — **REPROVADO no ambiente**: referência e NVS retidas, mas `uptime_ms` não reiniciou ([log](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/CT22.serial.txt)) |
-| P1 Geraldo — P1-C3 Lacre aberto | RF006 | RN05 | CT05, CT07, CT18 | [CT05](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct05Evento.png), [CT07](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct07.png); [CT18](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct18Original.png) — **REPROVADO**: quatro de 20 transições estáveis de 200 ms perdidas sem rede ([log original](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/CT18-original.serial.txt)) |
-| P1 Geraldo — P1-C3 Lacre aberto | RF007 | RN06 | CT06, CT11 | [CT06](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct06Retirada.png), [CT11](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct11.png) |
+| P1 Geraldo — P1-C4 Falha | RF005 | RN08, RN22 | CT19, CT20, CT22, CT43 (parcial) | [CT19](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct19.png) e [CT20](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct20.png) — APROVADOS no simulador; [CT22](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct22.png) — **REPROVADO no ambiente**: referência e NVS retidas, mas `uptime_ms` não reiniciou ([log](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/CT22.serial.txt)); CT43 — APROVADO em segundos e minutos para a idade da última posição no LCD, com horas, dias e restauração pendentes ([minutos](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct43Minutos.png), [log](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct43-posicao.serial.txt); rodada de 02 e 03/11/2026) |
+| P1 Geraldo — P1-C3 Lacre aberto | RF006 | RN05 | CT05, CT07, CT18, CT38 | [CT05](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct05Evento.png), [CT07](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct07.png); [CT18](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct18Original.png) — **REPROVADO**: quatro de 20 transições estáveis de 200 ms perdidas sem rede ([log original](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/CT18-original.serial.txt)); repetido no V2 também REPROVADO, com pulsos curtos lidos como abertura sem rede ([log](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct18.serial.txt); rodada de 02 e 03/11/2026); [CT38](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38Violacao.png) — APROVADO no simulador: alarme local na violação |
+| P1 Geraldo — P1-C3 Lacre aberto | RF007 | RN06 | CT06, CT07, CT11, CT38, CT42 | [CT06](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct06Retirada.png), [CT11](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct11.png); [CT38](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38RetiradaAutorizada.png) e [CT42](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42Reaplicado.png) — APROVADOS no simulador: retirada autorizada sem alarme e mensagem de lacre reaplicado |
 | P2 Clarice — P2-C4 Falha (associação direta) | RF008 | Não se aplica — sem RN específica | CT08, CT09 | [CT08](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct08.png), [CT09](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct09.png) (BLOQUEADO para confirmação do servidor) |
 | P1 Geraldo — P1-C2 Acompanhamento | RF009 | Não se aplica — sem RN específica | CT01, CT02 | [CT01](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct01.png), [CT02](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct02.png) — diagnóstico e saída Serial observados; publicação MQTT não comprovada |
-| P2 Clarice — P2-C4 Falha | RF010 | RN09 | CT08, CT09, CT10, CT21, CT22 | [CT08](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct08.png), [CT09](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct09.png) (BLOQUEADO para confirmação do servidor), [CT10](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct10.png); [CT21](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct21.png) — APROVADO no limite de 16 diagnósticos NVS ([log](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/CT21.serial.txt)); [CT22](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct22.png) — **REPROVADO no ambiente** no critério de reinício de `uptime_ms`, com retenção das filas verificada ([log](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/CT22.serial.txt)) |
+| P2 Clarice — P2-C4 Falha | RF010 | RN09, RN22 | CT08, CT09, CT10, CT21, CT22, CT42 | [CT08](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct08.png), [CT09](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct09.png) (BLOQUEADO para confirmação do servidor), [CT10](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct10.png); [CT21](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct21.png) — APROVADO no limite de 16 diagnósticos NVS ([log](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/CT21.serial.txt)); [CT22](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct22.png) — **REPROVADO no ambiente** no critério de reinício de `uptime_ms`, com retenção das filas verificada ([log](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/CT22.serial.txt)); [CT42](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42SemSinal.png) — APROVADO no simulador: mensagens "Sem sinal / na fila" e "Sinal ok / enviados" (reenvio simulado); no CT08 a tela "Sem sinal" não foi executada, e a captura mostra a mesma tela do CT05 |
 | P1 Geraldo — P1-C2 Acompanhamento | RF011 | RN07 | CT02 | [CT02](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct02.png) |
 | P1 Geraldo — P1-C2 Acompanhamento; P2 Clarice — P2-C3 Prazo legal; P3 Izidio — P3-C2 ICMS por safra | RF012 | RN12, RN13 | CT03, CT04 | [CT03](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct03.png), [CT04](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct04.png) |
-| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF013 | RN04 | CT03 | [CT03](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct03.png) |
-| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF014 | RN03, RN04 | CT04 | [CT04](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct04.png) |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF013 | RN04 | CT03, CT37 | [CT03](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct03.png); [CT37](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37Atraso.png) — APROVADO no simulador: "ATRASO: N dias" no LCD |
+| P1 Geraldo — P1-C2 Acompanhamento; P3 Izidio — P3-C2 ICMS por safra | RF014 | RN03, RN04 | CT04 | [CT04](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct04.png); CT04 com limiar 10 e com 150 APROVADO no V2 ([limiar 150](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct04Limiar150V2.png), [log](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct04-limiar150.serial.txt); rodada de 02 e 03/11/2026) |
 | P1 Geraldo — P1-C2 Acompanhamento; P1-C4 Falha | RF015 | RN08 | CT19, CT20, CT22 | [CT19](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct19.png) e [CT20](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct20.png) — APROVADOS no simulador; [CT22](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct22.png) — **REPROVADO no ambiente**: referência e NVS retidas, mas `uptime_ms` não reiniciou ([log](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/CT22.serial.txt)) |
 | P2 Clarice — P2-C2 Encerramento do ciclo; P3 Izidio — P3-C3 Falha | RF016 | RN11 | CT14, CT16 | [CT14 corrigido](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct14Corrigido.png) — APROVADO com dois encerramentos, ciclo inativo e dias zero ([log do reteste de 23/10](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/CT14-2026-10-23.serial.txt)); CT16 APROVADO nas recusas por [lacre aberto](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct16CorrigidoLacreAberto.png) e [NF ausente](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct16CorrigidoNfAusente.png) |
 | P2 Clarice — P2-C2 Encerramento do ciclo; P3 Izidio — P3-C1 Histórico para o BI | RF017 | RN11, RN12 | CT14 | [CT14 corrigido](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct14Corrigido.png) — APROVADO: [reutilização no ciclo 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct14CorrigidoReutilizado.png) e contador de encerramentos 1/2 ([log do reteste de 23/10](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/CT14-2026-10-23.serial.txt)); histórico após corte físico de energia ainda pendente |
@@ -456,6 +518,12 @@ A Matriz de Rastreabilidade (RTM) relaciona os requisitos funcionais (RF) e as r
 | P1 Geraldo — P1-C2 Acompanhamento | RF027 | RN10 | CT12, CT13, CT23 | [CT12](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct12.png), [CT13](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct13Isolado.png); [CT23](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct23.png) — APROVADO com percentuais sintéticos 0/50/100%, uma falha do sensor em zero e nenhum alerta falso de bateria baixa ([log CT17/CT23](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/CT17-CT23.serial.txt)) |
 | P1 Geraldo — P1-C2 Prazo preventivo | RF028 | RN19 | CT-F28 (futuro) | Planejado: alerta pré-vencimento ainda não implementado, validar com parceiro |
 | P2 Clarice — P2-C2 Retorno físico pendente | RF029 | RN20, RN11 | CT-F29 (futuro) | Planejado: separar recebimento físico, conferência, baixa NF e encerramento |
+| P1 Geraldo — P1-C2 Acompanhamento | RF030 | Não se aplica — sem RN específica; o tratamento do alerta segue a RN18 | Planejado — CT a definir | Planejado, sprint a definir |
+| P1 Geraldo — P1-C4 Falha | RF031 | RN22, RN08, RN09 | CT45 | CT45 — APROVADO no simulador para o motivo `sem_fix`, com os dois eventos não críticos na fila e reenviados na ordem; `sem_dados` e `sinal_fraco` sem teste ([fila](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct45Fila.png), [log sem rede](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct45-gnss.serial.txt); rodada de 02 e 03/11/2026) |
+| P1 Geraldo — P1-C3 Lacre aberto | RF032 | RN05 | CT38 | [Violação](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38Violacao.png), [fechado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38Fechado.png), [limite de 30 s](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38Limite30s.png) e [retirada autorizada](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38RetiradaAutorizada.png) — APROVADO no simulador, com quatro vídeos, entre eles o [vídeo do LED](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38-led.mkv); cadência elétrica do buzzer não medida |
+| P1 Geraldo — P1-C1 Saída com TAG e lacre | RF033 | RN02 | CT39 | [CT39](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39NfRegistrada.png) — APROVADO no simulador: NF registrada e exibida, 15 caracteres aceitos, recusas por caractere inválido, comprimento e falta de ciclo ([6 capturas](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39SemCiclo.png)) |
+| P1 Geraldo — P1-C2 Acompanhamento | RF034 | Não se aplica — sem RN específica | CT36, CT37, CT40 | [CT36](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Nf.png), [CT37](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37AntesPrazo.png) e [CT40](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40Apagado.png) — APROVADOS no simulador: navegação circular, prazo no LCD e apagamento com despertar |
+| P1 Geraldo — P1-C3 Lacre aberto | RF035 | Não se aplica — sem RN específica; iniciar o ciclo segue a RN21 e encerrar segue a RN11 | CT41, CT42 | [CT41](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41ContagemAutorizar.png) e [CT42](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42AposViolacao.png) — APROVADOS no simulador: contagem dos 3 s, soltura antecipada e mensagens temporárias |
 
 **Casos de teste transversais:** [CT17](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct17.png) (APROVADO no simulador, [log](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/CT17-CT23.serial.txt)) e CT35 ([desligado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct35Desligado.png), [religado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct35.png)) verificam aspectos transversais e, por isso, não são atribuídos a um RF ou a uma RN específicos nesta matriz.
 
@@ -529,8 +597,9 @@ de rede no GPIO18. O [guia do circuito](../src/firmware/prototipo_wokwi/README.m
 contém a pinagem e o roteiro de diagnóstico. As configurações `wokwi.toml` e
 `wokwi.weekly.toml` ficam nessa mesma pasta e são selecionadas por **Wokwi: Select Config File**.
 O projeto público acima representa a versão anterior; a Figura 1 e as evidências dos CTs abaixo mostram o circuito local integrado usado nas execuções de 22/10/2026. A publicação da versão integrada segue o [procedimento do guia do circuito](../src/firmware/prototipo_wokwi/README.md#publicação-no-wokwi-web).
+Em 28/10/2026 o circuito passou ao **protótipo V2**: os quatro LEDs deram lugar a um LCD 16x2 I2C (GPIO21/22), aos botões de avançar e voltar (GPIO25/26) e a um buzzer (GPIO23); o botão de ciclo passou ao GPIO14, e lacre, chaves, bateria, GNSS e o botão de autorização mantiveram a pinagem. Em 30/10/2026 o V2 ganhou o LED vermelho de violação no GPIO13 e a montagem dos componentes numa protoboard dupla. O dispositivo passou a ligar sem ciclo, e o ciclo 1 só começa quando CICLO é segurado por 3 s. As falhas do GNSS passaram a gerar `GNSS_SEM_FIX` e `GNSS_RECUPERADO`. A descrição do circuito e as rodadas de 22 e 23/10/2026 referem-se ao V1. A validação do V2 está na [rodada V2](#rodada-v2), e os comportamentos novos estão nos [CT43–CT45](#cts43-45).
 
-**Estrutura do código.** O firmware (`src/firmware/main.cpp`) tem `setup()` e `loop()` e funções auxiliares chamadas por eles, como `readSeal()`, `readButtons()`, `updateCycle()` e `updateLeds()`. Os LEDs de estado são controlados pela classe própria `IndicatorController` (`include/indicator_controller.h`): a instância `indicators` configura os pinos com `begin()` no `setup()` e atualiza os quatro LEDs com `display()` a cada passagem do `loop()`. A classe só reorganizou o código de LEDs que já existia, sem mudar o comportamento verificado nos CTs. **Revisão posterior, ainda sem reteste Wokwi:** o firmware passa a capturar bordas do lacre em ISR e processar debounce temporal em função auxiliar. Teste host com 20 transições foi aprovado, mas CT18 continua REPROVADO até novo ensaio oficial. CT22 permanece REPROVADO e CT09 BLOQUEADO. Em 24/10/2026, a versão com a classe compilou nos ambientes `demo` e `weekly` e passou no teste em host da classe (`tests/indicator_controller_tests.cpp`). Como a lógica dos LEDs não mudou, os CTs de LED (CT01, CT03–CT08 e CT35) mantêm a aprovação das execuções de 22/10/2026; CT18 e CT22 continuam reprovados.
+**Estrutura do código.** O firmware (`src/firmware/main.cpp`) tem `setup()` e `loop()` e funções auxiliares chamadas por eles, como `readSeal()`, `readButtons()`, `updateCycle()` e `updateDisplay()`. No V2, a interface local é controlada pela classe própria `ScreenController` (`include/screen_controller.h`): a instância `screens` monta as cinco telas do LCD e a navegação circular, e é usada no `setup()` e a cada passagem do `loop()` por `updateDisplay()`. A classe tem teste em host (`tests/screen_controller_tests.cpp`). No V1, a classe própria era a `IndicatorController`, que controlava os quatro LEDs; as aprovações de 22 e 23/10/2026 valem para aquela versão, e CT18 e CT22 continuam reprovados. O firmware atual captura as bordas do lacre em ISR, com o debounce temporal decidido em função auxiliar (`include/seal_debounce.h`); o teste em host com 20 transições foi aprovado e a rodada V2 usou essa versão, mas o CT18 repetido no V2 continua REPROVADO, por pulsos curtos lidos como abertura quando não há rede.
 
 Na Sprint 1 o dispositivo é simulado no Wokwi com um ESP32 DevKit, placa suportada pelo simulador [25]. Cada entrada do circuito representa uma situação física do rastreador: o lacre (`SW_LACRE`), a disponibilidade de conexão (`SW_REDE`), a autorização de retirada (`BTN_AUTORIZAR`), o encerramento ou vínculo de ciclo (`BTN_CICLO`) e o nível da bateria (`POT_BATERIA`). Os LEDs representam estados para inspeção e o Monitor Serial mostra os registros JSON. Não há transporte implementado para servidor ou broker. A integração local inclui GNSS simulado; a validação do hardware GNSS permanece para a Sprint 2.
 
@@ -587,7 +656,7 @@ A chave de rede não desliga o Wi-Fi virtual; os estados são apresentados separ
 A versão inicial pública não inclui localização. O circuito principal local inclui
 GPS/GNSS customizado nos GPIO16/17, feito com a API de chips customizados do Wokwi [26]; ele não modela recepção de satélites nem consumo real.
 
-**Situação dos CT01–CT16 e do CT35:** executados no Wokwi em 22/10/2026, com resultados resumidos abaixo, prints e logs externos. A aprovação indicada se limita ao comportamento funcional observado no simulador. O CT09 permanece **BLOQUEADO** para confirmação de entrega pelo servidor; o CT14 foi corrigido e **APROVADO no reteste de 23/10/2026**, com confirmação das duas recusas do CT16 na mesma versão. As medições exatas de 1 Hz e das fronteiras de debounce não foram realizadas. Os RF/RN e IDs foram preservados, sem alterar o esperado para aprovar falhas. CT17–CT23 foram executados em 23/10/2026, com resultados na tabela complementar abaixo, e CT24–CT34 permanecem reservados no [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md). Testes de lógica em `tests/model_tests.c` são evidência separada da execução no Wokwi e da validação física.
+**Situação dos CT01–CT16 e do CT35:** executados no Wokwi em 22/10/2026, com resultados resumidos abaixo, prints e logs externos. A aprovação indicada se limita ao comportamento funcional observado no simulador. O CT09 permanece **BLOQUEADO** para confirmação de entrega pelo servidor; o CT14 foi corrigido e **APROVADO no reteste de 23/10/2026**, com confirmação das duas recusas do CT16 na mesma versão. As medições exatas de 1 Hz e das fronteiras de debounce não foram realizadas. Os RF/RN e IDs foram preservados, sem alterar o esperado para aprovar falhas. CT17–CT23 foram executados em 23/10/2026, com resultados na tabela complementar abaixo, e CT24–CT34 permanecem reservados no [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md). Testes de lógica em `tests/model_tests.c` são evidência separada da execução no Wokwi e da validação física. O protótipo V2 foi executado novamente em 02 e 03/11/2026, na [rodada V2](#rodada-v2).
 
 ![CT01: circuito integrado com verde aceso e STATUS de inicialização no Monitor Serial](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct01.png)
 
@@ -648,7 +717,7 @@ GPS/GNSS customizado nos GPIO16/17, feito com a API de chips customizados do Wok
 
 **Limitações e pendências.** CT09 depende de transporte e confirmação do servidor: a saída na Serial e o esvaziamento da fila não comprovam entrega. Não foram validados precisão de 1 Hz/debounce, retenção após corte de energia, autonomia, diagnóstico elétrico da bateria ou contagem de dias por NF real. CT04 tem logs por intervalo: a rodada de 150 dias foi gravada aproximadamente do dia 84 até depois do limiar; o log do ciclo 2 cobre o limiar 10. No primeiro `STATUS` após religar no CT35, os dias ainda eram os anteriores ao desligamento; os registros seguintes atualizaram a contagem para incluir o intervalo desligado.
 
-Os limites exatos de bateria em 20% e 25% e os demais novos cenários de falha combinada continuam pendentes, com numeração a partir do CT36; CT24–CT34 permanecem reservados. Abrir e fechar o lacre enquanto o dispositivo está desligado não foi ensaiado nesta rodada e continua como discussão de regra com o grupo.
+Os limites exatos de bateria em 20% e 25% e os demais novos cenários de falha combinada continuam pendentes, ainda sem numeração; CT24–CT34 permanecem reservados, e CT36–CT45 cobrem a interface, o vínculo e o GNSS do V2. Abrir e fechar o lacre enquanto o dispositivo está desligado não foi ensaiado nesta rodada e continua como discussão de regra com o grupo.
 
 Os logs ficam em `assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/`, acessíveis pelos links de cada CT. O Log A contém dois boots; as contagens usam o segundo, a partir do segundo `ets Jul 29 2019`. O log do reteste de 23/10 começa na confirmação de NF do ciclo 1 e segue até depois do segundo encerramento. Os blocos a seguir exibem as capturas sem reproduzir a Serial inteira no documento; o CT01 já aparece na Figura 1.
 
@@ -940,6 +1009,377 @@ Capturas complementares: [Ponto B comparado com A após reinício](../assets/3-d
 Capturas complementares: [Mínimo e falha do sensor](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct23Minimo.png) · [Meio em 50%](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct23Meio.png).
 
 </details>
+
+#### <a name="rodada-v2"></a>Rodada do protótipo V2 — 02 e 03/11/2026
+
+O V2 trocou a interface local (LEDs por LCD, botões de navegação e buzzer) e passou a exigir 3 s pressionados nos botões de autorização e de ciclo. Em 30/10/2026 ganhou ainda:
+
+- o LED vermelho de violação no GPIO13;
+- os eventos de falha do GNSS;
+- o boot sem ciclo: o dispositivo liga sem ciclo ativo, e o ciclo 1 só começa quando CICLO é segurado por 3 s.
+
+Os eventos JSON e as regras de negócio dos CT01–CT35 são os do V1, já cobertos por `tests/model_tests.c` e por `tests/screen_controller_tests.cpp`. Por isso, os CTs foram repetidos com os mesmos RF/RN e o mesmo critério de negócio, e apenas os componentes de entrada e saída foram adaptados. Esta rodada substitui a de 30/10/2026, feita antes do boot sem ciclo. As aprovações do V1 ficam preservadas acima.
+
+| CT | Procedimento ou saída no V2 | O que permanece do critério |
+|---|---|---|
+| CT01 | LCD aceso na tela "NF da remessa" no lugar do verde fixo; o primeiro `STATUS` sai com `ciclo_ativo=false` | `STATUS` com `dias_fora=0` e lacre íntegro |
+| CT02–CT04, CT08, CT09, CT14–CT17 | Antes dos passos, CICLO segurado por 3 s faz o vínculo e abre o ciclo 1 | Os mesmos eventos, contados a partir do vínculo |
+| CT03 | Tela de prazo com "ATRASO: N dias" no lugar do amarelo piscando | Um único `ALERTA_ATRASO` |
+| CT04 | Sem indicação no LCD; o alerta aparece só na Serial | Um único `ALERTA_PERMANENCIA` no limiar |
+| CT05, CT07 | Mensagem "VIOLACAO registrada", buzzer intermitente por até 30 s e LED vermelho no GPIO13 pulsando, no lugar do vermelho fixo | `VIOLACAO_LACRE` crítico, fora da rotina |
+| CT06 | Autorização exige segurar o botão por 3 s; mensagem "Retirada autorizada" no lugar do verde piscando | `RETIRADA_AUTORIZADA` sem violação e `LACRE_REAPLICADO` |
+| CT08, CT09 | Mensagens "Sem sinal / na fila: N" e "Sinal ok / enviados: N" no lugar do azul | Violação guardada e reenvio na ordem, com o dia original |
+| CT11 | Toques curtos não registram nada; segurar 3 s registra uma autorização | Ruído e pressão mantida não duplicam a autorização |
+| CT14, CT16 | Encerrar e iniciar o ciclo exigem segurar 3 s, no lugar de 2 s e do toque curto | Encerramento só com lacre fechado e NF de retorno |
+| CT15 | O mesmo gesto inicia ou encerra; com ciclo ativo ele cai no encerramento | Nenhum segundo ciclo simultâneo (RN01) |
+| CT17 | Navegação circular pelas cinco telas e leitura bruta de AVANÇAR/VOLTAR no heartbeat | Diagnóstico das entradas |
+| CT35 | LCD e luz de fundo apagados e buzzer mudo no lugar dos LEDs apagados | `DISPOSITIVO_DESLIGADO`, silêncio e novo `STATUS` |
+
+CT10, CT12, CT13, CT18 e CT23 não mudaram, porque suas saídas já eram só a Serial.
+
+**Ambiente e reprodução.**
+
+- **Circuito:** `src/firmware/prototipo_wokwi/diagram.json` (V2, ESP32 DevKit v1, com o LED de violação e a protoboard dupla).
+- **Firmware:** `demo`, com 1 s simulado = 1 dia, prazo de 5 dias, autorização de 3 dias e fila de 8 eventos. SHA-256 do binário: `89A0F6497BB470F9364382A56DC003AD33C067F4F696977B0B29B3CA1CD1A312`. Todas as execuções usaram o mesmo binário, sem ajuste de constantes. O critério de negócio dos CTs não mudou; a conferência do CT09 passou a comparar `dias_fora` e uptime, e a do CT17 aceita os botões lidos um de cada vez.
+- **Ferramentas:** duas, porque o plano gratuito do Wokwi CLI esgotou a cota mensal de minutos de CI no meio da rodada.
+  - **Wokwi CLI 0.29.0, em 02/11/2026:** CT01–CT10 e CT18, exceto o CT04 com limiar 150. Os cenários de [`tests/wokwi-ci/`](../tests/wokwi-ci/run_cts.py) acionaram os controles do circuito e os comandos `NF` e `LIMIAR`.
+  - **Wokwi for VS Code 4.1.0, em 03/11/2026:** os demais CTs e o CT04 com limiar 150, que passa do limite de 5 min de conexão do CLI. Os mesmos passos foram feitos à mão, com a Serial gravada pela porta RFC2217 local. Os comandos `REMESSA` e `NF` foram enviados pelo script de captura.
+- **Estímulos por chip:** em dois cenários, a mão não reproduziu os estímulos, e um chip de estímulo da [rodada manual](../tests/wokwi-vscode/README.md) substituiu o controle do circuito:
+  - **CT12/CT13/CT23:** o potenciômetro, no GPIO34;
+  - **CT45:** o GPS e a chave de rede, no GPIO18.
+- **Conferência e capturas:** o `run_cts.py` conferiu os logs com as mesmas funções (`--checar`), verificando contagens, ordem e não repetição. O CT18 não tem função no script, e seu resultado vem da leitura do log. O silêncio do CT35 não pôde ser conferido, porque a captura estava fechada nesse intervalo. As capturas mostram só o conteúdo do LCD: lido do simulador no CLI, ou recortado da tela do VS Code.
+
+| CT | Situação | Resultado observado | Evidência e log |
+|---|---|---|---|
+| CT01 | APROVADO no simulador | `STATUS` com `dias_fora=0`, lacre íntegro, `ciclo_ativo=false` e contexto não restaurado; LCD em "NF da remessa / nao informada". | [LCD](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct01V2.png) · [Log][v2-ciclo] |
+| CT02 | APROVADO no simulador | Depois do vínculo do ciclo 1, `STATUS_SEMANAL` somente nos dias 7 e 14 do ciclo. | [Log][v2-ciclo] |
+| CT03 | APROVADO no simulador | Um único `ALERTA_ATRASO`, no dia 6; LCD "Prazo: dia 7/5 / ATRASO: 2 dias". | [LCD](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct03V2.png) · [Log][v2-ciclo] |
+| CT04 | APROVADO com limiar 10 e com 150 | Um único `ALERTA_PERMANENCIA` em cada rodada, no dia 10 e no dia 150. Com 150, o vínculo saiu aos 11,6 s, e a captura do LCD foi feita no dia 162. | [LCD 10](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct04Limiar10V2.png) · [LCD 150](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct04Limiar150V2.png) · [Log 10][v2-limiar10] · [Log 150][v2-limiar150] |
+| CT05 | APROVADO na detecção local | `VIOLACAO_LACRE` com `critico=true` e `LACRE_FECHADO` ao fechar; LCD "VIOLACAO registrada". | [LCD](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct05V2.png) · [Log][v2-lacre] |
+| CT06 | APROVADO no simulador | Autorização após 3 s pressionado, `RETIRADA_AUTORIZADA` sem violação e `LACRE_REAPLICADO`; LCD "Retirada autorizada". | [LCD](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct06V2.png) · [Log][v2-lacre] |
+| CT07 | APROVADO no simulador | Abertura 4,6 s após a autorização gerou `VIOLACAO_LACRE`, sem `RETIRADA_AUTORIZADA`. | [Log][v2-lacre] |
+| CT08 | APROVADO no armazenamento simulado; tela "Sem sinal" **NÃO EXECUTADA** | Sem rede, a violação foi guardada (`[FILA] 1 pendente`) e nenhum JSON foi publicado antes da reconexão. A captura foi feita depois da violação e mostrou "VIOLACAO registrada", a mesma tela do CT05, então a tela "Sem sinal" ficou sem evidência. | [Log][v2-fila] |
+| CT09 | **BLOQUEADO** para aprovação integral | Dois eventos reenviados na ordem, com o `dias_fora` e o uptime da ocorrência, anteriores aos da reconexão; fila zero e LCD "Sinal ok / enviados: 2". Continua faltando a confirmação do servidor. | [LCD](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct09V2.png) · [Log][v2-fila] |
+| CT10 | APROVADO na fila/reenvio simulado | A: três descartes de não críticos, violação preservada e `LIMIAR` 204–210 reenviados. B: oito violações individuais e `VIOLACAO_LACRE_RESUMO` com `quantidade=4`. | [Log A][v2-fila-a] · [Log B][v2-fila-b] |
+| CT11 | APROVADO nos estímulos aplicados | Três toques curtos soltos antes de 3 s, sem registro, e uma única autorização ao segurar o botão; LCD com a contagem "segure mais 2 s". Feito à mão, sem os pulsos de 20 ms do cenário automático. | [LCD](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct11V2Contagem.png) · [Log][v2-botao] |
+| CT12 | APROVADO no simulador | Com o chip de estímulo, a sequência 17% → 22% → 17% → 31% → 17% gerou dois `BATERIA_BAIXA`, nenhum em 22% e o segundo só depois do rearme acima de 25%. | [Log][v2-bateria] |
+| CT13 | APROVADO no diagnóstico simulado | Na mesma sequência, entrada zero gerou um `SENSOR_BATERIA_FALHA` e nenhum `BATERIA_BAIXA`. | [Log][v2-bateria] |
+| CT14 | APROVADO no simulador | `CICLO_ENCERRADO` com `ciclo_ativo=false`, `dias_fora=0` e contador 1; novo gesto abriu o ciclo 2 com dias zero. | [LCD](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct14V2.png) · [Log][v2-ciclo-fim] |
+| CT15 | APROVADO no critério do V2 | Com o ciclo 2 ativo, o gesto gerou `ENCERRAMENTO_RECUSADO` (`nf_retorno_ausente`) e nenhum segundo ciclo; `VINCULO_RECUSADO` não ocorreu. | [Log][v2-ciclo-fim] |
+| CT16 | APROVADO nas duas recusas | `nf_retorno_ausente` com lacre fechado e `lacre_aberto` com NF lançada; ciclo mantido ativo. | [Log][v2-ciclo-fim] |
+| CT17 | APROVADO no simulador | Cinco toques em AVANÇAR voltaram à tela 1 e um em VOLTAR levou à tela 5; o heartbeat mostrou `avancar=1` e `voltar=1` com cada botão pressionado. | [Prazo](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct17V2Tela2.png) · [Posição](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct17V2Tela3.png) · [Bateria](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct17V2Tela4.png) · [Lacre](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct17V2Tela5.png) · [Log][v2-interface] |
+| CT18 | **REPROVADO** | Repetido com [`tests/wokwi-complementares/CT18-original`](../tests/wokwi-complementares/README.md), que aplica os estímulos ao binário da rodada, sem a sonda de instrumentação; por isso, não há latência medida. Com rede, as 20 transições estáveis viraram 20 `seal_changed`. Sem rede, as 20 também foram detectadas, mas os pulsos de 20 ms e 40 ms aos 43 s foram lidos como uma abertura: dois `seal_changed` espúrios (43011 e 43256 ms) e um `VIOLACAO_LACRE` falso. | [Log][v2-ct18] |
+| CT23 | APROVADO no simulador | Entrada mínima, média e máxima resultaram em 0%, 50% e 100%, sempre dentro de 0 a 100%. | [Log][v2-bateria] |
+| CT35 | APROVADO no desligamento e no religamento; **PENDENTE** no silêncio | `DISPOSITIVO_DESLIGADO` e LCD apagado; ao religar, cerca de 31 s depois pelo uptime, novo `STATUS` e LCD de volta. A captura da Serial ficou fechada nesse intervalo, então o log não comprova a ausência de heartbeat e JSON. | [Desligado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct35V2Desligado.png) · [Religado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct35V2Religado.png) · [Log][v2-interface] |
+
+[v2-ciclo]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct01-ct03.serial.txt
+[v2-limiar10]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct04-limiar10.serial.txt
+[v2-limiar150]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct04-limiar150.serial.txt
+[v2-lacre]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct05-ct07.serial.txt
+[v2-fila]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct08-ct09.serial.txt
+[v2-fila-a]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct10a.serial.txt
+[v2-fila-b]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct10b.serial.txt
+[v2-botao]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct11.serial.txt
+[v2-bateria]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct12-ct13-ct23.serial.txt
+[v2-ciclo-fim]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct14-ct16.serial.txt
+[v2-interface]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct17-ct35.serial.txt
+[v2-ct18]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct18.serial.txt
+
+**Achados e limitações.** Os resultados caracterizam o comportamento funcional simulado do V2. Ficaram registrados:
+
+- **CT18 continua reprovado.** Sem rede, o debounce do lacre junta pulsos curtos próximos numa abertura falsa. É defeito do firmware, não corrigido durante a rodada para não mudar o binário.
+- **Dia da ocorrência e dias do ciclo.** Com o boot sem ciclo, `dias_fora` conta a partir do vínculo e `dia_ocorrencia` conta a partir do boot. Os dois só coincidem quando o vínculo é feito no boot. Por isso, o CT09 compara o `dias_fora` e o uptime do evento com os da reconexão.
+- **Dias contam com o aparelho desligado.** No CT35, o `dias_fora` passou de 122 para 154 durante os 31 s desligado. Ao religar, o firmware emitiu de uma vez os `STATUS_SEMANAL` atrasados e o `ALERTA_PERMANENCIA` do dia 150. A carcaça continua fora da fábrica, então a contagem é coerente, mas o alerta só aparece no religamento.
+- **RN01 sem teste de recusa.** Como o mesmo gesto inicia ou encerra o ciclo, a recusa `VINCULO_RECUSADO` do firmware não é alcançável por nenhuma entrada. O CT15 comprova que não se abre um segundo ciclo, mas a recusa em si fica sem teste até existir outra origem de vínculo, como um comando da plataforma.
+- **Permanência sem indicação local.** No V1, o amarelo fixo indicava a permanência. No V2, o LCD mostra só o atraso, como nas capturas do CT04, e o `ALERTA_PERMANENCIA` aparece apenas na Serial.
+- **Buzzer e LED de violação não medidos.** O som, a duração de 30 s e o pulso do LED no GPIO13 não foram verificados automaticamente. Na primeira violação de cada execução, o log registra uma vez `ledc_get_duty: LEDC is not initialized`, emitido pela biblioteca do ESP32 no primeiro `tone()`. As violações seguintes não repetem o aviso, e nenhum evento foi afetado.
+- **Estímulos por chip.**
+  - **CT12/CT13/CT23:** o chip trocou o potenciômetro arrastado à mão, que não parava em 22% e passava várias vezes abaixo de 20%. O fundo de escala da entrada analógica do ESP32 no Wokwi ficou perto de 5,08 V, valor medido nesta rodada, e o chip foi calibrado para ele.
+  - **Logs:** o do CT12/CT13/CT23 começa aos 4 s, depois do boot. O do CT04 com limiar 150 traz na primeira linha um heartbeat da simulação anterior, antes do boot. O do CT17/CT35 junta duas partes da mesma simulação, porque a captura foi reaberta durante o desligamento; o uptime é contínuo entre elas.
+- **Não repetidos no V2:** os CT19–CT22, que dependem da [instrumentação complementar](../tests/wokwi-complementares/README.md). Os resultados de 23/10/2026 continuam valendo para o V1, inclusive a reprovação do CT22.
+- **Continua fora do alcance destas capturas:** entrega ao servidor, precisão de 1 Hz e das fronteiras de debounce, consumo e validação elétrica.
+
+<details>
+<summary>Capturas do LCD na rodada V2</summary>
+
+![CT01 V2: LCD na tela da NF da remessa, ainda não informada.](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct01V2.png)
+
+*Figura 3.4.1-CT01-V2 — LCD na inicialização, tela da NF da remessa. Fonte: captura do LCD no simulador Wokwi (Wokwi CLI), 02/11/2026.*
+
+![CT03 V2: tela de prazo com atraso de dois dias.](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct03V2.png)
+
+*Figura 3.4.1-CT03-V2 — Tela de prazo no dia 7 com atraso de dois dias. Fonte: captura do LCD no simulador Wokwi (Wokwi CLI), 02/11/2026.*
+
+![CT04 V2: tela de prazo no dia 10, sem indicação de permanência.](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct04Limiar10V2.png)
+
+*Figura 3.4.1-CT04-V2 — Tela de prazo após o alerta de permanência com limiar 10; o LCD não indica a permanência. Fonte: captura do LCD no simulador Wokwi (Wokwi CLI), 02/11/2026.*
+
+![CT11 V2: contagem do botão de autorização segurado.](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct11V2Contagem.png)
+
+*Figura 3.4.1-CT11-V2 — Contagem exibida enquanto o botão de autorização está pressionado. Fonte: recorte do LCD no Wokwi for VS Code, 03/11/2026.*
+
+![CT35 V2: LCD apagado no desligamento lógico.](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct35V2Desligado.png)
+
+*Figura 3.4.1-CT35-V2 — LCD e luz de fundo apagados com a chave ON/OFF desligada. Fonte: recorte do LCD no Wokwi for VS Code, 03/11/2026.*
+
+Capturas complementares: [CT04 com limiar 150](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct04Limiar150V2.png) · [CT05 violação](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct05V2.png) · [CT06 retirada autorizada](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct06V2.png) · [CT09 reenvio](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct09V2.png) · [CT14 encerramento](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct14V2.png) · [CT35 religado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct35V2Religado.png).
+
+</details>
+
+#### <a name="cts36-42-interface-v2"></a>CT36–CT42 — interface local do V2
+
+Esta rodada acrescenta os comportamentos da interface do V2: navegação, prazo no LCD, alarme local, comando REMESSA, apagamento do visor, contagem dos botões e mensagens temporárias. As definições e evidências abaixo são independentes dos resultados históricos das rodadas anteriores.
+
+**Ambiente e reprodução.** Ensaios manuais no Wokwi for VS Code, com ESP32, LCD 16x2, botões, buzzer e LED vermelho externo no GPIO13, na montagem atualizada em protoboard. O ambiente `demo` usa 1 s simulado por dia do ciclo, prazo de 5 dias e início manual por pressão de 3 s em CICLO. O encerramento exige lacre fechado e comando `NF` aceito. Os tempos de botões, mensagens, apagamento e alarme são referidos ao relógio da simulação.
+
+**Situação dos CT36–CT42:** executados manualmente no Wokwi, com resultados resumidos abaixo, capturas e vídeos. A aprovação se limita ao comportamento funcional observado no simulador. A Serial está registrada nas capturas, sem arquivo de log separado.
+
+| CT# | Bloco | Componente de entrada | Leitura da entrada | Componente de saída | Leitura da saída | Descrição |
+|---|---|---|---|---|---|---|
+| CT36 | Navegação do LCD | BTN_AVANCAR e BTN_VOLTAR | Toques curtos com o LCD aceso, percorrendo as telas nos dois sentidos | LCD 16x2 | NF → prazo → posição → bateria → lacre; retorno circular nos dois sentidos | Consultar as cinco telas; avançar da última retorna à primeira e voltar da primeira leva à última. |
+| CT37 | Prazo no LCD | BTN_CICLO, relógio simulado e comando NF | Iniciar ciclo segurando CICLO por 3 s; acompanhar o prazo de 5 dias; lançar NF e encerrar com lacre fechado | LCD 16x2 | Faltam N dias; Falta 1 dia; vence hoje; ATRASO: N dias; sem ciclo ativo | Verificar a apresentação do prazo contado a partir do início manual do ciclo. |
+| CT38 | Alarme local | SW_LACRE e BTN_AUTORIZAR | Abrir sem autorização; fechar antes de 30 s; em outra violação manter aberto por mais de 30 s; repetir abertura com autorização válida | Buzzer GPIO23, LED vermelho GPIO13 e LCD | Buzzer com 500 ms ligado e 500 ms desligado; para ao fechar ou após 30 s. LED pulsa enquanto violado. Retirada autorizada sem alarme | Verificar o alarme local e as duas condições de parada do buzzer; o LED continua sinalizando a violação após o limite sonoro. |
+| CT39 | NF da remessa | Comando REMESSA na Serial | Enviar NF válida e 15 caracteres; testar caractere proibido, 16 caracteres e comando sem ciclo ativo | LCD e Serial | NF registrada e NF exibida; entradas inválidas recusadas, preservando a NF anterior no ciclo ativo; recusa sem ciclo | Verificar aceitação e recusas do comando. Entradas do roteiro: REMESSA NF-000123, REMESSA 123456789012345, REMESSA NF@123, REMESSA 1234567890123456 e REMESSA NF-000999 sem ciclo. |
+| CT40 | Apagamento do LCD | BTN_AVANCAR e BTN_VOLTAR | Aguardar 15 s sem interação; tocar duas vezes em AVANÇAR; repetir a espera e tocar duas vezes em VOLTAR | LCD e luz de fundo | Apaga após 15 s; primeiro toque acende na mesma tela; segundo navega | Manter a chave ON/OFF ligada durante todo o ensaio; verificar despertar com ambos os botões. |
+| CT41 | Contagem dos botões | BTN_AUTORIZAR e BTN_CICLO | Para autorizar, iniciar e encerrar: soltar com cerca de 1 s; depois manter por 3 s. Encerramento com NF lançada e lacre fechado | LCD e Serial | Autorizar lacre, Iniciar ciclo ou Encerrar ciclo com segure mais N s; soltura antecipada sem ação; confirmação aos 3 s | Verificar o feedback da contagem e o cancelamento antes de completar o tempo necessário. |
+| CT42 | Mensagens temporárias | SW_LACRE, BTN_AUTORIZAR e SW_REDE | Fechar após retirada autorizada e após violação; retirar sinal; gerar eventos sem rede e restabelecer sinal | LCD e Serial | Lacre fechado / reaplicado; Lacre fechado / apos violacao; Sem sinal / na fila: N; Sinal ok / enviados: N; retorno após 2 s | Verificar mensagem correspondente à ação e retorno à tela normal sem nova interação. |
+
+**Resultados medidos e evidências**
+
+| CT | Situação | Resultado observado | Evidência e log |
+|---|---|---|---|
+| CT36 | APROVADO no simulador | As cinco telas foram registradas; a navegação nos dois sentidos e o retorno circular foram confirmados na execução manual. | [Captura 1](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Nf.png) · [Captura 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Prazo.png) · [Captura 3](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Posicao.png) · [Captura 4](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Bateria.png) · [Captura 5](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Lacre.png) |
+| CT37 | APROVADO no simulador | Registrados prazo antes do vencimento, um dia restante, vencimento no dia, atraso e ausência de ciclo após encerramento. | [Captura 1](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37AntesPrazo.png) · [Captura 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37FaltaUmDia.png) · [Captura 3](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37VenceHoje.png) · [Captura 4](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37Atraso.png) · [Captura 5](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37SemCiclo.png) |
+| CT38 | APROVADO no simulador | Alarme na violação, interrupção ao fechar e após 30 s, manutenção da sinalização luminosa com lacre violado e ausência de alarme na retirada autorizada. Fotos mostram a montagem com LED externo; os três vídeos registram os cenários sonoros. | [Captura 1](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38Violacao.png) · [Captura 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38Fechado.png) · [Captura 3](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38Limite30s.png) · [Captura 4](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38RetiradaAutorizada.png) · [Vídeo 5](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38-limite-30s.mkv) · [Vídeo 6](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38-retirada-autorizada.mkv) · [Vídeo 7](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38-violacao-fechamento.mkv) |
+| CT39 | APROVADO no simulador | Registradas confirmação e exibição da NF, aceitação de 15 caracteres e as três recusas. Caractere proibido e comprimento excedido usam a mesma mensagem; a identificação da entrada aplicada acompanha cada captura. | [Captura 1](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39NfRegistrada.png) · [Captura 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39TelaNf.png) · [Captura 3](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39Limite15.png) · [Captura 4](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39CaractereInvalido.png) · [Captura 5](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39LongaDemais.png) · [Captura 6](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39SemCiclo.png) |
+| CT40 | APROVADO no simulador | Registrados LCD aceso e apagado, despertar sem mudança de tela e navegação no segundo toque, para ambos os botões. | [Captura 1](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40Antes.png) · [Captura 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40Apagado.png) · [Captura 3](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40PrimeiroAvancar.png) · [Captura 4](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40SegundoAvancar.png) · [Captura 5](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40PrimeiroVoltar.png) · [Captura 6](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40SegundoVoltar.png) · [Vídeo 7](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40-apagamento-despertar.mkv) |
+| CT41 | APROVADO no simulador | Registradas as três contagens e as mensagens de soltura antecipada; os vídeos documentam as tentativas curtas e os acionamentos completos de autorização, início e encerramento. | [Captura 1](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41ContagemAutorizar.png) · [Captura 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41ContagemIniciar.png) · [Captura 3](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41ContagemEncerrar.png) · [Captura 4](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41SolturaAutorizar.png) · [Captura 5](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41SolturaIniciar.png) · [Captura 6](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41SolturaEncerrar.png) · [Vídeo 7](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41-contagem-autorizar.mkv) · [Vídeo 8](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41-contagem-encerrar.mkv) · [Vídeo 9](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41-contagem-iniciar.mkv) |
+| CT42 | APROVADO no simulador | Registradas as quatro mensagens. Retorno à tela normal após a exibição temporária. O número N corresponde ao estado da fila na rodada. | [Captura 1](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42Reaplicado.png) · [Captura 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42AposViolacao.png) · [Captura 3](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42SemSinal.png) · [Captura 4](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42SinalOk.png) · [Vídeo 5](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42-lacre-apos-violacao.mkv) · [Vídeo 6](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42-lacre-reaplicado.mkv) · [Vídeo 7](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42-sem-sinal.mkv) · [Vídeo 8](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42-sinal-recuperado.mkv) |
+
+**Limitações.** As capturas do CT39 usam a mesma mensagem para caractere inválido e comprimento excedido; os comandos indicados no procedimento distinguem os subcenários. Os registros não constituem medição de consumo nem de precisão elétrica da cadência do buzzer. A mensagem “enviados” representa reenvio simulado, sem confirmação de servidor. A data de cada tomada e a identificação do binário não acompanham este conjunto de evidências.
+
+<a name="evidencias-ct36"></a>
+<details>
+<summary>CT36 — Navegação do LCD: evidências</summary>
+
+![CT36: NF](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Nf.png)
+
+*Figura 3.4.1-CT36-1 — NF. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT36: Prazo](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Prazo.png)
+
+*Figura 3.4.1-CT36-2 — Prazo. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT36: Posição](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Posicao.png)
+
+*Figura 3.4.1-CT36-3 — Posição. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT36: Bateria](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Bateria.png)
+
+*Figura 3.4.1-CT36-4 — Bateria. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT36: Lacre](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct36Lacre.png)
+
+*Figura 3.4.1-CT36-5 — Lacre. Fonte: captura do simulador Wokwi for VS Code.*
+
+</details>
+
+<a name="evidencias-ct37"></a>
+<details>
+<summary>CT37 — Prazo no LCD: evidências</summary>
+
+![CT37: Antes do prazo](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37AntesPrazo.png)
+
+*Figura 3.4.1-CT37-1 — Antes do prazo. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT37: Um dia restante](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37FaltaUmDia.png)
+
+*Figura 3.4.1-CT37-2 — Um dia restante. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT37: Vence hoje](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37VenceHoje.png)
+
+*Figura 3.4.1-CT37-3 — Vence hoje. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT37: Atraso](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37Atraso.png)
+
+*Figura 3.4.1-CT37-4 — Atraso. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT37: Sem ciclo ativo](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct37SemCiclo.png)
+
+*Figura 3.4.1-CT37-5 — Sem ciclo ativo. Fonte: captura do simulador Wokwi for VS Code.*
+
+</details>
+
+<a name="evidencias-ct38"></a>
+<details>
+<summary>CT38 — Alarme local: evidências</summary>
+
+![CT38: Violação](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38Violacao.png)
+
+*Figura 3.4.1-CT38-1 — Violação. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT38: Lacre fechado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38Fechado.png)
+
+*Figura 3.4.1-CT38-2 — Lacre fechado. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT38: Limite de 30 s](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38Limite30s.png)
+
+*Figura 3.4.1-CT38-3 — Limite de 30 s. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT38: Retirada autorizada](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38RetiradaAutorizada.png)
+
+*Figura 3.4.1-CT38-4 — Retirada autorizada. Fonte: captura do simulador Wokwi for VS Code.*
+
+Vídeos: [ct38-limite-30s](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38-limite-30s.mkv) · [ct38-retirada-autorizada](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38-retirada-autorizada.mkv) · [ct38-violacao-fechamento](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38-violacao-fechamento.mkv).
+
+</details>
+
+<a name="evidencias-ct39"></a>
+<details>
+<summary>CT39 — NF da remessa: evidências</summary>
+
+![CT39: NF registrada](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39NfRegistrada.png)
+
+*Figura 3.4.1-CT39-1 — NF registrada. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT39: Tela da NF](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39TelaNf.png)
+
+*Figura 3.4.1-CT39-2 — Tela da NF. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT39: Limite de 15 caracteres](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39Limite15.png)
+
+*Figura 3.4.1-CT39-3 — Limite de 15 caracteres. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT39: Recusa por caractere inválido — entrada do roteiro: REMESSA NF@123](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39CaractereInvalido.png)
+
+*Figura 3.4.1-CT39-4 — Recusa por caractere inválido — entrada do roteiro: REMESSA NF@123. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT39: Recusa por comprimento — entrada do roteiro: REMESSA 1234567890123456](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39LongaDemais.png)
+
+*Figura 3.4.1-CT39-5 — Recusa por comprimento — entrada do roteiro: REMESSA 1234567890123456. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT39: Recusa sem ciclo ativo](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct39SemCiclo.png)
+
+*Figura 3.4.1-CT39-6 — Recusa sem ciclo ativo. Fonte: captura do simulador Wokwi for VS Code.*
+
+</details>
+
+<a name="evidencias-ct40"></a>
+<details>
+<summary>CT40 — Apagamento do LCD: evidências</summary>
+
+![CT40: LCD aceso](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40Antes.png)
+
+*Figura 3.4.1-CT40-1 — LCD aceso. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT40: LCD apagado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40Apagado.png)
+
+*Figura 3.4.1-CT40-2 — LCD apagado. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT40: Primeiro toque em avançar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40PrimeiroAvancar.png)
+
+*Figura 3.4.1-CT40-3 — Primeiro toque em avançar. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT40: Segundo toque em avançar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40SegundoAvancar.png)
+
+*Figura 3.4.1-CT40-4 — Segundo toque em avançar. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT40: Primeiro toque em voltar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40PrimeiroVoltar.png)
+
+*Figura 3.4.1-CT40-5 — Primeiro toque em voltar. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT40: Segundo toque em voltar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40SegundoVoltar.png)
+
+*Figura 3.4.1-CT40-6 — Segundo toque em voltar. Fonte: captura do simulador Wokwi for VS Code.*
+
+Vídeos: [ct40-apagamento-despertar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40-apagamento-despertar.mkv).
+
+</details>
+
+<a name="evidencias-ct41"></a>
+<details>
+<summary>CT41 — Contagem dos botões: evidências</summary>
+
+![CT41: Contagem para autorizar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41ContagemAutorizar.png)
+
+*Figura 3.4.1-CT41-1 — Contagem para autorizar. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT41: Contagem para iniciar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41ContagemIniciar.png)
+
+*Figura 3.4.1-CT41-2 — Contagem para iniciar. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT41: Contagem para encerrar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41ContagemEncerrar.png)
+
+*Figura 3.4.1-CT41-3 — Contagem para encerrar. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT41: Soltura antes de autorizar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41SolturaAutorizar.png)
+
+*Figura 3.4.1-CT41-4 — Soltura antes de autorizar. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT41: Soltura antes de iniciar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41SolturaIniciar.png)
+
+*Figura 3.4.1-CT41-5 — Soltura antes de iniciar. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT41: Soltura antes de encerrar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41SolturaEncerrar.png)
+
+*Figura 3.4.1-CT41-6 — Soltura antes de encerrar. Fonte: captura do simulador Wokwi for VS Code.*
+
+Vídeos: [ct41-contagem-autorizar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41-contagem-autorizar.mkv) · [ct41-contagem-encerrar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41-contagem-encerrar.mkv) · [ct41-contagem-iniciar](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct41-contagem-iniciar.mkv).
+
+</details>
+
+<a name="evidencias-ct42"></a>
+<details>
+<summary>CT42 — Mensagens temporárias: evidências</summary>
+
+![CT42: Lacre reaplicado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42Reaplicado.png)
+
+*Figura 3.4.1-CT42-1 — Lacre reaplicado. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT42: Fechamento após violação](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42AposViolacao.png)
+
+*Figura 3.4.1-CT42-2 — Fechamento após violação. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT42: Sem sinal](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42SemSinal.png)
+
+*Figura 3.4.1-CT42-3 — Sem sinal. Fonte: captura do simulador Wokwi for VS Code.*
+
+![CT42: Sinal recuperado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42SinalOk.png)
+
+*Figura 3.4.1-CT42-4 — Sinal recuperado. Fonte: captura do simulador Wokwi for VS Code.*
+
+Vídeos: [ct42-lacre-apos-violacao](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42-lacre-apos-violacao.mkv) · [ct42-lacre-reaplicado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42-lacre-reaplicado.mkv) · [ct42-sem-sinal](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42-sem-sinal.mkv) · [ct42-sinal-recuperado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct42-sinal-recuperado.mkv).
+
+</details>
+
+#### <a name="cts43-45"></a>CT43–CT45 — posição, vínculo e GNSS no V2
+
+CTs novos para comportamentos que o V2 acrescentou: a idade da última posição no LCD, o boot sem ciclo e os eventos de falha do GNSS. Usam o mesmo binário e o mesmo ambiente da [rodada V2](#rodada-v2), no Wokwi for VS Code, em 03/11/2026.
+
+**CT#** | **Bloco** | **Componente de entrada** | **Leitura da entrada** | **Componente de saída** | **Leitura da saída** | **Descrição**
+|----------|----------|----------|----------|----------|----------|----------|
+|CT43|Última posição no LCD|GPS (controle `fixValid`) e reinício do ESP32|Sem posição salva; posição válida e depois `fixValid=0` por segundos, minutos, horas e dias; reinício preservando a NVS|LCD (tela "Ultima posicao"); Serial|"sem fix ainda"; "ha N s", "ha N min", "ha N h" e "ha N dias"; depois do reinício, "salva, sem idade" e a indicação de restauração na Serial|Esperado: o dispositivo mostra a idade da última posição válida e não inventa um horário quando ela é desconhecida (RF005; RN08).|
+|CT44|Vínculo inicial|ESP32 (primeiro boot, NVS vazia), BTN_CICLO e comando `REMESSA`|Ligar sem ciclo; `REMESSA` antes do vínculo; CICLO segurado por 3 s|LCD; Serial|`STATUS` com `ciclo_ativo=false` e `dias_fora=0`; tela de prazo "sem ciclo ativo"; `REMESSA` recusada; após 3 s, `CICLO_INICIADO` com `ciclo_id=1`, "Ciclo iniciado / aguardando NF" e dias contando a partir do vínculo|Esperado: o dispositivo só entra em ciclo quando é vinculado a uma remessa (RF002, RF003; RN02).|
+|CT45|Falha do GNSS|GPS (controle `fixValid`) e SW_REDE|Coleta com fix; `fixValid=0` por duas coletas ou mais; `fixValid=1`; repetir sem rede|Serial|Um `GNSS_SEM_FIX` (`motivo=sem_fix`, `satelites=0`) na primeira coleta sem posição, sem repetir nas seguintes; um `GNSS_RECUPERADO` na primeira coleta válida, com `tempo_sem_posicao_s` e `coletas_sem_fix`; sem rede, os dois entram na fila como não críticos|Esperado: perda e retorno da posição ficam registrados uma vez cada, sem encher a fila (RF005, RF010; RN08, RN09).|
+
+| CT | Situação | Resultado observado | Evidência e log |
+|---|---|---|---|
+| CT43 | APROVADO em segundos e minutos; **PENDENTE** em horas, dias e restauração | Sem posição, o LCD mostrou "sem fix ainda". Depois de duas coletas válidas e de `fixValid=0`, a idade da última posição apareceu como "ha 12 s" e "ha 1 min", e as coletas sem fix registraram 28 s e 68 s. Horas e dias exigem espera em tempo real mesmo no `demo`, e a restauração exige reiniciar o ESP32 preservando a NVS; esses subcenários não foram feitos. | [Sem fix](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct43SemFix.png) · [Segundos](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct43Segundos.png) · [Minutos](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct43Minutos.png) · [Log][ct43-log] |
+| CT44 | APROVADO no simulador | Boot com `ciclo_ativo=false` e `dias_fora=0`; tela de prazo "sem ciclo ativo"; `REMESSA NF-000123` recusada com `[comando] sem ciclo ativo…`; nenhum dia contado nem alerta antes do vínculo; CICLO segurado abriu o ciclo 1 aos 31,2 s, e o primeiro `STATUS_SEMANAL` saiu no dia 7, 6,95 s depois do vínculo. | [Boot](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct44Boot.png) · [Sem ciclo](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct44SemCiclo.png) · [Iniciado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct44Iniciado.png) · [Log][ct44-log] |
+| CT45 | APROVADO no simulador | Sem rede: um `GNSS_SEM_FIX` (`sem_fix`, `satelites=0`) na primeira coleta sem posição, sem repetir na segunda; um `GNSS_RECUPERADO` com `coletas_sem_fix=2` e `tempo_sem_posicao_s=70`; os dois não críticos, guardados na fila e reenviados na ordem até `[FILA] 0 pendentes`. Com rede, a perda do fix depois de coletas válidas gerou um único `GNSS_SEM_FIX` (log do CT43), e o retorno gerou `GNSS_RECUPERADO` enviado direto. | [Fila](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct45Fila.png) · [Log sem rede][ct45-log] · [Log com rede][ct45-rede] |
+
+[ct43-log]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct43-posicao.serial.txt
+[ct44-log]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct44-vinculo.serial.txt
+[ct45-log]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct45-gnss.serial.txt
+[ct45-rede]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct45-gnss-rede.serial.txt
+
+**Achados e limitações.**
+
+- **Motivos do GNSS:** só `sem_fix` é alcançável no simulador. O GPS simulado só alterna `fixValid` entre 0 e 1, com 8 ou 0 satélites, então `sem_dados` e `sinal_fraco` ficam sem teste até a validação física.
+- **CT45 sem rede:** usou o chip de estímulo da [rodada manual](../tests/wokwi-vscode/README.md), que deixa a rede indisponível pelo GPIO18 desde o boot, devolve o fix aos 60 s e a rede aos 110 s. Nas duas tentativas à mão, a rede voltou antes do fix, e o `GNSS_RECUPERADO` não passou pela fila. Por isso, o log com rede é dessas tentativas, a partir do último boot.
+- **Origem das capturas:**
+  - **CT43:** a "sem fix ainda" foi tirada no início de uma execução do CT45, porque a execução do CT43 começou com fix.
+  - **CT44:** as capturas do LCD são da execução no Wokwi CLI de 02/11/2026, com o mesmo binário. O log dessa execução se perdeu, e o log de evidência é a repetição no VS Code.
 
 **Próximas sprints.** As seções seguintes mantêm as orientações e os exemplos originais do template. Seus exemplos de CT não são resultados de execução. A proposta de evolução do circuito e os CT24–CT34 estão no [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md).
 

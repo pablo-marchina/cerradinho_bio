@@ -3,7 +3,7 @@
 // O LCD I2C (GPIO21/22) e testado pelo firmware principal.
 const int BUZZER = 23;
 const int SW_LACRE = 27, SW_REDE = 18;
-const int BTN_AUTORIZAR = 33, BTN_CICLO = 13;
+const int BTN_AUTORIZAR = 33, BTN_CICLO = 14;
 const int BTN_AVANCAR = 25, BTN_VOLTAR = 26;
 const int POT_BATERIA = 34;                    // ADC1
 unsigned long ultimaLeitura = 0;

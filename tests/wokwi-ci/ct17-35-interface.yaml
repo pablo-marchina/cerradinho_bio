@@ -1,0 +1,57 @@
+# CT17 (V2): navegacao circular do LCD e leitura bruta dos botoes no heartbeat.
+# CT35: desligamento logico pela chave ON/OFF e religamento.
+name: CT17-CT35 V2 - interface e desligamento
+version: 1
+steps:
+  - wait-serial: '"type":"STATUS"'
+  - delay: 500ms
+  # Vinculo (RF003): o dispositivo liga sem ciclo; CICLO segurado 3 s abre o ciclo 1.
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 1 }
+  - wait-serial: '"type":"CICLO_INICIADO"'
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 0 }
+  # Espera a mensagem "Ciclo iniciado" (2 s) sair do LCD.
+  - delay: 2500ms
+  - set-control: { part-id: btn_avancar, control: pressed, value: 1 }
+  - delay: 100ms
+  - set-control: { part-id: btn_avancar, control: pressed, value: 0 }
+  - delay: 200ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct17-tela2-prazo.png }
+  - set-control: { part-id: btn_avancar, control: pressed, value: 1 }
+  - delay: 100ms
+  - set-control: { part-id: btn_avancar, control: pressed, value: 0 }
+  - delay: 200ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct17-tela3-posicao.png }
+  - set-control: { part-id: btn_avancar, control: pressed, value: 1 }
+  - delay: 100ms
+  - set-control: { part-id: btn_avancar, control: pressed, value: 0 }
+  - delay: 200ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct17-tela4-bateria.png }
+  - set-control: { part-id: btn_avancar, control: pressed, value: 1 }
+  - delay: 100ms
+  - set-control: { part-id: btn_avancar, control: pressed, value: 0 }
+  - delay: 200ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct17-tela5-lacre.png }
+  - set-control: { part-id: btn_avancar, control: pressed, value: 1 }
+  - delay: 100ms
+  - set-control: { part-id: btn_avancar, control: pressed, value: 0 }
+  - wait-serial: 'tela=1 '
+  - set-control: { part-id: btn_voltar, control: pressed, value: 1 }
+  - delay: 100ms
+  - set-control: { part-id: btn_voltar, control: pressed, value: 0 }
+  - wait-serial: 'tela=5 '
+  # Leitura bruta: botoes de navegacao mantidos durante um heartbeat (sem efeito de negocio).
+  - set-control: { part-id: btn_avancar, control: pressed, value: 1 }
+  - set-control: { part-id: btn_voltar, control: pressed, value: 1 }
+  - wait-serial: 'avancar=1 voltar=1'
+  - set-control: { part-id: btn_avancar, control: pressed, value: 0 }
+  - set-control: { part-id: btn_voltar, control: pressed, value: 0 }
+  - delay: 500ms
+  # CT35
+  - set-control: { part-id: sw_energia, control: value, value: 1 }
+  - wait-serial: '"type":"DISPOSITIVO_DESLIGADO"'
+  - delay: 5000ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct35-lcd-desligado.png }
+  - set-control: { part-id: sw_energia, control: value, value: 0 }
+  - wait-serial: '"type":"STATUS"'
+  - delay: 300ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct35-lcd-religado.png }

@@ -1,0 +1,59 @@
+# CT10 rodada B (V2): 12 violacoes sem rede = 8 individuais + resumo de 4.
+# Cada transicao espera o seal_changed (fim do registro) antes da proxima, sem depender de atrasos fixos.
+name: CT10B V2 - resumo de violacoes excedentes
+version: 1
+steps:
+  - wait-serial: '"type":"STATUS"'
+  - set-control: { part-id: sw_rede, control: value, value: 1 }
+  - delay: 100ms
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 0 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 0 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 0 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 0 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 0 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 0 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 0 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 0 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 0 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 0 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 0 }
+  - wait-serial: 'authorized_removal'
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: 'authorized_removal'
+  - delay: 300ms
+  - set-control: { part-id: sw_rede, control: value, value: 0 }
+  - wait-serial: '"type":"VIOLACAO_LACRE_RESUMO"'
+  - wait-serial: '[FILA] 0 pendentes'
+  - delay: 500ms
