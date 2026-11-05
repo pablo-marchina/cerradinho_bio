@@ -2,6 +2,8 @@
 
 > Valores de referência, não pedido de compra ou orçamento homologado. Fonte primária: [planilha editável](../../../../assets/3-desenvolvimento-resultados/3.1.7-bom/BOM-GuaraTracking-Sprint1.xlsx). Conferir preços, disponibilidade, frete, impostos, consumíveis, compatibilidade e quantidade do piloto antes de adquirir.
 
+> **Registro histórico de 23/10/2026.** Os valores e números de fontes abaixo pertencem à estimativa inicial. A planilha revisada em 04/11/2026 é a versão vigente: subtotal conhecido de R$ 34.934,57, ainda sem preço completo de conectividade, frete e tributos. Não usar o total histórico como custo do piloto.
+
 ### 3.1.7. Bill of Material (BOM) (sprint 1)
 
 BOM preliminar de um dispositivo, organizada com os campos da planilha do Inteli [42]. Os valores são preços de referência consultados em 22 e 23/10/2026, em reais; preços em dólar foram convertidos pela PTAX de venda de 22/10/2026 (R$ 5,0383) [35]. Não incluem frete, impostos de importação nem encargos, e os modelos serão confirmados antes da construção do protótipo físico [6]. O detalhamento, com fonte, data e estado de cada cotação, está na [planilha da BOM](../../../../assets/3-desenvolvimento-resultados/3.1.7-bom/BOM-GuaraTracking-Sprint1.xlsx).
@@ -42,4 +44,4 @@ O GNSS estava sem estoque na consulta, e a comunicação externa depende do test
 
 ## Referências e rastreabilidade das cotações
 
-As referências **[34]–[53]** usadas neste anexo correspondem aos itens de mesmo número na **seção 5 de [`documentacao.md`](../../../documentacao.md)**; esta vinculação não substitui conferência de estoque ou nova cotação. Fontes consultadas em 22–23/10/2026, PTAX [35] de 22/10/2026. Para fornecedores, códigos, URLs e valores, utilizar a planilha original e sua data de consulta.
+Os marcadores **[34]–[53]** deste registro refletem a numeração histórica e não correspondem à seção 5 atual de [`documentacao.md`](../../../documentacao.md). Fontes consultadas em 22–23/10/2026, com PTAX da época. Para fornecedores, códigos, URLs e valores vigentes, usar a planilha revisada e conferir novas cotações.
