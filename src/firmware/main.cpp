@@ -43,6 +43,7 @@ EventQueue pending;
 BatteryState battery;
 uint32_t lastBatteryCheck = 0;
 int batteryPct = 0;  // ultima leitura, usada pelo LCD sem ler o ADC a cada volta
+int wakeReferencePct = -100;  // bateria no ultimo despertar do LCD; -100 = sem referencia
 bool poweredOn = true;
 bool networkWasAvailable = true;
 String serialLine;
@@ -101,7 +102,7 @@ LiquidCrystal_I2C lcd(Config::LcdAddress, ScreenController::Columns, 2);
 ScreenController screens;  // telas do LCD (classe propria, usada no setup e no loop)
 ScreenController::Line shownTop = "", shownBottom = "";
 bool lcdLit = true;
-uint32_t lastInteractionAt = 0;  // ultimo botao ou mensagem; o LCD apaga apos LcdTimeoutMs
+uint32_t lastInteractionAt = 0;  // ultimo botao, mensagem ou variacao da bateria; o LCD apaga apos LcdTimeoutMs
 
 // Tempo do ciclo em ms, sem a volta do millis().
 uint64_t clockMs() {
@@ -133,7 +134,10 @@ bool freshFix() {
 // Nivel de bateria de 0 a 100% lido no potenciometro (ADC1, GPIO34).
 int simulatedBatteryPercent() {
   // Entrada sintetica 0..3,3 V. Nao ligar uma celula diretamente ao GPIO34.
-  return constrain((analogRead(Config::BatteryPin) * 100L) / 4095L, 0L, 100L);
+  // Media de 16 leituras contra o ruido do ADC; a histerese do LCD fica em readBattery().
+  long sum = 0;
+  for (int i = 0; i < 16; ++i) sum += analogRead(Config::BatteryPin);
+  return constrain((sum / 16 * 100L) / 4095L, 0L, 100L);
 }
 
 // Registro de diagnostico na NVS (q0..q15); cheio, preserva os antigos e so imprime o novo.
@@ -575,8 +579,16 @@ void readBattery(uint32_t now) {
   if (now - lastBatteryCheck < Config::BatteryCheckMs) return;
   lastBatteryCheck = now;
   const int raw = analogRead(Config::BatteryPin);
-  batteryPct = simulatedBatteryPercent();
-  const unsigned events = batteryUpdate(&battery, raw, batteryPct);
+  const int percent = simulatedBatteryPercent();
+  // Histerese de 1 ponto so no visor: a regra usa a media, para o alerta nao atrasar (RN10).
+  if (abs(percent - batteryPct) >= 2 || percent == 0 || percent == 100) batteryPct = percent;
+  // Variacao da bateria acende o LCD na tela de bateria. Compara com o ultimo valor que contou
+  // como uso (nao com a leitura anterior), com folga de 3 pontos contra o ruido do ADC.
+  if (abs(batteryPct - wakeReferencePct) >= 3) {
+    if (wakeReferencePct != -100) { lastInteractionAt = now; screens.show(Screen::Battery); }
+    wakeReferencePct = batteryPct;
+  }
+  const unsigned events = batteryUpdate(&battery, raw, percent);
   if (events & BATTERY_EVENT_SENSOR_FAILURE) publishEvent("SENSOR_BATERIA_FALHA");
   if (events & BATTERY_EVENT_LOW) publishEvent("BATERIA_BAIXA");
 }
@@ -909,6 +921,7 @@ void loop() {
     poweredOn = on;
     if (on) {
       lastInteractionAt = now;
+      wakeReferencePct = -100;  // variacao com a chave desligada nao troca a tela ao religar
       if (simulatedNetworkAvailable()) flushPending();  // fila restaurada durante o desligamento
       publishEvent("STATUS");
     }
