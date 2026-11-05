@@ -86,10 +86,10 @@ Escala baixa/média/alta, conforme [critérios documentados](outros/3-desenvolvi
 | Força | Intensidade | Justificativa |
 |---|---|---|
 | Rivalidade | Alta | Escala e commodities pressionam custos. |
-| Fornecedores | Média | Insumos pesam; contratos e duas matérias-primas reduzem dependência. |
-| Compradores | Média | Distribuidores negociam preço e volume. |
+| Fornecedores | Alta | Milho comprado expõe a safra e logística; peças e serviços especializados ampliam dependência. |
+| Compradores | Alta | Grandes distribuidoras concentram compras e negociam preço, volume e condições. |
 | Novos entrantes | Média | Capital e licenças criam barreiras. |
-| Substitutos | Média | Gasolina e eletrificação competem com o etanol. |
+| Substitutos | Média | Gasolina e eletrificação concorrem; frota flex e E30 sustentam a demanda. |
 
 **Síntese:** o GuaráTracking pode melhorar a visibilidade dos ativos em manutenção externa; impacto a medir no piloto [6].
 
@@ -101,7 +101,7 @@ Escala baixa/média/alta, conforme [critérios documentados](outros/3-desenvolvi
 
 **Escopo:** análise da CerradinhoBio, com foco nas condições do negócio e na gestão de equipamentos enviados para manutenção externa. Forças e fraquezas representam fatores internos; oportunidades e ameaças, fatores externos. A síntese considera o contexto da indústria descrito na seção 3.1.1 e o TAPI do projeto.
 
-**Leitura para o projeto:** o portfólio diversificado e a escala de processamento da CerradinhoBio oferecem contexto favorável para testar uma rotina de rastreabilidade reutilizável. A dependência de registros e contatos entre áreas e fornecedores é uma fragilidade do processo de manutenção externa descrito no TAPI, a validar com o parceiro. A expansão do etanol e as políticas de descarbonização abrem oportunidades para a companhia; concorrência em escala, volatilidade de insumos e substitutos energéticos compõem ameaças externas. **PENDENTE DE VALIDAÇÃO:** quantificar a dor operacional (volume de remessas, tempo fora, atrasos e esforço de consulta) com os dados da última safra, ainda a serem disponibilizados conforme o TAPI.
+**Leitura para o projeto:** escala e sinergias entre cana e milho favorecem a operação; a compra de milho e os registros dispersos da manutenção externa são fragilidades internas. Expansão do etanol e políticas de descarbonização criam oportunidades; concorrência, volatilidade e possível redução de mandatos de mistura ou incentivos ameaçam a demanda. A dimensão da dor operacional ainda depende de dados do parceiro [6].
 
 ### 3.1.3. Descrição da Solução a ser Desenvolvida (sprint 1)
 
@@ -136,23 +136,20 @@ Ensaios curtos não comprovam autonomia de 150 dias; separar medidas de estimati
 
 ### 3.1.4. Value Proposition Canvas (sprint 1)	
 
-Canvas do GuaráTracking para PCM, Fiscal e Logística (P1–P3), com base no TAPI [6] e no *kick-off* de 16/10/2026 [33]. Os ganhos são hipóteses a medir no piloto.
+Perfil do cliente: Geraldo, analista de PCM (P1), com base no TAPI [6] e no *kick-off* [33]. Fiscal e Logística participam do processo, mas ficam fora deste perfil. Ganhos são hipóteses para o piloto.
 
-![Value Proposition Canvas do GuaráTracking, com mapa de valor e perfil de PCM, Fiscal e Logística.](../assets/3-desenvolvimento-resultados/3.1.4-vpc/valuePropositionCanvas.png)
+![Value Proposition Canvas do GuaráTracking para Geraldo, analista de PCM.](../assets/3-desenvolvimento-resultados/3.1.4-vpc/valuePropositionCanvas.png)
 
-*Figura 3.1.4.1 — Value Proposition Canvas do GuaráTracking para PCM, Fiscal e Logística.*
+*Figura 3.1.4.1 — Value Proposition Canvas do GuaráTracking para Geraldo (PCM).*
 
 *Fonte: template “Value Proposition Canvas - template png”, pasta de templates de negócios do Inteli [32]; conteúdo: Grupo G01 (2026).*
 
-| Dor do cliente | Resposta do GuaráTracking | Ganho relacionado |
-|---|---|---|
-| D1 Controle espalhado e manual | Cadastro do ciclo (AD1) e consulta consolidada (CG1) | G1 Localizar e consultar sem ligar |
-| D2 Localização e prazo incertos | Última posição (AD2), prazo separado da permanência (AD3) e alertas (CG2) | G2 Agir antes do vencimento |
-| D3 Difícil decidir diante do atraso | Histórico por fornecedor (CG4) | G4 Histórico útil à gestão |
-| D4 Retorno sem baixa fiscal | Retorno aguardando baixa (AD4) e baixa ligada à NF (CG3) | G3 Fechar o retorno corretamente |
-| D5 Complemento de ICMS por prazo vencido, informado no *kick-off* para 2024/25; parcela ligada à manutenção externa não apurada [33] | Acompanhamento dos prazos (AD3), sem garantia de evitar incidência fiscal | G2 Agir antes do vencimento |
-| D6 Lacre aberto sem registro | Alerta e registro do lacre (AD5) | G3 Fechar o retorno corretamente |
-| D7 Dados espalhados entre SAP e planilhas | Dados do ciclo estruturados (AD6) e consulta pela API (CG5) | G5 Dados consolidados para o BI |
+| Tarefa de Geraldo | Dor | Aliviador | Ganho | Criador de ganho |
+|---|---|---|---|---|
+| T1 Identificar e enviar o equipamento | D1 Controle disperso em planilhas e ligações | AD1 Ciclo, responsável e fornecedor registrados | G1 Consultar sem ligar | CG1 Painel consolidado |
+| T2 Acompanhar oficina e prazo | D2 Localização e prazo incertos | AD2 Última posição válida e prazo visível | G2 Agir antes do vencimento | CG2 Alertas configuráveis |
+| T3 Decidir diante do atraso | D3 Falta histórico para cobrar ou renegociar | AD3 Histórico de ciclos por fornecedor | G3 Decidir com evidências | CG3 Histórico consultável |
+| T4 Conferir retorno e lacre | D4 Abertura ou retorno sem registro | AD4 Estado do lacre e retorno registrados | G4 Encerrar o acompanhamento com segurança | CG4 Consulta do ciclo completo |
 
 ### 3.1.5. Matriz de Riscos (sprint 1)
 
@@ -236,17 +233,17 @@ Encarregado indicado pela CerradinhoBio (**a confirmar**), sem divulgar contato 
 
 ### 3.1.7. Bill of Material (BOM) (sprint 1)
 
-Foi preenchida a [planilha oficial](../assets/3-desenvolvimento-resultados/3.1.7-bom/BOM-GuaraTracking-Sprint1.xlsx) [42] com **16 itens**, quantidades e valores. Preços de referência consultados em **22–23/10/2026**; conversões em dólar usam PTAX venda de **22/10/2026 (R$ 5,0383)** [35]. O [detalhamento completo](outros/3-desenvolvimento-resultados/3.1.7-bom/bom-detalhamento-sprint1.md) preserva tabelas, hipóteses e memória de custo.
+A [planilha oficial](../assets/3-desenvolvimento-resultados/3.1.7-bom/BOM-GuaraTracking-Sprint1.xlsx) [42], revisada em 04/11/2026, distingue itens de campo, bancada, consumíveis, conectividade e serviços. Inclui LCD, buzzer, chaves de simulação, lacres, chip e plano de dados. O pacote de lacres tem preço indicativo de R$ 95,58 [55]. A [memória inicial](outros/3-desenvolvimento-resultados/3.1.7-bom/bom-detalhamento-sprint1.md) registra a estimativa anterior; a planilha contém a versão vigente.
 
 | Parcela | Estimativa de referência | Limitação |
 |---|---:|---|
-| Materiais de um protótipo | **R$ 733,99** | Preços históricos/indicativos; sem frete, tributos e validação de estoque |
+| Materiais e itens de bancada já precificados | **R$ 828,97** | Parcial; quatro preços dos itens ainda faltam |
 | Trabalho técnico (7 pessoas, 80 h por pessoa) | **R$ 34.105,60** | Simulação salarial, não desembolso nem proposta comercial |
-| Soma contábil indicativa | **R$ 34.839,59** | **Não** representa custo aprovado de aquisição ou implantação |
+| Subtotal conhecido | **R$ 34.934,57** | Não representa o custo completo nem orçamento aprovado |
 
-O circuito simulado usa LEDs, botões, chaves e potenciômetro, enquanto o protótipo físico exige ainda GNSS, alimentação, gabinete, fixação e comunicação. O SIM7080G é apenas uma opção; cobertura, operadora, antena, compatibilidade elétrica e consumo precisam de ensaio. Quantidades e serviços para cinco dispositivos não devem ser extrapolados linearmente: montagem e desenvolvimento são parcialmente compartilhados.
+Há dois cenários para cinco equipamentos: piloto sequencial com um dispositivo e simultâneo com cinco. Os totais completos permanecem vazios até cotar conectividade, frete e tributos. Display, buzzer e gabinete adequado à exposição à água também exigem especificação e cotação. O SIM7080G é apenas uma opção; cobertura, antena, compatibilidade elétrica e consumo precisam de ensaio. Serviços e itens de bancada são compartilhados.
 
-**Condição de aceite:** validar SKUs, duas alternativas para itens críticos, tributos/frete, autonomia, disponibilidade, custos recorrentes e orçamento com o parceiro. A planilha é evidência de planejamento, não de compra realizada.
+**Condição de aceite:** validar SKUs, autonomia estimada por consumo medido, vedação IP67/IP68 ou limite de exposição, disponibilidade, custos recorrentes e orçamento com o parceiro. A planilha registra planejamento, sem comprovar compra.
 
 ## 3.2. Domínio de Fundamentos de Experiência de Usuário 
 
@@ -1474,3 +1471,4 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 52. CURTO CIRCUITO. *LEDs, resistores, chaves táteis e jumpers*. Disponível em: https://curtocircuito.com.br/componentes/leds. Acesso em: 23 out. 2026.
 53. ROBOCORE. *Mini chave liga-desliga e potenciômetro linear 10 kΩ*. Disponível em: https://www.robocore.net/botao-chave. Acesso em: 23 out. 2026.
 54. ISO/IEC. *ISO/IEC 25010:2011 — Systems and software engineering — Systems and software Quality Requirements and Evaluation (SQuaRE) — System and software quality models*. 1ª ed., 2011 (substituída pela edição de 2023). Disponível em: https://www.iso.org/standard/35733.html. Acesso em: 28 out. 2026.
+55. SOUTH SAFE. *Lacre de segurança numerado para caminhão, 30 cm, pacote com 100*. Preço de referência: R$ 95,58. Disponível em: https://www.southsafe.com.br/produto/lacre-de-seguranca-numerado-p-caminhao-30cm-amarelo-pac-c-100/155652. Acesso em: 4 nov. 2026.
