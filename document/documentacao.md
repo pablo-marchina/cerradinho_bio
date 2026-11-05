@@ -1441,9 +1441,9 @@ Na bancada, lacre, rede e ON/OFF são botões de toque, e não chaves deslizante
 
 *Figura 3.4.2-5 — CT49, etapa de autorização, com "Autorizacao ok / vale 3 dias". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
 
-![CT49: retirada autorizada](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizadaRealce.png)
+![CT49: retirada autorizada](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaLcdFoto.jpg)
 
-*Figura 3.4.2-6 — CT49, "Retirada autorizada". Fonte: recorte do vídeo, com soma de quadros e contraste ajustado para leitura, 05/11/2026.*
+*Figura 3.4.2-6 — CT49, "Retirada autorizada". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
 
 ![CT50: violação registrada](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50LcdFoto.jpg)
 
@@ -1457,7 +1457,7 @@ Na bancada, lacre, rede e ON/OFF são botões de toque, e não chaves deslizante
 
 *Figura 3.4.2-9 — CT51, "Bateria / sensor com falha". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
 
-As fotos ilustram as telas; o resultado de cada CT vem dos vídeos e da Serial. Recortes dos vídeos com realce do LCD: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacreRealce.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciadoRealce.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudancaRealce.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistradaRealce.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalhaRealce.png). Quadros sem ajuste: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacre.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciado.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudanca.png) · [CT49](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizada.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistrada.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalha.png)
+As fotos ilustram as telas; o resultado de cada CT vem dos vídeos e da Serial. Recortes dos vídeos com realce do LCD: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacreRealce.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciadoRealce.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudancaRealce.png) · [CT49](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizadaRealce.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistradaRealce.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalhaRealce.png). Quadros sem ajuste: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacre.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciado.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudanca.png) · [CT49](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizada.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistrada.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalha.png)
 
 #### Limitações
 
