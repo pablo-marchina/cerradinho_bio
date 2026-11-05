@@ -33,7 +33,7 @@
 
 # <a name="c1"></a>1. Introdução (sprint 1)
 
-A CerradinhoBio é uma companhia brasileira integrante do Grupo Cerradinho [3]. Atua em bioenergia a partir de cana-de-açúcar e milho: produz etanol, energia elétrica renovável gerada com biomassa, açúcar VHP e coprodutos do milho, como DDGS, WDG e óleo [4]. Suas operações estão em Chapadão do Céu (GO), onde ficam o negócio de cana e uma unidade de etanol de milho, e em Maracaju (MS), que também abriga uma unidade de etanol de milho [2]. Na safra 2025/26, a companhia registrou receita líquida consolidada de R$ 4,288 bilhões [1] e processou 5,2 milhões de toneladas de cana e 1,5 milhão de toneladas de milho; a capacidade instalada da fábrica de açúcar é de 550 mil toneladas por ano [2]. Como referência de porte de pessoal, a companhia informava cerca de 3.800 empregos diretos e indiretos em sua apresentação institucional publicada durante a safra 2024/25 [5]. A empresa se posiciona entre os maiores complexos industriais sucroenergéticos do Brasil e entre os maiores produtores de etanol do país [3, 4].
+A CerradinhoBio é uma companhia brasileira integrante do Grupo Cerradinho [3]. Atua em bioenergia a partir de cana-de-açúcar e milho: produz etanol, energia elétrica renovável gerada com biomassa, açúcar VHP e coprodutos do milho, como DDGS, WDG e óleo [4]. Suas operações estão em Chapadão do Céu (GO), onde ficam o negócio de cana e uma unidade de etanol de milho, e em Maracaju (MS), que também abriga uma unidade de etanol de milho [2]. Na safra 2025/26, a companhia registrou receita líquida consolidada de R$ 4,288 bilhões [1] e processou 5,2 milhões de toneladas de cana e 1,5 milhão de toneladas de milho; a capacidade instalada da fábrica de açúcar é de 550 mil toneladas por ano [2]. Como referência de porte de pessoal, a companhia informava cerca de 3.800 empregos diretos e indiretos em sua apresentação institucional publicada durante a safra 2024/25 [5]. Em posicionamento comparável, a companhia era apontada em 2026 como a **terceira maior produtora de etanol de milho do Brasil, atrás de Inpasa e FS**, segmento que já respondia por cerca de 70% de seu resultado [59]. Esse dado situa sua relevância no mercado sem confundir capacidade instalada, moagem e produção de safras distintas.
 
 **Problema do projeto.** O acompanhamento de equipamentos enviados à manutenção externa depende de registros e contatos entre áreas e fornecedores. A dificuldade de consolidar localização, nota fiscal de remessa, prazo previsto e data de retorno reduz a visibilidade dos ativos em terceiros e exige cobranças manuais. Permanência total e atraso em relação ao prazo combinado são informações distintas e precisam ser analisadas separadamente.
 
@@ -45,7 +45,7 @@ A CerradinhoBio é uma companhia brasileira integrante do Grupo Cerradinho [3]. 
 
 ## 1.2 Proposta da solução
 
-A proposta reúne um dispositivo reutilizável, fixado ao equipamento com um lacre, e uma plataforma para consultar ativos, ciclos de manutenção, última localização e histórico. No cadastro, cada ciclo relaciona equipamento, fornecedor e nota fiscal, preservando os dados de saída e retorno. A plataforma compara o tempo decorrido desde a saída com o prazo previsto: assim, evidencia a permanência total do ativo e identifica separadamente quando o prazo combinado foi ultrapassado. A localização e o estado do ciclo ampliam a visibilidade dos equipamentos em terceiros; alertas configuráveis destacam casos para acompanhamento e pretendem reduzir consultas e cobranças manuais; o histórico registra os ciclos sucessivos; e uma API disponibiliza esses dados para análise em ferramentas de BI. No protótipo, a comunicação será demonstrada por Wi-Fi em cenário controlado. Como a disponibilidade de Wi-Fi nas oficinas de terceiros não é pressuposta, o canal de comunicação para produção será escolhido em sprint posterior, após comparação das alternativas em uma matriz que considere cobertura nos fornecedores, autonomia, confiabilidade, custo e escalabilidade, conforme o TAPI do projeto [6].
+A proposta é criar uma solução reutilizável de acompanhamento dos equipamentos enviados à manutenção externa. Cada envio será tratado como um ciclo associado ao equipamento, ao fornecedor, à nota fiscal e ao prazo de retorno, com consulta centralizada da última localização conhecida, da situação do lacre e do histórico. A solução distinguirá o tempo total de permanência do atraso em relação ao prazo combinado e destacará ocorrências que exigem atuação dos responsáveis. Dessa forma, pretende ampliar a visibilidade dos ativos em terceiros, reduzir consultas e cobranças manuais, apoiar a baixa correta no retorno e preservar informações úteis para decisões sobre fornecedores e ciclos futuros. As escolhas de arquitetura, integração e comunicação pertencem às seções técnicas e serão definidas e validadas ao longo do projeto.
 
 ## 1.3 Justificativa
 
@@ -65,15 +65,15 @@ _Descreva as etapas da metodologia RM-ODP que foram utilizadas para o desenvolvi
 
 #### Concorrência
 
-Na cana, concorrem Raízen [7, 18], São Martinho [8, 19] e bp bioenergy [9]; no milho, FS [10] e Inpasa [11]. As capacidades publicadas diferem em safra e unidade; não permitem inferir participação de mercado.
+Raízen, São Martinho e bp bioenergy concorrem com a CerradinhoBio na cadeia da cana por matéria-prima, eficiência e mercados de etanol, açúcar e energia [7–9, 18–19]. FS e Inpasa disputam originação de milho, etanol e coprodutos [10–11]. Em 2026, a CerradinhoBio era apontada como a terceira maior produtora brasileira de etanol de milho, atrás dessas duas empresas [59]. Dados de períodos diferentes caracterizam escala, mas não permitem calcular participação de mercado.
 
 #### Modelo de negócio
 
-A CerradinhoBio opera no modelo B2B integrado: transforma cana e milho em etanol, açúcar, bioeletricidade e coprodutos vendidos a distribuidores, indústrias e setor elétrico [4]. Eficiência, logística e preços de commodities afetam resultados [13].
+A CerradinhoBio opera em modelo B2B integrado: transforma cana e milho e vende etanol, açúcar VHP, bioeletricidade e coprodutos a distribuidores, indústrias e setor elétrico [4]. A diversificação gera receitas complementares e flexibilidade de mix, mas o resultado continua exposto a commodities, originação do milho, produtividade, logística e utilização dos ativos. Escala e eficiência são bases da competição.
 
 #### Tendências
 
-O etanol de milho cresce e complementa a cana; a EPE registrou 36,2 bilhões de litros de etanol no Brasil em 2025 [12]. RenovaBio e Lei do Combustível do Futuro impulsionam biometano e SAF, com metas de aviação a partir de 2027 [13–16]. A digitalização pode ampliar a visibilidade de ativos e apoiar decisões.
+O etanol de milho complementa a sazonalidade da cana; o Brasil produziu 36,2 bilhões de litros de etanol em 2025 [12]. Desde agosto de 2025, a gasolina comum contém 30% de etanol anidro (E30) [60]. RenovaBio e a Lei do Combustível do Futuro estimulam produtos de baixo carbono, biometano e SAF [13–16]. Digitalização e sensoriamento ganham espaço para reduzir indisponibilidade e acompanhar ativos industriais.
 
 #### Cinco Forças de Porter — CerradinhoBio
 
@@ -85,10 +85,10 @@ Escala baixa/média/alta, conforme [critérios documentados](outros/3-desenvolvi
 
 | Força | Intensidade | Justificativa |
 |---|---|---|
-| Rivalidade | Alta | Escala e commodities pressionam custos. |
+| Rivalidade | Alta | Grandes grupos disputam matéria-prima, eficiência e canais em produtos pouco diferenciados; expansão de capacidade intensifica a concorrência. |
 | Fornecedores | Alta | Milho comprado expõe a safra e logística; peças e serviços especializados ampliam dependência. |
 | Compradores | Alta | Grandes distribuidoras concentram compras e negociam preço, volume e condições. |
-| Novos entrantes | Média | Capital e licenças criam barreiras. |
+| Novos entrantes | Média | Capital, licenciamento, escala, grãos e logística criam barreiras, embora grupos financiados continuem expandindo. |
 | Substitutos | Média | Gasolina e eletrificação concorrem; frota flex e E30 sustentam a demanda. |
 
 **Síntese:** o GuaráTracking pode melhorar a visibilidade dos ativos em manutenção externa; impacto a medir no piloto [6].
@@ -107,28 +107,31 @@ Escala baixa/média/alta, conforme [critérios documentados](outros/3-desenvolvi
 
 #### 3.1.3.1 Problema a resolver
 
-Registros e contatos dispersos dificultam localizar equipamentos em manutenção externa, verificar NF, prazo e retorno e exigem consultas manuais [6].
+Registros dispersos dificultam localizar o equipamento, relacionar sua nota fiscal, comparar permanência e prazo e confirmar o retorno. Isso exige cobranças manuais, pode atrasar a baixa fiscal e limita o histórico por fornecedor [6, 33].
 
 #### 3.1.3.2 Solução proposta (visão de negócios)
 
-O GuaráTracking combina dispositivo reutilizável com lacre e cadastro digital por ciclo. Reúne equipamento, fornecedor, responsável, NF, prazo, última localização válida, estado do lacre e alertas; disponibiliza histórico e dados para consulta e BI. O piloto avaliará viabilidade, sem prometer rastreamento contínuo ou posição interna precisa.
+O GuaráTracking acompanhará cada remessa com identificador reutilizável lacrado e registro digital do ciclo. Reunirá equipamento, fornecedor, responsável, nota fiscal, prazo, última localização conhecida, lacre, alertas e histórico. O piloto avaliará utilidade e viabilidade, sem prometer rastreamento contínuo, localização interna precisa ou implantação corporativa.
 
 #### 3.1.3.3 Uso previsto
 
-Na saída, cadastrar equipamento, fornecedor, responsável, NF e prazo e instalar o dispositivo lacrado. Durante o reparo, consultar posições, tratar alertas e registrar retiradas autorizadas. No retorno, conferir, dar baixa, encerrar e liberar o dispositivo, preservando o histórico. Papéis serão validados com o parceiro.
+Na saída, cadastra-se equipamento, fornecedor, nota fiscal e prazo; depois, vincula-se o identificador lacrado. Durante o reparo, o PCM consulta a situação, prioriza cobranças e registra retiradas autorizadas. No retorno, confere o ativo, encaminha a baixa fiscal, encerra o ciclo e libera o identificador, preservando o histórico.
 
 #### 3.1.3.4 Benefícios
 
-A solução pode centralizar dados, reduzir buscas e apoiar decisões. Ganhos serão medidos no piloto.
+A consulta centralizada pretende reduzir ligações, planilhas paralelas e tempo para descobrir localização, prazo e responsável. O vínculo com a nota fiscal torna o retorno visível ao Fiscal. Alertas de atraso, permanência e lacre ajudam o PCM a priorizar cobranças; o histórico por fornecedor evidencia recorrências. Esses ganhos dependem do tratamento dos alertas e serão medidos.
 
 #### 3.1.3.5 Critério de sucesso e medida
 
-Sucesso preliminar é completar ciclos em cinco dispositivos de teste, permitir reutilização sem vínculos simultâneos e produzir informação consultável. Metas preliminares; protocolo no [plano de validação](outros/3-desenvolvimento-resultados/validacao-e-limites-sprint1.md).
+Sucesso é cadastrar ao menos cinco equipamentos reais ou representativos e concluir ciclos preservando histórico, sem exigir um dispositivo por cadastro [6]. O piloto deve demonstrar menor esforço de consulta, encaminhamento do retorno à baixa fiscal e histórico consultável por fornecedor. Metas preliminares; protocolo no [plano de validação](outros/3-desenvolvimento-resultados/validacao-e-limites-sprint1.md).
 
 | Indicador | Medida e meta proposta |
 |---|---|
 | Localização | ≥90% das atualizações semanais geram posição externa válida. |
 | Consulta | Situação completa em até 2 min em 90% das buscas. |
+| Esforço operacional | Redução ≥30% no tempo mediano de consulta; meta a validar. |
+| Fechamento fiscal | 100% dos retornos do lote sinalizados ao fluxo de baixa. |
+| Histórico do fornecedor | 100% dos ciclos encerrados consultáveis por fornecedor, com prazo previsto, retorno e ocorrências preservados. |
 | Alertas | Falsos alertas ≤5% dos alertas analisados; latência dispositivo→destinatário ≤15 min, **meta futura não testada**. |
 | Integridade | 100% dos ciclos completos, sem vínculo duplicado; testar limiar de 150 dias com datas simuladas. |
 
@@ -153,7 +156,7 @@ Perfil do cliente: Geraldo, analista de PCM (P1), com base no TAPI [6] e no *kic
 
 ### 3.1.5. Matriz de Riscos (sprint 1)
 
-Matriz de riscos do projeto, com níveis estimados de 10%–90% e impacto qualitativo; [justificativas detalhadas](outros/3-desenvolvimento-resultados/3.1.5-matriz-riscos/registro-riscos-aprofundado.md).
+Matriz de riscos de **execução e entrega do projeto**, com níveis estimados de 10%–90% e impacto qualitativo. Falhas operacionais do produto — como ausência de GNSS, rede ou autonomia — são tratadas como requisitos e cenários de teste, e não como riscos de gestão. A figura abaixo reflete os IDs e níveis da tabela revisada; as [justificativas detalhadas](outros/3-desenvolvimento-resultados/3.1.5-matriz-riscos/registro-riscos-aprofundado.md) registram a versão vigente.
 
 <div align="center">
   <p><strong>Figura 3.1.5.1 — Matriz de riscos do projeto</strong></p>
@@ -167,24 +170,23 @@ Matriz de riscos do projeto, com níveis estimados de 10%–90% e impacto qualit
 
 | ID | Causa e efeito | Prob. | Impacto | Justificativa | Resposta | Responsável |
 |---|---|---:|---:|---|---|---|
-| R01 | NF não vinculada → alerta falso. | 50% | Moderado | Kick-off prevê prorrogação. | Vincular nova NF. | Software/Fiscal |
-| R02 | Metal/galpão → perda de GNSS. | 70% | Muito alto | Hipótese técnica. | Testar antenas; manter posição válida. | Hardware |
-| R03 | Ensaio curto → autonomia incerta. | 70% | Alto | Ciclos podem durar um ano [6]. | Estimar pelo consumo. | Hardware |
-| R04 | Sem rede → eventos retidos. | 90% | Alto | Cobertura externa incerta [6]. | Armazenar e comparar redes. | Conectividade |
-| R05 | Ruído ou abertura autorizada → falso alerta. | 50% | Alto | Retirada ocorre no reparo. | Debounce e autorização. | Firmware |
-| R06 | Fixação inadequada → dano. | 50% | Muito alto | Formatos variam [6]. | Usar fixação removível. | Hardware |
-| R07 | Fora do escopo; trabalho futuro. | 70% | Muito alto | Previsto no TAPI [6]. | Trabalho futuro. | Hardware |
-| R08 | Conectividade cara → inviabilidade. | 50% | Alto | Custo afeta a escolha. | Comparar planos. | Produto |
-| R09 | Fornecedor indisponível → piloto limitado. | 50% | Moderado | Dependência externa. | Agendar e simular. | Projeto |
-| R10 | Dado restrito exposto → incidente. | 30% | Muito alto | Localização e NF são restritas. | Usar dados fictícios e revisar. | Dados/LGPD |
-| R11 | Retorno sem NF → ciclo fiscal aberto. | 70% | Muito alto | Kick-off exige baixa fiscal. | Conferir retorno e NF. | Processos |
+| R01 | Dados do parceiro atrasarem → piloto pouco representativo. | 70% | Alto | Volumes e tempos seguem pendentes [6]. | Dados mínimos anonimizados e massa sintética. | Projeto/Parceiro |
+| R02 | Sem acesso a equipamento/oficina → testes incompletos. | 50% | Muito alto | Depende de agenda, segurança e terceiro. | Reservar janela e percurso alternativo. | Projeto/Parceiro |
+| R03 | Componente indisponível → montagem atrasada. | 70% | Alto | GNSS sem estoque e itens importados [34]. | Duas alternativas e data-limite de compra. | Hardware/Compras |
+| R04 | Escopo crescer → MVP incompleto. | 50% | Alto | Muitas frentes e prazo acadêmico fixo. | Controlar mudanças e priorizar TAPI. | Produto/Projeto |
+| R05 | Retrabalho consumir a equipe → integração atrasada. | 50% | Alto | Frentes dependentes amplificam defeitos tardios. | Marcos, revisão cruzada e reserva de integração. | Projeto/Equipe |
+| R06 | Conectividade decidida tarde → arquitetura/BOM abertas. | 50% | Alto | Cobertura e preço não validados. | Data de decisão e critérios objetivos. | Produto/Conectividade |
+| R07 | Custo superar hipótese → piloto não aprovado. | 70% | Alto | Recorrência, reposição, frete e tributos sem orçamento. | Orçar cenários de 1 e 5 dispositivos. | Produto/Compras |
+| R08 | API/BI indefinida → integração parcial. | 50% | Moderado | Sistemas e credenciais corporativas indisponíveis. | Contrato documentado e cliente de teste. | Software/TI |
+| R09 | Dado restrito publicado → incidente. | 30% | Muito alto | Dados sintéticos reduzem chance; NF/localização elevam impacto. | Anonimizar, revisar e bloquear segredos. | Dados/LGPD |
+| R10 | Validação tardia → correções fora do prazo. | 50% | Alto | Papéis e metas ainda têm pendências. | Checkpoints, responsáveis e prazos. | Projeto/Parceiro |
 
 **Oportunidades**
 
 | ID | Oportunidade | Prob. | Impacto | Tratamento | Responsável |
 |---|---|---:|---|---|---|
-| O01 | Reutilização reduz custo por ciclo. | 70% | Alto | Validar modularidade. | Produto |
-| O02 | Histórico apoia avaliação de oficinas. | 70% | Alto | Criar indicador. | Produto/BI |
+| O01 | Dados anonimizados antecipados → métricas realistas. | 50% | Alto | Preparar modelo mínimo. | Projeto/Dados |
+| O02 | Oficina participar → teste em contexto real. | 30% | Alto | Agendar roteiro controlado. | Projeto/Parceiro |
 
 ### 3.1.6. Política de Privacidade de acordo com a LGPD (sprint 1)
 
@@ -203,7 +205,7 @@ Cadastros, PCM/Fiscal, dispositivo e registros de acesso.
 Controlar remessas, autenticar, alertar e auditar ciclos; não avaliar desempenho individual.
 
 #### 3.1.6.5 Bases legais
-Definir por finalidade com Jurídico/encarregado: contrato, obrigação legal ou legítimo interesse quando cabível [40].
+Definir por finalidade com Jurídico/encarregado. **Execução de contrato** (art. 7º, V) só poderá sustentar dados do titular que seja parte do contrato ou de procedimento solicitado por ele; não deve ser aplicada genericamente a empregados, motoristas ou contatos de fornecedores. Para autenticação, segurança e rastreabilidade, avaliar **legítimo interesse** (art. 7º, IX) com teste de balanceamento, necessidade, transparência e oposição. Documentos fiscais podem exigir obrigação legal, conforme validação jurídica [40].
 
 #### 3.1.6.6 Armazenamento
 NVS e Serial simuladas; servidor, região e fornecedores ainda não definidos.
@@ -224,12 +226,12 @@ Demonstração sintética; autenticação, TLS, perfis e resposta a incidentes p
 Confirmação, acesso, correção, eliminação cabível e outros direitos do art. 18 [40].
 
 #### 3.1.6.12 Solicitações
-Canal institucional publicado precisa de validação específica para o GuaráTracking.
+Usar o canal institucional de privacidade somente após confirmação formal de que ele atende solicitações relacionadas ao GuaráTracking. O procedimento deve identificar o solicitante, registrar a demanda e encaminhá-la ao controlador dentro dos prazos aplicáveis.
 
 #### 3.1.6.13 Encarregado
-Encarregado indicado pela CerradinhoBio (**a confirmar**), sem divulgar contato não homologado.
+Encarregado e contato indicados pela CerradinhoBio (**a confirmar**), sem divulgar dado não homologado. A gerência do projeto deve obter a confirmação do Jurídico/encarregado **até 10 dias úteis antes do início do piloto com dados reais**; sem ela, o piloto continuará restrito a dados fictícios ou anonimizados.
 
-**Aceite:** validar papéis, dados, bases, retenção, medidas e canal antes de tratar dados pessoais reais.
+**Aceite:** até 10 dias úteis antes do piloto, a gerência do projeto deve registrar a aprovação de papéis, dados, bases, retenção, medidas de segurança, canal e encarregado. Sem aprovação, não haverá tratamento de dados pessoais reais.
 
 ### 3.1.7. Bill of Material (BOM) (sprint 1)
 
@@ -247,7 +249,7 @@ Há dois cenários para cinco equipamentos: piloto sequencial com um dispositivo
 
 ## 3.2. Domínio de Fundamentos de Experiência de Usuário 
 
-### 3.2.1. Personas	
+### 3.2.1. Personas
 
 #### Introdução às personas
 
@@ -1591,3 +1593,5 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 56. SENAI PERNAMBUCO. *Gerenciamento da Manutenção*. Disponível em: https://www.pe.senai.br/cursos/gerenciamento-da-manutencao/. Acesso em: 4 nov. 2026.
 57. SENAC SÃO PAULO. *Assistente Fiscal*. Disponível em: https://www.sp.senac.br/cursos-livres/curso-de-assistente-fiscal. Acesso em: 4 nov. 2026.
 58. SENAC SÃO PAULO. *Técnico em Logística*. Disponível em: https://www.sp.senac.br/cursos-tecnicos/curso-tecnico-em-logistica-presencial-ead. Acesso em: 4 nov. 2026.
+59. BRASILAGRO. *CerradinhoBio ampliou lucro em 90% em 2025/26 e aposta em etanol de milho*. Disponível em: https://www.brasilagro.com.br/conteudo/cerradinhobio-ampliou-lucro-em-90-em-202526-e-aposta-grao.html. Acesso em: 4 nov. 2026.
+60. AGÊNCIA NACIONAL DO PETRÓLEO, GÁS NATURAL E BIOCOMBUSTÍVEIS. *Revendedores de combustíveis: ANP divulga orientações devido à chegada do E30 e B15*. Disponível em: https://www.gov.br/anp/pt-br/canais_atendimento/imprensa/noticias-comunicados/revendedores-de-combustiveis-anp-divulga-orientacoes-devido-a-chegada-do-e30-e-b15/. Acesso em: 4 nov. 2026.
