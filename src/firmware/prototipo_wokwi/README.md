@@ -206,9 +206,8 @@ chave de sinal, uma mensagem curta fica 2 s por cima da tela ("Ciclo iniciado",
 O LCD só é reescrito quando o texto muda e apaga, com a luz de fundo, depois de 15 s sem
 uso (`LcdTimeoutMs`), porque a luz de fundo é o maior consumo do visor. Qualquer botão o
 acende de novo; com o visor apagado, o primeiro toque em avançar ou voltar só acende,
-sem trocar a tela. Girar o potenciômetro da bateria simulada também acende o visor e abre
-a tela de bateria. Só conta como uso uma variação de 3 pontos em cerca de 2 s
-(`BatteryWakeWindowMs`): descarga lenta não acende o LCD.
+sem trocar a tela. Uma variação de 3 pontos na bateria simulada, mesmo lenta, também acende
+o visor e abre a tela de bateria.
 
 | Tela | Linha 1 | Linha 2 |
 |---|---|---|
