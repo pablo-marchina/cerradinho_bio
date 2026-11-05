@@ -33,7 +33,7 @@
 
 # <a name="c1"></a>1. Introdução (sprint 1)
 
-A CerradinhoBio é uma companhia brasileira integrante do Grupo Cerradinho [3]. Atua em bioenergia a partir de cana-de-açúcar e milho: produz etanol, energia elétrica renovável gerada com biomassa, açúcar VHP e coprodutos do milho, como DDGS, WDG e óleo [4]. Suas operações estão em Chapadão do Céu (GO), onde ficam o negócio de cana e uma unidade de etanol de milho, e em Maracaju (MS), que também abriga uma unidade de etanol de milho [2]. Na safra 2025/26, a companhia registrou receita líquida consolidada de R$ 4,288 bilhões [1] e processou 5,2 milhões de toneladas de cana e 1,5 milhão de toneladas de milho; a capacidade instalada da fábrica de açúcar é de 550 mil toneladas por ano [2]. Como referência de porte de pessoal, a companhia informava cerca de 3.800 empregos diretos e indiretos em sua apresentação institucional publicada durante a safra 2024/25 [5]. Em posicionamento comparável, a companhia era apontada em 2026 como a **terceira maior produtora de etanol de milho do Brasil, atrás de Inpasa e FS**, segmento que já respondia por cerca de 70% de seu resultado [56]. Esse dado situa sua relevância no mercado sem confundir capacidade instalada, moagem e produção de safras distintas.
+A CerradinhoBio é uma companhia brasileira integrante do Grupo Cerradinho [3]. Atua em bioenergia a partir de cana-de-açúcar e milho: produz etanol, energia elétrica renovável gerada com biomassa, açúcar VHP e coprodutos do milho, como DDGS, WDG e óleo [4]. Suas operações estão em Chapadão do Céu (GO), onde ficam o negócio de cana e uma unidade de etanol de milho, e em Maracaju (MS), que também abriga uma unidade de etanol de milho [2]. Na safra 2025/26, a companhia registrou receita líquida consolidada de R$ 4,288 bilhões [1] e processou 5,2 milhões de toneladas de cana e 1,5 milhão de toneladas de milho; a capacidade instalada da fábrica de açúcar é de 550 mil toneladas por ano [2]. Como referência de porte de pessoal, a companhia informava cerca de 3.800 empregos diretos e indiretos em sua apresentação institucional publicada durante a safra 2024/25 [5]. Em posicionamento comparável, a companhia era apontada em 2026 como a **terceira maior produtora de etanol de milho do Brasil, atrás de Inpasa e FS**, segmento que já respondia por cerca de 70% de seu resultado [59]. Esse dado situa sua relevância no mercado sem confundir capacidade instalada, moagem e produção de safras distintas.
 
 **Problema do projeto.** O acompanhamento de equipamentos enviados à manutenção externa depende de registros e contatos entre áreas e fornecedores. A dificuldade de consolidar localização, nota fiscal de remessa, prazo previsto e data de retorno reduz a visibilidade dos ativos em terceiros e exige cobranças manuais. Permanência total e atraso em relação ao prazo combinado são informações distintas e precisam ser analisadas separadamente.
 
@@ -65,7 +65,7 @@ _Descreva as etapas da metodologia RM-ODP que foram utilizadas para o desenvolvi
 
 #### Concorrência
 
-Raízen, São Martinho e bp bioenergy concorrem com a CerradinhoBio na cadeia da cana por matéria-prima, eficiência e mercados de etanol, açúcar e energia [7–9, 18–19]. FS e Inpasa disputam originação de milho, etanol e coprodutos [10–11]. Em 2026, a CerradinhoBio era apontada como a terceira maior produtora brasileira de etanol de milho, atrás dessas duas empresas [56]. Dados de períodos diferentes caracterizam escala, mas não permitem calcular participação de mercado.
+Raízen, São Martinho e bp bioenergy concorrem com a CerradinhoBio na cadeia da cana por matéria-prima, eficiência e mercados de etanol, açúcar e energia [7–9, 18–19]. FS e Inpasa disputam originação de milho, etanol e coprodutos [10–11]. Em 2026, a CerradinhoBio era apontada como a terceira maior produtora brasileira de etanol de milho, atrás dessas duas empresas [59]. Dados de períodos diferentes caracterizam escala, mas não permitem calcular participação de mercado.
 
 #### Modelo de negócio
 
@@ -73,7 +73,7 @@ A CerradinhoBio opera em modelo B2B integrado: transforma cana e milho e vende e
 
 #### Tendências
 
-O etanol de milho complementa a sazonalidade da cana; o Brasil produziu 36,2 bilhões de litros de etanol em 2025 [12]. Desde agosto de 2025, a gasolina comum contém 30% de etanol anidro (E30) [57]. RenovaBio e a Lei do Combustível do Futuro estimulam produtos de baixo carbono, biometano e SAF [13–16]. Digitalização e sensoriamento ganham espaço para reduzir indisponibilidade e acompanhar ativos industriais.
+O etanol de milho complementa a sazonalidade da cana; o Brasil produziu 36,2 bilhões de litros de etanol em 2025 [12]. Desde agosto de 2025, a gasolina comum contém 30% de etanol anidro (E30) [60]. RenovaBio e a Lei do Combustível do Futuro estimulam produtos de baixo carbono, biometano e SAF [13–16]. Digitalização e sensoriamento ganham espaço para reduzir indisponibilidade e acompanhar ativos industriais.
 
 #### Cinco Forças de Porter — CerradinhoBio
 
@@ -249,7 +249,7 @@ Há dois cenários para cinco equipamentos: piloto sequencial com um dispositivo
 
 ## 3.2. Domínio de Fundamentos de Experiência de Usuário 
 
-### 3.2.1. Personas (sprint 1)	
+### 3.2.1. Personas
 
 #### Introdução às personas
 
@@ -259,7 +259,17 @@ As personas orientam o desenvolvimento da solução de rastreamento de equipamen
 
 A construção das personas partiu da análise do TAPI e das respostas do parceiro no kickoff de 16/10/2026. As informações foram organizadas por etapa do fluxo de manutenção externa, relacionando cada responsável às suas atividades, ferramentas, dificuldades e necessidades. Foram selecionados três perfis porque representam interações distintas com a solução: o PCM acompanha o equipamento, cobra o fornecedor e decide como agir diante de atrasos; o Fiscal emite a nota de remessa e registra o retorno, podendo permanecer sem informação mesmo quando o equipamento já voltou fisicamente; e a Logística consolida os dados para acompanhamento pelo BI. Essas evidências fundamentaram as personas Geraldo, Clarice e Izidio e orientaram a elaboração de seus objetivos, dores e cenários de uso.
 
+Para complementar essa análise, foram consultadas referências de formação profissional: o SENAI relaciona a gestão da manutenção à rastreabilidade de registros e à análise de indicadores [56], reforçando a necessidade de Geraldo de fundamentar decisões sobre os equipamentos; o Senac destaca a conferência e a escrituração de documentos fiscais [57], relacionadas à conciliação documental de Clarice; e inclui custos e melhoria dos processos na formação em logística [58], complementando a atuação analítica de Izidio. Essas referências contextualizam os papéis profissionais, sem comprovar características individuais dos usuários da Cerradinho.
+
 O NotebookLM apoiou a síntese das informações do kickoff, e o Codex auxiliou na organização e redação da documentação. A IA também gerou alternativas de layout e cenas para as personas; a equipe selecionou as opções e orientou ajustes de composição e coerência com cada função. Os nomes, idades, escolaridade, valores de letramento e cenários detalhados são hipóteses ilustrativas, não dados coletados de usuários reais; deverão ser validados em entrevistas e testes de tarefa.
+
+#### Uso de IA na representação visual das personas
+
+A IA foi usada para representar visualmente as personas, não para definir seu conteúdo. Objetivos, dores, necessidades e cenários já estavam escritos pela equipe a partir do kickoff e foram entregues à IA como contexto, junto com o guia de estilos do GuaráTracking, para manter cores, tipografia e ilustrações coerentes com a identidade visual do projeto.
+
+Antes de gerar as cenas, a equipe discutiu com a IA quais objetos simbolizam o trabalho de cada função: prancheta, telefone e lacre para Geraldo; nota fiscal, calendário e o aspecto jurídico para Clarice; mapa, dados e acompanhamento do transporte para Izidio. Cada pedido gerou variações numeradas, comparadas lado a lado, e a escolha veio acompanhada de correções concretas. Na cena de Geraldo, por exemplo, a peça avulsa foi trocada por um equipamento carregado no caminhão, e a perspectiva do veículo e a posição do operador foram ajustadas em várias rodadas. Na de Izidio, o mapa passou a mostrar uma fazenda com rotas sinalizadas em verde, amarelo e vermelho.
+
+O layout também foi revisado pela equipe: o texto corrido deu lugar a um fluxo visual com ícones por etapa, e os blocos de dores, objetivos e necessidades ganharam mais espaço. As versões finais foram exportadas em PDF e SVG para edição no Figma. Por isso, as imagens das personas são ilustrações e não registram dados do parceiro.
 
 ##### P1. Geraldo, analista de PCM (persona principal)
 
@@ -271,7 +281,7 @@ Geraldo, analista de PCM de 38 anos e técnico em mecânica, trabalha no barrac�
 
 ##### P2. Clarice, analista fiscal (persona secundária)
 
-![Persona 2, Clarice, analista fiscal, 34 anos, formada em ciências contábeis, com dores, necessidades, objetivos, cenários P2-C1 a P2-C4 e letramento digital 4 de 5](../assets/3-desenvolvimento-resultados/3.2.1-personas/persona02ClariceRevisada.png)
+![Persona 2, Clarice, analista fiscal, 34 anos, formada em ciências contábeis, com dores, necessidades, objetivos, cenários P2-C1 a P2-C4 e letramento digital 4 de 5](../assets/3-desenvolvimento-resultados/3.2.1-personas/persona02Clarice.png)
 
 *Figura 3.2.1.2 — Persona 2, Clarice, analista fiscal. Fonte: card elaborado pelo Grupo G01 (2026) com apoio do Claude (Anthropic), modelo Opus 5.5 [29]; foto do rosto gerada no ChatGPT (OpenAI) [31] a partir do pedido "uma moça com cabelos enrolados, corporativa, responsável por emissão fiscal".*
 
@@ -285,7 +295,7 @@ Clarice representa a analista fiscal responsável pela emissão das notas fiscai
 
 *Figura 3.2.1.3 — Persona 3, Izidio, analista de logística. Fonte: card elaborado pelo Grupo G01 (2026) com apoio do Claude (Anthropic), modelo Opus 5.5 [29]; foto do rosto: Leonardo Dourado, no Pexels [27], de uso gratuito sob a licença Pexels [30].*
 
-Izidio, analista de logística de 29 anos e engenheiro de produção, consolida o que saiu e o que voltou para a diretoria e acompanha o custo de ICMS por safra, trabalhando com SAP, planilhas, BI e e-mail ou Teams (letramento digital 4 de 5). O problema é que os dados vivem espalhados entre o SAP e as planilhas de cada área, de modo que ele não consegue dizer, em um instante, quantas remessas saíram na safra; para compensar, e movido por um senso de dono, acaba cobrando oficinas e prazos à mão, uma tarefa operacional que não é da sua área e que o afasta da otimização logística que deveria ser o seu foco. Por isso ele precisa de uma API que alimente o BI automaticamente, de um histórico de ciclos com datas de saída, previsão e retorno e de permanência e atraso calculados separadamente, e espera, com isso, mostrar à diretoria a evolução do ICMS por safra e manter na base todo item que não voltou, mesmo quando o ICMS já foi pago. Para a plataforma, isso reforça a prioridade de uma API robusta e de dados confiáveis, em lugar de telas operacionais, e a regra de tratar como pendente, nunca como encerrado, o ciclo sem retorno lançado, para que o número que chega à diretoria seja o que realmente aconteceu.
+Izidio, analista de logística de 29 anos e engenheiro de produção, consolida o que saiu e o que voltou para a diretoria e acompanha o custo de ICMS por safra, trabalhando com SAP, planilhas, BI e e-mail ou Teams (letramento digital 4 de 5). O problema é que os dados vivem espalhados entre o SAP e as planilhas de cada área, de modo que ele não consegue dizer, em um instante, quantas remessas saíram na safra; para compensar, e movido por um senso de dono, acaba cobrando oficinas e prazos à mão, uma tarefa operacional que não é da sua área e que o afasta da otimização logística que deveria ser o seu foco. Por isso ele precisa consolidar informações confiáveis sem refazer a coleta a cada relatório, dispor de um histórico de ciclos com datas de saída, previsão e retorno e de permanência e atraso calculados separadamente, e espera, com isso, mostrar à diretoria a evolução do ICMS por safra e manter na base todo item que não voltou, mesmo quando o ICMS já foi pago. Para a plataforma, isso reforça a prioridade de uma API robusta e de dados confiáveis, em lugar de telas operacionais, e a regra de tratar como pendente, nunca como encerrado, o ciclo sem retorno lançado, para que o número que chega à diretoria seja o que realmente aconteceu.
 
 #### Conclusão
 
@@ -293,13 +303,6 @@ As personas indicam que a solução deve apresentar informações e ações adeq
 
 Essas diferenças orientam o GuaráTracking a combinar uma visão operacional dos equipamentos com o controle das pendências de cada ciclo e a disponibilização de dados para BI. A interface deve facilitar a identificação do que precisa de atenção e de quem deve agir, enquanto o histórico deve preservar a relação entre saída, acompanhamento e retorno. Assim, o rastreamento apoia decisões e a continuidade do processo entre as áreas.
 
-#### Uso de IA na representação visual das personas
-
-A IA foi usada para representar visualmente as personas, não para definir seu conteúdo. Objetivos, dores, necessidades e cenários já estavam escritos pela equipe a partir do kickoff e foram entregues à IA como contexto, junto com o guia de estilos do GuaráTracking, para manter cores, tipografia e ilustrações coerentes com a identidade visual do projeto.
-
-Antes de gerar as cenas, a equipe discutiu com a IA quais objetos simbolizam o trabalho de cada função: prancheta, telefone e lacre para Geraldo; nota fiscal, calendário e o aspecto jurídico para Clarice; mapa, dados e acompanhamento do transporte para Izidio. Cada pedido gerou variações numeradas, comparadas lado a lado, e a escolha veio acompanhada de correções concretas. Na cena de Geraldo, por exemplo, a peça avulsa foi trocada por um equipamento carregado no caminhão, e a perspectiva do veículo e a posição do operador foram ajustadas em várias rodadas. Na de Izidio, o mapa passou a mostrar uma fazenda com rotas sinalizadas em verde, amarelo e vermelho.
-
-O layout também foi revisado pela equipe: o texto corrido deu lugar a um fluxo visual com ícones por etapa, e os blocos de dores, objetivos e necessidades ganharam mais espaço. As versões finais foram exportadas em PDF e SVG para edição no Figma. Por isso, as imagens das personas são ilustrações e não registram dados do parceiro.
 
 ### 3.2.2. Jornada do Usuário e Storyboard (sprint 2)	
 
@@ -1587,5 +1590,8 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 53. ROBOCORE. *Mini chave liga-desliga e potenciômetro linear 10 kΩ*. Disponível em: https://www.robocore.net/botao-chave. Acesso em: 23 out. 2026.
 54. ISO/IEC. *ISO/IEC 25010:2011 — Systems and software engineering — Systems and software Quality Requirements and Evaluation (SQuaRE) — System and software quality models*. 1ª ed., 2011 (substituída pela edição de 2023). Disponível em: https://www.iso.org/standard/35733.html. Acesso em: 28 out. 2026.
 55. SOUTH SAFE. *Lacre de segurança numerado para caminhão, 30 cm, pacote com 100*. Preço de referência: R$ 95,58. Disponível em: https://www.southsafe.com.br/produto/lacre-de-seguranca-numerado-p-caminhao-30cm-amarelo-pac-c-100/155652. Acesso em: 4 nov. 2026.
-56. BRASILAGRO. *CerradinhoBio ampliou lucro em 90% em 2025/26 e aposta em etanol de milho*. Disponível em: https://www.brasilagro.com.br/conteudo/cerradinhobio-ampliou-lucro-em-90-em-202526-e-aposta-grao.html. Acesso em: 4 nov. 2026.
-57. AGÊNCIA NACIONAL DO PETRÓLEO, GÁS NATURAL E BIOCOMBUSTÍVEIS. *Revendedores de combustíveis: ANP divulga orientações devido à chegada do E30 e B15*. Disponível em: https://www.gov.br/anp/pt-br/canais_atendimento/imprensa/noticias-comunicados/revendedores-de-combustiveis-anp-divulga-orientacoes-devido-a-chegada-do-e30-e-b15/. Acesso em: 4 nov. 2026.
+56. SENAI PERNAMBUCO. *Gerenciamento da Manutenção*. Disponível em: https://www.pe.senai.br/cursos/gerenciamento-da-manutencao/. Acesso em: 4 nov. 2026.
+57. SENAC SÃO PAULO. *Assistente Fiscal*. Disponível em: https://www.sp.senac.br/cursos-livres/curso-de-assistente-fiscal. Acesso em: 4 nov. 2026.
+58. SENAC SÃO PAULO. *Técnico em Logística*. Disponível em: https://www.sp.senac.br/cursos-tecnicos/curso-tecnico-em-logistica-presencial-ead. Acesso em: 4 nov. 2026.
+59. BRASILAGRO. *CerradinhoBio ampliou lucro em 90% em 2025/26 e aposta em etanol de milho*. Disponível em: https://www.brasilagro.com.br/conteudo/cerradinhobio-ampliou-lucro-em-90-em-202526-e-aposta-grao.html. Acesso em: 4 nov. 2026.
+60. AGÊNCIA NACIONAL DO PETRÓLEO, GÁS NATURAL E BIOCOMBUSTÍVEIS. *Revendedores de combustíveis: ANP divulga orientações devido à chegada do E30 e B15*. Disponível em: https://www.gov.br/anp/pt-br/canais_atendimento/imprensa/noticias-comunicados/revendedores-de-combustiveis-anp-divulga-orientacoes-devido-a-chegada-do-e30-e-b15/. Acesso em: 4 nov. 2026.
