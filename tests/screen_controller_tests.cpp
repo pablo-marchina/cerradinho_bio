@@ -24,6 +24,12 @@ int main() {
 
   // Navegacao circular: NF, prazo, localizacao, bateria, lacre e de volta a NF.
   assert(screens.current() == Screen::Invoice);
+  screens.show(Screen::Battery);  // potenciometro girado abre a tela de bateria
+  assert(screens.current() == Screen::Battery);
+  screens.flash("aviso", "", 0, 2000);
+  screens.show(Screen::Battery);  // fecha a mensagem, como next() e previous()
+  expect(screens, view, 1, "Bateria: 80%", "normal");
+  screens.show(Screen::Invoice);
   for (uint8_t i = 0; i < ScreenCount; ++i) screens.next();
   assert(screens.current() == Screen::Invoice);
   screens.previous();
