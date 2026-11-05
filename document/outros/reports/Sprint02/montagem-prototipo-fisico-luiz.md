@@ -85,3 +85,54 @@ Para gravar, na raiz do projeto:
 pio run -e bancada -t upload --upload-port COM16
 pio device monitor --port COM16
 ```
+
+## 4. Problemas encontrados
+
+### 4.1 A placa não era reconhecida
+
+A gravação falhou com `Write timeout`. O Windows mostrava o `CP2102 USB to UART Bridge Controller` com erro, e o PlatformIO tentou usar uma porta Bluetooth do notebook. A instalação do driver CP210x da Silicon Labs resolveu, e a placa apareceu na COM16. A partir daí a porta passou a ser indicada no comando.
+
+### 4.2 Letras e colunas diferentes do guia
+
+O primeiro guia assumia a linha j no topo das placas. A placa real tem a linha a em cima, como no Wokwi. Todas as coordenadas foram convertidas (a↔j, b↔i, c↔h, d↔g, e↔f), sem mudar a posição física das peças. A numeração impressa também começa no segundo furo, então as colunas passaram a ser contadas pelos furos.
+
+### 4.3 Trilhos divididos no meio
+
+Foi a causa de mais de um sintoma, porque as metades de cada trilho não se ligam.
+
+| Ponto medido (preta no − do meio) | Valor medido |
+|---|---|
+| `cima 38f` (pino 3V3) | certo |
+| + do meio, perto da coluna 3 | 0,18 V |
+| + de cima, onde chegava o jumper | 0,13 V |
+| + de cima, perto da coluna 44 | 0,15 V |
+
+O 3V3 entra pela metade direita, e o jumper estava na esquerda. Como o trecho central do trilho do meio fica embaixo do ESP32, o jumper foi movido para perto da coluna 46, e o potenciômetro passou a responder. O serial mostrou a bateria indo de 0% até 100%, e cerca de 1930 de 4095 com o eixo perto do meio.
+
+O mesmo defeito deixou VOLTAR e CICLO sem resposta. Em 29 leituras do serial, os dois nunca foram lidos como apertados, enquanto AVANÇAR apareceu em 3. Cada medição de continuidade passava, mas só perto dos botões: a metade esquerda do − de cima não chegava ao GND, que vem pela coluna 61. Um fio curto entre as metades resolveu.
+
+### 4.4 Trilho de baixo sem 5 V
+
+O + de baixo não recebia o fio do pino 5V. Depois de ligado, a tensão oscilava entre 2 e 5 V (medido) em `cima 20f`, enquanto o metal do pino dava cerca de 5 V. Era mau contato do pino com o furo, na ponta do USB. Firmar a placa na protoboard e trocar o fio estabilizou a medida.
+
+### 4.5 Cinco botões sempre apertados
+
+Logo após ligar, LACRE, AUTORIZAR, AVANÇAR, ON/OFF e REDE eram lidos como apertados. O firmware registrou violação e desligou sozinho. Os botões estavam girados 90°: a ligação interna unia as duas colunas, com o GPIO preso ao GND. Eles foram girados e passaram a ocupar 4 casas na vertical e 3 na horizontal. VOLTAR e CICLO foram ajustados da mesma forma depois.
+
+### 4.6 Chaves ON/OFF e rede lidas como desligadas
+
+Antes da troca por botões, o firmware lia a chave ON/OFF como desligada, mesmo com a alavanca à esquerda. Um jumper direto de `baixo 31e` ao − de baixo ligou o aparelho, o que isolou o defeito na chave ou nos fios dela. A chave de rede mostrou o mesmo sintoma. As chaves saíram da montagem, e os botões da seção 2 tomaram o lugar delas.
+
+### 4.7 LCD
+
+Foram três causas em sequência:
+
+1. **Sem resposta no I2C.** A busca não encontrava nenhum endereço. Trocar SDA e SCL não mudou nada. A continuidade mostrou SDA e SCL certos, mas VCC e GND do módulo abertos. Depois de mudar as entradas, a busca achou o endereço **0x27**.
+2. **Símbolos aleatórios e pouco contraste.** Um teste só com texto fixo mostrou o texto certo e 0 falhas em 300 tentativas de I2C por rodada, mas com letras quase invisíveis, mesmo com o trimpot no fim do curso.
+3. **VCC em 3,28 V (medido).** O fio estava no + do meio, que é 3V3. Passar o VCC para o + de baixo (5 V) resolveu o contraste e os símbolos.
+
+### 4.8 Buzzer
+
+A bobina tem 42 Ω. Ligada direto no GPIO, puxaria cerca de 79 mA (calculado), acima do que o pino aguenta. Com o resistor de 100 Ω em série, a corrente cai para cerca de 23 mA (calculado). O corpo do buzzer também cobria os furos dos fios, então as pernas subiram para a linha f e os fios foram para a linha j.
+
+O LED piscava, mas o buzzer ficava mudo. A continuidade estava certa, e uma onda de 2 kHz gerada à mão tocou baixo. O problema estava no uso do `tone()`, trocado pelo canal PWM direto (seção 3). A causa exata da falha do `tone()` não foi investigada.
