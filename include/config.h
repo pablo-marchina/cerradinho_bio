@@ -70,6 +70,5 @@ constexpr uint8_t InvoiceMaxLength = 15;         // NF da remessa no LCD
 constexpr uint8_t BatteryLowPct = 20;            // PENDENTE DE VALIDACAO
 constexpr uint8_t BatteryRecoverPct = 25;        // PENDENTE DE VALIDACAO
 constexpr uint32_t BatteryCheckMs = 200;
-constexpr uint32_t BatteryWakeWindowMs = 2000;   // giro do potenciometro; PENDENTE DE VALIDACAO
 constexpr const char *DeviceId = "prototipo-001";
 }

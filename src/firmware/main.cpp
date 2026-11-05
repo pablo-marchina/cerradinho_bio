@@ -43,6 +43,7 @@ EventQueue pending;
 BatteryState battery;
 uint32_t lastBatteryCheck = 0;
 int batteryPct = 0;  // ultima leitura, usada pelo LCD sem ler o ADC a cada volta
+int wakeReferencePct = -100;  // bateria no ultimo despertar do LCD; -100 = sem referencia
 bool poweredOn = true;
 bool networkWasAvailable = true;
 String serialLine;
@@ -101,7 +102,7 @@ LiquidCrystal_I2C lcd(Config::LcdAddress, ScreenController::Columns, 2);
 ScreenController screens;  // telas do LCD (classe propria, usada no setup e no loop)
 ScreenController::Line shownTop = "", shownBottom = "";
 bool lcdLit = true;
-uint32_t lastInteractionAt = 0;  // ultimo botao, mensagem ou giro do potenciometro; o LCD apaga apos LcdTimeoutMs
+uint32_t lastInteractionAt = 0;  // ultimo botao, mensagem ou variacao da bateria; o LCD apaga apos LcdTimeoutMs
 
 // Tempo do ciclo em ms, sem a volta do millis().
 uint64_t clockMs() {
@@ -581,18 +582,11 @@ void readBattery(uint32_t now) {
   const int percent = simulatedBatteryPercent();
   // Histerese de 1 ponto so no visor: a regra usa a media, para o alerta nao atrasar (RN10).
   if (abs(percent - batteryPct) >= 2 || percent == 0 || percent == 100) batteryPct = percent;
-  // Girar o potenciometro (bateria simulada) acende o LCD: 3 pontos contra uma referencia
-  // renovada a cada janela. Descarga lenta nao chega a 3 pontos na janela, e a referencia
-  // velha demais (chave desligada) nao conta, para o LCD nao acender sozinho.
-  static int wakeReferencePct = -100;
-  static uint32_t wakeReferenceAt = 0;
-  const uint32_t wakeAge = now - wakeReferenceAt;
-  const bool turned = wakeReferencePct != -100 && wakeAge < 2 * Config::BatteryWakeWindowMs &&
-                      abs(batteryPct - wakeReferencePct) >= 3;
-  if (turned) { lastInteractionAt = now; screens.show(Screen::Battery); }
-  if (turned || wakeReferencePct == -100 || wakeAge >= Config::BatteryWakeWindowMs) {
+  // Variacao da bateria acende o LCD na tela de bateria. Compara com o ultimo valor que contou
+  // como uso (nao com a leitura anterior), com folga de 3 pontos contra o ruido do ADC.
+  if (abs(batteryPct - wakeReferencePct) >= 3) {
+    if (wakeReferencePct != -100) { lastInteractionAt = now; screens.show(Screen::Battery); }
     wakeReferencePct = batteryPct;
-    wakeReferenceAt = now;
   }
   const unsigned events = batteryUpdate(&battery, raw, percent);
   if (events & BATTERY_EVENT_SENSOR_FAILURE) publishEvent("SENSOR_BATERIA_FALHA");
@@ -927,6 +921,7 @@ void loop() {
     poweredOn = on;
     if (on) {
       lastInteractionAt = now;
+      wakeReferencePct = -100;  // variacao com a chave desligada nao troca a tela ao religar
       if (simulatedNetworkAvailable()) flushPending();  // fila restaurada durante o desligamento
       publishEvent("STATUS");
     }

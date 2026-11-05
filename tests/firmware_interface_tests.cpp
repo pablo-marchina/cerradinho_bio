@@ -69,18 +69,18 @@ int main(){
     run(1000);
   }
   assert(battery.lowSent);
-  // LCD: descarga lenta nao acende nem troca a tela; so o giro do potenciometro acende.
+  // LCD: variacao de 3 pontos na bateria acende e abre a tela de bateria, mesmo se for lenta.
   setBattery(60);
   run(Config::LcdTimeoutMs + 1000);
   assert(!lcdLit);
   screens.show(Screen::Seal);
-  for (int pct = 60; pct >= 50; --pct) {
+  for (int pct = 60; pct >= 57; --pct) {
     setBattery(pct);
     run(5000);
-    assert(!lcdLit && screens.current() == Screen::Seal);
+    assert(!lcdLit && screens.current() == Screen::Seal);  // ainda abaixo de 3 pontos
   }
-  setBattery(80);
-  run(400);
+  setBattery(56);
+  run(5000);
   assert(lcdLit && screens.current() == Screen::Battery);
   // Potenciometro girado com a chave desligada nao troca a tela ao religar.
   screens.show(Screen::Seal);
