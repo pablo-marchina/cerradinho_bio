@@ -1,6 +1,6 @@
 # Registro aprofundado e resposta aos riscos — Sprint 1
 
-**Escopo:** riscos capazes de comprometer execução, prazo ou entrega do projeto. Falhas de funcionamento do produto são requisitos e cenários de teste nas seções 3.3 e 3.4. Os níveis 10/30/50/70/90 são faixas ordinais do template, não probabilidades estatísticas. A figura `matrizRiscos.png` ainda representa a versão inicial e deverá ser atualizada conforme esta tabela.
+**Escopo:** riscos capazes de comprometer execução, prazo ou entrega do projeto. Falhas de funcionamento do produto são requisitos e cenários de teste nas seções 3.3 e 3.4. Os níveis 10/30/50/70/90 são faixas ordinais do template, não probabilidades estatísticas. A figura `matrizRiscos.png` representa os níveis desta tabela.
 
 | ID | Fundamentação do nível | Gatilho | Prevenção e contingência | Responsável |
 |---|---|---|---|---|
