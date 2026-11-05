@@ -1,4 +1,4 @@
-name: GuaraTracking - boot e autorizacao (CT basico)
+name: GuaraTracking V2 - boot e autorizacao com 3 s (CT basico)
 version: 1
 author: Grupo G01
 steps:
@@ -8,9 +8,9 @@ steps:
       part-id: btn_autorizar
       name: pressed
       value: 1
-  - delay: 200ms
+  # V2: segurado, o registro sai ao completar 3 s.
+  - wait-serial: 'AUTORIZACAO_REGISTRADA'
   - set-control:
       part-id: btn_autorizar
       name: pressed
       value: 0
-  - wait-serial: 'AUTORIZACAO_REGISTRADA'

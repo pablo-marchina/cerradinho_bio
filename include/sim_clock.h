@@ -7,17 +7,17 @@
 // dispositivo desligado nao e contado; o valor salvo na NVS retoma a contagem.
 
 typedef struct {
-  uint32_t last_ms;
-  uint64_t elapsed_ms;
+  uint32_t lastMs;
+  uint64_t elapsedMs;
 } SimClock;
 
-static inline void sim_clock_init(SimClock *clock, uint32_t now_ms, uint64_t elapsed_ms) {
-  clock->last_ms = now_ms;
-  clock->elapsed_ms = elapsed_ms;
+static inline void simClockInit(SimClock *clock, uint32_t nowMs, uint64_t elapsedMs) {
+  clock->lastMs = nowMs;
+  clock->elapsedMs = elapsedMs;
 }
 
-static inline uint64_t sim_clock_update(SimClock *clock, uint32_t now_ms) {
-  clock->elapsed_ms += (uint32_t)(now_ms - clock->last_ms);
-  clock->last_ms = now_ms;
-  return clock->elapsed_ms;
+static inline uint64_t simClockUpdate(SimClock *clock, uint32_t nowMs) {
+  clock->elapsedMs += (uint32_t)(nowMs - clock->lastMs);
+  clock->lastMs = nowMs;
+  return clock->elapsedMs;
 }

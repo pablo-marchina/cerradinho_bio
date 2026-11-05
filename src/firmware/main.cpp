@@ -1,15 +1,21 @@
 #include <Arduino.h>
+#include <cstring>
+#include <driver/gpio.h>
+#include <esp_system.h>
 #include <TinyGPS++.h>
 #include <WiFi.h>
 #include <Preferences.h>
+#include <LiquidCrystal_I2C.h>
 #include "config.h"
 #include "tracking_math.h"
 #include "cycle_rules.h"
 #include "seal_rules.h"
 #include "event_queue.h"
 #include "battery_rules.h"
+#include "gnss_rules.h"
 #include "sim_clock.h"
-#include "indicator_controller.h"
+#include "screen_controller.h"
+#include "seal_debounce.h"
 
 namespace {
 TinyGPSPlus gps;
@@ -36,10 +42,49 @@ SealState seal;
 EventQueue pending;
 BatteryState battery;
 uint32_t lastBatteryCheck = 0;
+int batteryPct = 0;  // ultima leitura, usada pelo LCD sem ler o ADC a cada volta
 bool poweredOn = true;
 bool networkWasAvailable = true;
 String serialLine;
 bool contextDirty = false;  // ciclo/lacre mudou e precisa ir para a NVS
+bool pendingDirty = false;
+bool contextRetryPending = false, pendingRetryPending = false;
+uint32_t lastContextFailureAt = 0, lastPendingFailureAt = 0;
+
+// Bordas capturadas fora do loop; sem gravacoes nem serial na ISR.
+constexpr uint8_t SealEdgeCapacity = 64;
+struct SealEdge { uint32_t at; bool opened; };
+volatile SealEdge sealEdges[SealEdgeCapacity] = {};
+volatile uint8_t sealEdgeHead = 0, sealEdgeTail = 0;
+volatile uint32_t sealEdgeOverruns = 0;
+// ISR do lacre: guarda o instante e o nivel de cada borda no buffer circular.
+void IRAM_ATTR onSealEdge() {
+  const uint8_t head = sealEdgeHead;
+  const uint8_t next = static_cast<uint8_t>((head + 1U) % SealEdgeCapacity);
+  if (next == sealEdgeTail) { ++sealEdgeOverruns; return; }
+  sealEdges[head].at = millis();
+  sealEdges[head].opened = gpio_get_level(static_cast<gpio_num_t>(Config::SealPin)) != 0;
+  sealEdgeHead = next;
+}
+// Retira a borda mais antiga do buffer da ISR; false quando nao ha nenhuma.
+bool popSealEdge(SealEdge &edge) {
+  noInterrupts();
+  if (sealEdgeTail == sealEdgeHead) { interrupts(); return false; }
+  const uint8_t tail = sealEdgeTail;
+  edge.at = sealEdges[tail].at;
+  edge.opened = sealEdges[tail].opened;
+  sealEdgeTail = static_cast<uint8_t>((tail + 1U) % SealEdgeCapacity);
+  interrupts();
+  return true;
+}
+
+char shipmentInvoice[Config::InvoiceMaxLength + 1] = "";  // NF da remessa (comando REMESSA)
+bool alarmActive = false;   // buzzer da violacao, limitado a BuzzerAlarmMs
+uint32_t alarmStartedAt = 0;
+bool buzzerOn = false;
+bool ledOn = false;
+GnssState gnssHealth;
+uint32_t lastGpsCharsAt = 0;  // ultimo byte NMEA recebido, para separar sem dados de sem fix
 
 // Botao com debounce e deteccao por borda: segurar nao repete o evento.
 struct Button {
@@ -50,45 +95,48 @@ struct Button {
 };
 Button authorizeButton{Config::AuthorizeButtonPin, false, false, 0, 0, false};
 Button cycleButton{Config::CycleButtonPin, false, false, 0, 0, false};
-IndicatorController indicators;  // LEDs de estado (classe propria, usada no setup e no loop)
+Button nextButton{Config::NextButtonPin, false, false, 0, 0, false};
+Button previousButton{Config::PreviousButtonPin, false, false, 0, 0, false};
+LiquidCrystal_I2C lcd(Config::LcdAddress, ScreenController::Columns, 2);
+ScreenController screens;  // telas do LCD (classe propria, usada no setup e no loop)
+ScreenController::Line shownTop = "", shownBottom = "";
+bool lcdLit = true;
+uint32_t lastInteractionAt = 0;  // ultimo botao ou mensagem; o LCD apaga apos LcdTimeoutMs
 
+// Tempo do ciclo em ms, sem a volta do millis().
 uint64_t clockMs() {
-  return simClock.elapsed_ms;
+  return simClock.elapsedMs;
 }
 
+// Dia do ciclo correspondente a um instante (no demo, 1 s = 1 dia).
 uint32_t simulatedDay(uint64_t clock) {
   return (uint32_t)(clock / Config::DayMs);
 }
 
+// Chave de rede (on/off do SIM): esquerda = com sinal.
 bool simulatedNetworkAvailable() {
   return digitalRead(Config::NetworkSwitchPin) == LOW;
 }
 
+// Chave ON/OFF: esquerda = ligado.
 bool powerSwitchOn() {
   return digitalRead(Config::PowerSwitchPin) == LOW;
 }
 
-void updateLeds(uint32_t now) {
-  // Verde: operando, lacre integro (piscando = retirada autorizada em curso).
-  // Amarelo: piscando = atraso, fixo = permanencia. Vermelho: violacao do lacre.
-  // Azul: rede simulada indisponivel. Desligado: tudo apagado.
-  const bool blinkOn = (now / Config::BlinkHalfPeriodMs) % 2 == 0;
-  indicators.display(poweredOn, seal.violated, seal.removal_in_progress,
-                     cycleActive && cycle_yellow_led(&cycle, blinkOn),
-                     simulatedNetworkAvailable(), now);
-}
-
+// Fix recente, com satelites e coordenadas validas.
 bool freshFix() {
   return gps.location.isValid() && gps.location.age() <= Config::FixMaxAgeMs &&
          gps.satellites.isValid() && gps.satellites.value() > 0 &&
-         valid_coordinates(gps.location.lat(), gps.location.lng());
+         validCoordinates(gps.location.lat(), gps.location.lng());
 }
 
+// Nivel de bateria de 0 a 100% lido no potenciometro (ADC1, GPIO34).
 int simulatedBatteryPercent() {
   // Entrada sintetica 0..3,3 V. Nao ligar uma celula diretamente ao GPIO34.
   return constrain((analogRead(Config::BatteryPin) * 100L) / 4095L, 0L, 100L);
 }
 
+// Registro de diagnostico na NVS (q0..q15); cheio, preserva os antigos e so imprime o novo.
 void enqueue(const String &record) {
   Serial.println(record);
   if (!storageReady) {
@@ -109,6 +157,7 @@ void enqueue(const String &record) {
                 Config::QueueCapacity);
 }
 
+// Inicio comum do JSON de todo registro e evento: dispositivo, tipo, tempo, lacre, bateria e rede.
 String baseRecord(const char *type) {
   String result;
   result.reserve(420);
@@ -131,6 +180,7 @@ String baseRecord(const char *type) {
   return result;
 }
 
+// Guarda a ultima coleta valida na NVS como referencia para o proximo reinicio.
 void savePrevious(double lat, double lon) {
   if (!storageReady) return;
   // Uma unica chave evita um par latitude/longitude parcialmente atualizado.
@@ -140,6 +190,7 @@ void savePrevious(double lat, double lon) {
   }
 }
 
+// Fecha uma coleta de posicao: com fix calcula distancia e movimento; sem fix mantem a referencia.
 void samplePosition(bool valid) {
   String record = baseRecord(valid ? "location_sample" : "location_unavailable");
   record += ",\"fix_valid\":";
@@ -149,9 +200,9 @@ void samplePosition(bool valid) {
     record += ",\"latitude\":"; record += String(lat, 6);
     record += ",\"longitude\":"; record += String(lon, 6);
     record += ",\"distance_m\":";
-    record += havePrevious ? String(distance_m(previousLat, previousLon, lat, lon), 2) : "null";
+    record += havePrevious ? String(distanceM(previousLat, previousLon, lat, lon), 2) : "null";
     record += ",\"moved\":";
-    record += havePrevious ? (distance_m(previousLat, previousLon, lat, lon) >
+    record += havePrevious ? (distanceM(previousLat, previousLon, lat, lon) >
                              Config::MovementThresholdM ? "true" : "false") : "null";
     record += ",\"baseline_created\":";
     record += havePrevious ? "false" : "true";
@@ -174,7 +225,9 @@ void samplePosition(bool valid) {
   enqueue(record);
 }
 
+// Le o NMEA do GNSS e atualiza a ultima posicao valida.
 void readGps() {
+  if (Serial2.available()) lastGpsCharsAt = millis();
   while (Serial2.available()) {
     gps.encode(Serial2.read());
     if (gps.location.isUpdated() && freshFix()) {
@@ -198,19 +251,33 @@ struct StoredContext {
   uint32_t closedCycles;
   SealState seal;
   bool sealOpen;
+  char invoice[Config::InvoiceMaxLength + 1];
 };
-constexpr uint32_t ContextVersion = 1;
+constexpr uint32_t ContextVersion = 2;  // V2 acrescentou a NF da remessa
 
-void saveContext() {
-  contextDirty = false;
-  if (!storageReady) return;
-  const StoredContext context{ContextVersion, Config::DayMs, clockMs(), cycle, cycleStartedAt,
-                              cycleActive, returnInvoiceIssued, closedCycles, seal, stableSeal};
-  if (storage.putBytes("ctx", &context, sizeof(context)) != sizeof(context)) {
-    Serial.println("[memoria] falha ao salvar o contexto do ciclo");
+// Grava ciclo, lacre e NF na NVS; em falha, marca nova tentativa.
+bool saveContext() {
+  contextDirty = true;
+  if (!storageReady) {
+    contextRetryPending = true;
+    lastContextFailureAt = millis();
+    return false;
   }
+  StoredContext context{ContextVersion, Config::DayMs, clockMs(), cycle, cycleStartedAt,
+                        cycleActive, returnInvoiceIssued, closedCycles, seal, stableSeal, {}};
+  memcpy(context.invoice, shipmentInvoice, sizeof(context.invoice));
+  if (storage.putBytes("ctx", &context, sizeof(context)) != sizeof(context)) {
+    contextRetryPending = true;
+    lastContextFailureAt = millis();
+    Serial.println("[memoria] falha ao gravar contexto; retentativa pendente");
+    return false;
+  }
+  contextDirty = false;
+  contextRetryPending = false;
+  return true;
 }
 
+// Le o contexto salvo; false se nao existe, esta incompleto ou e de outra versao ou escala de dia.
 bool restoreContext(StoredContext &context) {
   return storageReady && storage.isKey("ctx") &&
          storage.getBytesLength("ctx") == sizeof(context) &&
@@ -228,24 +295,39 @@ struct StoredQueueMeta {
   uint64_t overflowFirstMs, overflowLastMs;
 };
 
-void savePending() {
-  if (!storageReady) return;
-  StoredQueueMeta meta{pending.count, {}, pending.lost, pending.overflow_count,
-                       pending.overflow_first_ms, pending.overflow_last_ms};
+// Grava a fila de eventos sem rede na NVS (p0..p7 e metadados).
+bool savePending() {
+  pendingDirty = true;
+  if (!storageReady) {
+    pendingRetryPending = true;
+    lastPendingFailureAt = millis();
+    return false;
+  }
+  StoredQueueMeta meta{pending.count, {}, pending.lost, pending.overflowCount,
+                       pending.overflowFirstMs, pending.overflowLastMs};
+  bool complete = true;
   for (uint8_t i = 0; i < EVENT_QUEUE_CAPACITY; ++i) {
     const String key = "p" + String(i);
     if (i < pending.count) {
       meta.critical[i] = pending.critical[i];
-      storage.putString(key.c_str(), pending.text[i]);
+      if (storage.putString(key.c_str(), pending.text[i]) != strlen(pending.text[i])) complete = false;
     } else if (storage.isKey(key.c_str())) {
-      storage.remove(key.c_str());
+      if (!storage.remove(key.c_str())) complete = false;
     }
   }
-  if (storage.putBytes("pmeta", &meta, sizeof(meta)) != sizeof(meta)) {
-    Serial.println("[memoria] falha ao salvar a fila de eventos");
+  if (complete) complete = storage.putBytes("pmeta", &meta, sizeof(meta)) == sizeof(meta);
+  if (!complete) {
+    pendingRetryPending = true;
+    lastPendingFailureAt = millis();
+    Serial.println("[memoria] falha ao gravar fila; retentativa pendente, NVS nao transacional");
+    return false;
   }
+  pendingDirty = false;
+  pendingRetryPending = false;
+  return true;
 }
 
+// Restaura a fila de eventos salva antes do reinicio.
 void restorePending() {
   StoredQueueMeta meta{};
   if (!storageReady || !storage.isKey("pmeta") ||
@@ -256,23 +338,28 @@ void restorePending() {
   }
   for (uint8_t i = 0; i < meta.count; ++i) {
     const String text = storage.getString(("p" + String(i)).c_str(), "");
-    if (text.length() == 0) break;  // entrada ausente: preserva so as anteriores
-    queue_push(&pending, text.c_str(), meta.critical[i], 0);
+    if (text.length() == 0) {
+      Serial.printf("[memoria] ALERTA: item p%u ausente; restauracao parcial da fila\r\n", i);
+      break;  // metadados antigos nao contem checksum; nao afirmar entrega integra
+    }
+    queuePush(&pending, text.c_str(), meta.critical[i], 0);
   }
   pending.lost = meta.lost;
-  pending.overflow_count = meta.overflowCount;
-  pending.overflow_first_ms = meta.overflowFirstMs;
-  pending.overflow_last_ms = meta.overflowLastMs;
+  pending.overflowCount = meta.overflowCount;
+  pending.overflowFirstMs = meta.overflowFirstMs;
+  pending.overflowLastMs = meta.overflowLastMs;
 }
 
+// Ha eventos ou resumo de violacoes esperando a rede.
 bool hasPending() {
-  return pending.count > 0 || pending.overflow_count > 0;
+  return pending.count > 0 || pending.overflowCount > 0;
 }
 
+// Mostra na Serial quantos eventos estao na fila.
 void printPending() {
   Serial.printf("[FILA] %u %s", pending.count, pending.count == 1 ? "pendente" : "pendentes");
-  if (pending.overflow_count > 0) {
-    Serial.printf(" + resumo de %lu violacao(oes)", (unsigned long)pending.overflow_count);
+  if (pending.overflowCount > 0) {
+    Serial.printf(" + resumo de %lu violacao(oes)", (unsigned long)pending.overflowCount);
   }
   Serial.print("\r\n");
 }
@@ -281,12 +368,12 @@ void printPending() {
 // fila e sai na reconexao, na ordem e com o dia em que ocorreu (RF010; RN09).
 void publishEvent(const char *type, bool critical = false, const String &extra = "") {
   String record = baseRecord(type);
-  record += ",\"ciclo_id\":"; record += cycle.cycle_id;
+  record += ",\"ciclo_id\":"; record += cycle.cycleId;
   record += ",\"ciclo_ativo\":"; record += cycleActive ? "true" : "false";
-  record += ",\"dias_fora\":"; record += cycle.days_out;
+  record += ",\"dias_fora\":"; record += cycle.daysOut;
   record += ",\"dia_ocorrencia\":"; record += simulatedDay(clockMs());
-  record += ",\"atraso\":"; record += cycle_is_late(&cycle) ? "true" : "false";
-  record += ",\"permanencia\":"; record += cycle_in_stay(&cycle) ? "true" : "false";
+  record += ",\"atraso\":"; record += cycleIsLate(&cycle) ? "true" : "false";
+  record += ",\"permanencia\":"; record += cycleInStay(&cycle) ? "true" : "false";
   record += ",\"critico\":"; record += critical ? "true" : "false";
   record += extra;
   record += "}";
@@ -294,10 +381,10 @@ void publishEvent(const char *type, bool critical = false, const String &extra =
     Serial.println(record);
     return;
   }
-  const int result = queue_push(&pending, record.c_str(), critical, clockMs());
+  const int result = queuePush(&pending, record.c_str(), critical, clockMs());
   if (result == QUEUE_SUMMARIZED) {
     Serial.printf("[FILA] FILA_CHEIA: so ha violacoes; %s somado ao resumo (%lu no resumo)\r\n",
-                  type, (unsigned long)pending.overflow_count);
+                  type, (unsigned long)pending.overflowCount);
     savePending();
     printPending();
     return;
@@ -316,40 +403,38 @@ void publishEvent(const char *type, bool critical = false, const String &extra =
   printPending();
 }
 
+// Rede de volta: reenvia a fila na ordem e depois o resumo das violacoes excedentes.
 void flushPending() {
   if (!hasPending()) return;
   Serial.printf("[FILA] rede disponivel; reenviando %u evento(s) na ordem\r\n", pending.count);
   while (pending.count > 0) {
     Serial.println(pending.text[0]);
-    queue_remove(&pending, 0);
+    queueRemove(&pending, 0);
   }
   // As violacoes do resumo ocorreram depois das guardadas na fila: saem por ultimo.
-  if (pending.overflow_count > 0) {
+  if (pending.overflowCount > 0) {
     String extra = ",\"quantidade\":";
-    extra += pending.overflow_count;
-    extra += ",\"dia_primeira\":"; extra += simulatedDay(pending.overflow_first_ms);
-    extra += ",\"dia_ultima\":"; extra += simulatedDay(pending.overflow_last_ms);
-    extra += ",\"primeira_ms\":"; extra += String((unsigned long long)pending.overflow_first_ms);
-    extra += ",\"ultima_ms\":"; extra += String((unsigned long long)pending.overflow_last_ms);
+    extra += pending.overflowCount;
+    extra += ",\"dia_primeira\":"; extra += simulatedDay(pending.overflowFirstMs);
+    extra += ",\"dia_ultima\":"; extra += simulatedDay(pending.overflowLastMs);
+    extra += ",\"primeira_ms\":"; extra += String((unsigned long long)pending.overflowFirstMs);
+    extra += ",\"ultima_ms\":"; extra += String((unsigned long long)pending.overflowLastMs);
     publishEvent("VIOLACAO_LACRE_RESUMO", true, extra);
-    queue_clear_summary(&pending);
+    queueClearSummary(&pending);
   }
   savePending();
   printPending();
 }
 
-void updateNetwork() {
-  const bool available = simulatedNetworkAvailable();
-  if (available && !networkWasAvailable) flushPending();
-  networkWasAvailable = available;
-}
 
+// Abre um ciclo novo (vinculo): zera dias, NF de retorno e NF da remessa.
 void startCycle(uint64_t clock, uint32_t id) {
-  cycle_start(&cycle, id, Config::ExpectedReturnDays, Config::StayThresholdDays,
+  cycleStart(&cycle, id, Config::ExpectedReturnDays, Config::StayThresholdDays,
               Config::StatusIntervalDays);
   cycleStartedAt = clock;
   cycleActive = true;
   returnInvoiceIssued = false;
+  shipmentInvoice[0] = '\0';  // cada remessa recebe a sua NF pelo comando REMESSA
   contextDirty = true;
 }
 
@@ -357,32 +442,47 @@ void startCycle(uint64_t clock, uint32_t id) {
 void updateCycle(uint64_t clock) {
   if (!cycleActive) return;
   const uint64_t days = (clock - cycleStartedAt) / Config::DayMs;
-  while (cycle.days_out < days) {
+  while (cycle.daysOut < days) {
     contextDirty = true;
-    const unsigned events = cycle_advance_day(&cycle);
+    const unsigned events = cycleAdvanceDay(&cycle);
     if (events & CYCLE_EVENT_STATUS) publishEvent("STATUS_SEMANAL");
     if (events & CYCLE_EVENT_LATE) publishEvent("ALERTA_ATRASO");
     if (events & CYCLE_EVENT_STAY) publishEvent("ALERTA_PERMANENCIA");
   }
 }
 
+// LCD aceso enquanto houve uso nos ultimos LcdTimeoutMs.
+bool displayAwake(uint32_t now) {
+  return now - lastInteractionAt < Config::LcdTimeoutMs;
+}
+
+// Mostra uma mensagem curta no LCD e acende o visor.
+void showMessage(const char *top, const char *bottom) {
+  lastInteractionAt = millis();
+  screens.flash(top, bottom, lastInteractionAt, Config::MessageMs);
+}
+
 // Encerrar exige lacre fechado e NF de retorno; o historico e preservado (RF016; RN11).
 void requestClose() {
   if (!cycleActive) {
     publishEvent("ENCERRAMENTO_RECUSADO", false, ",\"motivo\":\"sem_ciclo_ativo\"");
+    showMessage("Nao encerrado", "sem ciclo ativo");
   } else if (stableSeal) {
     publishEvent("ENCERRAMENTO_RECUSADO", false, ",\"motivo\":\"lacre_aberto\"");
+    showMessage("Nao encerrado", "lacre aberto");
   } else if (!returnInvoiceIssued) {
     publishEvent("ENCERRAMENTO_RECUSADO", false, ",\"motivo\":\"nf_retorno_ausente\"");
+    showMessage("Nao encerrado", "falta NF retorno");
   } else {
     ++closedCycles;
     cycleActive = false;
-    cycle.days_out = 0;
+    cycle.daysOut = 0;
     contextDirty = true;
     String extra = ",\"ciclos_encerrados\":";
     extra += closedCycles;
     // O evento deve retratar o estado ja encerrado, inclusive quando fica na fila.
     publishEvent("CICLO_ENCERRADO", false, extra);
+    showMessage("Ciclo encerrado", "");
   }
 }
 
@@ -390,10 +490,29 @@ void requestClose() {
 void requestLink(uint64_t clock) {
   if (cycleActive) {
     publishEvent("VINCULO_RECUSADO", false, ",\"motivo\":\"ciclo_ativo\"");
+    showMessage("Nao iniciado", "ciclo ja ativo");
     return;
   }
-  startCycle(clock, cycle.cycle_id + 1);
+  startCycle(clock, cycle.cycleId + 1);
   publishEvent("CICLO_INICIADO");
+  showMessage("Ciclo iniciado", "aguardando NF");
+}
+
+// Chave de sinal (on/off do SIM): reenvia a fila na volta e mostra o resultado no LCD.
+void updateNetwork() {
+  const bool available = simulatedNetworkAvailable();
+  if (available == networkWasAvailable) return;
+  networkWasAvailable = available;
+  char bottom[ScreenController::Columns + 1];
+  if (available) {
+    const unsigned sent = pending.count + (pending.overflowCount > 0 ? 1u : 0u);
+    flushPending();
+    snprintf(bottom, sizeof(bottom), "enviados: %u", sent);
+    showMessage("Sinal ok", bottom);
+  } else {
+    snprintf(bottom, sizeof(bottom), "na fila: %u", pending.count);
+    showMessage("Sem sinal", bottom);
+  }
 }
 
 // Retorna true na borda de pressao (apos debounce).
@@ -405,41 +524,75 @@ bool updateButton(Button &button, uint32_t now) {
   }
   button.pressed = button.raw;
   if (button.pressed) {
+    lastInteractionAt = now;  // qualquer botao acende o LCD
     button.pressedAt = now;
     button.longFired = false;
   }
   return button.pressed;
 }
 
+// Retorna true uma vez, quando o botao completa LongPressMs pressionado (V2: 3 s).
+// Soltar antes disso nao registra nada.
+bool holdCompleted(Button &button, uint32_t now, const char *name) {
+  const bool wasPressed = button.pressed;
+  updateButton(button, now);
+  if (wasPressed && !button.pressed && !button.longFired) {
+    Serial.printf("[botao] %s solto antes de %lu s; nada registrado\r\n", name,
+                  (unsigned long)(Config::LongPressMs / 1000UL));
+  }
+  if (!button.pressed || button.longFired || now - button.pressedAt < Config::LongPressMs) {
+    return false;
+  }
+  button.longFired = true;
+  return true;
+}
+
+// Navegacao do LCD e acoes de 3 s (autorizacao e ciclo).
 void readButtons(uint32_t now, uint64_t clock) {
-  if (updateButton(authorizeButton, now)) {
-    seal_authorize(&seal, clock);
+  // Com o LCD apagado, o primeiro toque em avancar/voltar so acende o visor.
+  const bool awake = displayAwake(now);
+  if (updateButton(nextButton, now) && awake) screens.next();
+  if (updateButton(previousButton, now) && awake) screens.previous();
+  if (holdCompleted(authorizeButton, now, "BTN_AUTORIZAR")) {
+    sealAuthorize(&seal, clock);
     contextDirty = true;
     String extra = ",\"janela_dias\":";
     extra += Config::AuthorizationWindowDays;
     publishEvent("AUTORIZACAO_REGISTRADA", false, extra);
+    char bottom[ScreenController::Columns + 1];
+    snprintf(bottom, sizeof(bottom), "vale %lu dias", (unsigned long)Config::AuthorizationWindowDays);
+    showMessage("Autorizacao ok", bottom);
   }
-  const bool wasPressed = cycleButton.pressed;
-  updateButton(cycleButton, now);
-  // Segurar 2 s encerra; toque curto pede novo vinculo.
-  if (cycleButton.pressed && !cycleButton.longFired &&
-      now - cycleButton.pressedAt >= Config::LongPressMs) {
-    cycleButton.longFired = true;
-    requestClose();
+  // Segurar 3 s inicia o ciclo quando nao ha ciclo ativo e encerra quando ha.
+  if (holdCompleted(cycleButton, now, "BTN_CICLO")) {
+    if (cycleActive) requestClose();
+    else requestLink(clock);
   }
-  if (wasPressed && !cycleButton.pressed && !cycleButton.longFired) requestLink(clock);
 }
 
+// Le a bateria a cada BatteryCheckMs e emite alerta baixo ou falha do sensor (RN10).
 void readBattery(uint32_t now) {
   if (now - lastBatteryCheck < Config::BatteryCheckMs) return;
   lastBatteryCheck = now;
   const int raw = analogRead(Config::BatteryPin);
-  const unsigned events = battery_update(&battery, raw, simulatedBatteryPercent());
+  batteryPct = simulatedBatteryPercent();
+  const unsigned events = batteryUpdate(&battery, raw, batteryPct);
   if (events & BATTERY_EVENT_SENSOR_FAILURE) publishEvent("SENSOR_BATERIA_FALHA");
   if (events & BATTERY_EVENT_LOW) publishEvent("BATERIA_BAIXA");
 }
 
-// Comandos no Monitor Serial: NF (lanca a NF de retorno) e LIMIAR n (RN03).
+// NF da remessa: letras, digitos e separadores comuns, ate InvoiceMaxLength.
+bool validInvoice(const String &text) {
+  if (text.length() == 0 || text.length() > Config::InvoiceMaxLength) return false;
+  for (unsigned i = 0; i < text.length(); ++i) {
+    const char c = text.c_str()[i];
+    if (!isalnum((unsigned char)c) && c != '-' && c != '.' && c != '/') return false;
+  }
+  return true;
+}
+
+// Comandos no Monitor Serial: NF (lanca a NF de retorno), REMESSA x (NF da remessa,
+// simulando a plataforma) e LIMIAR n (RN03).
 void readCommands() {
   while (Serial.available()) {
     const char c = Serial.read();
@@ -450,50 +603,205 @@ void readCommands() {
       returnInvoiceIssued = true;
       contextDirty = true;
       publishEvent("NF_RETORNO_LANCADA");
+    } else if (serialLine.startsWith("REMESSA ")) {
+      String invoice = serialLine.substring(8);
+      invoice.trim();
+      if (!cycleActive) {
+        Serial.println("[comando] sem ciclo ativo; inicie o ciclo antes da REMESSA");
+      } else if (!validInvoice(invoice)) {
+        Serial.printf("[comando] NF invalida; use ate %u letras, digitos, '-', '.' ou '/'\r\n",
+                      Config::InvoiceMaxLength);
+      } else {
+        snprintf(shipmentInvoice, sizeof(shipmentInvoice), "%s", invoice.c_str());
+        contextDirty = true;
+        Serial.printf("[comando] NF da remessa registrada: %s\r\n", shipmentInvoice);
+        showMessage("NF registrada", shipmentInvoice);
+      }
     } else if (serialLine.startsWith("LIMIAR ")) {
       const long days = serialLine.substring(7).toInt();
       if (days > 0) {
         // Nao rearma ALERTA_PERMANENCIA ja emitido neste ciclo (RN04).
-        cycle_set_stay_threshold(&cycle, days);
+        cycleSetStayThreshold(&cycle, days);
         contextDirty = true;
         String extra = ",\"limiar_dias\":";
         extra += days;
         publishEvent("LIMIAR_ALTERADO", false, extra);
       }
     } else if (serialLine.length() > 0) {
-      Serial.println("[comando] use NF ou LIMIAR n");
+      Serial.println("[comando] use NF, REMESSA x ou LIMIAR n");
     }
     serialLine = "";
   }
 }
 
-// A referencia e o ultimo estado estavel salvo (fechado na primeira inicializacao):
-// ligar com o lacre aberto passa pelo mesmo caminho e gera a violacao.
+// O relogio do ciclo ja foi calculado uma unica vez no loop(). O horario de
+// confirmacao do debounce serve ao diagnostico; nao avanca o relogio de novo.
+void sealTransition(bool opened, uint32_t confirmedAt, uint32_t now, uint64_t clock) {
+  stableSeal = opened;
+  contextDirty = true;
+  const int event = stableSeal ? sealOpened(&seal, clock) : sealClosed(&seal);
+  // Persistir imediatamente o estado critico; somente falhas sao atrasadas.
+  if (!contextRetryPending) saveContext();
+  String record = baseRecord("seal_changed");
+  record += ",\"authorized_removal\":";
+  record += seal.removalInProgress ? "true" : "false";
+  record += ",\"debounce_confirmed_at_ms\":"; record += confirmedAt;
+  record += "}";
+  enqueue(record);
+  if (event == SEAL_EVENT_VIOLATION) {
+    publishEvent("VIOLACAO_LACRE", true);
+    alarmActive = true;
+    alarmStartedAt = now;
+    showMessage("VIOLACAO", "registrada");
+  } else if (event == SEAL_EVENT_REMOVAL) {
+    publishEvent("RETIRADA_AUTORIZADA");
+    showMessage("Retirada", "autorizada");
+  } else if (event == SEAL_EVENT_RESEALED) {
+    publishEvent("LACRE_REAPLICADO");
+    showMessage("Lacre fechado", "reaplicado");
+  } else if (event == SEAL_EVENT_CLOSED) {
+    publishEvent("LACRE_FECHADO");
+    showMessage("Lacre fechado", "apos violacao");
+  }
+}
+
+// Captura historico de bordas do lacre, inclusive quando Serial/NVS ocupou o loop.
 void readSeal(uint32_t now, uint64_t clock) {
-  const bool value = digitalRead(Config::SealPin) == HIGH;
-  if (value != rawSeal) { rawSeal = value; sealChangedAt = now; }
-  if (rawSeal != stableSeal && now - sealChangedAt >= Config::SealDebounceMs) {
-    stableSeal = rawSeal;
-    contextDirty = true;
-    const int event = stableSeal ? seal_opened(&seal, clock) : seal_closed(&seal);
-    String record = baseRecord("seal_changed");
-    record += ",\"authorized_removal\":";
-    record += seal.removal_in_progress ? "true" : "false";
-    record += "}";
-    enqueue(record);
-    // Violacao e critica e sai na hora, fora da rotina periodica (RF006; RN05).
-    if (event == SEAL_EVENT_VIOLATION) publishEvent("VIOLACAO_LACRE", true);
-    if (event == SEAL_EVENT_REMOVAL) publishEvent("RETIRADA_AUTORIZADA");
-    if (event == SEAL_EVENT_RESEALED) publishEvent("LACRE_REAPLICADO");
-    if (event == SEAL_EVENT_CLOSED) publishEvent("LACRE_FECHADO");
+  SealEdge edge{};
+  SealDebounceEvent event{};
+  while (popSealEdge(edge)) {
+    if (seal_on_edge(rawSeal, stableSeal, sealChangedAt,
+                     edge.opened, edge.at, Config::SealDebounceMs, event)) {
+      sealTransition(event.opened, event.confirmedAt, now, clock);
+    }
+  }
+  // Reconcilia o nivel corrente se uma borda ocorreu antes da ativacao da ISR.
+  const bool actual = digitalRead(Config::SealPin) == HIGH;
+  if (actual != rawSeal && seal_on_edge(rawSeal, stableSeal, sealChangedAt,
+                                        actual, now, Config::SealDebounceMs, event)) {
+    sealTransition(event.opened, event.confirmedAt, now, clock);
+  }
+  if (seal_settle(rawSeal, stableSeal, sealChangedAt, now, Config::SealDebounceMs, event)) {
+    sealTransition(event.opened, event.confirmedAt, now, clock);
+  }
+  static uint32_t lastOverruns = 0;
+  noInterrupts(); const uint32_t overrunCount = sealEdgeOverruns; interrupts();
+  if (overrunCount != lastOverruns) {
+    Serial.printf("[lacre] ALERTA: buffer ISR cheio; total=%lu, verificar eventos ausentes\r\n",
+                  static_cast<unsigned long>(overrunCount));
+    lastOverruns = overrunCount;
+  }
+}
+
+// Bipe intermitente enquanto o lacre segue violado, por ate BuzzerAlarmMs.
+void updateBuzzer(uint32_t now) {
+  if (alarmActive && (!seal.violated || now - alarmStartedAt >= Config::BuzzerAlarmMs)) {
+    alarmActive = false;
+  }
+  const bool on = poweredOn && alarmActive &&
+                  ((now - alarmStartedAt) / Config::BuzzerBeepMs) % 2 == 0;
+  if (on == buzzerOn) return;
+  buzzerOn = on;
+  if (on) tone(Config::BuzzerPin, Config::BuzzerFrequencyHz);
+  else noTone(Config::BuzzerPin);
+}
+
+// LED vermelho: pulso curto a cada segundo enquanto o lacre segue violado.
+void updateLed(uint32_t now) {
+  const bool on = poweredOn && seal.violated && now % Config::LedBlinkPeriodMs < Config::LedBlinkOnMs;
+  if (on == ledOn) return;
+  ledOn = on;
+  digitalWrite(Config::ViolationLedPin, on ? HIGH : LOW);
+}
+
+// Ao fim de cada coleta: registra o inicio e o fim de cada falha do GNSS, uma vez cada.
+void updateGnssHealth(bool valid, uint32_t now, uint64_t clock) {
+  const bool receiving = now - lastGpsCharsAt < Config::GpsNoDataMs;
+  const uint8_t reason = gnssClassify(receiving, gps.satellites.isValid(), gps.satellites.value(),
+                                      Config::GpsWeakSatellites);
+  const int event = gnssSample(&gnssHealth, valid, reason, clock);
+  if (event == GNSS_EVENT_LOST) {
+    String extra = ",\"motivo\":\"";
+    extra += gnssReasonName(gnssHealth.reason);
+    extra += "\",\"satelites\":";
+    extra += gps.satellites.isValid() ? String(gps.satellites.value()) : String("null");
+    publishEvent("GNSS_SEM_FIX", false, extra);
+  } else if (event == GNSS_EVENT_RECOVERED) {
+    String extra = ",\"tempo_sem_posicao_s\":";
+    extra += (unsigned long)(gnssHealth.lastOutageMs / 1000ULL);
+    extra += ",\"coletas_sem_fix\":";
+    extra += gnssHealth.lastFailedSamples;
+    publishEvent("GNSS_RECUPERADO", false, extra);
+  }
+}
+
+// Estado do lacre para a tela do LCD.
+SealView sealView(uint64_t clock) {
+  if (seal.violated) return SealView::Violated;
+  if (seal.removalInProgress || sealAuthorizationValid(&seal, clock)) {
+    return SealView::Authorized;
+  }
+  return SealView::Intact;
+}
+
+// Tempo restante enquanto um botao de 3 s esta pressionado.
+bool holdRemaining(const Button &button, uint32_t now, uint32_t &remaining) {
+  if (!button.pressed || button.longFired) return false;
+  const uint32_t held = now - button.pressedAt;
+  remaining = held < Config::LongPressMs ? Config::LongPressMs - held : 0;
+  return true;
+}
+
+// Escreve no LCD so quando o texto muda. Desligado ou sem uso por LcdTimeoutMs,
+// apaga o visor e a luz de fundo, que dominam o consumo do LCD.
+void updateDisplay(uint32_t now, uint64_t clock) {
+  if (!poweredOn || !displayAwake(now)) {
+    if (lcdLit) {
+      lcd.clear();
+      lcd.noBacklight();
+      lcdLit = false;
+      shownTop[0] = shownBottom[0] = '\0';
+    }
+    return;
+  }
+  if (!lcdLit) {
+    lcd.backlight();
+    lcdLit = true;
+  }
+  ScreenController::Line top, bottom;
+  uint32_t remaining = 0;
+  if (holdRemaining(cycleButton, now, remaining)) {
+    ScreenController::renderHold(cycleActive ? "Encerrar ciclo" : "Iniciar ciclo", remaining,
+                                 top, bottom);
+  } else if (holdRemaining(authorizeButton, now, remaining)) {
+    ScreenController::renderHold("Autorizar lacre", remaining, top, bottom);
+  } else {
+    const StatusView view{shipmentInvoice, cycleActive, cycle.daysOut,
+                          cycle.expectedReturnDays, haveLatest || havePrevious, haveLatest,
+                          (uint32_t)((now - latestAt) / 1000UL), batteryPct, battery.lowSent,
+                          battery.failureSent, sealView(clock), stableSeal};
+    screens.render(view, now, top, bottom);
+  }
+  if (strcmp(top, shownTop) != 0) {
+    lcd.setCursor(0, 0);
+    lcd.printf("%-16s", top);
+    memcpy(shownTop, top, sizeof(shownTop));
+  }
+  if (strcmp(bottom, shownBottom) != 0) {
+    lcd.setCursor(0, 1);
+    lcd.printf("%-16s", bottom);
+    memcpy(shownBottom, bottom, sizeof(shownBottom));
   }
 }
 }
 
+// Configura pinos, LCD, GNSS, NVS e Wi-Fi, restaura o contexto e publica o STATUS inicial.
 void setup() {
   Serial.begin(Config::ConsoleBaud);
   delay(200);
   Serial.println("\n[boot] ESP32 executando - prototipo Cerradinho");
+  Serial.printf("[boot] uptime_inicio_ms=%lu reset_reason=%d\r\n",
+                static_cast<unsigned long>(millis()), static_cast<int>(esp_reset_reason()));
   Serial.printf("[config] modo=%s intervalo=%lu s tolerancia=%.0f m\r\n",
                 DEMO_MODE ? "demo" : "semanal", Config::SampleIntervalMs / 1000UL,
                 Config::MovementThresholdM);
@@ -502,16 +810,24 @@ void setup() {
   pinMode(Config::CycleButtonPin, INPUT_PULLUP);
   pinMode(Config::NetworkSwitchPin, INPUT_PULLUP);
   pinMode(Config::PowerSwitchPin, INPUT_PULLUP);
-  indicators.begin();
+  pinMode(Config::NextButtonPin, INPUT_PULLUP);
+  pinMode(Config::PreviousButtonPin, INPUT_PULLUP);
+  pinMode(Config::BuzzerPin, OUTPUT);
+  digitalWrite(Config::BuzzerPin, LOW);
+  pinMode(Config::ViolationLedPin, OUTPUT);
+  digitalWrite(Config::ViolationLedPin, LOW);
+  lcd.init();
+  lcd.backlight();
   pinMode(Config::BatteryPin, INPUT);
   analogReadResolution(12);
+  batteryPct = simulatedBatteryPercent();
   Serial2.begin(Config::GpsBaud, SERIAL_8N1, Config::GpsRx, Config::GpsTx);
   storageReady = storage.begin("tracker", false);
   double point[2] = {};
   if (storageReady && storage.isKey("previous") &&
       storage.getBytesLength("previous") == sizeof(point) &&
       storage.getBytes("previous", point, sizeof(point)) == sizeof(point) &&
-      valid_coordinates(point[0], point[1])) {
+      validCoordinates(point[0], point[1])) {
     previousLat = latestLat = point[0]; previousLon = latestLon = point[1];
     havePrevious = true;
     // O ponto salvo e referencia historica, nao fix novo nem idade conhecida.
@@ -521,16 +837,17 @@ void setup() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(TRACKER_WIFI_SSID, TRACKER_WIFI_PASSWORD);
   requestAt = lastSample = lastWifiRetry = millis();
-  seal_init(&seal, (uint64_t)Config::AuthorizationWindowDays * Config::DayMs);
-  queue_init(&pending);
+  sealInit(&seal, (uint64_t)Config::AuthorizationWindowDays * Config::DayMs);
+  queueInit(&pending);
+  gnssInit(&gnssHealth);
   restorePending();
-  battery_init(&battery, Config::BatteryLowPct, Config::BatteryRecoverPct);
+  batteryInit(&battery, Config::BatteryLowPct, Config::BatteryRecoverPct);
   networkWasAvailable = simulatedNetworkAvailable();
   poweredOn = powerSwitchOn();
   StoredContext context{};
   const bool restored = restoreContext(context);
   if (restored) {
-    sim_clock_init(&simClock, millis(), context.clockMs);
+    simClockInit(&simClock, millis(), context.clockMs);
     cycle = context.cycle;
     cycleStartedAt = context.cycleStartedAt;
     cycleActive = context.cycleActive;
@@ -538,12 +855,20 @@ void setup() {
     closedCycles = context.closedCycles;
     seal = context.seal;
     rawSeal = stableSeal = context.sealOpen;
+    memcpy(shipmentInvoice, context.invoice, sizeof(shipmentInvoice));
+    shipmentInvoice[Config::InvoiceMaxLength] = '\0';
   } else {
-    sim_clock_init(&simClock, millis(), 0);
+    simClockInit(&simClock, millis(), 0);
     rawSeal = stableSeal = false;
-    startCycle(clockMs(), 1);
+    // Primeiro boot sem ciclo: o ciclo nasce com a remessa (RF002, RN02), entao so
+    // comeca ao segurar CICLO por 3 s (vinculo, RF003); o proximo ciclo_id e o 1.
+    cycleStart(&cycle, 0, Config::ExpectedReturnDays, Config::StayThresholdDays,
+               Config::StatusIntervalDays);
+    cycleActive = false;
+    contextDirty = true;
   }
   sealChangedAt = millis();
+  attachInterrupt(digitalPinToInterrupt(Config::SealPin), onSealEdge, CHANGE);
   saveContext();
   if (hasPending()) {
     printPending();
@@ -553,8 +878,10 @@ void setup() {
   if (poweredOn) {
     publishEvent("STATUS", false, restored ? ",\"contexto_restaurado\":true" : ",\"contexto_restaurado\":false");
   }
-  updateLeds(millis());
+  lastInteractionAt = millis();
+  updateDisplay(millis(), clockMs());
   Serial.println("[boot] aguardando GPS; heartbeat aparece a cada 2 s");
+  if (!cycleActive) Serial.println("[ciclo] sem ciclo ativo; segure CICLO por 3 s para iniciar e use REMESSA x para a NF");
   Serial.println("[transporte] JSON na serial + fila local; envio HTTP/MQTT pendente");
   Serial.printf("[ciclo] 1 dia = %lu s; status a cada %lu dias; prazo %lu; limiar %lu\r\n",
                 Config::DayMs / 1000UL, (unsigned long)Config::StatusIntervalDays,
@@ -563,34 +890,44 @@ void setup() {
   Serial.printf("[regras] janela de autorizacao %lu dias; fila sem rede de %u eventos; bateria %u%%/%u%%\r\n",
                 (unsigned long)Config::AuthorizationWindowDays, EVENT_QUEUE_CAPACITY,
                 Config::BatteryLowPct, Config::BatteryRecoverPct);
-  Serial.println("[comandos] NF = lanca NF de retorno; LIMIAR n = muda o limiar de permanencia");
+  Serial.println("[comandos] NF = lanca NF de retorno; REMESSA x = NF da remessa; LIMIAR n = muda o limiar de permanencia");
+  Serial.printf("[interface] LCD 16x2 I2C 0x%02X; AVANCAR/VOLTAR trocam a tela; CICLO e AUTORIZAR exigem %lu s; LCD apaga apos %lu s sem uso\r\n",
+                Config::LcdAddress, (unsigned long)(Config::LongPressMs / 1000UL),
+                (unsigned long)(Config::LcdTimeoutMs / 1000UL));
   Serial.println("[bancada] SW_REDE simula disponibilidade sem desligar o Wi-Fi; SW_ENERGIA liga/desliga");
 }
 
+// Uma volta: relogio, chave ON/OFF, LCD, buzzer, LED, entradas, ciclo, NVS, Wi-Fi e coleta de posicao.
 void loop() {
   const uint32_t now = millis();
   // O relogio do ciclo segue no desligamento logico da chave ON/OFF.
-  const uint64_t clock = sim_clock_update(&simClock, now);
+  const uint64_t clock = simClockUpdate(&simClock, now);
   // Chave ON/OFF: desligar registra o evento e suspende o dispositivo.
   const bool on = powerSwitchOn();
   if (on != poweredOn) {
     if (!on) publishEvent("DISPOSITIVO_DESLIGADO");
     poweredOn = on;
     if (on) {
+      lastInteractionAt = now;
       if (simulatedNetworkAvailable()) flushPending();  // fila restaurada durante o desligamento
       publishEvent("STATUS");
     }
   }
-  updateLeds(now);
+  updateDisplay(now, clock);
+  updateBuzzer(now);
+  updateLed(now);
   if (!poweredOn) return;
+  readSeal(now, clock);  // antes de I/O potencialmente bloqueante
   readGps();
-  readSeal(now, clock);
   readButtons(now, clock);
   readBattery(now);
   readCommands();
   updateNetwork();
   updateCycle(clock);
-  if (contextDirty) saveContext();
+  if (contextDirty && (!contextRetryPending ||
+      static_cast<uint32_t>(now - lastContextFailureAt) >= 1000U)) saveContext();
+  if (pendingDirty && (!pendingRetryPending ||
+      static_cast<uint32_t>(now - lastPendingFailureAt) >= 1000U)) savePending();
   const bool connected = WiFi.status() == WL_CONNECTED;
   if (connected != wasConnected) {
     Serial.printf("[wifi] %s\r\n", connected ? "conectado" : "desconectado");
@@ -603,18 +940,22 @@ void loop() {
     sampleRequested = true; requestAt = now;
   }
   if (sampleRequested && (freshFix() || now - requestAt >= Config::GpsWaitMs)) {
-    samplePosition(freshFix());
+    const bool valid = freshFix();
+    samplePosition(valid);
+    updateGnssHealth(valid, now, clock);
     sampleRequested = false; lastSample = now;
   }
   if (now - lastHeartbeat >= Config::HeartbeatMs) {
     lastHeartbeat = now;
-    Serial.printf("[vivo] tempo=%lu s gps_chars=%lu fix=%s lacre=%s bateria_sim=%d%% wifi=%s rede_sim=%s autorizar=%d ciclo=%d dias_fora=%lu fila=%u\r\n",
+    Serial.printf("[vivo] tempo=%lu s gps_chars=%lu fix=%s lacre=%s bateria_sim=%d%% wifi=%s rede_sim=%s autorizar=%d ciclo=%d avancar=%d voltar=%d tela=%u dias_fora=%lu fila=%u\r\n",
                   now / 1000UL, (unsigned long)gps.charsProcessed(),
                   freshFix() ? "valido" : "ausente",
-                  stableSeal ? "violado" : "integro", simulatedBatteryPercent(),
+                  stableSeal ? "violado" : "integro", batteryPct,
                   connected ? "on" : "off", simulatedNetworkAvailable() ? "on" : "off",
                   digitalRead(Config::AuthorizeButtonPin) == LOW,
                   digitalRead(Config::CycleButtonPin) == LOW,
-                  (unsigned long)cycle.days_out, pending.count);
+                  digitalRead(Config::NextButtonPin) == LOW,
+                  digitalRead(Config::PreviousButtonPin) == LOW,
+                  (unsigned)screens.current() + 1, (unsigned long)cycle.daysOut, pending.count);
   }
 }

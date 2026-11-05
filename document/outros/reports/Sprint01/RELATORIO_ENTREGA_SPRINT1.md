@@ -1,5 +1,8 @@
 # Relatório de preparação de entrega — Sprint 1 GuaráTracking
 
+> **Estado atual após integração documental e técnica:** o firmware V2 contém `ScreenController`, LCD, botões de navegação, buzzer, NF de remessa por `REMESSA`, ISR de lacre e retentativas de NVS. Snapshots alternados/CRC e ACK de servidor **não** fazem parte desta revisão. CT18, CT22 e CT09 conservam seus resultados históricos. Os resultados descritos abaixo foram produzidos em revisões anteriores e não são uma homologação do firmware integrado; consultar a seção 3.4.1 da documentação principal para condições de reteste.
+
+
 > **Nota (24/10/2026):** este registro descreve a versão `fe2ed7c` da revisão geral. Na entrega, ficou só a classe `IndicatorController`; a captura do lacre por ISR, o ACK manual pela Serial e os snapshots alternados foram adiados para a Sprint 2, porque exigem rodar de novo todos os CTs no Wokwi.
 
 
@@ -29,7 +32,7 @@ As seções 1, 1.1, 1.2, 1.3 e 3.1.1–3.1.7 permanecem abaixo do limite de 300 
 
 ## Firmware — alterações e limites
 
-- Uma classe `IndicatorController` centraliza LEDs; as funções `setup()` e `loop()` utilizam instância da classe, além de outras funções auxiliares.
+- Uma classe `ScreenController` centraliza as telas LCD (versão integrada); as funções `setup()` e `loop()` utilizam instância da classe, além de outras funções auxiliares.
 - Captura de bordas do lacre com buffer temporal na interrupção e debounce isolado testável, para reduzir perda de transições quando o loop fica ocupado. **CT18 não foi repetido no Wokwi**; backlog testado em host com 20/20 transições estáveis, que não comprovam operação de hardware.
 - Contexto e fila persistidos em dois snapshots alternados com geração/CRC e verificação de gravação; em caso de corrupção de um slot, o teste de host restaura o anterior. Falhas de flash e reset abrupto de hardware ainda exigem ensaio real. **CT22 permanece historicamente reprovado**.
 - Eventos entram na fila persistente antes de uma emissão serial `[TX_SIM]`; somente `ACK XXXXXXXX` **manual de bancada** remove o primeiro item. Sem ACK, há retentativa; token incorreto/antigo não remove. **O token CRC32 não é autenticação**, não existe receptor externo nem MQTT produtivo, e **CT09 permanece bloqueado**.
@@ -49,7 +52,7 @@ As seções 1, 1.1, 1.2, 1.3 e 3.1.1–3.1.7 permanecem abaixo do limite de 300 
 | Wokwi integrado atualizado e novos CT18, CT22, CT09 | **NÃO EXECUTADO** | Requer ambiente de simulação, integração do chip custom e evidências |
 | LGPD, preço definitivo, identidade institucional, integração `main` | **NÃO HOMOLOGADO** | Dependências da instituição, fornecedores e conta GitLab/Wokwi |
 
-Arquivos: `scripts/verify-sprint1-local.sh`, `scripts/check-firmware-syntax.sh`, `scripts/audit_sprint1.py`, `scripts/validate-release.py`, `.gitlab-ci.yml`; evidências históricas `assets/wokwi/`.
+Arquivos: `scripts/verify-host.sh`, `scripts/check-firmware-syntax.sh`, `scripts/audit-docs.py`, `scripts/validate-release.py`, `.gitlab-ci.yml`; evidências históricas `assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/`.
 
 ## Como concluir sem mascarar falhas
 

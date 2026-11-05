@@ -73,6 +73,8 @@ void digitalWrite(int,int);
 int digitalRead(int);
 int analogRead(int);
 void analogReadResolution(int);
+void tone(int,unsigned int,unsigned long=0);
+void noTone(int);
 void noInterrupts();
 void interrupts();
 void attachInterrupt(int,void(*)(),int);

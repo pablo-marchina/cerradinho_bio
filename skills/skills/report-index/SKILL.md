@@ -1,11 +1,11 @@
 ---
 name: report-index
-description: Mantém os índices de relatórios de cada sprint (document/outros/sprint-N/relatorios/README.md) do GuaráTracking em sincronia com os relatórios em disco. Adiciona linhas para relatórios novos, corrige linhas que apontam para arquivos movidos ou ausentes, cria o índice de uma sprint nova e exige o cabeçalho padrão com o campo Implicação. Use sempre que um relatório de pesquisa, teste ou verificação for criado, renomeado ou movido, quando começar a pasta de relatórios de uma sprint, ou quando pedirem para conferir ou atualizar um índice de relatórios.
+description: Mantém os índices de relatórios de cada sprint (document/outros/reports/SprintNN/README.md) do GuaráTracking em sincronia com os relatórios em disco. Adiciona linhas para relatórios novos, corrige linhas que apontam para arquivos movidos ou ausentes, cria o índice de uma sprint nova e exige o cabeçalho padrão com o campo Implicação. Use sempre que um relatório de pesquisa, teste ou verificação for criado, renomeado ou movido, quando começar a pasta de relatórios de uma sprint, ou quando pedirem para conferir ou atualizar um índice de relatórios.
 ---
 
 # Índice de relatórios
 
-Cada sprint guarda seus relatórios (pesquisas de hardware e conectividade, testes de comunicação, consumo, fixação, exposição à água etc.) em `document/outros/sprint-N/relatorios/`. O `README.md` dessa pasta é a porta de entrada para quem escreve a `document/documentacao.md`, colega ou IA. Relatório fora do índice é, na prática, invisível.
+Cada sprint guarda seus relatórios (pesquisas de hardware e conectividade, testes de comunicação, consumo, fixação, exposição à água etc.) em `document/outros/reports/SprintNN/`. O `README.md` dessa pasta é a porta de entrada para quem escreve a `document/documentacao.md`, colega ou IA. Relatório fora do índice é, na prática, invisível.
 
 ## 1. Conferir (só leitura)
 
@@ -13,7 +13,7 @@ Da raiz do repositório:
 
 ```bash
 python skills/skills/report-index/scripts/check_report_index.py                          # todas as sprints
-python skills/skills/report-index/scripts/check_report_index.py document/outros/sprint-1/relatorios
+python skills/skills/report-index/scripts/check_report_index.py document/outros/reports/Sprint01
 ```
 
 ERROS: relatório sem linha, linha apontando para arquivo inexistente, linha duplicada, número errado de células (um `|` dentro de código precisa ser escrito `\|`), célula vazia, relatório sem o cabeçalho padrão ou com campo vazio. Avisos: caracteres danificados (`�`, `Ten?rio`). Sai com código 1 se houver ERRO.
@@ -58,7 +58,7 @@ Se faltar o cabeçalho ou a Implicação estiver fraca, não invente. Avise quem
 
 ## 4. Pasta de uma sprint nova
 
-Quando surgir o primeiro relatório de uma sprint, crie `document/outros/sprint-N/relatorios/README.md`:
+Quando surgir o primeiro relatório de uma sprint, crie `document/outros/reports/SprintNN/README.md`:
 
 ```markdown
 # Relatórios da Sprint N: Índice
