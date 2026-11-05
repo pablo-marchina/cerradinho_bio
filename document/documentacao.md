@@ -1425,23 +1425,39 @@ Na bancada, lacre, rede e ON/OFF são botões de toque, e não chaves deslizante
 | CT50 | APROVADO, com ressalva | `VIOLACAO_LACRE` em 105317 ms e `LACRE_FECHADO` em 117911 ms. No vídeo, o LED pisca com período de 1,0 s, igual ao configurado, e o buzzer pode ser ouvido. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50Violacao.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50-violacao.serial.txt) |
 | CT51 | APROVADO, com ressalva | `SENSOR_BATERIA_FALHA` e LCD "sensor com falha" nas tentativas; a leitura voltou ao retirar o jumper. Foram 8 eventos de falha e 3 `BATERIA_BAIXA` em várias tentativas, descritas nas limitações. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51FalhaSensor.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51-falha-sensor.serial.txt) |
 
+![CT46: tela do lacre](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46LcdFoto.jpg)
+
+*Figura 3.4.2-2 — CT46, tela "Lacre INTEGRO / fechado". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+
+![CT47: ciclo iniciado](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47LcdFoto.jpg)
+
+*Figura 3.4.2-3 — CT47, "Ciclo iniciado / aguardando NF". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+
+![CT48: tela sem mudança](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48LcdFoto.jpg)
+
+*Figura 3.4.2-4 — CT48, a tela "NF da remessa" permanece depois do toque curto. Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+
+![CT49: autorização](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49LcdFoto.jpg)
+
+*Figura 3.4.2-5 — CT49, etapa de autorização, com "Autorizacao ok / vale 3 dias". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+
 ![CT49: retirada autorizada](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizadaRealce.png)
 
-*Figura 3.4.2-2 — CT49, LCD com "Retirada autorizada". Fonte: recorte do vídeo, com soma de quadros e contraste ajustado para leitura, 05/11/2026.*
+*Figura 3.4.2-6 — CT49, "Retirada autorizada". Fonte: recorte do vídeo, com soma de quadros e contraste ajustado para leitura, 05/11/2026.*
 
-![CT50: violação registrada](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistradaRealce.png)
+![CT50: violação registrada](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50LcdFoto.jpg)
 
-*Figura 3.4.2-3 — CT50, LCD com "VIOLACAO registrada". Fonte: recorte do vídeo, com soma de quadros e contraste ajustado para leitura, 05/11/2026.*
+*Figura 3.4.2-7 — CT50, "VIOLACAO registrada". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
 
 ![CT50: LED aceso](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50LedAceso.png) ![CT50: LED apagado](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50LedApagado.png)
 
-*Figura 3.4.2-4 — CT50, LED de violação aceso e apagado no pulso de 1 s. Fonte: quadros do vídeo, 05/11/2026.*
+*Figura 3.4.2-8 — CT50, LED de violação aceso e apagado no pulso de 1 s. Fonte: quadros do vídeo, 05/11/2026.*
 
-![CT51: sensor com falha](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalhaRealce.png)
+![CT51: sensor com falha](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51LcdFoto.jpg)
 
-*Figura 3.4.2-5 — CT51, LCD com "sensor com falha". Fonte: recorte do vídeo, com soma de quadros e contraste ajustado para leitura, 05/11/2026.*
+*Figura 3.4.2-9 — CT51, "Bateria / sensor com falha". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
 
-Capturas complementares, com realce do LCD: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacreRealce.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciadoRealce.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudancaRealce.png). Quadros sem ajuste: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacre.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciado.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudanca.png) · [CT49](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizada.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistrada.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalha.png)
+As fotos ilustram as telas; o resultado de cada CT vem dos vídeos e da Serial. Recortes dos vídeos com realce do LCD: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacreRealce.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciadoRealce.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudancaRealce.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistradaRealce.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalhaRealce.png). Quadros sem ajuste: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacre.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciado.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudanca.png) · [CT49](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizada.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistrada.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalha.png)
 
 #### Limitações
 
