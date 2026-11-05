@@ -2,11 +2,11 @@
 
 Este relatório descreve como o protótipo físico offline foi montado, quais problemas surgiram na bancada e o que ainda limita a montagem. Os resultados dos casos de teste estão na [seção 3.4.2 da documentação](../../../documentacao.md).
 
-**Situação em 05/11/2026:** o protótipo funciona na bancada, alimentado pelo USB do computador. A fiação foi reorganizada nessa data, depois dos vídeos e da figura deste relatório. Por isso, as posições da seção 4 servem de referência e devem ser conferidas na placa.
+**Situação em 05/11/2026:** o protótipo funciona na bancada, alimentado pelo USB do computador. A fiação foi reorganizada nessa data. As posições da seção 4 são da montagem anterior, servem de referência e devem ser conferidas na placa.
 
-![Protótipo físico antes da reorganização dos fios](../../../../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/prototipoVisaoGeral.png)
+![Protótipo físico com a fiação reorganizada](../../../../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/prototipoVistaSuperior.jpg)
 
-*Figura 1 — Protótipo físico antes da reorganização dos fios. Fonte: quadro de vídeo, 05/11/2026.*
+*Figura 1 — Protótipo físico com a fiação reorganizada, visto de cima. Fonte: quadro de vídeo, 05/11/2026.*
 
 ## 1. Componentes
 
