@@ -133,13 +133,10 @@ bool freshFix() {
 // Nivel de bateria de 0 a 100% lido no potenciometro (ADC1, GPIO34).
 int simulatedBatteryPercent() {
   // Entrada sintetica 0..3,3 V. Nao ligar uma celula diretamente ao GPIO34.
-  // Media de 16 leituras e histerese de 1 ponto: o ruido do ADC nao faz o valor tremer.
+  // Media de 16 leituras contra o ruido do ADC; a histerese do LCD fica em readBattery().
   long sum = 0;
   for (int i = 0; i < 16; ++i) sum += analogRead(Config::BatteryPin);
-  const int percent = constrain((sum / 16 * 100L) / 4095L, 0L, 100L);
-  static int shown = -100;
-  if (shown < 0 || abs(percent - shown) >= 2 || percent == 0 || percent == 100) shown = percent;
-  return shown;
+  return constrain((sum / 16 * 100L) / 4095L, 0L, 100L);
 }
 
 // Registro de diagnostico na NVS (q0..q15); cheio, preserva os antigos e so imprime o novo.
@@ -581,7 +578,9 @@ void readBattery(uint32_t now) {
   if (now - lastBatteryCheck < Config::BatteryCheckMs) return;
   lastBatteryCheck = now;
   const int raw = analogRead(Config::BatteryPin);
-  batteryPct = simulatedBatteryPercent();
+  const int percent = simulatedBatteryPercent();
+  // Histerese de 1 ponto so no visor: a regra usa a media, para o alerta nao atrasar (RN10).
+  if (abs(percent - batteryPct) >= 2 || percent == 0 || percent == 100) batteryPct = percent;
   // Girar o potenciometro (bateria simulada) mantem o LCD aceso. Compara com o ultimo valor
   // que contou como uso (nao com a leitura anterior), com folga de 3 pontos contra o ruido do ADC.
   static int wakeReferencePct = -100;
@@ -589,7 +588,7 @@ void readBattery(uint32_t now) {
     if (wakeReferencePct != -100) { lastInteractionAt = now; screens.show(Screen::Battery); }
     wakeReferencePct = batteryPct;
   }
-  const unsigned events = batteryUpdate(&battery, raw, batteryPct);
+  const unsigned events = batteryUpdate(&battery, raw, percent);
   if (events & BATTERY_EVENT_SENSOR_FAILURE) publishEvent("SENSOR_BATERIA_FALHA");
   if (events & BATTERY_EVENT_LOW) publishEvent("BATERIA_BAIXA");
 }

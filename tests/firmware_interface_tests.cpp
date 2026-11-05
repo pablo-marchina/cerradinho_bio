@@ -16,7 +16,8 @@ void delay(unsigned long v){fakeMs += static_cast<uint32_t>(v);}
 void pinMode(int,int){}
 void digitalWrite(int,int){}
 int digitalRead(int p){return p>=0&&p<64?fakePins[p]:0;}
-int analogRead(int){return 2048;}
+static int fakeAdc = 2048;
+int analogRead(int){return fakeAdc;}
 void analogReadResolution(int){}
 void tone(int,unsigned int,unsigned long){}
 void noTone(int){}
@@ -61,5 +62,11 @@ int main(){
   assert(lcdLit && screen() == before);
   hold(Config::NextButtonPin, 120);
   assert(screen() == (before + 1) % ScreenCount);
-  std::puts("PASS: boot sem ciclo, vinculo por 3 s, contagem a partir do vinculo e navegacao do LCD (host)");
+  // Descida lenta: 19% real dispara o alerta (RN10), mesmo com a histerese do LCD.
+  for (int pct = 40; pct >= 19; --pct) {
+    fakeAdc = (pct * 4095 + 99) / 100;
+    run(1000);
+  }
+  assert(battery.lowSent);
+  std::puts("PASS: boot sem ciclo, vinculo por 3 s, contagem a partir do vinculo, navegacao do LCD e alerta de bateria (host)");
 }
