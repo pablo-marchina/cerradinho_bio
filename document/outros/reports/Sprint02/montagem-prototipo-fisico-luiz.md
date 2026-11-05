@@ -136,3 +136,28 @@ Foram três causas em sequência:
 A bobina tem 42 Ω. Ligada direto no GPIO, puxaria cerca de 79 mA (calculado), acima do que o pino aguenta. Com o resistor de 100 Ω em série, a corrente cai para cerca de 23 mA (calculado). O corpo do buzzer também cobria os furos dos fios, então as pernas subiram para a linha f e os fios foram para a linha j.
 
 O LED piscava, mas o buzzer ficava mudo. A continuidade estava certa, e uma onda de 2 kHz gerada à mão tocou baixo. O problema estava no uso do `tone()`, trocado pelo canal PWM direto (seção 3). A causa exata da falha do `tone()` não foi investigada.
+
+## 5. Estado final e pendências
+
+| Item | Situação | Como foi confirmado |
+|---|---|---|
+| Boot e gravação do `bancada` | Funciona | Serial da placa |
+| Sete botões soltos sem curto | Funciona | Serial da placa |
+| VOLTAR, CICLO, AVANÇAR, AUTORIZAR, LACRE, REDE | Funcionam | Relatado na bancada |
+| LCD | Funciona com 5 V | Busca I2C e relato |
+| Potenciômetro | Funciona, de 0% a 100% | Serial da placa |
+| LED de violação | Funciona | Relatado na bancada |
+| Buzzer | Funciona, com som baixo | Relatado na bancada |
+| Contagem 3, 2, 1 ao desligar | Testada só em host | Falta conferir na placa |
+| GNSS | Envia dados, sem fix | Serial (`gps_chars` subindo); dentro de casa |
+| Wi-Fi | Sem conexão | Esperado, porque a rede configurada é a do Wokwi |
+
+**Pendências:**
+
+- Registrar foto de cima e de lado desta versão, para a comparação entre as versões.
+- Executar os CTs físicos, que não fazem parte deste relatório. A numeração deles começa no CT46.
+- Aumentar o volume do buzzer, se o grupo precisar: um resistor de 47 Ω dá cerca de 37 mA (calculado), e com um transistor NPN o buzzer passaria a usar os 5 V.
+- Ligar as metades do + e do − de baixo, se alguma peça passar a usar a outra metade.
+- Levar o firmware deste relatório e o diagrama do Wokwi com o DevKitC V4 para o repositório. Hoje os dois estão fora desta branch.
+- Repetir a compilação de `demo` e `weekly` com o buzzer em PWM direto e a frequência de 2700 Hz, e conferir no Wokwi que o buzzer continua tocando.
+- Trocar o texto que ainda cita o DevKit v1 no `AGENT.md`, na documentação e no BOM, se esta for a versão escolhida.
