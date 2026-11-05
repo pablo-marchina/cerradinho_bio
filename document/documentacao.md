@@ -86,10 +86,10 @@ Escala baixa/média/alta, conforme [critérios documentados](outros/3-desenvolvi
 | Força | Intensidade | Justificativa |
 |---|---|---|
 | Rivalidade | Alta | Escala e commodities pressionam custos. |
-| Fornecedores | Média | Insumos pesam; contratos e duas matérias-primas reduzem dependência. |
-| Compradores | Média | Distribuidores negociam preço e volume. |
+| Fornecedores | Alta | Milho comprado expõe a safra e logística; peças e serviços especializados ampliam dependência. |
+| Compradores | Alta | Grandes distribuidoras concentram compras e negociam preço, volume e condições. |
 | Novos entrantes | Média | Capital e licenças criam barreiras. |
-| Substitutos | Média | Gasolina e eletrificação competem com o etanol. |
+| Substitutos | Média | Gasolina e eletrificação concorrem; frota flex e E30 sustentam a demanda. |
 
 **Síntese:** o GuaráTracking pode melhorar a visibilidade dos ativos em manutenção externa; impacto a medir no piloto [6].
 
@@ -101,7 +101,7 @@ Escala baixa/média/alta, conforme [critérios documentados](outros/3-desenvolvi
 
 **Escopo:** análise da CerradinhoBio, com foco nas condições do negócio e na gestão de equipamentos enviados para manutenção externa. Forças e fraquezas representam fatores internos; oportunidades e ameaças, fatores externos. A síntese considera o contexto da indústria descrito na seção 3.1.1 e o TAPI do projeto.
 
-**Leitura para o projeto:** o portfólio diversificado e a escala de processamento da CerradinhoBio oferecem contexto favorável para testar uma rotina de rastreabilidade reutilizável. A dependência de registros e contatos entre áreas e fornecedores é uma fragilidade do processo de manutenção externa descrito no TAPI, a validar com o parceiro. A expansão do etanol e as políticas de descarbonização abrem oportunidades para a companhia; concorrência em escala, volatilidade de insumos e substitutos energéticos compõem ameaças externas. **PENDENTE DE VALIDAÇÃO:** quantificar a dor operacional (volume de remessas, tempo fora, atrasos e esforço de consulta) com os dados da última safra, ainda a serem disponibilizados conforme o TAPI.
+**Leitura para o projeto:** escala e sinergias entre cana e milho favorecem a operação; a compra de milho e os registros dispersos da manutenção externa são fragilidades internas. Expansão do etanol e políticas de descarbonização criam oportunidades; concorrência, volatilidade e possível redução de mandatos de mistura ou incentivos ameaçam a demanda. A dimensão da dor operacional ainda depende de dados do parceiro [6].
 
 ### 3.1.3. Descrição da Solução a ser Desenvolvida (sprint 1)
 
@@ -136,23 +136,20 @@ Ensaios curtos não comprovam autonomia de 150 dias; separar medidas de estimati
 
 ### 3.1.4. Value Proposition Canvas (sprint 1)	
 
-Canvas do GuaráTracking para PCM, Fiscal e Logística (P1–P3), com base no TAPI [6] e no *kick-off* de 16/10/2026 [33]. Os ganhos são hipóteses a medir no piloto.
+Perfil do cliente: Geraldo, analista de PCM (P1), com base no TAPI [6] e no *kick-off* [33]. Fiscal e Logística participam do processo, mas ficam fora deste perfil. Ganhos são hipóteses para o piloto.
 
-![Value Proposition Canvas do GuaráTracking, com mapa de valor e perfil de PCM, Fiscal e Logística.](../assets/3-desenvolvimento-resultados/3.1.4-vpc/valuePropositionCanvas.png)
+![Value Proposition Canvas do GuaráTracking para Geraldo, analista de PCM.](../assets/3-desenvolvimento-resultados/3.1.4-vpc/valuePropositionCanvas.png)
 
-*Figura 3.1.4.1 — Value Proposition Canvas do GuaráTracking para PCM, Fiscal e Logística.*
+*Figura 3.1.4.1 — Value Proposition Canvas do GuaráTracking para Geraldo (PCM).*
 
 *Fonte: template “Value Proposition Canvas - template png”, pasta de templates de negócios do Inteli [32]; conteúdo: Grupo G01 (2026).*
 
-| Dor do cliente | Resposta do GuaráTracking | Ganho relacionado |
-|---|---|---|
-| D1 Controle espalhado e manual | Cadastro do ciclo (AD1) e consulta consolidada (CG1) | G1 Localizar e consultar sem ligar |
-| D2 Localização e prazo incertos | Última posição (AD2), prazo separado da permanência (AD3) e alertas (CG2) | G2 Agir antes do vencimento |
-| D3 Difícil decidir diante do atraso | Histórico por fornecedor (CG4) | G4 Histórico útil à gestão |
-| D4 Retorno sem baixa fiscal | Retorno aguardando baixa (AD4) e baixa ligada à NF (CG3) | G3 Fechar o retorno corretamente |
-| D5 Complemento de ICMS por prazo vencido, informado no *kick-off* para 2024/25; parcela ligada à manutenção externa não apurada [33] | Acompanhamento dos prazos (AD3), sem garantia de evitar incidência fiscal | G2 Agir antes do vencimento |
-| D6 Lacre aberto sem registro | Alerta e registro do lacre (AD5) | G3 Fechar o retorno corretamente |
-| D7 Dados espalhados entre SAP e planilhas | Dados do ciclo estruturados (AD6) e consulta pela API (CG5) | G5 Dados consolidados para o BI |
+| Tarefa de Geraldo | Dor | Aliviador | Ganho | Criador de ganho |
+|---|---|---|---|---|
+| T1 Identificar e enviar o equipamento | D1 Controle disperso em planilhas e ligações | AD1 Ciclo, responsável e fornecedor registrados | G1 Consultar sem ligar | CG1 Painel consolidado |
+| T2 Acompanhar oficina e prazo | D2 Localização e prazo incertos | AD2 Última posição válida e prazo visível | G2 Agir antes do vencimento | CG2 Alertas configuráveis |
+| T3 Decidir diante do atraso | D3 Falta histórico para cobrar ou renegociar | AD3 Histórico de ciclos por fornecedor | G3 Decidir com evidências | CG3 Histórico consultável |
+| T4 Conferir retorno e lacre | D4 Abertura ou retorno sem registro | AD4 Estado do lacre e retorno registrados | G4 Encerrar o acompanhamento com segurança | CG4 Consulta do ciclo completo |
 
 ### 3.1.5. Matriz de Riscos (sprint 1)
 
@@ -236,17 +233,17 @@ Encarregado indicado pela CerradinhoBio (**a confirmar**), sem divulgar contato 
 
 ### 3.1.7. Bill of Material (BOM) (sprint 1)
 
-Foi preenchida a [planilha oficial](../assets/3-desenvolvimento-resultados/3.1.7-bom/BOM-GuaraTracking-Sprint1.xlsx) [42] com **16 itens**, quantidades e valores. Preços de referência consultados em **22–23/10/2026**; conversões em dólar usam PTAX venda de **22/10/2026 (R$ 5,0383)** [35]. O [detalhamento completo](outros/3-desenvolvimento-resultados/3.1.7-bom/bom-detalhamento-sprint1.md) preserva tabelas, hipóteses e memória de custo.
+A [planilha oficial](../assets/3-desenvolvimento-resultados/3.1.7-bom/BOM-GuaraTracking-Sprint1.xlsx) [42], revisada em 04/11/2026, distingue itens de campo, bancada, consumíveis, conectividade e serviços. Inclui LCD, buzzer, chaves de simulação, lacres, chip e plano de dados. O pacote de lacres tem preço indicativo de R$ 95,58 [55]. A [memória inicial](outros/3-desenvolvimento-resultados/3.1.7-bom/bom-detalhamento-sprint1.md) registra a estimativa anterior; a planilha contém a versão vigente.
 
 | Parcela | Estimativa de referência | Limitação |
 |---|---:|---|
-| Materiais de um protótipo | **R$ 733,99** | Preços históricos/indicativos; sem frete, tributos e validação de estoque |
+| Materiais e itens de bancada já precificados | **R$ 828,97** | Parcial; quatro preços dos itens ainda faltam |
 | Trabalho técnico (7 pessoas, 80 h por pessoa) | **R$ 34.105,60** | Simulação salarial, não desembolso nem proposta comercial |
-| Soma contábil indicativa | **R$ 34.839,59** | **Não** representa custo aprovado de aquisição ou implantação |
+| Subtotal conhecido | **R$ 34.934,57** | Não representa o custo completo nem orçamento aprovado |
 
-O circuito simulado usa LEDs, botões, chaves e potenciômetro, enquanto o protótipo físico exige ainda GNSS, alimentação, gabinete, fixação e comunicação. O SIM7080G é apenas uma opção; cobertura, operadora, antena, compatibilidade elétrica e consumo precisam de ensaio. Quantidades e serviços para cinco dispositivos não devem ser extrapolados linearmente: montagem e desenvolvimento são parcialmente compartilhados.
+Há dois cenários para cinco equipamentos: piloto sequencial com um dispositivo e simultâneo com cinco. Os totais completos permanecem vazios até cotar conectividade, frete e tributos. Display, buzzer e gabinete adequado à exposição à água também exigem especificação e cotação. O SIM7080G é apenas uma opção; cobertura, antena, compatibilidade elétrica e consumo precisam de ensaio. Serviços e itens de bancada são compartilhados.
 
-**Condição de aceite:** validar SKUs, duas alternativas para itens críticos, tributos/frete, autonomia, disponibilidade, custos recorrentes e orçamento com o parceiro. A planilha é evidência de planejamento, não de compra realizada.
+**Condição de aceite:** validar SKUs, autonomia estimada por consumo medido, vedação IP67/IP68 ou limite de exposição, disponibilidade, custos recorrentes e orçamento com o parceiro. A planilha registra planejamento, sem comprovar compra.
 
 ## 3.2. Domínio de Fundamentos de Experiência de Usuário 
 
@@ -304,9 +301,25 @@ As personas indicam que a solução deve apresentar informações e ações adeq
 
 Essas diferenças orientam o GuaráTracking a combinar uma visão operacional dos equipamentos com o controle das pendências de cada ciclo e a disponibilização de dados para BI. A interface deve facilitar a identificação do que precisa de atenção e de quem deve agir, enquanto o histórico deve preservar a relação entre saída, acompanhamento e retorno. Assim, o rastreamento apoia decisões e a continuidade do processo entre as áreas.
 
+#### Uso de IA na representação visual das personas
+
+A IA foi usada para representar visualmente as personas, não para definir seu conteúdo. Objetivos, dores, necessidades e cenários já estavam escritos pela equipe a partir do kickoff e foram entregues à IA como contexto, junto com o guia de estilos do GuaráTracking, para manter cores, tipografia e ilustrações coerentes com a identidade visual do projeto.
+
+Antes de gerar as cenas, a equipe discutiu com a IA quais objetos simbolizam o trabalho de cada função: prancheta, telefone e lacre para Geraldo; nota fiscal, calendário e o aspecto jurídico para Clarice; mapa, dados e acompanhamento do transporte para Izidio. Cada pedido gerou variações numeradas, comparadas lado a lado, e a escolha veio acompanhada de correções concretas. Na cena de Geraldo, por exemplo, a peça avulsa foi trocada por um equipamento carregado no caminhão, e a perspectiva do veículo e a posição do operador foram ajustadas em várias rodadas. Na de Izidio, o mapa passou a mostrar uma fazenda com rotas sinalizadas em verde, amarelo e vermelho.
+
+O layout também foi revisado pela equipe: o texto corrido deu lugar a um fluxo visual com ícones por etapa, e os blocos de dores, objetivos e necessidades ganharam mais espaço. As versões finais foram exportadas em PDF e SVG para edição no Figma. Por isso, as imagens das personas são ilustrações e não registram dados do parceiro.
+
 ### 3.2.2. Jornada do Usuário e Storyboard (sprint 2)	
 
+#### Jornada do Usuário
+
 A jornada do usuário é um mapa da experiência de uma pessoa ao realizar uma atividade em um contexto específico. Ela organiza as etapas do início ao fim e relaciona ações, pensamentos, sentimentos e pontos de contato com pessoas, ferramentas ou serviços. Essa visão ajuda a identificar momentos de incerteza, dificuldades e oportunidades de melhoria. No projeto Guarátracking, a jornada atual mostra como Geraldo acompanha o envio de um equipamento para manutenção externa, permitindo compreender onde a solução proposta pode apoiar seu trabalho.
+
+#### Metodologia de elaboração das jornadas e uso de IA
+
+A elaboração das jornadas partiu da persona de Geraldo, do fluxo de manutenção externa descrito no TAPI e das informações obtidas no kick-off com a Cerradinho. A equipe organizou o processo em etapas e definiu, para cada uma, as ações, os pensamentos, os sentimentos, os pontos de contato e as dificuldades do usuário. Em seguida, a jornada atual foi usada como base para representar a experiência futura com o apoio do GuaráTracking.
+
+O ChatGPT foi utilizado como ferramenta de apoio durante esse processo. A equipe forneceu à IA o conteúdo das jornadas e o guia de estilos do projeto; a ferramenta auxiliou na adequação visual ao guia, na formatação das informações, na revisão gramatical e na criação dos gráficos. Os resultados foram conferidos e ajustados pela equipe para preservar a coerência com a persona, com o fluxo do parceiro e com a identidade visual do GuaráTracking.
 
 #### Jornada atual de Geraldo
 
@@ -325,21 +338,40 @@ Os principais insights são:
 - **Risco de esquecimento:** itens menos críticos podem deixar de receber acompanhamento; a régua fiscal não informa onde estão nem o andamento do reparo.
 - **Fechamento físico e fiscal separados:** receber o equipamento não encerra a remessa; a conferência e a confirmação do lançamento fiscal precisam estar relacionadas para evitar pendências.
 
-#### Storyboard 
+#### Jornada futura de Geraldo
+
+A Figura 3.2.2.2 acompanha Geraldo (P1) nas seis fases da jornada atual, com o motor fictício AT-001 e a Oficina Skibidy. Gestor, Fiscal, transportadora e fornecedor aparecem nos pontos de contato; a última linha explicita as responsabilidades do projeto.
+
+![Jornada futura de Geraldo: seis fases, responsabilidades e comparação emocional](../assets/ux/jornada-futura-geraldo.png)
+
+*Figura 3.2.2.2 — Jornada futura de Geraldo. Fonte: elaboração própria com base no kick-off da Cerradinho, na persona da seção 3.2.1 e no TAPI [6].*
+
+A experiência é proposta; sentimentos e curvas são ilustrativos. A posição semanal e datada não comprova entrega nem andamento do reparo. Perda de sinal GNSS e falta de rede são situações distintas: a última posição válida é preservada, e eventos sem conexão aguardam envio.
+
+| O que muda | Requisitos |
+|---|---|
+| Dados reunidos por equipamento e responsável. | Cadastro do ciclo, RF002; vínculo exclusivo, RF003–RF004; dias desde a NF, RF012. |
+| Consulta com indicação de atualidade e falhas. | Posição datada, RF005; consulta de status, RF015; fila sem rede, RF010; perda e recuperação GNSS, RF031. |
+| Pendências orientam a decisão do PCM. | Alerta de atraso, RF013; tratamento com justificativa, RF023; escalonamento por e-mail, RF030. |
+| Retorno conferido até a baixa fiscal e reutilização. | Encerramento condicionado, RF016; histórico do dispositivo, RF017; retorno e baixa separados, RF029. |
+
+Embalagem e confirmação manual de entrega exigem validação. Histórico de fornecedores, consulta de estoque, execução da prorrogação e registro de quem recebeu na oficina são hipóteses sem RF específico; sua inclusão depende de validação e compatibilidade com os RNFs.
+
+#### Storyboard
+
+Um storyboard é uma representação visual sequencial utilizada para demonstrar como uma situação acontece ao longo do tempo. Por meio de cenas organizadas em ordem, ele apresenta o contexto, as ações do usuário, os problemas encontrados e a interação com a solução proposta.
+
+#### Metodologia de elaboração do storyboard e uso de IA
+
+A construção do storyboard começou pela definição da persona, do contexto, do problema e da sequência de acontecimentos que deveria ser representada. O Codex foi utilizado como ferramenta de apoio para consultar e organizar as informações sobre a persona e os prazos presentes na narrativa, revisar a gramática e a coerência do roteiro e gerar as imagens das cenas. O guia de estilos do GuaráTracking foi fornecido como referência para orientar a composição visual, e as imagens geradas passaram por ajustes para manter a identidade do projeto e a continuidade entre as cenas. A equipe revisou o texto, a sequência narrativa e o resultado visual antes de consolidar a versão final.
+
+#### O nosso storyboard
 
 O storyboard acompanha Geraldo, analista de PCM responsável pelos equipamentos enviados à manutenção externa. A história mostra sua atuação após uma bomba centrífuga ultrapassar o prazo de retorno combinado com a oficina e o GuaráTracking emitir um alerta de atraso, permitindo que ele consulte os dados e tome uma decisão.
 
-<div align="center">
-  <p><strong>Figura 3.2.2.3. - Storyboard do Geraldo</strong></p>
-  <img
-    src="../assets/3-desenvolvimento-resultados/guaratracking-storyboard.png"
-    alt="Storyboard do Geraldo- GuaráTracking"
-    width="100%"
-  >
-  <p><em>Fonte: elaboração do Grupo G01 (2026), com base no template da disciplina.</em></p>
-</div>
+![Storyboard de Geraldo: alerta de atraso, consulta das informações e tomada de decisão](../assets/3-desenvolvimento-resultados/guaratracking-storyboard.png)
 
-
+*Figura 3.2.2.3 — Storyboard de Geraldo. Fonte: elaboração própria do Grupo G01 (2026), com apoio do Codex, com base no kick-off da Cerradinho, na persona da seção 3.2.1, no TAPI [6] e no template da disciplina.*
 
 ## 3.3. Solução Técnica	
 
@@ -382,7 +414,7 @@ Os requisitos abaixo saem do TAPI (MVP 1 a 7 e fluxo básico), da avaliação do
 | RF031 | O sistema deve registrar a perda da posição GNSS uma única vez, no início da falha e com o motivo, e a recuperação uma única vez, no retorno da posição, com o tempo sem posição e a contagem de coletas sem fix; os dois eventos são não críticos e seguem a fila sem conexão (RN22). | Firmware V2 (`GNSS_SEM_FIX`, `GNSS_RECUPERADO`); TAPI MVP 2; persona P1-C4 Falha | Média | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT45, rodada de 02 e 03/11/2026): só o motivo `sem_fix` é alcançável, e `sem_dados` e `sinal_fraco` dependem do protótipo físico; protótipo físico pendente |
 | RF032 | O dispositivo deve sinalizar localmente a violação do lacre: LED vermelho com pulso curto a cada segundo enquanto o lacre estiver violado e buzzer intermitente por no máximo 30 s, parando antes se o lacre fechar. Duração de 30 s: `PENDENTE DE VALIDAÇÃO` | TAPI MVP 5; rubrica do protótipo físico (Artefato 5) | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT38: alarme na violação, parada ao fechar e aos 30 s, LED pulsando com o lacre violado, [vídeo do LED](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38-led.mkv)); a cadência elétrica do buzzer não foi medida; protótipo físico pendente |
 | RF033 | O dispositivo deve registrar a NF da remessa informada pela plataforma (simulada pelo comando `REMESSA` na Serial), com até 15 caracteres entre letras, dígitos, hífen, ponto e barra, somente com ciclo ativo, exibi-la no LCD e recusar entrada inválida ou sem ciclo, preservando a NF anterior. | Firmware V2; TAPI MVP 3; persona P1-C1 | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT39); a plataforma ainda não envia a NF; protótipo físico pendente |
-| RF034 | O dispositivo deve permitir consultar no LCD, por dois botões de navegação circular, a NF da remessa, o prazo (dias restantes, vence hoje, atraso ou sem ciclo ativo), a última posição, a bateria e o estado do lacre, e apagar o LCD e a luz de fundo após 15 s sem interação, com o primeiro toque só acendendo a tela. Tempo de 15 s: `PENDENTE DE VALIDAÇÃO` | Firmware V2; TAPI MVP 6; persona P1-C2 | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT36, CT37, CT40); a economia de energia do apagamento não foi medida; protótipo físico pendente |
+| RF034 | O dispositivo deve permitir consultar no LCD, por dois botões de navegação circular, a NF da remessa, o prazo (dias restantes, vence hoje, atraso ou sem ciclo ativo), a última posição, a bateria e o estado do lacre, e apagar o LCD e a luz de fundo após 15 s sem interação, com o primeiro toque só acendendo a tela. Uma variação de 3 pontos na bateria simulada também acende o LCD na tela de bateria. Tempo de 15 s: `PENDENTE DE VALIDAÇÃO` | Firmware V2; TAPI MVP 6; persona P1-C2 | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT36, CT37, CT40); a economia de energia do apagamento não foi medida; protótipo físico pendente |
 | RF035 | O dispositivo deve mostrar no LCD a contagem "segure mais N s" ao segurar os botões de autorizar, iniciar e encerrar o ciclo, cancelar a ação se o botão for solto antes de 3 s e exibir por 2 s uma mensagem para lacre reaplicado, lacre fechado após violação, sem sinal e sinal recuperado. | Firmware V2; persona P1-C3 | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT41, CT42); a mensagem "enviados" é reenvio simulado, sem confirmação de servidor; protótipo físico pendente |
 
 Itens técnicos da avaliação: coleta de dados via sensor (RF005, RF006, RF019) · definição de devices na plataforma (RF003, RF020) · chave de identificação de usuário e acesso ao dashboard (RF021) · conexão Wi‑Fi (RF008) · formatação de dados para MQTT (RF009) · representação gráfica dos dados coletados (RF015, RF022).
@@ -432,43 +464,145 @@ As regras abaixo restringem o comportamento descrito nos RFs da seção 3.3.1 e 
 
 ### 3.3.3. Requisitos Não Funcionais — ISO/IEC 25010:2011 (sprints 2 a 5)
 
-#### Demandas de negócio que fundamentam os RNFs
+Um requisito não funcional (RNF) descreve a qualidade com que o sistema cumpre suas funções, e não uma função em si. Aqui, "o sistema" é o conjunto formado pelo dispositivo, pela comunicação e pelo painel. Os RNFs partem das condições reais do projeto: o ciclo semanal de remessa para conserto, a operação sem cobertura nos trajetos e nas oficinas, o alerta de abertura do lacre, a proteção dos dados pela LGPD [40] e a bateria que precisa durar todo o período fora. As oito categorias seguem a norma ISO/IEC 25010:2011 [54], que descreve o modelo de qualidade de produto de software (a edição de 2023 reorganizou esse modelo). Cada categoria tem um RNF (RNF01 a RNF08), que se desdobra em RNFs específicos de ID RNF0X.Y, e todo RNF específico traz um critério de aceitação com meta mensurável e um método de verificação.
 
-As oito características de qualidade do produto adotadas aqui seguem a **ISO/IEC 25010:2011** [54]; a edição de 2023 reorganizou esse modelo. O mapeamento relaciona o TAPI [6], o kick-off com a Cerradinho de 16/10/2026 [33] e as personas da seção 3.2.1. Geraldo (P1/PCM), Clarice (P2/Fiscal) e Izidio (P3/Logística) são **perfis construídos pelo grupo**, não depoimentos individuais. A associação de cada demanda às características ISO é uma interpretação técnica; valores citados no alinhamento ainda não constituem critérios de aceitação aprovados.
+As ligações de cada RNF com o TAPI [6], o kick-off com a Cerradinho de 16/10/2026 [33] e as personas da seção 3.2.1 são interpretação do grupo e dependem de validação. Geraldo (P1), Clarice (P2) e Izidio (P3) são perfis construídos pelo grupo, não depoimentos individuais. Nas metas, três marcações indicam o grau de certeza do número:
+
+- **meta da equipe:** número definido pelo grupo, ainda sem aprovação do parceiro;
+- **a medir:** valor a confirmar no primeiro ensaio; quando não há número, a meta aparece como **limite a validar**;
+- **referência do parceiro:** valor dito no kick-off [33]; não é medição nem SLA acordado.
+
+Neste texto, "violação" é a abertura do lacre sem autorização vigente (RN05); "TAG" é o nome que o parceiro usa para o dispositivo vinculado ao equipamento (RF003); "fix" é a posição válida fornecida pelo receptor GNSS.
+
+#### Categorias
 
 | Característica / ID | Demanda do negócio e fonte | Justificativa e rastreabilidade | Lacunas e validações |
 |---|---|---|---|
 | **Adequação funcional — RNF01** | O TAPI [6] (MVP 2–6) prevê localização válida, vínculo TAG–ciclo–NF, histórico e alertas de prazo e lacre; o kick-off [33] destacou equipamentos esquecidos e retorno físico sem baixa fiscal. | A completude das funções permite a P1 Geraldo acompanhar pendências, a P2 Clarice reconciliar retornos e a P3 Izidio consolidar o histórico. Relação: RF002, RF005, RF006, RF014, RF016, RF017 e RF029. | A cobertura funcional depende de verificação dos fluxos e das regras de encerramento; funcionalidades planejadas não são consideradas implementadas. |
 | **Eficiência de desempenho — RNF02** | O TAPI [6] (MVP 4 e 7) prevê status semanal configurável e ensaio de consumo. No kick-off [33], o parceiro indicou **autonomia de até 1 ano** como referência para cobrir cerca de **99% dos períodos fora**, sem fixar meta formal. Para violação do lacre, pediu aviso o mais imediato possível e considerou **10 a 30 minutos aceitáveis** como referência, sem esperar o ciclo semanal [33]. | P1 Geraldo precisa de informação útil antes que a bateria se esgote e de alerta de lacre em tempo oportuno. Tempo de resposta (detecção local versus entrega ao servidor), uso de GNSS, transmissão e repouso determinam latência e consumo. Relação: RF005, RF006, RF008, RF011, RF019, RF027, RN05, RN07 e RN08. | Autonomia mínima, condições de ensaio e limite de latência ponta a ponta **pendentes de validação**. Sem cobertura, a ocorrência é armazenada para envio posterior; a faixa de 10–30 min não é garantia offline. Consumo físico exige CT27, e latências exigem ensaio separado de detecção e entrega. |
-| **Compatibilidade — RNF03** | O TAPI [6] (MVP 6) requer API para BI. No kick-off [33], foram mencionados **SAP** (remessas, NF e retorno), **Gama Soft** no fiscal e o **BI da diretoria**; o campo complementar da NF foi considerado para levar o número da TAG. | A interoperabilidade entre dados de ciclo, NF e TAG deve permitir a P2 Clarice conferir pendências e a P3 Izidio consumir indicadores sem recadastro. Relação: RF002, RF017, RF024 e RN15. | Contrato, autenticação e esquema de dados da API ainda não foram definidos; a solução não declara integração produtiva com SAP, Gama Soft ou BI corporativo. |
-| **Usabilidade — RNF04** | O TAPI [6] exige consulta de status, localização e alertas; o kick-off [33] descreveu o acompanhamento manual. Os cenários das personas distinguem tarefas de PCM, Fiscal e Logística. | P1 Geraldo precisa priorizar pendências; P2 Clarice, diferenciar retorno físico de baixa fiscal; P3 Izidio, consultar histórico. A interface deve reduzir ambiguidades e erros de interpretação. Relação: RF015, RF018, RF022, RF023 e RF029. | Tempo de execução, acessibilidade e compreensão das tarefas não foram testados com usuários reais. |
+| **Compatibilidade — RNF03** | O TAPI [6] (MVP 6) requer API para BI. No kick-off [33], foram mencionados **SAP** (remessas, NF e retorno), **Gama Soft** no fiscal e o **BI da diretoria**; o campo complementar da NF foi considerado para levar o número da TAG. | A interoperabilidade entre dados de ciclo, NF e TAG deve permitir a P2 Clarice conferir pendências e a P3 Izidio consumir indicadores sem recadastro. Relação: RF002, RF005, RF017, RF024 e RF029; RN08, RN15 e RN20. | Os limites de publicação e resposta, o formato JSON e os campos mínimos são propostas a homologar; endpoints, versionamento, autorização detalhada e contrato completo da API ainda não foram definidos. Não há integração produtiva comprovada com SAP, Gama Soft ou BI corporativo. |
+| **Usabilidade — RNF04** | O TAPI [6] exige consulta de status, localização e alertas; o kick-off [33] descreveu o acompanhamento manual. Os cenários das personas distinguem tarefas de PCM, Fiscal e Logística. | P1 Geraldo precisa priorizar pendências; P2 Clarice, diferenciar retorno físico de baixa fiscal; P3 Izidio, consultar histórico. A interface deve reduzir ambiguidades e erros de interpretação. Relação: RF015, RF017, RF022, RF023 e RF029; RN08 e RN20. | Tempo de execução, acessibilidade e compreensão das tarefas não foram testados com usuários reais; os limiares propostos para usabilidade ainda dependem de validação com o parceiro. |
 | **Confiabilidade — RNF05** | O TAPI [6] (MVP 5) prevê armazenar eventos durante períodos sem rede e reenviá-los após a reconexão; o kick-off [33] indicou que os caminhões não têm internet garantida nos trajetos. | A disponibilidade dos registros, a tolerância a falhas de comunicação e a recuperação após desconexão permitem a P1 Geraldo acompanhar ocorrências e a P3 Izidio consultar um histórico íntegro. Relação: RF005, RF006, RF010, RF025 e RN08–RN09. | Capacidade e saturação da fila, perdas, confirmação de entrega e duração offline ainda exigem validação. CT18 e CT22 registram limitações (seção 3.3.4); não há demonstração de entrega fim a fim. |
 | **Segurança — RNF06** | O TAPI [6] (MVP 5–6) prevê aviso de lacre e acesso controlado. O kick-off [33] distinguiu abertura autorizada de violação. Identificadores, localização e registros fiscais exigem avaliação segundo a LGPD [40] e orientações da ANPD [41]. | A integridade dos eventos e a confidencialidade dos dados permitem a P1 Geraldo investigar violações, a P2 Clarice confiar nos vínculos e a P3 Izidio consumir dados pertinentes. Relação: RF006, RF007, RF020, RF021, RF023, RF024, RN05 e RN15–RN18. | Lacre físico e cibersegurança são controles distintos. Perfis, retenção, base legal, criptografia e resposta a incidentes ainda exigem definição com TI/Jurídico; os controles de produção não estão comprovados. |
 | **Manutenibilidade — RNF07** | O uso repetido do dispositivo, previsto no TAPI [6], exige diagnosticar e corrigir firmware e software ao longo dos ciclos. O [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md) define o **RNF-SUP01**, com ensaios reproduzíveis por versão, configuração e estímulos; a reutilização física prevista no TAPI [6] é contexto operacional. | **Analisabilidade, modificabilidade e testabilidade** (ISO/IEC 25010:2011 [54]) permitem localizar defeitos, alterar regras e repetir testes sem comprometer histórico e vínculos de P1 Geraldo e P3 Izidio. Relação: RF017, RF025, RN01 e RN11. | Diagnósticos, testes de regressão, separação de componentes e critérios de manutenção técnica permanecem em definição. Manutenção externa do ativo não equivale à manutenibilidade do software. |
-| **Portabilidade — RNF08** | O TAPI [6] exige comparar alternativas de comunicação; a seção 1.2 usa **Wi-Fi somente no protótipo**, não como premissa nas oficinas. O [planejamento técnico](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md) compara os módulos **Quectel LC76G-PA** e **u-blox MAX-M10S** [23, 24]. | **Adaptabilidade e substituibilidade** (ISO/IEC 25010:2011 [54]) fundamentam trocar o canal de comunicação por alternativa de produção e substituir o módulo GNSS preservando a lógica de aquisição, transmissão e ciclo. É proposta arquitetural para manter a solução adaptável às condições de P1 Geraldo, não mera movimentação física do equipamento. Relação: RF005, RF008, RF009, RF010, RF011 e RN08. | O canal de produção e a equivalência de interfaces GNSS não foram validados. A solução de produção não pressupõe Wi-Fi nos fornecedores, localização precisa em interiores ou rastreamento contínuo em tempo real. |
-
-**Leitura transversal das demandas prioritárias:** autonomia da bateria → **RNF02** (e RNF05); operação sem cobertura → **RNF05** e RNF08; lacre e tempo de alerta → **RNF01, RNF02, RNF05 e RNF06**; LGPD → **RNF06**; API para BI → **RNF03** (e RNF01).
-
-**Lacunas de validação:** o documento original do TAPI é fornecido pelo parceiro e não está anexado a esta documentação. Permanecem em aberto os limites formais de autonomia e latência, os cenários de rede ausente, a política de acesso e privacidade e o contrato da API. As referências de 1 ano, 99% e 10–30 minutos provêm do alinhamento [33], não de medições nem de SLA acordado. Ensaios de resistência à água, previstos no TAPI [6], ficam como trabalho futuro.
+| **Portabilidade — RNF08** | O TAPI [6] exige comparar alternativas de comunicação; a seção 1.2 usa **Wi-Fi somente no protótipo**, não como premissa nas oficinas. O [planejamento técnico](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md) compara os módulos **Quectel LC76G-PA** e **u-blox MAX-M10S** [23, 24] e define o **RNF-SUP02** para verificar a correspondência entre o simulador e o LC76G-PA físico. | **Adaptabilidade e substituibilidade** (ISO/IEC 25010:2011 [54]) fundamentam trocar o canal de comunicação por alternativa de produção e substituir o módulo GNSS preservando a lógica de aquisição, transmissão e ciclo. É proposta arquitetural para manter a solução adaptável às condições de P1 Geraldo, não mera movimentação física do equipamento. Relação: RF005, RF008, RF009, RF010, RF011 e RN08. | O canal de produção e a equivalência de interfaces GNSS não foram validados. A solução de produção não pressupõe Wi-Fi nos fornecedores, localização precisa em interiores ou rastreamento contínuo em tempo real. |
 
 #### Requisitos não funcionais e critérios de aceitação (RNF01 a RNF08)
 
-As justificativas de negócio estão relacionadas acima; o texto verificável dos requisitos e seus critérios de aceitação seguem em definição, conforme os ensaios e validações aplicáveis.
+A prioridade segue o método MoSCoW em português: **Deve ter** é indispensável ao uso; **Deveria ter** é importante, mas permite operação com limitações; **Poderia ter** é uma melhoria opcional, incorporada se houver capacidade; **Não terá nesta entrega** fica fora do escopo da entrega atual. RNF07.3 usa Poderia ter; nenhuma linha usa Não terá nesta entrega. A prioridade da categoria é a mais alta de seus requisitos específicos.
 
-| Característica (ISO/IEC 25010:2011) | ID | Requisito Não Funcional | Métrica / Critério de Aceitação | Justificativa (demanda do negócio) | Justificativa de Ausência (se aplicável) |
+A tabela resume as oito categorias; as fichas detalham critérios, verificação, prioridade, RFs, RNs e fontes. As demandas e suas relações com as personas estão na tabela de categorias; a seção 3.3.4 relaciona RFs e RNs aos testes. Os critérios do [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md) são incorporados às fichas: RNF07 corresponde a RNF-SUP01 e RNF08.2 a RNF-SUP02. A troca de transporte é adicional a RNF-SUP02. RNF-REST02 aparece separadamente como restrição física de operação, sem criar uma nona categoria de qualidade de software.
+
+| ID | Categoria (subcaracterística) | Requisito | Prioridade (MoSCoW) | Justificativa da prioridade | Fonte |
 |---|---|---|---|---|---|
-| Adequação Funcional | RNF01 | O sistema deve cobrir de ponta a ponta o fluxo de um ciclo de manutenção externa: abrir o ciclo com a NF de remessa, vincular a TAG, registrar a última localização válida, emitir os alertas de atraso, permanência e lacre e encerrar o ciclo com a NF de retorno e o lacre fechado, preservando o histórico. | Todos os RFs de prioridade Alta (RF001 a RF018 e RF029) com caso de teste aprovado na RTM (3.3.4) e ao menos um ciclo completo executado, da abertura ao encerramento, sem nenhuma etapa fora do sistema. RF sem teste aprovado fica registrado como pendente. | Acompanhamento de ativos, alertas e reconciliação fiscal; P1/P2/P3 ([6], [33], seção 3.2.1). | |
-| Eficiência de Desempenho | RNF02 | O sistema deve entregar à plataforma o alerta de violação do lacre em até 30 minutos após a detecção, quando houver conexão, e o dispositivo deve ter autonomia estimada de pelo menos 1 ano no perfil de status semanal. | Latência: percentil 95 do tempo entre a estabilização do contato do lacre e o recebimento pela plataforma de até 30 minutos em um lote controlado de 30 estímulos (ensaio de latência CT32 do planejamento de energia e GNSS). Autonomia: carga diária medida na alimentação do conjunto (CT27) que leve a autonomia estimada a pelo menos 365 dias com a bateria adotada. Os valores de 30 minutos e 1 ano são as referências do kick-off [33]; os limites formais e a bateria dependem de validação com o parceiro. | Autonomia de referência até 1 ano e latência de alerta de lacre de referência 10–30 min, ambas pendentes de meta formal; P1 ([6], [33]). | |
-| Compatibilidade | RNF03 | ... | ... | API para BI e coerência com SAP, Gama Soft, TAG e NF; P2/P3 ([6], [33]). | |
-| Usabilidade | RNF04 | ... | ... | Consultas e pendências para PCM, Fiscal e Logística; P1/P2/P3 ([33], seção 3.2.1). | |
-| Confiabilidade | RNF05 | O dispositivo deve registrar cada mudança estável do lacre uma única vez, sem duplicações por ruído de contato, e preservar na memória não volátil os registros já confirmados e a referência da última posição válida, inclusive após reinício. Corresponde ao **RNF-CONF01** (lacre) e ao **RNF-CONF02** (registros e posição) do [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md). | **(a) Lacre:** zero eventos ausentes e zero eventos duplicados por transição estável, e zero eventos para pulsos observados menores que 60 ms (debounce atual), no lote controlado; contar eventos ausentes, extras e falsos alertas (CT18, CT24, CT31). **(b) Persistência:** zero registros já confirmados como gravados perdidos e zero referência de posição inválida aceita no lote de reinícios, comparando o conteúdo antes e depois (CT21, CT22, CT29, CT33). **(c) Reenvio:** zero eventos perdidos ou duplicados no reenvio após a reconexão, na ordem em que ocorreram e com a hora da ocorrência (RN09), conferidos no recebimento pela plataforma (CT09, **BLOQUEADO**: o reenvio ordenado e a fila zero foram observados na Serial do simulador, mas falta a confirmação de entrega pelo servidor; critério **pendente**). **Situação:** critérios propostos, ainda sem meta aprovada pelo parceiro. No simulador, o CT21 foi aprovado; o CT18 foi reprovado (4 de 20 transições estáveis perdidas sem rede, sem duplicação), o CT18 repetido no V2 também foi reprovado (pulsos curtos lidos como abertura sem rede, o que fere o critério (a)) e o CT22 foi reprovado no ambiente (memória retida, mas `uptime_ms` não reiniciou). Os testes em hardware físico (CT24 a CT33) ainda não foram executados. | Os caminhões não têm internet garantida nos trajetos [33] e o TAPI [6] (MVP 5) pede guardar os eventos sem rede e enviá-los depois; o pior caso para o parceiro é esquecer o equipamento no fornecedor [33]. Um lacre que perde ou duplica eventos, ou registros que somem num reinício, tiram do PCM (P1) e da Logística (P3) a base para distinguir violação de abertura autorizada e cobrar o retorno; P1/P3. O reenvio ordenado após a reconexão (RN09) entra no critério (c), pendente da confirmação do servidor (CT09). | |
-| Segurança | RNF06 | O dispositivo só deve aceitar autorização de retirada de lacre emitida pela plataforma para aquele dispositivo e aquele ciclo, dentro da validade, e rejeitar qualquer outra autorização; mensagens de dispositivo não cadastrado ou com credencial inválida não podem alterar nenhum ciclo (RN16). Corresponde ao **RNF-SEG01** do planejamento. | **(a) Autorização:** zero comandos adulterados, de outro dispositivo ou ciclo, ou expirados aceitos no lote de ensaio (CT34, que exige o canal de autorização implementado). **(b) Dispositivo não cadastrado (RN16):** zero mensagens de dispositivo não cadastrado ou com credencial inválida alterando ciclo no lote de ensaio (CT a definir, **pendente**: a plataforma e o cadastro de dispositivos ainda não existem). **(c) Confidencialidade (LGPD):** sem métrica por ora; o critério para localização, NF e identificadores de usuário fica **pendente** de CT e de definição com o parceiro. **Situação:** critérios propostos, nenhum executado (CT34 não executado). Hoje a autorização é simulada por botão de bancada, o que não comprova segurança; política sem rede, revogação e relógio incerto: `PENDENTE DE VALIDAÇÃO` com o parceiro. | No kick-off, o parceiro disse que só a Cerradinho deveria retirar o lacre e pediu registro separado de abertura autorizada e de violação [33]; o TAPI [6] (MVP 5 e 6) prevê aviso de lacre e acesso controlado. Uma autorização forjada ou reaproveitada deixaria uma violação passar por abertura legítima, e localização, NF e identificadores de usuário são dados tratados sob a LGPD [40]; P1/P2/P3. | |
-| Manutenibilidade | RNF07 | ... | ... | Diagnóstico reproduzível e evolução de firmware/software (RNF-SUP01); P1/P3 ([6], [54]). | |
-| Portabilidade | RNF08 | ... | ... | Troca de canal de comunicação e substituição de módulo GNSS sem alterar a lógica do ciclo; P1 ([6], [23], [24], [54]). | |
+| RNF01 | Adequação funcional (completude e corretude funcional) | O sistema deve cobrir o ciclo completo de manutenção e registrar a localização e o estado do lacre de modo que correspondam à situação real. | Deve ter | É o núcleo do rastreamento: sem posição e lacre corretos, os demais alertas perdem o sentido. | TAPI [6] (MVP 2 e 5); kick-off [33] |
+| RNF02 | Eficiência de desempenho (comportamento no tempo e utilização de recursos) | O sistema deve entregar ao painel o alerta de violação do lacre sem esperar o ciclo semanal e manter o dispositivo em operação durante o período fora com a bateria. | Deve ter | Um aviso tardio ou uma bateria esgotada deixa o equipamento sem acompanhamento durante o período fora. | TAPI [6] (MVP 4 e 7); kick-off [33] |
+| RNF03 | Compatibilidade (interoperabilidade) | O sistema deve entregar os dados do ciclo em formato estruturado, por API autenticada, para uso pelos sistemas do parceiro sem recadastro. | Deveria ter | O TAPI [6] pede a API para BI, mas a integração produtiva com os sistemas corporativos está fora do escopo. | TAPI [6] (MVP 6); kick-off [33] |
+| RNF04 | Usabilidade (operabilidade) | O sistema deve permitir que um operador sem treino entenda o estado do equipamento no dispositivo e no painel. | Deve ter | Apresentar como atual uma posição que não é atual induz decisão errada; as demais consultas melhoram a leitura, mas as funções operam sem elas. | Personas (seção 3.2.1); kick-off [33] |
+| RNF05 | Confiabilidade (tolerância a falhas e recuperabilidade) | O sistema deve continuar operando sem cobertura, guardar as leituras e os eventos e enviá-los depois, na ordem em que ocorreram. | Deve ter | Sem essa tolerância, eventos de lacre se perdem e o alerta não chega. | TAPI [6] (MVP 5); kick-off [33] |
+| RNF06 | Segurança (confidencialidade e responsabilização) | O sistema deve liberar o acesso ao painel e à API apenas por perfil, registrar quem trata cada alerta, rejeitar autorizações e dispositivos inválidos e proteger os dados conforme a LGPD. | Deve ter | A LGPD [40] obriga a proteger localização, NF e identificadores, e uma autorização forjada passaria por abertura legítima. | LGPD [40]; ANPD [41]; TAPI [6] (MVP 5 e 6); kick-off [33] |
+| RNF07 | Manutenibilidade (analisabilidade, modificabilidade e testabilidade) | O sistema deve permitir diagnóstico reproduzível, com a versão do firmware e a configuração de cada ensaio registradas. | Deveria ter | Sustenta a evolução do firmware entre as sprints sem alterar o ciclo em campo. | TAPI [6]; ISO/IEC 25010 [54]; RNF-SUP01 do planejamento de energia e GNSS |
+| RNF08 | Portabilidade (adaptabilidade e substituibilidade) | O sistema deve permitir trocar o canal de comunicação e o módulo GNSS sem reescrever a lógica do ciclo. | Deveria ter | O canal de produção ainda não foi escolhido, mas o ciclo opera sem a troca. | TAPI [6]; módulos LC76G-PA e MAX-M10S [23, 24]; ISO/IEC 25010 [54] |
+
+##### RNF01 — Adequação funcional (completude e corretude funcional)
+
+| ID | Requisito | Critério de aceitação (meta mensurável) | Verificação | Prioridade | RF e RN relacionados | Fonte |
+|---|---|---|---|---|---|---|
+| RNF01.1 | O sistema deve guardar como última localização válida apenas posições que cumpram a RN08. | 100% das posições gravadas cumprem a RN08 (fix, data e hora do GNSS, HDOP de no máximo 2,0 a validar), e nenhuma coleta sem fix vira coordenada: meta da equipe, a medir. Provisório: HDOP de 2,0 da RN08, até o parceiro validar. | Comparar os registros com os pontos de referência de um percurso controlado (CT19, CT20, CT22 e CT43). | Deve ter | RF005, RF031; RN08, RN22 | TAPI [6] (MVP 2 e 6) |
+| RNF01.2 | O sistema deve registrar o estado do lacre (fechado, aberto com autorização ou violado) correspondente à situação física. | Zero transições estáveis registradas com estado trocado em um lote controlado de 20 transições: meta da equipe, a medir. A contagem de perdas e duplicações sem rede fica no RNF05.1. | Comparar o estado registrado com o roteiro de transições aplicado à chave do lacre (CT05, CT07, CT18, CT24 e CT31). | Deve ter | RF006, RF007; RN05, RN06 | TAPI [6] (MVP 5); kick-off [33] |
+| RNF01.3 | O sistema deve cobrir o ciclo completo de manutenção externa, da abertura com NF e vínculo da TAG ao encerramento com NF de retorno e lacre fechado, preservando histórico, posição e alertas. | Todos os RFs de prioridade Alta (RF001 a RF018 e RF029) com teste aprovado na RTM e ao menos um ciclo completo sem etapa fora do sistema: meta da equipe, a medir. Requisito sem teste aprovado permanece pendente. | Conferir cobertura na RTM (seção 3.3.4) e executar o fluxo completo, incluindo alertas de atraso, permanência e lacre e reconciliação do retorno físico com a baixa fiscal. Aprovação pendente da plataforma e dos testes de ponta a ponta. | Deve ter | RF001 a RF018, RF029; RN01 a RN09, RN11, RN20 | TAPI [6]; kick-off [33]; personas (seção 3.2.1) |
+
+- **Situação:** CT19 e CT20 aprovados no simulador; CT43 parcialmente aprovado (segundos/minutos; horas, dias e restauração pendentes); CT18 e CT22 reprovados (seção 3.4.1); CT24 e CT31 não executados no protótipo físico. Distância máxima entre a posição registrada e o ponto de referência de um percurso externo controlado: limite a validar.
+
+##### RNF02 — Eficiência de desempenho (comportamento no tempo e utilização de recursos)
+
+| ID | Requisito | Critério de aceitação (meta mensurável) | Verificação | Prioridade | RF e RN relacionados | Fonte |
+|---|---|---|---|---|---|---|
+| RNF02.1 | O sistema deve entregar o alerta de violação do lacre ao painel sem esperar o ciclo semanal. | Até 30 minutos após a estabilização do contato, no percentil 95 de um lote de 30 estímulos com conexão: meta da equipe, a medir. A faixa de 10 a 30 minutos é referência do parceiro [33], sem meta formal (limite a validar). Provisório: aceitar 30 minutos até haver meta formal. | Medir o tempo entre a estabilização do contato e o recebimento no painel (`L_alerta`), com relógios sincronizados (CT32). O alerta sem conexão fica guardado e não entra nessa conta. | Deve ter | RF006, RF009, RF018; RN05 | Kick-off [33]; TAPI [6] (MVP 5) |
+| RNF02.2 | O sistema deve operar durante o período fora com a mesma bateria. | Autonomia estimada de pelo menos 365 dias no perfil de status semanal. Até 1 ano, cobrindo cerca de 99% dos períodos fora, é referência do parceiro [33]; meta formal: limite a validar. Provisório: aceitar 365 dias estimados. | Medir a carga na alimentação do conjunto, sem USB em paralelo, e calcular a autonomia (CT27). A autonomia é estimada; um ensaio curto não comprova um ano de operação. | Deve ter | RF011, RF019, RF027; RN07, RN10 | Kick-off [33]; TAPI [6] (MVP 4 e 7) |
+| RNF02.3 | O sistema deve limitar o tempo ativo de GNSS e de comunicação em cada coleta. | Espera de fix de até 10 s por coleta (valor atual do firmware); orçamento de GNSS e de rádio por ciclo: limite a validar. Provisório: só a espera de 10 s; o orçamento por ciclo não é critério de aceite ainda. | Medir a duração por estado, as tentativas e as falhas (CT26 e CT28). | Deveria ter | RF005, RF008, RF011; RN07, RN08 | TAPI [6] (MVP 4); RNF-DES02 do planejamento |
+| RNF02.4 | O sistema deve medir separadamente a detecção local do lacre e a chegada da autorização ao dispositivo. | `L_det` (registro local menos estabilização do contato) e `L_aut` (validação no dispositivo menos emissão na plataforma): limite a validar; registrar percentil 95, máximo e perdas em 30 estímulos por condição: meta da equipe, a medir. Sem limite definido, não é critério de aceite ainda: por ora só se registram as medidas. | Relógios sincronizados e ensaios de latência e de autorização (CT32 e CT34); a medida de `L_aut` exige o canal de autorização implementado. | Deveria ter | RF006, RF007; RN05, RN06 | RNF-DES01 do planejamento; kick-off [33] |
+
+- **Situação:** nenhuma medição física feita; CT26 a CT34 não executados.
+
+##### RNF03 — Compatibilidade (interoperabilidade)
+
+| ID | Requisito | Critério de aceitação (meta mensurável) | Verificação | Prioridade | RF e RN relacionados | Fonte |
+|---|---|---|---|---|---|---|
+| RNF03.1 | O sistema deve entregar dados do ciclo por API autenticada e documentada para BI, em JSON/UTF-8, com datas ISO 8601 e fuso horário, preservando vínculos e estados de origem. | 12/12 ciclos conformes ao contrato e 100% dos IDs de ciclo, equipamento e TAG, vínculos com NF de remessa/retorno, datas de saída, retorno físico e baixa fiscal, estado, última posição válida com data/hora, dias fora, alertas, bateria e lacre reconciliados com a origem. Desconhecidos devem ser null; não trocar vínculos na reutilização nem confundir retorno físico com encerramento fiscal. Cada uma de 5 alterações persistidas deve estar visível na API em até 5 minutos; p95 de resposta ≤ 2 s em 30 consultas autenticadas: metas da equipe, a medir. Publicação começa na persistência na plataforma e não cobre o período offline. | Usar 12 ciclos fictícios com abertos/encerrados, retorno sem baixa fiscal, GNSS ausente e reutilização de TAG; validar esquema, codificação, datas e vínculos, sem duplicações. Consultar até refletir cada alteração; registrar latências, tempos das 30 consultas, HTTP status e payloads. Um cliente BI deve obter os 12 ciclos só pela API, sem tratamento manual. Contrato detalhado, limites e condições de carga pendentes de homologação com parceiro/TI/Fiscal; não há integração produtiva comprovada. | Deveria ter | RF002, RF005, RF009, RF015, RF017, RF024, RF029; RN08, RN15, RN20 | TAPI [6] (MVP 6); kick-off [33] |
+| RNF03.2 | O sistema deve permitir que o número da TAG acompanhe a NF no campo complementar. | O número da TAG cabe no campo complementar da NF e é recuperado nos dados do ciclo: limite a validar com o Fiscal. Não é critério de aceite ainda. | Conferir a TAG em uma NF fictícia e nos dados do ciclo. | Deveria ter | RF002; RN02 | Kick-off [33] |
+
+- **Situação:** contrato, autenticação e esquema da API ainda não definidos; sem CT.
+
+##### RNF04 — Usabilidade (operabilidade)
+
+| ID | Requisito | Critério de aceitação (meta mensurável) | Verificação | Prioridade | RF e RN relacionados | Fonte |
+|---|---|---|---|---|---|---|
+| RNF04.1 | O painel deve permitir aos perfis PCM, Fiscal e Logística consultar alertas, posição, retorno físico, pendência fiscal e histórico sem confundir retorno com encerramento. | Com 9 participantes representativos (3 por perfil), 2 tarefas por participante e 6 tarefas por perfil: pelo menos 5/6 acertos por perfil (≥ 80%; ≥ 15/18 no total), mediana de conclusão ≤ 3 minutos por perfil e zero interpretações de retorno físico sem baixa fiscal como ciclo encerrado: meta da equipe, a medir. | Teste moderado com dados e roteiro padronizados, sem ajuda durante as tarefas: PCM localiza alerta e interpreta posição/horário; Fiscal localiza retorno físico e reconhece pendência fiscal; Logística consulta histórico e filtra pendências. Registrar tempos, acertos, erros e dificuldades por perfil. CT a definir. As verificações de LCD CT36, CT37 e CT40–CT42 não substituem este ensaio. | Deveria ter | RF015, RF017, RF022, RF023, RF029; RN08, RN20 | TAPI [6] (MVP 6); kick-off [33]; personas (seção 3.2.1) |
+| RNF04.2 | O sistema deve apresentar a posição atual, a histórica e a ausente de forma distinta. | Nenhuma posição sem fix mostrada como atual, e a idade da última posição sempre visível: meta da equipe, a medir. | Comparar o JSON e a tela em coletas com e sem fix (CT19, CT22 e CT43). | Deve ter | RF005, RF015, RF031, RF034; RN08, RN22 | TAPI [6] (MVP 2 e 6); RNF-USAB01 do planejamento |
+
+- **Situação:** CT36, CT37, CT40, CT41 e CT42 aprovados no simulador; CT43 parcialmente aprovado (segundos/minutos; horas, dias e restauração pendentes); o teste com pessoas ainda não foi feito, e o painel não existe.
+
+##### RNF05 — Confiabilidade (tolerância a falhas e recuperabilidade)
+
+| ID | Requisito | Critério de aceitação (meta mensurável) | Verificação | Prioridade | RF e RN relacionados | Fonte |
+|---|---|---|---|---|---|---|
+| RNF05.1 | O sistema deve registrar cada mudança estável do lacre uma única vez, sem rede e sem duplicar por ruído. | Zero eventos ausentes ou duplicados por transição estável e zero eventos para pulsos menores que 60 ms (debounce atual) em um lote controlado: meta da equipe, a medir. | Contar eventos ausentes, extras e falsos alertas (CT18, CT24 e CT31). | Deve ter | RF006, RF010; RN05, RN09 | TAPI [6] (MVP 5); RNF-CONF01 do planejamento |
+| RNF05.2 | O sistema deve preservar os registros confirmados e a última posição válida após um reinício. | Zero registros já confirmados como gravados perdidos e zero referência de posição inválida aceita em um lote de reinícios: meta da equipe, a medir. | Comparar o conteúdo da memória antes e depois dos reinícios (CT21, CT22, CT29 e CT33). | Deve ter | RF005, RF010, RF017; RN08, RN09, RN11 | TAPI [6] (MVP 5); RNF-CONF02 do planejamento |
+| RNF05.3 | O sistema deve reenviar, na ordem em que ocorreram, os eventos guardados sem conexão, preservando as violações do lacre dentro da capacidade da fila. | Fila de 8 eventos (valor atual do firmware, RN09; capacidade final a validar): com a fila cheia, sai o evento não crítico mais antigo e as violações são preservadas; da 9ª violação em diante só a quantidade e a primeira e a última ocorrência são guardadas. Zero violações perdidas dentro da capacidade, toda perda ou resumo informado no reenvio, zero eventos duplicados e ordem preservada. Duração máxima sem conexão (`D_offline`): limite a validar. Provisório: aceitar a capacidade atual de 8 eventos; a duração sem conexão não é critério de aceite ainda. | Encher a fila com eventos mistos e só com violações, restaurar a rede, reiniciar durante o reenvio e conferir o recebimento pela plataforma (CT09, CT10 e CT33). | Deve ter | RF010, RF025, RF031; RN09, RN14, RN22 | TAPI [6] (MVP 5); kick-off [33]; RNF-CAP01 do planejamento |
+| RNF05.4 | O sistema deve tratar cada estímulo estável do lacre ou do temporizador uma única vez, sem reiniciar prazos. | Um tratamento por estímulo estável, sem despertares repetidos pelo mesmo nível mantido, e nenhum prazo reiniciado pelo despertar; tolerância do relógio e pulso mínimo detectável: limite a validar. Provisório: só a regra de um tratamento por estímulo; os dois limites não são critério de aceite ainda. | Repetir estímulos e suspensões e comparar o estado antes e depois (CT24, CT25 e CT29), também no ESP32 físico. | Deveria ter | RF006, RF011, RF013, RF014; RN03, RN04, RN07 | RNF-REST01 do planejamento |
+
+- **Situação:** CT21 aprovado no simulador; CT18 reprovado (4 de 20 transições estáveis perdidas sem rede) e repetido no V2 também reprovado (pulsos curtos lidos como abertura); CT22 reprovado no ambiente; CT09 bloqueado, por falta da confirmação de entrega pelo servidor. CT24, CT25 e CT29 não executados.
+
+##### RNF06 — Segurança (confidencialidade e responsabilização)
+
+| ID | Requisito | Critério de aceitação (meta mensurável) | Verificação | Prioridade | RF e RN relacionados | Fonte |
+|---|---|---|---|---|---|---|
+| RNF06.1 | O sistema deve permitir acesso ao painel e à API somente com credencial válida e permissão do perfil para a operação e o recurso solicitados. | Zero acessos sem credencial válida e zero operações ou dados liberados fora das permissões; 100% dos casos permitidos da matriz de acesso executados com resultado esperado: meta da equipe, a medir. Matriz perfil × operação × recurso a validar com o parceiro antes do ensaio. | Testar ausência de credencial, credencial inválida e credencial válida de cada perfil, cobrindo casos permitidos e negados no painel e diretamente na API, inclusive leitura e alteração de recursos restritos. Registrar resultado esperado e observado por célula da matriz; CT a definir, aprovação pendente. | Deve ter | RF021, RF024; RN15 | TAPI [6] (MVP 6); política de privacidade (seção 3.1.6) |
+| RNF06.2 | O sistema deve registrar quem trata cada alerta. | 100% dos tratamentos registrados com `usuario_id`, data e hora, decisão e justificativa (RN17 e RN18): meta da equipe, a medir. | Revisar o histórico de tratamento dos alertas. | Deve ter | RF021, RF023; RN17, RN18 | TAPI [6] (MVP 6) |
+| RNF06.3 | O sistema deve aceitar apenas autorização de retirada do lacre válida, dentro do prazo e não revogada. | Zero comandos de autorização adulterados, de outro dispositivo ou ciclo, expirados ou revogados aceitos, inclusive com o relógio incerto: meta da equipe, a medir. Política sem rede e prazo de 3 dias (RN06): limite a validar. Provisório: o prazo de 3 dias é valor de teste. | Enviar comandos válidos e inválidos em lote (CT34). | Deve ter | RF007; RN06 | Kick-off [33]; TAPI [6] (MVP 5); RNF-SEG01 do planejamento |
+| RNF06.4 | O sistema deve rejeitar mensagens de dispositivo não cadastrado ou com credencial inválida. | Zero mensagens de dispositivo não cadastrado ou com credencial inválida alterando um ciclo (RN16): meta da equipe, a medir. | Enviar mensagens de dispositivos não cadastrados e com credencial inválida e conferir os ciclos (caso de teste a definir). | Deve ter | RF020; RN16 | TAPI [6] (MVP 3); RNF-SEG01 do planejamento |
+| RNF06.5 | O sistema deve cifrar em trânsito a comunicação entre o dispositivo, a plataforma e o painel. | 100% das conexões usam TLS (a seção 3.1.6.10 prevê TLS como planejado): meta da equipe, a medir. | Inspecionar o tráfego do ensaio e a configuração da plataforma (depende de a plataforma existir). | Deve ter | RF009, RF021, RF024; RN15 | LGPD [40]; ANPD [41] |
+| RNF06.6 | O sistema deve tratar dados pessoais reais somente depois da validação da política de privacidade. | Zero dados reais tratados antes de validar papéis, dados, bases legais, retenção, medidas e canal (aceite da seção 3.1.6). | Conferir o aceite da seção 3.1.6 com TI e Jurídico. | Deve ter | RF021, RF023; RN17, RN18 | LGPD [40]; ANPD [41] |
+
+- **Situação:** CT34 não executado; hoje a autorização de retirada é um botão de bancada, o que não comprova segurança; painel e autenticação ainda não existem. Base legal, retenção e criptografia em repouso dependem de Jurídico e TI (seção 3.1.6); a verificação do RNF06.5 só é possível quando a plataforma existir.
+
+##### RNF07 — Manutenibilidade (analisabilidade, modificabilidade e testabilidade)
+
+| ID | Requisito | Critério de aceitação (meta mensurável) | Verificação | Prioridade | RF e RN relacionados | Fonte |
+|---|---|---|---|---|---|---|
+| RNF07.1 | O sistema deve registrar os dados necessários ao diagnóstico reproduzível de cada ensaio. | 100% das execuções com versão, configuração não sensível, estímulos, estados, causa de despertar, eventos com ID quando aplicável, referência e qualidade do relógio, resultado medido e evidência anonimizada; indicar explicitamente campos não aplicáveis: meta da equipe, a medir. | Revisar CT17, CT24 e CT29; repetir duas vezes o mesmo cenário e configuração, exigindo zero divergências não justificadas na sequência lógica de estados e eventos. Explicitar variações físicas e temporais; não expor credenciais nem dados reais. | Deveria ter | RF017, RF025; RN01, RN11 | RNF-SUP01 e RNF-ORG01 do planejamento; ISO/IEC 25010 [54] |
+| RNF07.2 | O sistema deve manter as regras do ciclo verificáveis em computador, sem regressões no vínculo, encerramento e histórico. | Verificação local aprovada e zero novas falhas nos testes afetados de RN01 e RN11 em relação à linha de base antes de cada entrega: meta da equipe, a medir. | Executar os testes de regras de include/ e a verificação local; registrar versão, configuração e comparação com a linha de base, inclusive preservação do histórico. | Deveria ter | RF003, RF004, RF014, RF016, RF017, RF025; RN01, RN03, RN04, RN11 | ISO/IEC 25010 [54] (testabilidade); RNF-SUP01 do planejamento |
+| RNF07.3 | O sistema deve permitir reproduzir um defeito a partir do registro do ensaio. | Um defeito observado em ensaio é reproduzido sem acesso ao dispositivo físico: meta da equipe, a medir. | Reproduzir um defeito observado a partir do registro. | Poderia ter | RF031; RN22 | RNF-SUP01 do planejamento |
+
+- **Situação:** CT17 aprovado no simulador; CT24 e CT29 não executados.
+
+##### RNF08 — Portabilidade (adaptabilidade e substituibilidade)
+
+| ID | Requisito | Critério de aceitação (meta mensurável) | Verificação | Prioridade | RF e RN relacionados | Fonte |
+|---|---|---|---|---|---|---|
+| RNF08.1 | O sistema deve permitir trocar o canal de comunicação sem alterar as regras do ciclo. | A troca do Wi-Fi pelo canal de produção altera apenas o adaptador de comunicação, com zero alterações nas regras RN07–RN09 e 100% dos cenários aplicáveis com resultado esperado: meta da equipe, a medir. | Revisar arquivos alterados e repetir CT02, CT08, CT09 e CT10 (formatação, fila/reenvio e periodicidade), além de CT03, CT04 e CT14 (ciclo); registrar diferenças do canal. Aprovação depende da seleção e implementação do transporte. | Deveria ter | RF008, RF009, RF010, RF011; RN07, RN08, RN09 | TAPI [6]; planejamento de energia e GNSS |
+| RNF08.2 | O sistema deve usar o mesmo driver GNSS e as mesmas decisões de localização no Wokwi e no Quectel LC76G-PA físico, preservando as regras do ciclo. | Executar 100% dos cenários do contrato de simulação da seção 5 do planejamento, com zero divergências não justificadas nas decisões do driver e zero alterações na RN08: meta da equipe, a medir. Registrar a versão de hardware, firmware e protocolo adquirida. Uma futura troca pelo MAX-M10S deve ficar restrita ao adaptador do módulo e repetir CT19 e CT20, sem mudar o ciclo. | CT26 e CT28: comparar capturas UART, NMEA/checksum, fix válido/inválido/desatualizado, ausência de sinal e interrupção UART, comandos/respostas PAIR, aquisição, desligamento, backup mantido/perdido e retomada. Repetir CT19 e CT20; declarar funções não simuladas, tempos sintéticos e consumo estimado. Simulação não substitui medição física. | Deveria ter | RF005, RF031; RN08, RN22 | Módulos [23, 24]; RNF-SUP02 e contrato da seção 5 do planejamento |
+
+- **Situação:** canal de produção e equivalência de interfaces GNSS não validados; CT26 e CT28 não executados; adaptação do simulador pendente. Canal de comunicação de produção: limite a validar, porque o Wi-Fi não é premissa nas oficinas.
+
+#### Restrição física de operação — RNF-REST02
+
+Esta restrição complementa RNF01, RNF05 e RNF08, sem classificar resistência física como portabilidade de software.
+
+| ID | Requisito | Critério de aceitação (meta mensurável) | Verificação | Prioridade | RF e RN relacionados | Fonte |
+|---|---|---|---|---|---|---|
+| RNF-REST02 | A fixação, o contato do lacre e o invólucro devem permitir operação sem danificar o equipamento nem impedir o reparo, mantendo detecção do lacre e aquisição GNSS nas condições acordadas. | No lote físico acordado, zero desprendimentos, danos ao equipamento ou impedimentos ao reparo; zero falhas de contato, falsos alertas ou violações estáveis não detectadas antes e depois do ensaio: metas da equipe, a medir. Recepção GNSS com a antena instalada deve atender aos limites de erro, taxa de fix e orçamento previamente definidos. Temperatura, poeira, vibração, força, duração, número de repetições, deslocamento admissível e limites GNSS: a validar antes do ensaio; sem eles, registrar medições e manter aprovação pendente. | CT28: ensaiar antena no invólucro, próxima a metal, a céu aberto e sob cobertura, registrando erro, tempo e taxa de fix. CT31: aplicar fixação, abertura/reaplicação e vibração, medir deslocamento e latência e contar falhas de contato, violações detectadas e falsos alertas antes/depois. Registrar condições, duração, configuração, fotos anonimizadas e resultados. | Deve ter | RF005, RF006, RF019, RF027; RN05, RN08, RN10 | TAPI [6] (MVP 7); RNF-REST02 do planejamento |
+
+**Situação:** CT28 e CT31 não executados; limites físicos e GNSS pendentes de validação. Não atribuir classificação de proteção nem certificação sem os ensaios correspondentes.
+
+Ensaios de resistência à água, previstos no TAPI [6], ficam como trabalho futuro.
 
 ### 3.3.4. Matriz de Rastreabilidade (RTM) (sprints 1 a 5)
 
 A Matriz de Rastreabilidade (RTM) relaciona os requisitos funcionais (RF) e as regras de negócio (RN) aos casos de teste e às evidências de verificação. Ela permite identificar a cobertura de cada requisito e acompanhar as pendências de validação.
+
+**Evidências Wokwi da issue #74 (6.10):** o [inventário V1/V2 dos CT01–CT23 e CT35 com caminhos, logs, status, limites e associação RF/RN](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ISSUE-74-RTM.md) prepara os insumos para a atualização da RTM na issue #79 (6.8), sem antecipar testes físicos ou aprovação de resultados bloqueados/reprovados. O V2 da rodada de 02–03/11/2026 está catalogado separadamente. Executar `python scripts/verify_issue74.py` para conferir links e checksums.
 
 | Persona | RF    | RN   | Caso de Teste | Evidência        |
 |---------|-------|------|---------------|------------------|
@@ -1064,6 +1198,7 @@ CT10, CT12, CT13, CT18 e CT23 não mudaram, porque suas saídas já eram só a S
 [v2-fila-b]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct10b.serial.txt
 [v2-botao]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct11.serial.txt
 [v2-bateria]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct12-ct13-ct23.serial.txt
+[v2-bateria-reteste]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct12-ct13-ct23-reteste.serial.txt
 [v2-ciclo-fim]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct14-ct16.serial.txt
 [v2-interface]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct17-ct35.serial.txt
 [v2-ct18]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct18.serial.txt
@@ -1109,6 +1244,10 @@ Capturas complementares: [CT04 com limiar 150](../assets/3-desenvolvimento-resul
 
 </details>
 
+**Reteste de bateria e do LCD — 04 e 05/11/2026.** Depois da rodada, o firmware passou a usar a média de 16 leituras do ADC, com histerese de 1 ponto só no valor mostrado no LCD, e a acender o LCD na tela de bateria quando a bateria simulada varia 3 pontos. Por isso, CT12, CT13 e CT23 foram repetidos no Wokwi CLI 0.29.0, com o cenário de [`tests/wokwi-ci/`](../tests/wokwi-ci/run_cts.py) e o binário `demo` de SHA-256 `BFFF537F4A4E51B16EDD147624C4B254D4C03B06A87178C0C554371EDDF615D7`. Os três passaram nos mesmos critérios: dois `BATERIA_BAIXA`, um `SENSOR_BATERIA_FALHA` e faixa de 0% a 100% ([Log][v2-bateria-reteste]).
+
+O cenário salta entre os níveis, então não percorre o limiar devagar. A descida lenta até 19% e o despertar do LCD com variação lenta foram verificados só em host, em `tests/firmware_interface_tests.cpp`. O CT40 foi repetido em 05/11/2026 no Wokwi for VS Code 4.1.0, sem mexer no potenciômetro, com o binário de SHA-256 `AE8F00D2F8048D5A6C75C3775DBFE35475D043C57774376F20FCD5740E22860A`, que difere do binário acima só no critério de despertar pela bateria, e passou no mesmo critério: o LCD apagou sem interação, o primeiro toque em AVANÇAR e em VOLTAR só acendeu a mesma tela, e o segundo navegou ([Captura 1](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40AntesReteste.png) · [Captura 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40ApagadoReteste.png) · [Captura 3](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40PrimeiroAvancarReteste.png) · [Captura 4](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40SegundoAvancarReteste.png) · [Captura 5](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40PrimeiroVoltarReteste.png) · [Captura 6](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40SegundoVoltarReteste.png)). Os demais CTs não foram repetidos com esses binários e seguem com o resultado da rodada acima.
+
 #### <a name="cts36-42-interface-v2"></a>CT36–CT42 — interface local do V2
 
 Esta rodada acrescenta os comportamentos da interface do V2: navegação, prazo no LCD, alarme local, comando REMESSA, apagamento do visor, contagem dos botões e mensagens temporárias. As definições e evidências abaixo são independentes dos resultados históricos das rodadas anteriores.
@@ -1123,7 +1262,7 @@ Esta rodada acrescenta os comportamentos da interface do V2: navegação, prazo 
 | CT37 | Prazo no LCD | BTN_CICLO, relógio simulado e comando NF | Iniciar ciclo segurando CICLO por 3 s; acompanhar o prazo de 5 dias; lançar NF e encerrar com lacre fechado | LCD 16x2 | Faltam N dias; Falta 1 dia; vence hoje; ATRASO: N dias; sem ciclo ativo | Verificar a apresentação do prazo contado a partir do início manual do ciclo. |
 | CT38 | Alarme local | SW_LACRE e BTN_AUTORIZAR | Abrir sem autorização; fechar antes de 30 s; em outra violação manter aberto por mais de 30 s; repetir abertura com autorização válida | Buzzer GPIO23, LED vermelho GPIO13 e LCD | Buzzer com 500 ms ligado e 500 ms desligado; para ao fechar ou após 30 s. LED pulsa enquanto violado. Retirada autorizada sem alarme | Verificar o alarme local e as duas condições de parada do buzzer; o LED continua sinalizando a violação após o limite sonoro. |
 | CT39 | NF da remessa | Comando REMESSA na Serial | Enviar NF válida e 15 caracteres; testar caractere proibido, 16 caracteres e comando sem ciclo ativo | LCD e Serial | NF registrada e NF exibida; entradas inválidas recusadas, preservando a NF anterior no ciclo ativo; recusa sem ciclo | Verificar aceitação e recusas do comando. Entradas do roteiro: REMESSA NF-000123, REMESSA 123456789012345, REMESSA NF@123, REMESSA 1234567890123456 e REMESSA NF-000999 sem ciclo. |
-| CT40 | Apagamento do LCD | BTN_AVANCAR e BTN_VOLTAR | Aguardar 15 s sem interação; tocar duas vezes em AVANÇAR; repetir a espera e tocar duas vezes em VOLTAR | LCD e luz de fundo | Apaga após 15 s; primeiro toque acende na mesma tela; segundo navega | Manter a chave ON/OFF ligada durante todo o ensaio; verificar despertar com ambos os botões. |
+| CT40 | Apagamento do LCD | BTN_AVANCAR e BTN_VOLTAR | Aguardar 15 s sem interação; tocar duas vezes em AVANÇAR; repetir a espera e tocar duas vezes em VOLTAR | LCD e luz de fundo | Apaga após 15 s; primeiro toque acende na mesma tela; segundo navega | Manter a chave ON/OFF ligada durante todo o ensaio; verificar despertar com ambos os botões. Não girar o potenciômetro da bateria durante a espera: o giro conta como uso e acende o LCD. |
 | CT41 | Contagem dos botões | BTN_AUTORIZAR e BTN_CICLO | Para autorizar, iniciar e encerrar: soltar com cerca de 1 s; depois manter por 3 s. Encerramento com NF lançada e lacre fechado | LCD e Serial | Autorizar lacre, Iniciar ciclo ou Encerrar ciclo com segure mais N s; soltura antecipada sem ação; confirmação aos 3 s | Verificar o feedback da contagem e o cancelamento antes de completar o tempo necessário. |
 | CT42 | Mensagens temporárias | SW_LACRE, BTN_AUTORIZAR e SW_REDE | Fechar após retirada autorizada e após violação; retirar sinal; gerar eventos sem rede e restabelecer sinal | LCD e Serial | Lacre fechado / reaplicado; Lacre fechado / apos violacao; Sem sinal / na fila: N; Sinal ok / enviados: N; retorno após 2 s | Verificar mensagem correspondente à ação e retorno à tela normal sem nova interação. |
 
@@ -1455,6 +1594,7 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 52. CURTO CIRCUITO. *LEDs, resistores, chaves táteis e jumpers*. Disponível em: https://curtocircuito.com.br/componentes/leds. Acesso em: 23 out. 2026.
 53. ROBOCORE. *Mini chave liga-desliga e potenciômetro linear 10 kΩ*. Disponível em: https://www.robocore.net/botao-chave. Acesso em: 23 out. 2026.
 54. ISO/IEC. *ISO/IEC 25010:2011 — Systems and software engineering — Systems and software Quality Requirements and Evaluation (SQuaRE) — System and software quality models*. 1ª ed., 2011 (substituída pela edição de 2023). Disponível em: https://www.iso.org/standard/35733.html. Acesso em: 28 out. 2026.
+55. SOUTH SAFE. *Lacre de segurança numerado para caminhão, 30 cm, pacote com 100*. Preço de referência: R$ 95,58. Disponível em: https://www.southsafe.com.br/produto/lacre-de-seguranca-numerado-p-caminhao-30cm-amarelo-pac-c-100/155652. Acesso em: 4 nov. 2026.
 55. SENAI PERNAMBUCO. *Gerenciamento da Manutenção*. Disponível em: https://www.pe.senai.br/cursos/gerenciamento-da-manutencao/. Acesso em: 4 nov. 2026.
 56. SENAC SÃO PAULO. *Assistente Fiscal*. Disponível em: https://www.sp.senac.br/cursos-livres/curso-de-assistente-fiscal. Acesso em: 4 nov. 2026.
 57. SENAC SÃO PAULO. *Técnico em Logística*. Disponível em: https://www.sp.senac.br/cursos-tecnicos/curso-tecnico-em-logistica-presencial-ead. Acesso em: 4 nov. 2026.
