@@ -487,6 +487,8 @@ As justificativas de negócio estão relacionadas acima; o texto verificável do
 
 A Matriz de Rastreabilidade (RTM) relaciona os requisitos funcionais (RF) e as regras de negócio (RN) aos casos de teste e às evidências de verificação. Ela permite identificar a cobertura de cada requisito e acompanhar as pendências de validação.
 
+**Evidências Wokwi da issue #74 (6.10):** o [inventário V1/V2 dos CT01–CT23 e CT35 com caminhos, logs, status, limites e associação RF/RN](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ISSUE-74-RTM.md) prepara os insumos para a atualização da RTM na issue #79 (6.8), sem antecipar testes físicos ou aprovação de resultados bloqueados/reprovados. O V2 da rodada de 02–03/11/2026 está catalogado separadamente. Executar `python scripts/verify_issue74.py` para conferir links e checksums.
+
 | Persona | RF    | RN   | Caso de Teste | Evidência        |
 |---------|-------|------|---------------|------------------|
 | P1 Geraldo — P1-C1 Saída com TAG e lacre | RF001 | Não se aplica — o cadastro do equipamento não tem restrição própria; as restrições começam na abertura do ciclo (RN02) | Planejado — CT a definir | Planejado, sprint a definir |
