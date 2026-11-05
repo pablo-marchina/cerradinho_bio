@@ -282,7 +282,7 @@ Geraldo, analista de PCM de 38 anos e técnico em mecânica, trabalha no barrac�
 
 ##### P2. Clarice, analista fiscal (persona secundária)
 
-![Persona 2, Clarice, analista fiscal, 34 anos, formada em ciências contábeis, com dores, necessidades, objetivos, cenários P2-C1 a P2-C4 e letramento digital 4 de 5](../assets/3-desenvolvimento-resultados/3.2.1-personas/persona02ClariceRevisada.png)
+![Persona 2, Clarice, analista fiscal, 34 anos, formada em ciências contábeis, com dores, necessidades, objetivos, cenários P2-C1 a P2-C4 e letramento digital 4 de 5](../assets/3-desenvolvimento-resultados/3.2.1-personas/persona02Clarice.png)
 
 *Figura 3.2.1.2 — Persona 2, Clarice, analista fiscal. Fonte: card elaborado pelo Grupo G01 (2026) com apoio do Claude (Anthropic), modelo Opus 5.5 [29]; foto do rosto gerada no ChatGPT (OpenAI) [31] a partir do pedido "uma moça com cabelos enrolados, corporativa, responsável por emissão fiscal".*
 
