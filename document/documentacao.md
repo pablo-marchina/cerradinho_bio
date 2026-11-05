@@ -1395,12 +1395,62 @@ CTs novos para comportamentos que o V2 acrescentou: a idade da última posição
 
 ### 3.4.2. Protótipo Físico do Projeto (offline) (sprint 2)	
 
-_Aqui você deve registrar diversas situações de teste, indicando exemplos de leitura (entrada) e escrita (saída) apresentadas pelo seu sistema físico. Estes registros serão utilizados para testar seus componentes, portanto, descreva várias situações, incluindo não apenas casos de sucesso, mas também de possíveis falhas nas leituras de entradas e saídas. <br>
-Siga as nomenclaturas e convenções já utilizadas anteriormente, e não se esqueça dos alinhamentos de negócios e experiência do usuário para pensar em situações representativas. Inclua figuras do protótipo físico e descrições dos testes realizados para ilustrar o funcionamento do protótipo. Continue a numeração de CT a partir da tabela anterior. A tabela a seguir serve como exemplo._
+O protótipo físico leva o firmware do V2 para o ESP32 real, sem servidor. Em duas protoboards de 830 furos estão o ESP32 DevKitC, o LCD 16x2 I2C, o LED vermelho de violação no GPIO13, o buzzer, o módulo GNSS NEO-6M e os botões. As entradas ensaiadas são o sensor digital do lacre (GPIO27) e o sensor analógico de bateria, simulado por potenciômetro no GPIO34.
 
-**CT#** | **Descrição** | **Pré-condição** | **Procedimento de teste** | **Pós-condição/Resultado esperado** | **Observações** (opcional)
-|----------|----------|----------|----------|----------|----------|
-|CT11|ex. Verificação de conexão de rede bem-sucedida. | ex. O dispositivo está desligado.| ex. Ligue o dispositivo, aguarde alguns segundos e verifique se ele estabelece uma conexão bem-sucedida com a rede Wi-Fi. | ex. O LED verde indicador de conexão acende de forma contínua, sinalizando uma conexão bem-sucedida à rede. |
+Na bancada, lacre, rede e ON/OFF são botões de toque, e não chaves deslizantes: cada toque em LACRE ou REDE alterna o estado, e ON/OFF exige 3 s. O firmware foi gravado no ambiente `bancada`, com 1 s = 1 dia e SHA-256 `10D68051B5933F843DC699FEE39CAD5DA99DBB625D0FD743F407B17ED4F06F86`. A execução foi em 05/11/2026, com a Serial gravada a 115200 baud.
+
+![Protótipo físico na protoboard dupla](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/prototipoVisaoGeral.png)
+
+*Figura 3.4.2-1 — Protótipo físico montado. Fonte: quadro do vídeo do CT50, 05/11/2026.*
+
+#### Casos de teste
+
+| CT | Descrição | Pré-condição | Procedimento de teste | Pós-condição / resultado esperado | Sensores e saídas |
+|---|---|---|---|---|---|
+| CT46 | Navegação das telas (RF034) | Ligado, sem ciclo | Tocar AVANÇAR cinco vezes e VOLTAR uma vez, esperando 3 s em cada tela | NF, prazo, posição, bateria, lacre e retorno à NF; VOLTAR leva ao lacre | Botões; LCD; `tela=` no heartbeat |
+| CT47 | Abrir o ciclo (RF003) | Ligado, sem ciclo, lacre fechado | Segurar CICLO por 3 s | Contagem "segure mais N s", depois "Ciclo iniciado / aguardando NF"; `CICLO_INICIADO` | Botão; LCD; Serial |
+| CT48 | Toque curto não registra | Ligado, sem ciclo | Soltar CICLO e depois AUTORIZAR antes de 3 s | Nenhum evento; Serial com `solto antes de 3 s` para cada botão | Botões; LCD sem mensagem de confirmação |
+| CT49 | Retirada autorizada (RF007) | Ligado, sem ciclo ativo, lacre fechado | Segurar AUTORIZAR por 3 s; tocar LACRE em até 3 s; tocar LACRE de novo | `AUTORIZACAO_REGISTRADA`, `RETIRADA_AUTORIZADA` e `LACRE_REAPLICADO`, sem violação | Lacre muda de fechado para aberto e volta; **LED apagado**; LCD "Retirada autorizada" |
+| CT50 | Violação do lacre (RF006, RN05) | Ligado, sem ciclo ativo, lacre fechado, sem autorização válida | Tocar LACRE; depois tocar de novo | `VIOLACAO_LACRE`; ao fechar, `LACRE_FECHADO` | Lacre muda de fechado para aberto; **LED pisca**; buzzer toca; LCD "VIOLACAO registrada" |
+| CT51 | Falha do sensor de bateria (RF019, RN10) — caso de falha | Ligado, potenciômetro em cerca de 75% | Ligar o GPIO34 ao GND com um jumper; depois retirar | `SENSOR_BATERIA_FALHA` com ADC = 0; ao retirar, a leitura volta | Sensor analógico vai a zero; LCD "Bateria / sensor com falha" e depois a porcentagem |
+
+#### Resultados
+
+| CT | Situação | Resultado observado | Evidência |
+|---|---|---|---|
+| CT46 | APROVADO | As cinco telas apareceram na ordem, com `tela=` indo de 1 a 5, voltando a 1, e VOLTAR levando à tela 5. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46Navegacao.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46-navegacao.serial.txt) |
+| CT47 | APROVADO | Contagem no LCD e `CICLO_INICIADO` em 550166 ms. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47AbrirCiclo.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47-abrir-ciclo.serial.txt) |
+| CT48 | APROVADO | `BTN_CICLO` e `BTN_AUTORIZAR` soltos antes de 3 s, sem nenhum evento. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48ToqueCurto.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48-toque-curto.serial.txt) |
+| CT49 | APROVADO, com ressalva | Lacre aberto 1,1 s depois da autorização, com `authorized_removal=true`, `RETIRADA_AUTORIZADA` e depois `LACRE_REAPLICADO`. O LED ficou apagado em todos os quadros analisados do vídeo. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizada.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49-retirada-autorizada.serial.txt) |
+| CT50 | APROVADO, com ressalva | `VIOLACAO_LACRE` em 105317 ms e `LACRE_FECHADO` em 117911 ms. No vídeo, o LED pisca com período de 1,0 s, igual ao configurado. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50Violacao.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50-violacao.serial.txt) |
+| CT51 | APROVADO, com ressalva | `SENSOR_BATERIA_FALHA` e LCD "sensor com falha" nas tentativas; a leitura voltou ao retirar o jumper. Foram 8 eventos de falha e 3 `BATERIA_BAIXA` em várias tentativas, descritas nas limitações. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51FalhaSensor.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51-falha-sensor.serial.txt) |
+
+![CT49: retirada autorizada](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizada.png)
+
+*Figura 3.4.2-2 — CT49, LCD com "Retirada autorizada". Fonte: quadro do vídeo, 05/11/2026.*
+
+![CT50: violação registrada](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistrada.png)
+
+*Figura 3.4.2-3 — CT50, LCD com "VIOLACAO registrada". Fonte: quadro do vídeo, 05/11/2026.*
+
+![CT50: LED aceso](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50LedAceso.png) ![CT50: LED apagado](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50LedApagado.png)
+
+*Figura 3.4.2-4 — CT50, LED de violação aceso e apagado no pulso de 1 s. Fonte: quadros do vídeo, 05/11/2026.*
+
+![CT51: sensor com falha](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalha.png)
+
+*Figura 3.4.2-5 — CT51, LCD com "sensor com falha". Fonte: quadro do vídeo, 05/11/2026.*
+
+Capturas complementares: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacre.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciado.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudanca.png)
+
+#### Limitações
+
+- **CT49 e CT50 sem ciclo ativo.** Os eventos saíram com `ciclo_ativo=false`. A regra do lacre reagiu como esperado, mas o cenário com ciclo aberto não foi ensaiado no físico.
+- **CT51 com contato manual.** O jumper foi ligado à mão. Na tentativa do vídeo, a leitura passou por valores abaixo de 20% antes de chegar a zero, e por isso `BATERIA_BAIXA` saiu antes de `SENSOR_BATERIA_FALHA`. As tentativas em 202 s e 329 s geraram a falha sem `BATERIA_BAIXA` antes dela. O evento de falha repete quando o contato oscila, porque a decisão usa uma leitura do ADC. O log traz todas as tentativas.
+- **Potenciômetro com mau contato.** A leitura oscilou com o potenciômetro parado, e a variação de 3 pontos acendeu o LCD na tela de bateria. Isso aparece no vídeo do CT47, depois do resultado do teste.
+- **Buzzer.** O acionamento do buzzer no CT50 não foi medido nesta rodada.
+- **Bateria simulada.** O potenciômetro não representa bateria, divisor nem tensão real.
+- **GNSS.** O módulo não obteve fix, então nenhum caso de posição foi executado.
 
 ### 3.4.3. Protótipo do Projeto com MQTT e I2C (sprint 3)	
 

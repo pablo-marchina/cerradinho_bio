@@ -1,0 +1,7 @@
+[vivo] tempo=314 s gps_chars=61 fix=ausente lacre=integro bateria_sim=81% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=316 s gps_chars=82 fix=ausente lacre=integro bateria_sim=81% wifi=off rede_sim=on autorizar=0 ciclo=1 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[botao] BTN_CICLO solto antes de 3 s; nada registrado
+[vivo] tempo=318 s gps_chars=111 fix=ausente lacre=integro bateria_sim=81% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=320 s gps_chars=132 fix=ausente lacre=integro bateria_sim=81% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[botao] BTN_AUTORIZAR solto antes de 3 s; nada registrado
+[vivo] tempo=322 s gps_chars=166 fix=ausente lacre=integro bateria_sim=81% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
