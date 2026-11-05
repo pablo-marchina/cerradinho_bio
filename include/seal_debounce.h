@@ -28,6 +28,7 @@ inline bool seal_on_edge(bool &raw, bool &stable, uint32_t &changedAt,
   return emitted;
 }
 
+// Confirma o nivel atual quando ele ficou estavel pelo tempo de debounce.
 inline bool seal_settle(bool raw, bool &stable, uint32_t changedAt,
                         uint32_t now, uint32_t debounceMs, SealDebounceEvent &out) {
   if (raw == stable || !seal_stable_for(changedAt, now, debounceMs)) return false;
