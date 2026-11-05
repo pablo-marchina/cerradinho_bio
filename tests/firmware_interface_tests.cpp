@@ -28,6 +28,7 @@ int digitalPinToInterrupt(int p){return p;}
 static void run(uint32_t ms){ for(uint32_t i=0;i<ms;i+=5){ fakeMs+=5; loop(); } }
 static void hold(int pin, uint32_t ms){ fakePins[pin]=LOW; run(ms); fakePins[pin]=HIGH; run(150); }
 static unsigned screen(){ return static_cast<unsigned>(screens.current()); }
+static void setBattery(int pct){ fakeAdc = (pct * 4095 + 99) / 100; }
 int main(){
   FakeNVS::reset();
   for(int &pin:fakePins) pin=HIGH;
@@ -64,9 +65,31 @@ int main(){
   assert(screen() == (before + 1) % ScreenCount);
   // Descida lenta: 19% real dispara o alerta (RN10), mesmo com a histerese do LCD.
   for (int pct = 40; pct >= 19; --pct) {
-    fakeAdc = (pct * 4095 + 99) / 100;
+    setBattery(pct);
     run(1000);
   }
   assert(battery.lowSent);
-  std::puts("PASS: boot sem ciclo, vinculo por 3 s, contagem a partir do vinculo, navegacao do LCD e alerta de bateria (host)");
+  // LCD: descarga lenta nao acende nem troca a tela; so o giro do potenciometro acende.
+  setBattery(60);
+  run(Config::LcdTimeoutMs + 1000);
+  assert(!lcdLit);
+  screens.show(Screen::Seal);
+  for (int pct = 60; pct >= 50; --pct) {
+    setBattery(pct);
+    run(5000);
+    assert(!lcdLit && screens.current() == Screen::Seal);
+  }
+  setBattery(80);
+  run(400);
+  assert(lcdLit && screens.current() == Screen::Battery);
+  // Potenciometro girado com a chave desligada nao troca a tela ao religar.
+  screens.show(Screen::Seal);
+  fakePins[Config::PowerSwitchPin] = HIGH;
+  run(500);
+  setBattery(40);
+  run(6000);
+  fakePins[Config::PowerSwitchPin] = LOW;
+  run(500);
+  assert(screens.current() == Screen::Seal);
+  std::puts("PASS: boot sem ciclo, vinculo por 3 s, contagem a partir do vinculo, navegacao do LCD, alerta de bateria e despertar do LCD (host)");
 }
