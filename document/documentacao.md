@@ -304,7 +304,15 @@ O layout também foi revisado pela equipe: o texto corrido deu lugar a um fluxo 
 
 ### 3.2.2. Jornada do Usuário e Storyboard (sprint 2)	
 
+#### Jornada do Usuário
+
 A jornada do usuário é um mapa da experiência de uma pessoa ao realizar uma atividade em um contexto específico. Ela organiza as etapas do início ao fim e relaciona ações, pensamentos, sentimentos e pontos de contato com pessoas, ferramentas ou serviços. Essa visão ajuda a identificar momentos de incerteza, dificuldades e oportunidades de melhoria. No projeto Guarátracking, a jornada atual mostra como Geraldo acompanha o envio de um equipamento para manutenção externa, permitindo compreender onde a solução proposta pode apoiar seu trabalho.
+
+#### Metodologia de elaboração das jornadas e uso de IA
+
+A elaboração das jornadas partiu da persona de Geraldo, do fluxo de manutenção externa descrito no TAPI e das informações obtidas no kick-off com a Cerradinho. A equipe organizou o processo em etapas e definiu, para cada uma, as ações, os pensamentos, os sentimentos, os pontos de contato e as dificuldades do usuário. Em seguida, a jornada atual foi usada como base para representar a experiência futura com o apoio do GuaráTracking.
+
+O ChatGPT foi utilizado como ferramenta de apoio durante esse processo. A equipe forneceu à IA o conteúdo das jornadas e o guia de estilos do projeto; a ferramenta auxiliou na adequação visual ao guia, na formatação das informações, na revisão gramatical e na criação dos gráficos. Os resultados foram conferidos e ajustados pela equipe para preservar a coerência com a persona, com o fluxo do parceiro e com a identidade visual do GuaráTracking.
 
 #### Jornada atual de Geraldo
 
@@ -344,19 +352,19 @@ Embalagem e confirmação manual de entrega exigem validação. Histórico de fo
 
 #### Storyboard
 
+Um storyboard é uma representação visual sequencial utilizada para demonstrar como uma situação acontece ao longo do tempo. Por meio de cenas organizadas em ordem, ele apresenta o contexto, as ações do usuário, os problemas encontrados e a interação com a solução proposta.
+
+#### Metodologia de elaboração do storyboard e uso de IA
+
+A construção do storyboard começou pela definição da persona, do contexto, do problema e da sequência de acontecimentos que deveria ser representada. O Codex foi utilizado como ferramenta de apoio para consultar e organizar as informações sobre a persona e os prazos presentes na narrativa, revisar a gramática e a coerência do roteiro e gerar as imagens das cenas. O guia de estilos do GuaráTracking foi fornecido como referência para orientar a composição visual, e as imagens geradas passaram por ajustes para manter a identidade do projeto e a continuidade entre as cenas. A equipe revisou o texto, a sequência narrativa e o resultado visual antes de consolidar a versão final.
+
+#### O nosso storyboard
+
 O storyboard acompanha Geraldo, analista de PCM responsável pelos equipamentos enviados à manutenção externa. A história mostra sua atuação após uma bomba centrífuga ultrapassar o prazo de retorno combinado com a oficina e o GuaráTracking emitir um alerta de atraso, permitindo que ele consulte os dados e tome uma decisão.
 
-<div align="center">
-  <p><strong>Figura 3.2.2.3. - Storyboard do Geraldo</strong></p>
-  <img
-    src="../assets/3-desenvolvimento-resultados/guaratracking-storyboard.png"
-    alt="Storyboard do Geraldo- GuaráTracking"
-    width="100%"
-  >
-  <p><em>Fonte: elaboração do Grupo G01 (2026), com base no template da disciplina.</em></p>
-</div>
+![Storyboard de Geraldo: alerta de atraso, consulta das informações e tomada de decisão](../assets/3-desenvolvimento-resultados/guaratracking-storyboard.png)
 
-
+*Figura 3.2.2.3 — Storyboard de Geraldo. Fonte: elaboração própria do Grupo G01 (2026), com apoio do Codex, com base no kick-off da Cerradinho, na persona da seção 3.2.1, no TAPI [6] e no template da disciplina.*
 
 ## 3.3. Solução Técnica	
 
