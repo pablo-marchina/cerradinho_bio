@@ -35,13 +35,17 @@ class ScreenController final {
   static constexpr uint8_t Columns = 16;
   using Line = char[Columns + 1];
 
-  // Avancar e voltar percorrem as cinco telas em ordem circular e fecham a mensagem.
+  // Avancar e voltar percorrem as cinco telas em ordem circular; toda troca fecha a mensagem.
   void next() {
     index_ = (index_ + 1) % ScreenCount;
     messageMs_ = 0;
   }
   void previous() {
     index_ = (index_ + ScreenCount - 1) % ScreenCount;
+    messageMs_ = 0;
+  }
+  void show(Screen screen) {
+    index_ = static_cast<uint8_t>(screen);
     messageMs_ = 0;
   }
   Screen current() const { return static_cast<Screen>(index_); }
