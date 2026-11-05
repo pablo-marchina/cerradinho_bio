@@ -1395,7 +1395,7 @@ CTs novos para comportamentos que o V2 acrescentou: a idade da última posição
 
 ### 3.4.2. Protótipo Físico do Projeto (offline) (sprint 2)	
 
-O protótipo físico leva o firmware do V2 para o ESP32 real, sem servidor. Em duas protoboards de 830 furos estão o ESP32 DevKitC, o LCD 16x2 I2C, o LED vermelho de violação no GPIO13, o buzzer, o módulo GNSS NEO-6M e os botões. As entradas ensaiadas são o sensor digital do lacre (GPIO27) e o sensor analógico de bateria, simulado por potenciômetro no GPIO34.
+O protótipo físico leva o firmware do V2 para o ESP32 real, sem servidor. Em duas protoboards de 830 furos estão o ESP32 DevKitC, o LCD 16x2 I2C, o LED vermelho de violação no GPIO13, o buzzer, o módulo GNSS NEO-6M e os botões. As entradas ensaiadas são o sensor digital do lacre (GPIO27), o sensor analógico de bateria, simulado por potenciômetro no GPIO34, e o módulo GNSS (UART no GPIO16).
 
 Na bancada, lacre, rede e ON/OFF são botões de toque, e não chaves deslizantes: cada toque em LACRE ou REDE alterna o estado, e ON/OFF exige 3 s. O firmware foi gravado no ambiente `bancada`, com 1 s = 1 dia e SHA-256 `10D68051B5933F843DC699FEE39CAD5DA99DBB625D0FD743F407B17ED4F06F86`. A execução foi em 05/11/2026, com a Serial gravada a 115200 baud.
 
@@ -1413,6 +1413,7 @@ Na bancada, lacre, rede e ON/OFF são botões de toque, e não chaves deslizante
 | CT49 | Retirada autorizada (RF007) | Ligado, sem ciclo ativo, lacre fechado | Segurar AUTORIZAR por 3 s; tocar LACRE em até 3 s; tocar LACRE de novo | `AUTORIZACAO_REGISTRADA`, `RETIRADA_AUTORIZADA` e `LACRE_REAPLICADO`, sem violação | Lacre muda de fechado para aberto e volta; **LED apagado**; LCD "Retirada autorizada" |
 | CT50 | Violação do lacre (RF006, RN05) | Ligado, sem ciclo ativo, lacre fechado, sem autorização válida | Tocar LACRE; depois tocar de novo | `VIOLACAO_LACRE`; ao fechar, `LACRE_FECHADO` | Lacre muda de fechado para aberto; **LED pisca**; buzzer toca; LCD "VIOLACAO registrada" |
 | CT51 | Falha do sensor de bateria (RF019, RN10) — caso de falha | Ligado, potenciômetro em cerca de 75% | Ligar o GPIO34 ao GND com um jumper; depois retirar | `SENSOR_BATERIA_FALHA` com ADC = 0; ao retirar, a leitura volta | Sensor analógico vai a zero; LCD "Bateria / sensor com falha" e depois a porcentagem |
+| CT52 | GNSS com fix (RF005) | Ligado, módulo NEO-6M a céu aberto, antena voltada para cima | Aguardar o fix; tocar AVANÇAR até a tela de posição | `fix=valido` no heartbeat, `location_sample` válido e LCD "Ultima posicao / ha N s" | GNSS passa de sem fix para fix válido; LCD; Serial |
 
 #### Resultados
 
@@ -1424,6 +1425,7 @@ Na bancada, lacre, rede e ON/OFF são botões de toque, e não chaves deslizante
 | CT49 | APROVADO, com ressalva | Lacre aberto 1,1 s depois da autorização, com `authorized_removal=true`, `RETIRADA_AUTORIZADA` e depois `LACRE_REAPLICADO`. O LED ficou apagado em todos os quadros analisados do vídeo. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizada.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49-retirada-autorizada.serial.txt) |
 | CT50 | APROVADO, com ressalva | `VIOLACAO_LACRE` em 105317 ms e `LACRE_FECHADO` em 117911 ms. No vídeo, o LED pisca com período de 1,0 s, igual ao configurado, e o buzzer pode ser ouvido. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50Violacao.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50-violacao.serial.txt) |
 | CT51 | APROVADO, com ressalva | `SENSOR_BATERIA_FALHA` e LCD "sensor com falha" nas tentativas; a leitura voltou ao retirar o jumper. Foram 8 eventos de falha e 3 `BATERIA_BAIXA` em várias tentativas, descritas nas limitações. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51FalhaSensor.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51-falha-sensor.serial.txt) |
+| CT52 | APROVADO, com ressalva | `fix=valido` aos 560 s de funcionamento, a céu aberto. Depois, 35 heartbeats seguidos com `fix=valido` e duas `location_sample` com `fix_valid=true`. LCD com "Ultima posicao / ha 0 s". | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct52GnssFix.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct52-gnss-com-fix.serial.txt) |
 
 ![CT46: tela do lacre](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46LcdFoto.jpg)
 
@@ -1457,6 +1459,10 @@ Na bancada, lacre, rede e ON/OFF são botões de toque, e não chaves deslizante
 
 *Figura 3.4.2-9 — CT51, "Bateria / sensor com falha". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
 
+![CT52: última posição](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct52LcdFoto.jpg)
+
+*Figura 3.4.2-10 — CT52, tela "Ultima posicao / ha 0 s" com o protótipo a céu aberto. Fonte: foto da execução, 05/11/2026.*
+
 As fotos ilustram as telas; o resultado de cada CT vem dos vídeos e da Serial. Recortes dos vídeos com realce do LCD: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacreRealce.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciadoRealce.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudancaRealce.png) · [CT49](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizadaRealce.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistradaRealce.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalhaRealce.png). Quadros sem ajuste: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacre.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciado.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudanca.png) · [CT49](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizada.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistrada.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalha.png)
 
 #### Limitações
@@ -1466,7 +1472,7 @@ As fotos ilustram as telas; o resultado de cada CT vem dos vídeos e da Serial. 
 - **Potenciômetro com mau contato.** A leitura oscilou com o potenciômetro parado, e a variação de 3 pontos acendeu o LCD na tela de bateria. Isso aparece no vídeo do CT47, depois do resultado do teste.
 - **Buzzer.** O som do buzzer no CT50 foi conferido de ouvido; frequência e duração não foram medidas.
 - **Bateria simulada.** O potenciômetro não representa bateria, divisor nem tensão real.
-- **GNSS.** O módulo não obteve fix, então nenhum caso de posição foi executado.
+- **GNSS.** O primeiro fix do CT52 levou cerca de 9 minutos. A placa reiniciou entre a transição para `fix=valido` e as coletas registradas, e o fix se manteve. Perda e recuperação do fix não foram ensaiadas, e a precisão da posição não foi medida. O módulo é um NEO-6M, não o LC76G-PA escolhido para o dispositivo. As coordenadas estão mascaradas no log.
 
 ### 3.4.3. Protótipo do Projeto com MQTT e I2C (sprint 3)	
 
