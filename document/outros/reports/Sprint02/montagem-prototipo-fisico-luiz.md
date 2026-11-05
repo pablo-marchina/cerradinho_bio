@@ -62,3 +62,26 @@ Cada botão ocupa 4 casas na vertical e 3 na horizontal. A ligação interna é 
 | GNSS (fora das placas) | TX, RX, VCC e GND | `baixo 27e`; `baixo 28e`; + do meio; − do meio |
 
 Este é o layout de referência. Alguns furos mudaram durante os ajustes, principalmente os do LCD, então a bancada pode diferir em furos do mesmo grupo elétrico.
+
+## 3. Adaptação do firmware
+
+Os GPIOs da placa física são os mesmos do Wokwi. As mudanças foram feitas no ambiente PlatformIO `bancada`, que é o `demo` (1 s vale 1 dia) com a opção `SWITCH_BUTTONS=1`. Sem essa opção, as chaves deslizantes do Wokwi continuam funcionando como antes.
+
+| Mudança | Motivo |
+|---|---|
+| LACRE e REDE alternam a cada toque | Botão não mantém o estado como a chave. O lacre segue pela mesma interrupção e pelo mesmo debounce; só o resultado passou a alternar |
+| ON/OFF liga e desliga segurando 3 s | Evita desligar o aparelho com um esbarrão. Ao desligar, o LCD conta 3, 2 e 1 |
+| Velocidade do I2C em 50 kHz, e LCD reconfigurado ao acender | Tentativa de deixar o LCD mais tolerante a fios longos, feita antes de a causa dos símbolos aparecer (seção 4.7) |
+| Buzzer por canal PWM direto, sem `tone()` | Com `tone()` o buzzer ficava mudo na placa, embora tocasse com uma onda gerada à mão |
+| Buzzer em 2700 Hz, antes 2000 Hz | Frequência mais alta entre as testadas, de 1500 a 4000 Hz (relatado, de ouvido) |
+
+Um teste em host novo cobre o modo botões: lacre e rede no toque, ON/OFF em 3 s e a contagem no LCD. Com o modo botões pronto, o validador passou e os ambientes `bancada`, `demo` e `weekly` compilaram. As mudanças seguintes (I2C, buzzer e contagem) passaram nos testes em host, mas só o `bancada` foi compilado e gravado depois delas.
+
+O projeto precisa ser compilado por um caminho curto no Windows. Numa pasta com caminho muito longo, o compilador do ESP32 falhou sem achar `stdint.h`.
+
+Para gravar, na raiz do projeto:
+
+```powershell
+pio run -e bancada -t upload --upload-port COM16
+pio device monitor --port COM16
+```
