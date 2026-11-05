@@ -304,7 +304,7 @@ O layout também foi revisado pela equipe: o texto corrido deu lugar a um fluxo 
 
 ### 3.2.2. Jornada do Usuário e Storyboard (sprint 2)	
 
-### Jornada do Usuário
+#### Jornada do Usuário
 
 A jornada do usuário é um mapa da experiência de uma pessoa ao realizar uma atividade em um contexto específico. Ela organiza as etapas do início ao fim e relaciona ações, pensamentos, sentimentos e pontos de contato com pessoas, ferramentas ou serviços. Essa visão ajuda a identificar momentos de incerteza, dificuldades e oportunidades de melhoria. No projeto Guarátracking, a jornada atual mostra como Geraldo acompanha o envio de um equipamento para manutenção externa, permitindo compreender onde a solução proposta pode apoiar seu trabalho.
 
@@ -350,7 +350,7 @@ A experiência é proposta; sentimentos e curvas são ilustrativos. A posição 
 
 Embalagem e confirmação manual de entrega exigem validação. Histórico de fornecedores, consulta de estoque, execução da prorrogação e registro de quem recebeu na oficina são hipóteses sem RF específico; sua inclusão depende de validação e compatibilidade com os RNFs.
 
-### Storyboard
+#### Storyboard
 
 Um storyboard é uma representação visual sequencial utilizada para demonstrar como uma situação acontece ao longo do tempo. Por meio de cenas organizadas em ordem, ele apresenta o contexto, as ações do usuário, os problemas encontrados e a interação com a solução proposta.
 
