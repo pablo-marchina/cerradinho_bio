@@ -59,8 +59,10 @@ int main(){
   run(Config::LcdTimeoutMs + 1000);
   assert(!lcdLit);
   const unsigned before = screen();
+  const int lcdInits = LiquidCrystal_I2C::initCalls;
   hold(Config::NextButtonPin, 120);
   assert(lcdLit && screen() == before);
+  assert(LiquidCrystal_I2C::initCalls == lcdInits);  // fora da bancada, acender nao trava o loop
   hold(Config::NextButtonPin, 120);
   assert(screen() == (before + 1) % ScreenCount);
   // Descida lenta: 19% real dispara o alerta (RN10), mesmo com a histerese do LCD.

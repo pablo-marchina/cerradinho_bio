@@ -795,7 +795,9 @@ void updateDisplay(uint32_t now, uint64_t clock) {
     return;
   }
   if (!lcdLit) {
-    initLcd();  // recupera o LCD se uma falha de I2C embaralhou o visor
+    // So a bancada reinicia o LCD: fios longos embaralham o visor, e lcd.init() trava o loop por 1 s.
+    if (Config::SwitchButtons) initLcd();
+    else lcd.backlight();
     lcdLit = true;
   }
   ScreenController::Line top, bottom;
