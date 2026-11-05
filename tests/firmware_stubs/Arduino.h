@@ -75,6 +75,9 @@ int analogRead(int);
 void analogReadResolution(int);
 void tone(int,unsigned int,unsigned long=0);
 void noTone(int);
+inline double ledcSetup(uint8_t,double,uint8_t){return 0;}
+inline void ledcAttachPin(uint8_t,uint8_t){}
+inline void ledcWrite(uint8_t,uint32_t){}
 void noInterrupts();
 void interrupts();
 void attachInterrupt(int,void(*)(),int);
