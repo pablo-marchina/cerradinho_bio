@@ -368,6 +368,20 @@ O storyboard acompanha Geraldo, analista de PCM responsável pelos equipamentos 
 
 *Figura 3.2.2.3 — Storyboard de Geraldo. Fonte: elaboração própria do Grupo G01 (2026), com apoio do Codex, com base no kick-off da Cerradinho, na persona da seção 3.2.1, no TAPI [6] e no template da disciplina.*
 
+#### Visão complementar da jornada
+
+Como atividade complementar realizada em sala de aula, o grupo representou a jornada do GuaráTracking a partir de duas perspectivas: aquilo que o usuário conhece e percebe durante a experiência e aquilo que a equipe compreende sobre o funcionamento interno da solução.
+
+A primeira perspectiva reúne as interações e informações relevantes para o usuário, como o vínculo do equipamento, o acompanhamento da remessa e a visualização de localização, prazo, nota fiscal e estado do lacre. A segunda apresenta a interpretação do grupo sobre os processos que sustentam essa experiência, incluindo a atuação do dispositivo IoT, a comunicação com a plataforma, o monitoramento do lacre e o processamento dos eventos pelo sistema.
+
+![Visão complementar da jornada do GuaráTracking, dividida entre a experiência conhecida pelo usuário e os processos compreendidos pela equipe](../assets/3-desenvolvimento-resultados/3.2.2-jornada-usuario/visaoComplementarJornada.png)
+
+*Figura 3.2.2.4 — Visão complementar da jornada do GuaráTracking, elaborada durante uma atividade em sala de aula. Fonte: elaboração própria do Grupo G01 (2026).*
+
+A representação evidencia que o usuário não precisa conhecer toda a complexidade interna da solução para acompanhar o equipamento e tomar decisões. Para a equipe, entretanto, observar as duas perspectivas ajuda a relacionar cada informação apresentada ao usuário com os processos e componentes que podem torná-la disponível.
+
+Por se tratar de uma construção exploratória realizada pelo grupo, a figura não representa um fluxo definitivo ou validado pelo parceiro. Seu objetivo é registrar a compreensão desenvolvida durante a atividade e apoiar o refinamento futuro da experiência e da arquitetura do GuaráTracking.
+
 ## 3.3. Solução Técnica	
 
 ### 3.3.1. Requisitos Funcionais (sprint 1, refinar e atualizar até sprint 5)
