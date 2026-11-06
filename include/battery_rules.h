@@ -17,6 +17,7 @@ typedef struct {
   bool failureSent;
 } BatteryState;
 
+// Comeca sem alerta enviado, com os limiares de alerta e de rearme.
 static inline void batteryInit(BatteryState *battery, uint8_t lowPct, uint8_t recoverPct) {
   battery->lowPct = lowPct;
   battery->recoverPct = recoverPct;
@@ -24,6 +25,7 @@ static inline void batteryInit(BatteryState *battery, uint8_t lowPct, uint8_t re
   battery->failureSent = false;
 }
 
+// Devolve o evento da leitura: falha com ADC zero, ou alerta uma vez ate rearmar.
 static inline unsigned batteryUpdate(BatteryState *battery, int rawAdc, int pct) {
   if (rawAdc == 0) {
     if (battery->failureSent) return 0;

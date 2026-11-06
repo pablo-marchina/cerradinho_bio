@@ -27,6 +27,7 @@ typedef struct {
   uint32_t lastFailedSamples;
 } GnssState;
 
+// Comeca sem falha registrada.
 static inline void gnssInit(GnssState *gnss) {
   gnss->outage = false;
   gnss->reason = GNSS_REASON_NO_FIX;
@@ -36,6 +37,7 @@ static inline void gnssInit(GnssState *gnss) {
   gnss->lastFailedSamples = 0;
 }
 
+// Separa a causa da falha: sem dados, sinal fraco ou sem fix.
 static inline uint8_t gnssClassify(bool receivingData, bool satellitesKnown,
                                    uint32_t satellites, uint32_t weakMax) {
   if (!receivingData) return GNSS_REASON_NO_DATA;

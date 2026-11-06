@@ -21,6 +21,7 @@ typedef struct {
   bool violated;
 } SealState;
 
+// Comeca sem autorizacao, sem retirada e sem violacao.
 static inline void sealInit(SealState *seal, uint64_t windowMs) {
   seal->windowMs = windowMs;
   seal->authorized = false;
@@ -29,6 +30,7 @@ static inline void sealInit(SealState *seal, uint64_t windowMs) {
   seal->violated = false;
 }
 
+// Registra a autorizacao de retirada no instante informado.
 static inline void sealAuthorize(SealState *seal, uint64_t nowMs) {
   seal->authorized = true;
   seal->authorizedAtMs = nowMs;
@@ -52,6 +54,7 @@ static inline int sealOpened(SealState *seal, uint64_t nowMs) {
   return SEAL_EVENT_VIOLATION;
 }
 
+// Fechar encerra a retirada autorizada ou limpa a violacao.
 static inline int sealClosed(SealState *seal) {
   if (seal->removalInProgress) {
     seal->removalInProgress = false;
