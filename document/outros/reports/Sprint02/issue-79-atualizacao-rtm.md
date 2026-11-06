@@ -1,0 +1,41 @@
+# Issue #79 — atualização da matriz de rastreabilidade
+
+Atualização: 06/11/2026. Registro interno; não constitui nova execução de ensaio.
+
+Card: [Atualizar a matriz de rastreabilidade](https://git.inteli.edu.br/graduacao/2026-2b/t24/g01/-/issues/79).
+Revisor indicado: @arthur.loyola. Revisão humana não submetida; sem mensagem externa.
+
+## Base e estado Git
+
+Branch local: `docs/atualizar-rtm-sprint2-#79`, criada a partir de `origin/develop` em `1812fc3`. Alterações preparadas para commit local da issue #79; push e submissão à revisão permanecem pendentes. A comparação de três versões preservou as atualizações da develop e as alterações anteriores desta tarefa. O backup anterior está na pasta ignorada `.tools/issue79-backup-20261106/`.
+
+## Resultado
+
+- RTM com 35 RFs, 22 RNs, oito categorias RNF, 26 subrequisitos e RNF-REST02.
+- Inclusão de todos os 24 casos da seção 3.4.2: 22 executados (CT46–CT66 e CT69) e dois planejados, não executados (CT67/CT68). Cada linha relaciona RF, RN, alcance do RNF, situação, evidência e limite. Status e links de execução conferidos contra a seção de origem.
+- Vínculos dos testes físicos nas linhas funcionais e dos ensaios pertinentes nos RNFs. Nenhuma aprovação de cenário foi convertida em validação integral do requisito.
+- Evidências V2 da #74 incorporadas, preservando resultados históricos. Acrescentados os retestes de bateria CT12/CT13/CT23, CT40 e CT18. CT18 aprovado nas contagens em 05/11, sem apagar as reprovações anteriores.
+- Cenários existentes substituem “CT a definir” na RTM. CT-F03 explicita recusa de vínculo de dispositivo ainda ocupado; CT-F30 descreve escalonamento de e-mail; CT-U01 descreve o ensaio moderado de usabilidade. Os 20 IDs futuros referenciados estão definidos no documento complementar.
+- Corrigidos os trechos que ainda declaravam toda a validação física pendente; atualizado o histórico complementar de CT18/CT22 com o alcance dos retestes e de CT62/CT65.
+- Mantidas as fichas RNF atualizadas da develop, com os vínculos planejados CT-U01, CT-F20, CT-F21 e CT-F24 e o estado de confiabilidade atualizado pelos novos ensaios.
+
+## Aceitação e limites
+
+| Critério do card | Resultado |
+|---|---|
+| Incluir CTs da seção 3.4.2 | Realizado: 24 casos relacionados. O impedimento registrado em 05/11 foi resolvido pela atualização da develop. |
+| Vincular RNFs | Realizado, com oito categorias, 26 subrequisitos e RNF-REST02; apoio parcial separado de aprovação integral. |
+| Revisar “CT a definir” | Realizado na RTM, com cenários futuros definidos e marcados como não executados. |
+| Atualizar evidências e verificar caminhos | Realizado; histórico V1/V2 preservado, novos testes físicos e retestes vinculados. |
+| Registrar e submeter à revisão indicada | Resultado registrado; submissão a Arthur ainda pendente. Publicação e submissão à revisão permanecem pendentes. |
+
+CT09 continua bloqueado por falta de ACK. CT63/CT64 reenviam na Serial; não comprovam entrega ao servidor. CT62 comprova reinício de uptime e restauração de ciclo/lacre, não toda a fila, última posição ou histórico. CT65 usa jumper, não contato definitivo. CT52 usa NEO-6M, não demonstra equivalência ao LC76G-PA. CT24–CT34, CT67/CT68 e cenários futuros permanecem planejados. Não houve execução de novos testes de firmware, simulador ou bancada nesta tarefa.
+
+## Verificação em 06/11/2026
+
+- `python scripts/verify_issue74.py`: PASS; 24 CTs históricos V1/V2, 96 evidências únicas (71 PNG e 25 logs), caminhos, hashes e associações consistentes. Seu resumo de CT18 refere-se às rodadas históricas, não ao reteste posterior.
+- `python scripts/audit-docs.py --strict-local`: 27/31 verificações locais; 555 links sem arquivo ausente. Falhas preexistentes de limite de 300 palavras: 3.1.1 (357), 3.1.3 (389), 3.1.5 (360), 3.1.6 (401). Essas seções foram comparadas e estão idênticas à develop; não foram alteradas pela #79. As duas pendências externas de aceite LGPD e publicação/reteste Wokwi permanecem.
+- Conferência estrutural: todos os CT46–CT69 presentes na tabela física, 22 status/links de execução idênticos à fonte e CT67/CT68 marcados não executados; 26 subrequisitos RNF relacionados; 20 IDs futuros definidos; nenhuma linha “CT a definir” na RTM.
+- `git diff --check`: sem erros. Nenhum marcador de conflito.
+- Seções anteriores a 3.3.1 e posteriores a 3.3.4 idênticas à develop. A descrição da cobertura física dos RFs na 3.3.1 foi ajustada para não contradizer os novos vínculos da RTM. Firmware e evidências recebidos da base não foram editados.
+- Antes da preparação do commit, HEAD igual à base `1812fc3` e índice vazio; apenas os três documentos desta issue foram selecionados para o commit.
