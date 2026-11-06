@@ -1,0 +1,27 @@
+[vivo] tempo=975 s gps_chars=406546 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=1848 fila=0
+[vivo] tempo=977 s gps_chars=407538 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=1850 fila=0
+[vivo] tempo=979 s gps_chars=408528 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=1852 fila=0
+[botao] BTN_CICLO solto antes de 3 s; nada registrado
+{"device_id":"prototipo-001","type":"STATUS_SEMANAL","uptime_ms":982168,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":1855,"dia_ocorrencia":1900,"atraso":true,"permanencia":true,"critico":false}
+[vivo] tempo=982 s gps_chars=409709 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=1855 fila=0
+[vivo] tempo=984 s gps_chars=410699 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=1 avancar=0 voltar=0 tela=3 dias_fora=1857 fila=0
+[vivo] tempo=986 s gps_chars=411689 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=1 avancar=0 voltar=0 tela=3 dias_fora=1859 fila=0
+{"device_id":"prototipo-001","type":"ENCERRAMENTO_RECUSADO","uptime_ms":986564,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":1860,"dia_ocorrencia":1904,"atraso":true,"permanencia":true,"critico":false,"motivo":"nf_retorno_ausente"}
+[vivo] tempo=988 s gps_chars=412679 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=1861 fila=0
+{"device_id":"prototipo-001","type":"STATUS_SEMANAL","uptime_ms":988433,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":1862,"dia_ocorrencia":1906,"atraso":true,"permanencia":true,"critico":false}
+{"device_id":"prototipo-001","type":"location_sample","uptime_ms":989007,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"fix_valid":true,"latitude":mascarado,"longitude":mascarado,"distance_m":7.34,"moved":false,"baseline_created":false}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[vivo] tempo=990 s gps_chars=413669 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=1863 fila=0
+[vivo] tempo=992 s gps_chars=414659 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=1 avancar=0 voltar=0 tela=3 dias_fora=1865 fila=0
+[botao] BTN_CICLO solto antes de 3 s; nada registrado
+[vivo] tempo=994 s gps_chars=415649 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=1 avancar=0 voltar=0 tela=3 dias_fora=1867 fila=0
+[botao] BTN_CICLO solto antes de 3 s; nada registrado
+{"device_id":"prototipo-001","type":"STATUS_SEMANAL","uptime_ms":995433,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":1869,"dia_ocorrencia":1913,"atraso":true,"permanencia":true,"critico":false}
+[vivo] tempo=996 s gps_chars=416639 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=1 avancar=0 voltar=0 tela=3 dias_fora=1869 fila=0
+[vivo] tempo=998 s gps_chars=417629 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=1 avancar=0 voltar=0 tela=3 dias_fora=1871 fila=0
+{"device_id":"prototipo-001","type":"ENCERRAMENTO_RECUSADO","uptime_ms":998236,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":1871,"dia_ocorrencia":1916,"atraso":true,"permanencia":true,"critico":false,"motivo":"nf_retorno_ausente"}
+[vivo] tempo=1000 s gps_chars=418619 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=1873 fila=0
+[vivo] tempo=1002 s gps_chars=419609 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=1875 fila=0
+{"device_id":"prototipo-001","type":"STATUS_SEMANAL","uptime_ms":1002433,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":1876,"dia_ocorrencia":1920,"atraso":true,"permanencia":true,"critico":false}
+[vivo] tempo=1004 s gps_chars=420599 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=1877 fila=0
+[vivo] tempo=1006 s gps_chars=421589 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=1879 fila=0

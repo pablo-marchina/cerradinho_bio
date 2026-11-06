@@ -20,7 +20,7 @@ Autenticar usuários, registrar ciclos de manutenção, emitir alertas aos respo
 
 #### 3.1.6.5 Bases legais
 
-Hipóteses a avaliar por finalidade: execução contratual, legítimo interesse com teste de balanceamento e obrigação legal relativa a documentos fiscais (art. 7º, II, V e IX) [40]; nenhuma base está homologada.
+As bases devem ser definidas por finalidade. **Execução de contrato** (art. 7º, V) só se aplica aos dados do titular que seja parte de contrato ou de procedimento preliminar solicitado por ele; não deve justificar genericamente dados de empregados, motoristas ou contatos de fornecedores. Para autenticação, segurança e rastreabilidade operacional, avaliar **legítimo interesse** (art. 7º, IX) com teste de balanceamento, necessidade, transparência e canal de oposição. Para documentos fiscais, avaliar obrigação legal (art. 7º, II). Nenhuma base está homologada.
 
 #### 3.1.6.6 Armazenamento
 
@@ -48,22 +48,24 @@ O titular pode pedir confirmação do tratamento, acesso, correção, anonimiza�
 
 #### 3.1.6.12 Solicitações
 
-A CerradinhoBio publica uma política institucional de privacidade em seu [site oficial](https://www.cerradinhobio.com.br/politica-de-privacidade/). A aplicação do canal de atendimento ao GuaráTracking, os procedimentos de autenticação de solicitantes e os prazos de resposta **precisam ser confirmados com o parceiro** antes do piloto. Nenhum contato pessoal ou e-mail é divulgado aqui sem homologação.
+A CerradinhoBio publica uma política institucional de privacidade em seu [site oficial](https://www.cerradinhobio.com.br/politica-de-privacidade/). O canal só será indicado no GuaráTracking após confirmação formal de que recebe demandas desse tratamento. O procedimento deverá autenticar o solicitante, registrar o pedido, encaminhá-lo ao controlador e acompanhar o prazo aplicável. Nenhum contato pessoal ou e-mail será divulgado sem homologação.
 
 #### 3.1.6.13 Encarregado
 
-**Encarregado indicado pela CerradinhoBio (a confirmar).** A designação e o canal aplicável a este projeto ainda não foram formalmente comprovados; revisar com a equipe jurídica antes de publicar a política do produto.
+**Encarregado e contato indicados pela CerradinhoBio (a confirmar).** A gerência do projeto deverá obter confirmação formal do Jurídico/encarregado até **10 dias úteis antes do piloto com dados reais**. Se identidade e canal não forem aprovados até esse marco, o piloto permanecerá restrito a dados fictícios ou anonimizados.
 
 
 ## Aprovações obrigatórias antes do piloto
 
-| Decisão | Evidência necessária | Status |
-|---|---|---|
-| Identidade e papéis controlador/operador | Jurídico/DPO aprova a cadeia de tratamento | Não confirmada |
-| Finalidades, dados e bases legais | Inventário e parecer para cada finalidade | Não confirmada |
-| Fornecedores, infraestrutura, transferências | Provedor/contratos/região/segurança | Não confirmada |
-| Retenção, backup, eliminação | Tabela de prazos e responsável | Não confirmada |
-| Segurança implementada | Testes de autenticação, TLS, RBAC e incidentes | Não implementada neste protótipo |
-| Canal do titular e DPO do produto | Confirmação institucional atualizada | Não confirmada |
+| Decisão | Evidência necessária | Responsável | Prazo-limite | Status |
+|---|---|---|---|---|
+| Identidade e papéis controlador/operador | Jurídico/encarregado aprova a cadeia de tratamento | Projeto + Jurídico do parceiro | 10 dias úteis antes do piloto real | Não confirmada |
+| Finalidades, dados e bases legais | Inventário e parecer para cada finalidade | Jurídico/encarregado | 10 dias úteis antes do piloto real | Não confirmada |
+| Fornecedores, infraestrutura, transferências | Provedor, contratos, região e controles | TI + Jurídico | Antes da contratação | Não confirmada |
+| Retenção, backup, eliminação | Tabela de prazos e responsáveis | Dados + Jurídico | 10 dias úteis antes do piloto real | Não confirmada |
+| Segurança implementada | Testes de autenticação, TLS, perfis e incidentes | TI/Software | Antes de inserir dado real | Não implementada neste protótipo |
+| Canal do titular e encarregado | Confirmação institucional atualizada | Projeto + parceiro | 10 dias úteis antes do piloto real | Não confirmada |
+
+**Regra de bloqueio:** sem aprovação dos seis itens, nenhuma pessoa da equipe deve inserir dados pessoais reais no dispositivo, plataforma, repositório ou demonstração.
 
 Referências normativas: [LGPD](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709compilado.htm), arts. 7º, 9º, 18, 41, e [orientações da ANPD](https://www.gov.br/anpd/pt-br).

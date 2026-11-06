@@ -1,0 +1,19 @@
+[vivo] tempo=1060 s gps_chars=447943 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=1933 fila=0
+[vivo] tempo=1062 s gps_chars=448935 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=1935 fila=0
+[vivo] tempo=1064 s gps_chars=449925 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=1937 fila=0
+{"device_id":"prototipo-001","type":"STATUS_SEMANAL","uptime_ms":1065433,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":1939,"dia_ocorrencia":1983,"atraso":true,"permanencia":true,"critico":false}
+[vivo] tempo=1066 s gps_chars=450915 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=1939 fila=0
+[vivo] tempo=1068 s gps_chars=451905 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=1941 fila=0
+>>> REMESSA NF@1
+[comando] NF invalida; use ate 15 letras, digitos, '-', '.' ou '/'
+[vivo] tempo=1070 s gps_chars=452895 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=1943 fila=0
+[vivo] tempo=1072 s gps_chars=453885 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=1945 fila=0
+{"device_id":"prototipo-001","type":"STATUS_SEMANAL","uptime_ms":1072433,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":1946,"dia_ocorrencia":1990,"atraso":true,"permanencia":true,"critico":false}
+>>> REMESSA NF-000123
+[comando] NF da remessa registrada: NF-000123
+[vivo] tempo=1075 s gps_chars=455241 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=1948 fila=0
+[vivo] tempo=1077 s gps_chars=456231 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=1950 fila=0
+{"device_id":"prototipo-001","type":"location_sample","uptime_ms":1079007,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"fix_valid":true,"latitude":mascarado,"longitude":mascarado,"distance_m":5.14,"moved":false,"baseline_created":false}
+[registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+[vivo] tempo=1079 s gps_chars=457221 fix=valido lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=1952 fila=0
+{"device_id":"prototipo-001","type":"STATUS_SEMANAL","uptime_ms":1079436,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":1953,"dia_ocorrencia":1997,"atraso":true,"permanencia":true,"critico":false}

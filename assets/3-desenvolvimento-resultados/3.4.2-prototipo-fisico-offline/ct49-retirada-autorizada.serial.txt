@@ -1,0 +1,21 @@
+[vivo] tempo=52 s gps_chars=575 fix=ausente lacre=integro bateria_sim=100% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=54 s gps_chars=606 fix=ausente lacre=integro bateria_sim=100% wifi=off rede_sim=on autorizar=1 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=56 s gps_chars=651 fix=ausente lacre=integro bateria_sim=100% wifi=off rede_sim=on autorizar=1 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+{"device_id":"prototipo-001","type":"AUTORIZACAO_REGISTRADA","uptime_ms":56932,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":false,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":55,"atraso":false,"permanencia":false,"critico":false,"janela_dias":3}
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":58068,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":100,"wifi_connected":false,"network_sim_available":true,"authorized_removal":true,"debounce_confirmed_at_ms":58062}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"RETIRADA_AUTORIZADA","uptime_ms":58098,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":100,"wifi_connected":false,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":56,"atraso":false,"permanencia":false,"critico":false}
+[vivo] tempo=58 s gps_chars=704 fix=ausente lacre=violado bateria_sim=100% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=60 s gps_chars=734 fix=ausente lacre=violado bateria_sim=100% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=62 s gps_chars=782 fix=ausente lacre=violado bateria_sim=100% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=64 s gps_chars=816 fix=ausente lacre=violado bateria_sim=100% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=66 s gps_chars=846 fix=ausente lacre=violado bateria_sim=100% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[botao] BTN_AUTORIZAR solto antes de 3 s; nada registrado
+[vivo] tempo=68 s gps_chars=892 fix=ausente lacre=violado bateria_sim=100% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=70 s gps_chars=937 fix=ausente lacre=violado bateria_sim=100% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=72 s gps_chars=976 fix=ausente lacre=violado bateria_sim=100% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+{"device_id":"prototipo-001","type":"seal_changed","uptime_ms":72770,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":false,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":72764}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+{"device_id":"prototipo-001","type":"LACRE_REAPLICADO","uptime_ms":72801,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":false,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":71,"atraso":false,"permanencia":false,"critico":false}
+[vivo] tempo=74 s gps_chars=984 fix=ausente lacre=integro bateria_sim=100% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=76 s gps_chars=1007 fix=ausente lacre=integro bateria_sim=100% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0

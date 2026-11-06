@@ -26,6 +26,7 @@ void noInterrupts(){}
 void interrupts(){}
 void attachInterrupt(int,void(*cb)(),int){fakeIsr=cb;}
 int digitalPinToInterrupt(int p){return p;}
+static unsigned sealOpenCountForTest(){ return pending.count + pending.overflowCount; }
 int main(){
  FakeNVS::reset();
  for (int &pin:fakePins) pin=HIGH;
@@ -55,5 +56,30 @@ int main(){
  }
  assert(individual+pending.overflowCount==10);
  assert(pending.overflowCount>0);
- std::puts("PASS: 20 bordas ISR, relogio unico, persistencia imediata da transicao em host");
+ // CT18: borda capturada depois do now do loop nao pode pular o debounce.
+ const unsigned sealRecords = sealOpenCountForTest();
+ const uint32_t loopStart = millis();
+ fakeMs += 5;
+ fakePins[Config::SealPin]=HIGH;
+ fakeIsr();
+ readSeal(loopStart, clockMs());
+ assert(!stableSeal);
+ fakeMs += 20;  // pulso de 20 ms: o contato volta antes do debounce de 60 ms
+ fakePins[Config::SealPin]=LOW;
+ fakeIsr();
+ readSeal(millis(), clockMs());
+ fakeMs += 200;
+ readSeal(millis(), clockMs());
+ assert(!stableSeal && sealOpenCountForTest()==sealRecords);
+ // Abertura estavel com a mesma borda adiantada: so confirma depois dos 60 ms.
+ const uint32_t nextLoop = millis();
+ fakeMs += 5;
+ fakePins[Config::SealPin]=HIGH;
+ fakeIsr();
+ readSeal(nextLoop, clockMs());
+ assert(!stableSeal);
+ fakeMs += Config::SealDebounceMs;
+ readSeal(millis(), clockMs());
+ assert(stableSeal);
+ std::puts("PASS: 20 bordas ISR, relogio unico, persistencia imediata e debounce com borda apos o now (host)");
 }

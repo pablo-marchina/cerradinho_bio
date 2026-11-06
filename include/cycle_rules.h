@@ -21,6 +21,7 @@ typedef struct {
   bool staySent;
 } CycleState;
 
+// Abre um ciclo com o prazo e o limiar de permanencia informados.
 static inline void cycleStart(CycleState *cycle, uint32_t cycleId, uint32_t expectedReturnDays,
                                uint32_t stayThresholdDays, uint32_t statusIntervalDays) {
   cycle->cycleId = cycleId;
@@ -37,6 +38,7 @@ static inline bool cycleIsLate(const CycleState *cycle) {
   return cycle->daysOut > cycle->expectedReturnDays;
 }
 
+// Diz se o ciclo ja passou do limiar de permanencia.
 static inline bool cycleInStay(const CycleState *cycle) {
   return cycle->daysOut >= cycle->stayThresholdDays;
 }

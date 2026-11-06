@@ -11,11 +11,13 @@ typedef struct {
   uint64_t elapsedMs;
 } SimClock;
 
+// Retoma o relogio com o tempo ja decorrido, a partir do uptime atual.
 static inline void simClockInit(SimClock *clock, uint32_t nowMs, uint64_t elapsedMs) {
   clock->lastMs = nowMs;
   clock->elapsedMs = elapsedMs;
 }
 
+// Avanca o relogio pelo tempo decorrido, inclusive se millis() der a volta.
 static inline uint64_t simClockUpdate(SimClock *clock, uint32_t nowMs) {
   clock->elapsedMs += (uint32_t)(nowMs - clock->lastMs);
   clock->lastMs = nowMs;

@@ -33,7 +33,7 @@
 
 # <a name="c1"></a>1. Introdução (sprint 1)
 
-A CerradinhoBio é uma companhia brasileira integrante do Grupo Cerradinho [3]. Atua em bioenergia a partir de cana-de-açúcar e milho: produz etanol, energia elétrica renovável gerada com biomassa, açúcar VHP e coprodutos do milho, como DDGS, WDG e óleo [4]. Suas operações estão em Chapadão do Céu (GO), onde ficam o negócio de cana e uma unidade de etanol de milho, e em Maracaju (MS), que também abriga uma unidade de etanol de milho [2]. Na safra 2025/26, a companhia registrou receita líquida consolidada de R$ 4,288 bilhões [1] e processou 5,2 milhões de toneladas de cana e 1,5 milhão de toneladas de milho; a capacidade instalada da fábrica de açúcar é de 550 mil toneladas por ano [2]. Como referência de porte de pessoal, a companhia informava cerca de 3.800 empregos diretos e indiretos em sua apresentação institucional publicada durante a safra 2024/25 [5]. A empresa se posiciona entre os maiores complexos industriais sucroenergéticos do Brasil e entre os maiores produtores de etanol do país [3, 4].
+A CerradinhoBio é uma companhia brasileira integrante do Grupo Cerradinho [3]. Atua em bioenergia a partir de cana-de-açúcar e milho: produz etanol, energia elétrica renovável gerada com biomassa, açúcar VHP e coprodutos do milho, como DDGS, WDG e óleo [4]. Suas operações estão em Chapadão do Céu (GO), onde ficam o negócio de cana e uma unidade de etanol de milho, e em Maracaju (MS), que também abriga uma unidade de etanol de milho [2]. Na safra 2025/26, a companhia registrou receita líquida consolidada de R$ 4,288 bilhões [1] e processou 5,2 milhões de toneladas de cana e 1,5 milhão de toneladas de milho; a capacidade instalada da fábrica de açúcar é de 550 mil toneladas por ano [2]. Como referência de porte de pessoal, a companhia informava cerca de 3.800 empregos diretos e indiretos em sua apresentação institucional publicada durante a safra 2024/25 [5]. Em posicionamento comparável, a companhia era apontada em 2026 como a **terceira maior produtora de etanol de milho do Brasil, atrás de Inpasa e FS**, segmento que já respondia por cerca de 70% de seu resultado [59]. Esse dado situa sua relevância no mercado sem confundir capacidade instalada, moagem e produção de safras distintas.
 
 **Problema do projeto.** O acompanhamento de equipamentos enviados à manutenção externa depende de registros e contatos entre áreas e fornecedores. A dificuldade de consolidar localização, nota fiscal de remessa, prazo previsto e data de retorno reduz a visibilidade dos ativos em terceiros e exige cobranças manuais. Permanência total e atraso em relação ao prazo combinado são informações distintas e precisam ser analisadas separadamente.
 
@@ -45,7 +45,7 @@ A CerradinhoBio é uma companhia brasileira integrante do Grupo Cerradinho [3]. 
 
 ## 1.2 Proposta da solução
 
-A proposta reúne um dispositivo reutilizável, fixado ao equipamento com um lacre, e uma plataforma para consultar ativos, ciclos de manutenção, última localização e histórico. No cadastro, cada ciclo relaciona equipamento, fornecedor e nota fiscal, preservando os dados de saída e retorno. A plataforma compara o tempo decorrido desde a saída com o prazo previsto: assim, evidencia a permanência total do ativo e identifica separadamente quando o prazo combinado foi ultrapassado. A localização e o estado do ciclo ampliam a visibilidade dos equipamentos em terceiros; alertas configuráveis destacam casos para acompanhamento e pretendem reduzir consultas e cobranças manuais; o histórico registra os ciclos sucessivos; e uma API disponibiliza esses dados para análise em ferramentas de BI. No protótipo, a comunicação será demonstrada por Wi-Fi em cenário controlado. Como a disponibilidade de Wi-Fi nas oficinas de terceiros não é pressuposta, o canal de comunicação para produção será escolhido em sprint posterior, após comparação das alternativas em uma matriz que considere cobertura nos fornecedores, autonomia, confiabilidade, custo e escalabilidade, conforme o TAPI do projeto [6].
+A proposta é criar uma solução reutilizável de acompanhamento dos equipamentos enviados à manutenção externa. Cada envio será tratado como um ciclo associado ao equipamento, ao fornecedor, à nota fiscal e ao prazo de retorno, com consulta centralizada da última localização conhecida, da situação do lacre e do histórico. A solução distinguirá o tempo total de permanência do atraso em relação ao prazo combinado e destacará ocorrências que exigem atuação dos responsáveis. Dessa forma, pretende ampliar a visibilidade dos ativos em terceiros, reduzir consultas e cobranças manuais, apoiar a baixa correta no retorno e preservar informações úteis para decisões sobre fornecedores e ciclos futuros. As escolhas de arquitetura, integração e comunicação pertencem às seções técnicas e serão definidas e validadas ao longo do projeto.
 
 ## 1.3 Justificativa
 
@@ -65,15 +65,15 @@ _Descreva as etapas da metodologia RM-ODP que foram utilizadas para o desenvolvi
 
 #### Concorrência
 
-Na cana, concorrem Raízen [7, 18], São Martinho [8, 19] e bp bioenergy [9]; no milho, FS [10] e Inpasa [11]. As capacidades publicadas diferem em safra e unidade; não permitem inferir participação de mercado.
+Raízen, São Martinho e bp bioenergy concorrem com a CerradinhoBio na cadeia da cana por matéria-prima, eficiência e mercados de etanol, açúcar e energia [7–9, 18–19]. FS e Inpasa disputam originação de milho, etanol e coprodutos [10–11]. Em 2026, a CerradinhoBio era apontada como a terceira maior produtora brasileira de etanol de milho, atrás dessas duas empresas [59]. Dados de períodos diferentes caracterizam escala, mas não permitem calcular participação de mercado.
 
 #### Modelo de negócio
 
-A CerradinhoBio opera no modelo B2B integrado: transforma cana e milho em etanol, açúcar, bioeletricidade e coprodutos vendidos a distribuidores, indústrias e setor elétrico [4]. Eficiência, logística e preços de commodities afetam resultados [13].
+A CerradinhoBio opera em modelo B2B integrado: transforma cana e milho e vende etanol, açúcar VHP, bioeletricidade e coprodutos a distribuidores, indústrias e setor elétrico [4]. A diversificação gera receitas complementares e flexibilidade de mix, mas o resultado continua exposto a commodities, originação do milho, produtividade, logística e utilização dos ativos. Escala e eficiência são bases da competição.
 
 #### Tendências
 
-O etanol de milho cresce e complementa a cana; a EPE registrou 36,2 bilhões de litros de etanol no Brasil em 2025 [12]. RenovaBio e Lei do Combustível do Futuro impulsionam biometano e SAF, com metas de aviação a partir de 2027 [13–16]. A digitalização pode ampliar a visibilidade de ativos e apoiar decisões.
+O etanol de milho complementa a sazonalidade da cana; o Brasil produziu 36,2 bilhões de litros de etanol em 2025 [12]. Desde agosto de 2025, a gasolina comum contém 30% de etanol anidro (E30) [60]. RenovaBio e a Lei do Combustível do Futuro estimulam produtos de baixo carbono, biometano e SAF [13–16]. Digitalização e sensoriamento ganham espaço para reduzir indisponibilidade e acompanhar ativos industriais.
 
 #### Cinco Forças de Porter — CerradinhoBio
 
@@ -85,10 +85,10 @@ Escala baixa/média/alta, conforme [critérios documentados](outros/3-desenvolvi
 
 | Força | Intensidade | Justificativa |
 |---|---|---|
-| Rivalidade | Alta | Escala e commodities pressionam custos. |
+| Rivalidade | Alta | Grandes grupos disputam matéria-prima, eficiência e canais em produtos pouco diferenciados; expansão de capacidade intensifica a concorrência. |
 | Fornecedores | Alta | Milho comprado expõe a safra e logística; peças e serviços especializados ampliam dependência. |
 | Compradores | Alta | Grandes distribuidoras concentram compras e negociam preço, volume e condições. |
-| Novos entrantes | Média | Capital e licenças criam barreiras. |
+| Novos entrantes | Média | Capital, licenciamento, escala, grãos e logística criam barreiras, embora grupos financiados continuem expandindo. |
 | Substitutos | Média | Gasolina e eletrificação concorrem; frota flex e E30 sustentam a demanda. |
 
 **Síntese:** o GuaráTracking pode melhorar a visibilidade dos ativos em manutenção externa; impacto a medir no piloto [6].
@@ -107,28 +107,31 @@ Escala baixa/média/alta, conforme [critérios documentados](outros/3-desenvolvi
 
 #### 3.1.3.1 Problema a resolver
 
-Registros e contatos dispersos dificultam localizar equipamentos em manutenção externa, verificar NF, prazo e retorno e exigem consultas manuais [6].
+Registros dispersos dificultam localizar o equipamento, relacionar sua nota fiscal, comparar permanência e prazo e confirmar o retorno. Isso exige cobranças manuais, pode atrasar a baixa fiscal e limita o histórico por fornecedor [6, 33].
 
 #### 3.1.3.2 Solução proposta (visão de negócios)
 
-O GuaráTracking combina dispositivo reutilizável com lacre e cadastro digital por ciclo. Reúne equipamento, fornecedor, responsável, NF, prazo, última localização válida, estado do lacre e alertas; disponibiliza histórico e dados para consulta e BI. O piloto avaliará viabilidade, sem prometer rastreamento contínuo ou posição interna precisa.
+O GuaráTracking acompanhará cada remessa com identificador reutilizável lacrado e registro digital do ciclo. Reunirá equipamento, fornecedor, responsável, nota fiscal, prazo, última localização conhecida, lacre, alertas e histórico. O piloto avaliará utilidade e viabilidade, sem prometer rastreamento contínuo, localização interna precisa ou implantação corporativa.
 
 #### 3.1.3.3 Uso previsto
 
-Na saída, cadastrar equipamento, fornecedor, responsável, NF e prazo e instalar o dispositivo lacrado. Durante o reparo, consultar posições, tratar alertas e registrar retiradas autorizadas. No retorno, conferir, dar baixa, encerrar e liberar o dispositivo, preservando o histórico. Papéis serão validados com o parceiro.
+Na saída, cadastra-se equipamento, fornecedor, nota fiscal e prazo; depois, vincula-se o identificador lacrado. Durante o reparo, o PCM consulta a situação, prioriza cobranças e registra retiradas autorizadas. No retorno, confere o ativo, encaminha a baixa fiscal, encerra o ciclo e libera o identificador, preservando o histórico.
 
 #### 3.1.3.4 Benefícios
 
-A solução pode centralizar dados, reduzir buscas e apoiar decisões. Ganhos serão medidos no piloto.
+A consulta centralizada pretende reduzir ligações, planilhas paralelas e tempo para descobrir localização, prazo e responsável. O vínculo com a nota fiscal torna o retorno visível ao Fiscal. Alertas de atraso, permanência e lacre ajudam o PCM a priorizar cobranças; o histórico por fornecedor evidencia recorrências. Esses ganhos dependem do tratamento dos alertas e serão medidos.
 
 #### 3.1.3.5 Critério de sucesso e medida
 
-Sucesso preliminar é completar ciclos em cinco dispositivos de teste, permitir reutilização sem vínculos simultâneos e produzir informação consultável. Metas preliminares; protocolo no [plano de validação](outros/3-desenvolvimento-resultados/validacao-e-limites-sprint1.md).
+Sucesso é cadastrar ao menos cinco equipamentos reais ou representativos e concluir ciclos preservando histórico, sem exigir um dispositivo por cadastro [6]. O piloto deve demonstrar menor esforço de consulta, encaminhamento do retorno à baixa fiscal e histórico consultável por fornecedor. Metas preliminares; protocolo no [plano de validação](outros/3-desenvolvimento-resultados/validacao-e-limites-sprint1.md).
 
 | Indicador | Medida e meta proposta |
 |---|---|
 | Localização | ≥90% das atualizações semanais geram posição externa válida. |
 | Consulta | Situação completa em até 2 min em 90% das buscas. |
+| Esforço operacional | Redução ≥30% no tempo mediano de consulta; meta a validar. |
+| Fechamento fiscal | 100% dos retornos do lote sinalizados ao fluxo de baixa. |
+| Histórico do fornecedor | 100% dos ciclos encerrados consultáveis por fornecedor, com prazo previsto, retorno e ocorrências preservados. |
 | Alertas | Falsos alertas ≤5% dos alertas analisados; latência dispositivo→destinatário ≤15 min, **meta futura não testada**. |
 | Integridade | 100% dos ciclos completos, sem vínculo duplicado; testar limiar de 150 dias com datas simuladas. |
 
@@ -153,7 +156,7 @@ Perfil do cliente: Geraldo, analista de PCM (P1), com base no TAPI [6] e no *kic
 
 ### 3.1.5. Matriz de Riscos (sprint 1)
 
-Matriz de riscos do projeto, com níveis estimados de 10%–90% e impacto qualitativo; [justificativas detalhadas](outros/3-desenvolvimento-resultados/3.1.5-matriz-riscos/registro-riscos-aprofundado.md).
+Matriz de riscos de **execução e entrega do projeto**, com níveis estimados de 10%–90% e impacto qualitativo. Falhas operacionais do produto — como ausência de GNSS, rede ou autonomia — são tratadas como requisitos e cenários de teste, e não como riscos de gestão. A figura abaixo reflete os IDs e níveis da tabela revisada; as [justificativas detalhadas](outros/3-desenvolvimento-resultados/3.1.5-matriz-riscos/registro-riscos-aprofundado.md) registram a versão vigente.
 
 <div align="center">
   <p><strong>Figura 3.1.5.1 — Matriz de riscos do projeto</strong></p>
@@ -167,24 +170,23 @@ Matriz de riscos do projeto, com níveis estimados de 10%–90% e impacto qualit
 
 | ID | Causa e efeito | Prob. | Impacto | Justificativa | Resposta | Responsável |
 |---|---|---:|---:|---|---|---|
-| R01 | NF não vinculada → alerta falso. | 50% | Moderado | Kick-off prevê prorrogação. | Vincular nova NF. | Software/Fiscal |
-| R02 | Metal/galpão → perda de GNSS. | 70% | Muito alto | Hipótese técnica. | Testar antenas; manter posição válida. | Hardware |
-| R03 | Ensaio curto → autonomia incerta. | 70% | Alto | Ciclos podem durar um ano [6]. | Estimar pelo consumo. | Hardware |
-| R04 | Sem rede → eventos retidos. | 90% | Alto | Cobertura externa incerta [6]. | Armazenar e comparar redes. | Conectividade |
-| R05 | Ruído ou abertura autorizada → falso alerta. | 50% | Alto | Retirada ocorre no reparo. | Debounce e autorização. | Firmware |
-| R06 | Fixação inadequada → dano. | 50% | Muito alto | Formatos variam [6]. | Usar fixação removível. | Hardware |
-| R07 | Fora do escopo; trabalho futuro. | 70% | Muito alto | Previsto no TAPI [6]. | Trabalho futuro. | Hardware |
-| R08 | Conectividade cara → inviabilidade. | 50% | Alto | Custo afeta a escolha. | Comparar planos. | Produto |
-| R09 | Fornecedor indisponível → piloto limitado. | 50% | Moderado | Dependência externa. | Agendar e simular. | Projeto |
-| R10 | Dado restrito exposto → incidente. | 30% | Muito alto | Localização e NF são restritas. | Usar dados fictícios e revisar. | Dados/LGPD |
-| R11 | Retorno sem NF → ciclo fiscal aberto. | 70% | Muito alto | Kick-off exige baixa fiscal. | Conferir retorno e NF. | Processos |
+| R01 | Dados do parceiro atrasarem → piloto pouco representativo. | 70% | Alto | Volumes e tempos seguem pendentes [6]. | Dados mínimos anonimizados e massa sintética. | Projeto/Parceiro |
+| R02 | Sem acesso a equipamento/oficina → testes incompletos. | 50% | Muito alto | Depende de agenda, segurança e terceiro. | Reservar janela e percurso alternativo. | Projeto/Parceiro |
+| R03 | Componente indisponível → montagem atrasada. | 70% | Alto | GNSS sem estoque e itens importados [34]. | Duas alternativas e data-limite de compra. | Hardware/Compras |
+| R04 | Escopo crescer → MVP incompleto. | 50% | Alto | Muitas frentes e prazo acadêmico fixo. | Controlar mudanças e priorizar TAPI. | Produto/Projeto |
+| R05 | Retrabalho consumir a equipe → integração atrasada. | 50% | Alto | Frentes dependentes amplificam defeitos tardios. | Marcos, revisão cruzada e reserva de integração. | Projeto/Equipe |
+| R06 | Conectividade decidida tarde → arquitetura/BOM abertas. | 50% | Alto | Cobertura e preço não validados. | Data de decisão e critérios objetivos. | Produto/Conectividade |
+| R07 | Custo superar hipótese → piloto não aprovado. | 70% | Alto | Recorrência, reposição, frete e tributos sem orçamento. | Orçar cenários de 1 e 5 dispositivos. | Produto/Compras |
+| R08 | API/BI indefinida → integração parcial. | 50% | Moderado | Sistemas e credenciais corporativas indisponíveis. | Contrato documentado e cliente de teste. | Software/TI |
+| R09 | Dado restrito publicado → incidente. | 30% | Muito alto | Dados sintéticos reduzem chance; NF/localização elevam impacto. | Anonimizar, revisar e bloquear segredos. | Dados/LGPD |
+| R10 | Validação tardia → correções fora do prazo. | 50% | Alto | Papéis e metas ainda têm pendências. | Checkpoints, responsáveis e prazos. | Projeto/Parceiro |
 
 **Oportunidades**
 
 | ID | Oportunidade | Prob. | Impacto | Tratamento | Responsável |
 |---|---|---:|---|---|---|
-| O01 | Reutilização reduz custo por ciclo. | 70% | Alto | Validar modularidade. | Produto |
-| O02 | Histórico apoia avaliação de oficinas. | 70% | Alto | Criar indicador. | Produto/BI |
+| O01 | Dados anonimizados antecipados → métricas realistas. | 50% | Alto | Preparar modelo mínimo. | Projeto/Dados |
+| O02 | Oficina participar → teste em contexto real. | 30% | Alto | Agendar roteiro controlado. | Projeto/Parceiro |
 
 ### 3.1.6. Política de Privacidade de acordo com a LGPD (sprint 1)
 
@@ -203,7 +205,7 @@ Cadastros, PCM/Fiscal, dispositivo e registros de acesso.
 Controlar remessas, autenticar, alertar e auditar ciclos; não avaliar desempenho individual.
 
 #### 3.1.6.5 Bases legais
-Definir por finalidade com Jurídico/encarregado: contrato, obrigação legal ou legítimo interesse quando cabível [40].
+Definir por finalidade com Jurídico/encarregado. **Execução de contrato** (art. 7º, V) só poderá sustentar dados do titular que seja parte do contrato ou de procedimento solicitado por ele; não deve ser aplicada genericamente a empregados, motoristas ou contatos de fornecedores. Para autenticação, segurança e rastreabilidade, avaliar **legítimo interesse** (art. 7º, IX) com teste de balanceamento, necessidade, transparência e oposição. Documentos fiscais podem exigir obrigação legal, conforme validação jurídica [40].
 
 #### 3.1.6.6 Armazenamento
 NVS e Serial simuladas; servidor, região e fornecedores ainda não definidos.
@@ -224,12 +226,12 @@ Demonstração sintética; autenticação, TLS, perfis e resposta a incidentes p
 Confirmação, acesso, correção, eliminação cabível e outros direitos do art. 18 [40].
 
 #### 3.1.6.12 Solicitações
-Canal institucional publicado precisa de validação específica para o GuaráTracking.
+Usar o canal institucional de privacidade somente após confirmação formal de que ele atende solicitações relacionadas ao GuaráTracking. O procedimento deve identificar o solicitante, registrar a demanda e encaminhá-la ao controlador dentro dos prazos aplicáveis.
 
 #### 3.1.6.13 Encarregado
-Encarregado indicado pela CerradinhoBio (**a confirmar**), sem divulgar contato não homologado.
+Encarregado e contato indicados pela CerradinhoBio (**a confirmar**), sem divulgar dado não homologado. A gerência do projeto deve obter a confirmação do Jurídico/encarregado **até 10 dias úteis antes do início do piloto com dados reais**; sem ela, o piloto continuará restrito a dados fictícios ou anonimizados.
 
-**Aceite:** validar papéis, dados, bases, retenção, medidas e canal antes de tratar dados pessoais reais.
+**Aceite:** até 10 dias úteis antes do piloto, a gerência do projeto deve registrar a aprovação de papéis, dados, bases, retenção, medidas de segurança, canal e encarregado. Sem aprovação, não haverá tratamento de dados pessoais reais.
 
 ### 3.1.7. Bill of Material (BOM) (sprint 1)
 
@@ -247,7 +249,7 @@ Há dois cenários para cinco equipamentos: piloto sequencial com um dispositivo
 
 ## 3.2. Domínio de Fundamentos de Experiência de Usuário 
 
-### 3.2.1. Personas	
+### 3.2.1. Personas
 
 #### Introdução às personas
 
@@ -376,20 +378,20 @@ Os requisitos abaixo saem do TAPI (MVP 1 a 7 e fluxo básico), da avaliação do
 |-------|-----------|--------|------------|--------|---|
 | RF001 | O sistema deve cadastrar o equipamento com identificador próprio, descrição e foto. | TAPI MVP 1 | Alta | Planejado | Sem CT no V2; protótipo físico pendente |
 | RF002 | O sistema deve abrir um ciclo de manutenção externa com NF de remessa (número e data de emissão), fornecedor, responsável e prazo previsto de retorno. | TAPI MVP 3 | Alta | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT39: registro, exibição e recusas da NF da remessa); fornecedor, responsável e prazo previsto não exercitados; protótipo físico pendente |
-| RF003 | O sistema deve vincular um dispositivo a um ciclo de manutenção aberto. | TAPI MVP 3 | Alta | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT14: novo vínculo após o encerramento; CT44: vínculo no boot sem ciclo, rodada de 02 e 03/11/2026); protótipo físico pendente |
+| RF003 | O sistema deve vincular um dispositivo a um ciclo de manutenção aberto. | TAPI MVP 3 | Alta | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT14: novo vínculo após o encerramento; CT44: vínculo no boot sem ciclo, rodada de 02 e 03/11/2026); Verificado no protótipo físico (CT47) |
 | RF004 | O sistema deve recusar o vínculo de um dispositivo que já está em um ciclo ativo. | Fluxo básico | Alta | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT15: não abre um segundo ciclo; a recusa `VINCULO_RECUSADO` não é alcançável por nenhuma entrada e fica sem teste); protótipo físico pendente |
-| RF005 | O sistema deve coletar a posição GNSS na rotina de envio e guardar a última localização válida com data e hora. | TAPI MVP 2 | Alta | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT43: idade da última posição no LCD em segundos e minutos, rodada de 02 e 03/11/2026); horas, dias e restauração após reinício pendentes; protótipo físico pendente |
-| RF006 | O sistema deve monitorar o lacre e detectar sua abertura ou rompimento. | TAPI MVP 5 | Alta | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT05, CT07, CT38); CT18 repetido no V2 REPROVADO (rodada de 02 e 03/11/2026): sem rede, pulsos curtos lidos como abertura; protótipo físico pendente |
-| RF007 | O sistema deve registrar a retirada autorizada e a reaplicação do lacre sem gerar alerta de violação. | TAPI MVP 5 | Alta | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT06, CT07, CT11; CT38 e CT42 para a retirada autorizada sem alarme e a mensagem de lacre reaplicado); protótipo físico pendente |
+| RF005 | O sistema deve coletar a posição GNSS na rotina de envio e guardar a última localização válida com data e hora. | TAPI MVP 2 | Alta | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT43: idade da última posição no LCD em segundos e minutos, rodada de 02 e 03/11/2026); horas, dias e restauração após reinício pendentes; Verificado no protótipo físico (CT52: fix e coleta de posição) |
+| RF006 | O sistema deve monitorar o lacre e detectar sua abertura ou rompimento. | TAPI MVP 5 | Alta | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT05, CT07, CT38); CT18 reprovado na rodada de 02 e 03/11/2026 e aprovado no reteste de 05/11/2026, depois da correção do debounce; Verificado no protótipo físico (CT50) |
+| RF007 | O sistema deve registrar a retirada autorizada e a reaplicação do lacre sem gerar alerta de violação. | TAPI MVP 5 | Alta | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT06, CT07, CT11; CT38 e CT42 para a retirada autorizada sem alarme e a mensagem de lacre reaplicado); Verificado no protótipo físico (CT49) |
 | RF008 | O sistema deve conectar-se à rede Wi‑Fi e reconectar automaticamente quando a conexão cair. | Avaliação do protótipo | Alta | Planejado | Sem CT no V2; protótipo físico pendente |
 | RF009 | O sistema deve publicar status e eventos no broker MQTT, em JSON, no tópico do dispositivo. | TAPI MVP 6 | Alta | Planejado | Sem CT no V2; protótipo físico pendente |
-| RF010 | O sistema deve guardar os eventos gerados sem conexão e enviá-los na ordem em que ocorreram quando a conexão voltar. | TAPI MVP 5 | Alta | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT08, CT10, CT42); no CT08 a violação foi guardada na fila, mas a tela "Sem sinal" não foi executada; CT09 bloqueado; protótipo físico pendente |
+| RF010 | O sistema deve guardar os eventos gerados sem conexão e enviá-los na ordem em que ocorreram quando a conexão voltar. | TAPI MVP 5 | Alta | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT08, CT10, CT42); no CT08 a violação foi guardada na fila, mas a tela "Sem sinal" não foi executada; CT09 bloqueado; Verificado no protótipo físico (CT63, CT64: fila e reenvio local, sem confirmação do servidor) |
 | RF011 | O sistema deve enviar um status periódico, semanal por padrão e configurável. | TAPI MVP 4 | Alta | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT02); protótipo físico pendente |
 | RF012 | O sistema deve calcular os dias fora a partir da data de emissão da NF de remessa. | TAPI MVP 4; Kick-off com a Cerradinho (16/10/2026) | Alta | Planejado | Sem CT no V2; protótipo físico pendente |
 | RF013 | O sistema deve emitir um alerta de atraso quando os dias fora passam do prazo previsto de retorno. | TAPI MVP 3 | Alta | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT03, CT37); protótipo físico pendente |
 | RF014 | O sistema deve emitir um alerta de permanência quando os dias fora atingem o limiar do ciclo (150 dias por padrão, configurável). | TAPI MVP 4 | Alta | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT04 com limiar 10 e com 150, rodada de 02 e 03/11/2026); protótipo físico pendente |
 | RF015 | O sistema deve listar os equipamentos fora com última localização válida, dias fora, prazo, bateria e estado do lacre. | TAPI MVP 6 | Alta | Planejado | Sem CT no V2; protótipo físico pendente |
-| RF016 | O sistema deve encerrar o ciclo somente com a NF de retorno lançada e o lacre fechado. | Fluxo básico | Alta | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT14, CT16); protótipo físico pendente |
+| RF016 | O sistema deve encerrar o ciclo somente com a NF de retorno lançada e o lacre fechado. | Fluxo básico | Alta | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT14, CT16); Verificado no protótipo físico (CT56, CT57, CT58) |
 | RF017 | O sistema deve liberar o dispositivo do ciclo encerrado para um novo vínculo, preservando o histórico. | TAPI MVP 3; fluxo básico | Alta | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT14); histórico após corte de energia pendente; protótipo físico pendente |
 | RF018 | O sistema deve notificar o responsável do ciclo a cada alerta, com o e-mail como canal inicial. | Fluxo básico; Kick-off com a Cerradinho (16/10/2026) | Alta | Planejado | Sem CT no V2; protótipo físico pendente |
 | RF019 | O sistema deve medir o nível de bateria e enviá-lo em cada mensagem. | TAPI MVP 6 | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT12, CT13, CT23); diagnóstico elétrico da bateria depende do protótipo físico |
@@ -407,7 +409,7 @@ Os requisitos abaixo saem do TAPI (MVP 1 a 7 e fluxo básico), da avaliação do
 | RF031 | O sistema deve registrar a perda da posição GNSS uma única vez, no início da falha e com o motivo, e a recuperação uma única vez, no retorno da posição, com o tempo sem posição e a contagem de coletas sem fix; os dois eventos são não críticos e seguem a fila sem conexão (RN22). | Firmware V2 (`GNSS_SEM_FIX`, `GNSS_RECUPERADO`); TAPI MVP 2; persona P1-C4 Falha | Média | Parcialmente simulado | Verificado em parte no simulador Wokwi V2 (CT45, rodada de 02 e 03/11/2026): só o motivo `sem_fix` é alcançável, e `sem_dados` e `sinal_fraco` dependem do protótipo físico; protótipo físico pendente |
 | RF032 | O dispositivo deve sinalizar localmente a violação do lacre: LED vermelho com pulso curto a cada segundo enquanto o lacre estiver violado e buzzer intermitente por no máximo 30 s, parando antes se o lacre fechar. Duração de 30 s: `PENDENTE DE VALIDAÇÃO` | TAPI MVP 5; rubrica do protótipo físico (Artefato 5) | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT38: alarme na violação, parada ao fechar e aos 30 s, LED pulsando com o lacre violado, [vídeo do LED](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct38-led.mkv)); a cadência elétrica do buzzer não foi medida; protótipo físico pendente |
 | RF033 | O dispositivo deve registrar a NF da remessa informada pela plataforma (simulada pelo comando `REMESSA` na Serial), com até 15 caracteres entre letras, dígitos, hífen, ponto e barra, somente com ciclo ativo, exibi-la no LCD e recusar entrada inválida ou sem ciclo, preservando a NF anterior. | Firmware V2; TAPI MVP 3; persona P1-C1 | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT39); a plataforma ainda não envia a NF; protótipo físico pendente |
-| RF034 | O dispositivo deve permitir consultar no LCD, por dois botões de navegação circular, a NF da remessa, o prazo (dias restantes, vence hoje, atraso ou sem ciclo ativo), a última posição, a bateria e o estado do lacre, e apagar o LCD e a luz de fundo após 15 s sem interação, com o primeiro toque só acendendo a tela. Uma variação de 3 pontos na bateria simulada também acende o LCD na tela de bateria. Tempo de 15 s: `PENDENTE DE VALIDAÇÃO` | Firmware V2; TAPI MVP 6; persona P1-C2 | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT36, CT37, CT40); a economia de energia do apagamento não foi medida; protótipo físico pendente |
+| RF034 | O dispositivo deve permitir consultar no LCD, por dois botões de navegação circular, a NF da remessa, o prazo (dias restantes, vence hoje, atraso ou sem ciclo ativo), a última posição, a bateria e o estado do lacre, e apagar o LCD e a luz de fundo após 15 s sem interação, com o primeiro toque só acendendo a tela. Uma variação de 3 pontos na bateria simulada também acende o LCD na tela de bateria. Tempo de 15 s: `PENDENTE DE VALIDAÇÃO` | Firmware V2; TAPI MVP 6; persona P1-C2 | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT36, CT37, CT40); a economia de energia do apagamento não foi medida; Verificado no protótipo físico (CT46) |
 | RF035 | O dispositivo deve mostrar no LCD a contagem "segure mais N s" ao segurar os botões de autorizar, iniciar e encerrar o ciclo, cancelar a ação se o botão for solto antes de 3 s e exibir por 2 s uma mensagem para lacre reaplicado, lacre fechado após violação, sem sinal e sinal recuperado. | Firmware V2; persona P1-C3 | Média | Simulado no Wokwi | Verificado no simulador Wokwi V2 (CT41, CT42); a mensagem "enviados" é reenvio simulado, sem confirmação de servidor; protótipo físico pendente |
 
 Itens técnicos da avaliação: coleta de dados via sensor (RF005, RF006, RF019) · definição de devices na plataforma (RF003, RF020) · chave de identificação de usuário e acesso ao dashboard (RF021) · conexão Wi‑Fi (RF008) · formatação de dados para MQTT (RF009) · representação gráfica dos dados coletados (RF015, RF022).
@@ -662,7 +664,7 @@ A Matriz de Rastreabilidade (RTM) relaciona os requisitos funcionais (RF) e as r
 
 **Casos de teste transversais:** [CT17](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct17.png) (APROVADO no simulador, [log](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/CT17-CT23.serial.txt)) e CT35 ([desligado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct35Desligado.png), [religado](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct35.png)) verificam aspectos transversais e, por isso, não são atribuídos a um RF ou a uma RN específicos nesta matriz.
 
-Os resultados dos CT17–CT23 correspondem às execuções de 23/10/2026 descritas na seção 3.4.1, com capturas, logs, configuração e limitações. As aprovações são funcionais no simulador; CT18 e CT22 permanecem reprovados, e CT09 depende da confirmação de entrega pelo servidor.
+Os resultados dos CT17–CT23 correspondem às execuções de 23/10/2026 descritas na seção 3.4.1, com capturas, logs, configuração e limitações. As aprovações são funcionais no simulador; CT22 permanece reprovado, CT18 foi aprovado no reteste de 05/11/2026, e CT09 depende da confirmação de entrega pelo servidor.
 
 A proposta de RNFs, a máquina de estados de energia (com os modos de economia do ESP32 [21]) e os CT24–CT34 estão no [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md), que compara o LC76G-PA escolhido com o u-blox MAX-M10S [23, 24], para revisão nas próximas sprints.
 
@@ -734,7 +736,7 @@ contém a pinagem e o roteiro de diagnóstico. As configurações `wokwi.toml` e
 O projeto público acima representa a versão anterior; a Figura 1 e as evidências dos CTs abaixo mostram o circuito local integrado usado nas execuções de 22/10/2026. A publicação da versão integrada segue o [procedimento do guia do circuito](../src/firmware/prototipo_wokwi/README.md#publicação-no-wokwi-web).
 Em 28/10/2026 o circuito passou ao **protótipo V2**: os quatro LEDs deram lugar a um LCD 16x2 I2C (GPIO21/22), aos botões de avançar e voltar (GPIO25/26) e a um buzzer (GPIO23); o botão de ciclo passou ao GPIO14, e lacre, chaves, bateria, GNSS e o botão de autorização mantiveram a pinagem. Em 30/10/2026 o V2 ganhou o LED vermelho de violação no GPIO13 e a montagem dos componentes numa protoboard dupla. O dispositivo passou a ligar sem ciclo, e o ciclo 1 só começa quando CICLO é segurado por 3 s. As falhas do GNSS passaram a gerar `GNSS_SEM_FIX` e `GNSS_RECUPERADO`. A descrição do circuito e as rodadas de 22 e 23/10/2026 referem-se ao V1. A validação do V2 está na [rodada V2](#rodada-v2), e os comportamentos novos estão nos [CT43–CT45](#cts43-45).
 
-**Estrutura do código.** O firmware (`src/firmware/main.cpp`) tem `setup()` e `loop()` e funções auxiliares chamadas por eles, como `readSeal()`, `readButtons()`, `updateCycle()` e `updateDisplay()`. No V2, a interface local é controlada pela classe própria `ScreenController` (`include/screen_controller.h`): a instância `screens` monta as cinco telas do LCD e a navegação circular, e é usada no `setup()` e a cada passagem do `loop()` por `updateDisplay()`. A classe tem teste em host (`tests/screen_controller_tests.cpp`). No V1, a classe própria era a `IndicatorController`, que controlava os quatro LEDs; as aprovações de 22 e 23/10/2026 valem para aquela versão, e CT18 e CT22 continuam reprovados. O firmware atual captura as bordas do lacre em ISR, com o debounce temporal decidido em função auxiliar (`include/seal_debounce.h`); o teste em host com 20 transições foi aprovado e a rodada V2 usou essa versão, mas o CT18 repetido no V2 continua REPROVADO, por pulsos curtos lidos como abertura quando não há rede.
+**Estrutura do código.** O firmware (`src/firmware/main.cpp`) tem `setup()` e `loop()` e funções auxiliares chamadas por eles, como `readSeal()`, `readButtons()`, `updateCycle()` e `updateDisplay()`. No V2, a interface local é controlada pela classe própria `ScreenController` (`include/screen_controller.h`): a instância `screens` monta as cinco telas do LCD e a navegação circular, e é usada no `setup()` e a cada passagem do `loop()` por `updateDisplay()`. A classe tem teste em host (`tests/screen_controller_tests.cpp`). No V1, a classe própria era a `IndicatorController`, que controlava os quatro LEDs; as aprovações de 22 e 23/10/2026 valem para aquela versão, e CT18 e CT22 continuam reprovados. O firmware atual captura as bordas do lacre em ISR, com o debounce temporal decidido em função auxiliar (`include/seal_debounce.h`); o teste em host com 20 transições foi aprovado e a rodada V2 usou essa versão, mas o CT18 repetido no V2 reprovou, por pulsos curtos lidos como abertura quando não há rede. O debounce foi corrigido depois da rodada, e o CT18 passou no reteste de 05/11/2026.
 
 Na Sprint 1 o dispositivo é simulado no Wokwi com um ESP32 DevKit, placa suportada pelo simulador [25]. Cada entrada do circuito representa uma situação física do rastreador: o lacre (`SW_LACRE`), a disponibilidade de conexão (`SW_REDE`), a autorização de retirada (`BTN_AUTORIZAR`), o encerramento ou vínculo de ciclo (`BTN_CICLO`) e o nível da bateria (`POT_BATERIA`). Os LEDs representam estados para inspeção e o Monitor Serial mostra os registros JSON. Não há transporte implementado para servidor ou broker. A integração local inclui GNSS simulado; a validação do hardware GNSS permanece para a Sprint 2.
 
@@ -791,7 +793,7 @@ A chave de rede não desliga o Wi-Fi virtual; os estados são apresentados separ
 A versão inicial pública não inclui localização. O circuito principal local inclui
 GPS/GNSS customizado nos GPIO16/17, feito com a API de chips customizados do Wokwi [26]; ele não modela recepção de satélites nem consumo real.
 
-**Situação dos CT01–CT16 e do CT35:** executados no Wokwi em 22/10/2026, com resultados resumidos abaixo, prints e logs externos. A aprovação indicada se limita ao comportamento funcional observado no simulador. O CT09 permanece **BLOQUEADO** para confirmação de entrega pelo servidor; o CT14 foi corrigido e **APROVADO no reteste de 23/10/2026**, com confirmação das duas recusas do CT16 na mesma versão. As medições exatas de 1 Hz e das fronteiras de debounce não foram realizadas. Os RF/RN e IDs foram preservados, sem alterar o esperado para aprovar falhas. CT17–CT23 foram executados em 23/10/2026, com resultados na tabela complementar abaixo, e CT24–CT34 permanecem reservados no [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md). Testes de lógica em `tests/model_tests.c` são evidência separada da execução no Wokwi e da validação física. O protótipo V2 foi executado novamente em 02 e 03/11/2026, na [rodada V2](#rodada-v2).
+**Situação dos CT01–CT16 e do CT35:** executados no Wokwi em 22/10/2026, com resultados resumidos abaixo, prints e logs externos. A aprovação indicada se limita ao comportamento funcional observado no simulador. O CT09 permanece **BLOQUEADO** para confirmação de entrega pelo servidor; o CT14 foi corrigido e **APROVADO no reteste de 23/10/2026**, com confirmação das duas recusas do CT16 na mesma versão. As medições exatas de 1 Hz e das fronteiras de debounce não foram realizadas. Os RF/RN e IDs foram preservados, sem alterar o esperado para aprovar falhas. CT17–CT23 foram executados em 23/10/2026, com resultados na tabela complementar abaixo, e CT24–CT34 permanecem planejados no [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md). Testes de lógica em `tests/model_tests.c` são evidência separada da execução no Wokwi e da validação física. O protótipo V2 foi executado novamente em 02 e 03/11/2026, na [rodada V2](#rodada-v2).
 
 ![CT01: circuito integrado com verde aceso e STATUS de inicialização no Monitor Serial](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct01.png)
 
@@ -815,7 +817,7 @@ GPS/GNSS customizado nos GPIO16/17, feito com a API de chips customizados do Wok
 |CT14|Encerramento|BTN_CICLO, SW_LACRE e comando `NF`|NF de retorno lançada (`NF` no Serial); lacre fechado; botão segurado por 2 s|Serial|`CICLO_ENCERRADO` com `ciclos_encerrados` somando um; `dias_fora` zera; um toque curto depois abre o `CICLO_INICIADO` com o `ciclo_id` seguinte|Esperado: Encerrar o ciclo libera o dispositivo sem apagar o histórico (RF016, RF017; RN11).|
 |CT15|Vínculo simultâneo|BTN_CICLO|Ciclo ativo; toque curto (tentativa de novo vínculo)|Serial|`VINCULO_RECUSADO`; o ciclo atual continua igual|Esperado: Impede vínculos simultâneos indevidos, como pede o TAPI (RF004; RN01).|
 |CT16|Encerramento recusado|BTN_CICLO, SW_LACRE e comando `NF`|Rodada A: lacre aberto e NF lançada. Rodada B: lacre fechado e NF ausente; segurar o botão por 2 s em ambas|Serial|`ENCERRAMENTO_RECUSADO` com `motivo` `lacre_aberto` (A) ou `nf_retorno_ausente` (B); o ciclo continua ativo|Esperado: O ciclo só pode ser encerrado com o lacre fechado e a NF de retorno lançada (RF016; RN11).|
-|CT35|Desligamento|SW_ENERGIA|Chave ON/OFF para a direita e depois de volta para a esquerda|LEDs; Serial|Ao desligar, `DISPOSITIVO_DESLIGADO` e todos os LEDs apagados; ao religar, novo `STATUS` e LEDs de volta ao estado do ciclo|Esperado: O desligamento fica registrado, porque pode indicar tentativa de burlar o rastreio. É um desligamento lógico: o ESP32 continua alimentado, para de ler entradas e de publicar, e o relógio do ciclo continua contando; o corte real de energia fica para o protótipo físico. Numerado como CT35 porque os CT24 a CT34 estão reservados no planejamento de energia e GNSS.|
+|CT35|Desligamento|SW_ENERGIA|Chave ON/OFF para a direita e depois de volta para a esquerda|LEDs; Serial|Ao desligar, `DISPOSITIVO_DESLIGADO` e todos os LEDs apagados; ao religar, novo `STATUS` e LEDs de volta ao estado do ciclo|Esperado: O desligamento fica registrado, porque pode indicar tentativa de burlar o rastreio. É um desligamento lógico: o ESP32 continua alimentado, para de ler entradas e de publicar, e o relógio do ciclo continua contando; o corte real de energia fica para o protótipo físico. Numerado como CT35 porque os CT24 a CT34 constam como planejados no planejamento de energia e GNSS.|
 
 #### Resultados da execução da Sprint 1 — 22 e 23/10/2026
 
@@ -852,7 +854,7 @@ GPS/GNSS customizado nos GPIO16/17, feito com a API de chips customizados do Wok
 
 **Limitações e pendências.** CT09 depende de transporte e confirmação do servidor: a saída na Serial e o esvaziamento da fila não comprovam entrega. Não foram validados precisão de 1 Hz/debounce, retenção após corte de energia, autonomia, diagnóstico elétrico da bateria ou contagem de dias por NF real. CT04 tem logs por intervalo: a rodada de 150 dias foi gravada aproximadamente do dia 84 até depois do limiar; o log do ciclo 2 cobre o limiar 10. No primeiro `STATUS` após religar no CT35, os dias ainda eram os anteriores ao desligamento; os registros seguintes atualizaram a contagem para incluir o intervalo desligado.
 
-Os limites exatos de bateria em 20% e 25% e os demais novos cenários de falha combinada continuam pendentes, ainda sem numeração; CT24–CT34 permanecem reservados, e CT36–CT45 cobrem a interface, o vínculo e o GNSS do V2. Abrir e fechar o lacre enquanto o dispositivo está desligado não foi ensaiado nesta rodada e continua como discussão de regra com o grupo.
+Os limites exatos de bateria em 20% e 25% e os demais novos cenários de falha combinada continuam pendentes, ainda sem numeração; CT24–CT34 permanecem planejados, e CT36–CT45 cobrem a interface, o vínculo e o GNSS do V2. Abrir e fechar o lacre enquanto o dispositivo está desligado não foi ensaiado nesta rodada e continua como discussão de regra com o grupo.
 
 Os logs ficam em `assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/`, acessíveis pelos links de cada CT. O Log A contém dois boots; as contagens usam o segundo, a partir do segundo `ets Jul 29 2019`. O log do reteste de 23/10 começa na confirmação de NF do ciclo 1 e segue até depois do segundo encerramento. Os blocos a seguir exibem as capturas sem reproduzir a Serial inteira no documento; o CT01 já aparece na Figura 1.
 
@@ -1217,13 +1219,14 @@ CT10, CT12, CT13, CT18 e CT23 não mudaram, porque suas saídas já eram só a S
 [v2-botao]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct11.serial.txt
 [v2-bateria]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct12-ct13-ct23.serial.txt
 [v2-bateria-reteste]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct12-ct13-ct23-reteste.serial.txt
+[v2-ct18-reteste]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct18-reteste.serial.txt
 [v2-ciclo-fim]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct14-ct16.serial.txt
 [v2-interface]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct17-ct35.serial.txt
 [v2-ct18]: ../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct18.serial.txt
 
 **Achados e limitações.** Os resultados caracterizam o comportamento funcional simulado do V2. Ficaram registrados:
 
-- **CT18 continua reprovado.** Sem rede, o debounce do lacre junta pulsos curtos próximos numa abertura falsa. É defeito do firmware, não corrigido durante a rodada para não mudar o binário.
+- **CT18 reprovado nesta rodada.** Sem rede, um pulso curto foi lido como abertura falsa. Era defeito do firmware, não corrigido durante a rodada para não mudar o binário; a correção e o reteste estão no fim desta seção.
 - **Dia da ocorrência e dias do ciclo.** Com o boot sem ciclo, `dias_fora` conta a partir do vínculo e `dia_ocorrencia` conta a partir do boot. Os dois só coincidem quando o vínculo é feito no boot. Por isso, o CT09 compara o `dias_fora` e o uptime do evento com os da reconexão.
 - **Dias contam com o aparelho desligado.** No CT35, o `dias_fora` passou de 122 para 154 durante os 31 s desligado. Ao religar, o firmware emitiu de uma vez os `STATUS_SEMANAL` atrasados e o `ALERTA_PERMANENCIA` do dia 150. A carcaça continua fora da fábrica, então a contagem é coerente, mas o alerta só aparece no religamento.
 - **RN01 sem teste de recusa.** Como o mesmo gesto inicia ou encerra o ciclo, a recusa `VINCULO_RECUSADO` do firmware não é alcançável por nenhuma entrada. O CT15 comprova que não se abre um segundo ciclo, mas a recusa em si fica sem teste até existir outra origem de vínculo, como um comando da plataforma.
@@ -1265,6 +1268,10 @@ Capturas complementares: [CT04 com limiar 150](../assets/3-desenvolvimento-resul
 **Reteste de bateria e do LCD — 04 e 05/11/2026.** Depois da rodada, o firmware passou a usar a média de 16 leituras do ADC, com histerese de 1 ponto só no valor mostrado no LCD, e a acender o LCD na tela de bateria quando a bateria simulada varia 3 pontos. Por isso, CT12, CT13 e CT23 foram repetidos no Wokwi CLI 0.29.0, com o cenário de [`tests/wokwi-ci/`](../tests/wokwi-ci/run_cts.py) e o binário `demo` de SHA-256 `BFFF537F4A4E51B16EDD147624C4B254D4C03B06A87178C0C554371EDDF615D7`. Os três passaram nos mesmos critérios: dois `BATERIA_BAIXA`, um `SENSOR_BATERIA_FALHA` e faixa de 0% a 100% ([Log][v2-bateria-reteste]).
 
 O cenário salta entre os níveis, então não percorre o limiar devagar. A descida lenta até 19% e o despertar do LCD com variação lenta foram verificados só em host, em `tests/firmware_interface_tests.cpp`. O CT40 foi repetido em 05/11/2026 no Wokwi for VS Code 4.1.0, sem mexer no potenciômetro, com o binário de SHA-256 `AE8F00D2F8048D5A6C75C3775DBFE35475D043C57774376F20FCD5740E22860A`, que difere do binário acima só no critério de despertar pela bateria, e passou no mesmo critério: o LCD apagou sem interação, o primeiro toque em AVANÇAR e em VOLTAR só acendeu a mesma tela, e o segundo navegou ([Captura 1](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40AntesReteste.png) · [Captura 2](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40ApagadoReteste.png) · [Captura 3](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40PrimeiroAvancarReteste.png) · [Captura 4](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40SegundoAvancarReteste.png) · [Captura 5](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40PrimeiroVoltarReteste.png) · [Captura 6](../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/ct40SegundoVoltarReteste.png)). Os demais CTs não foram repetidos com esses binários e seguem com o resultado da rodada acima.
+
+**Reteste do CT18 — 05/11/2026: APROVADO no simulador nas contagens.** O log da rodada mostrou o `seal_changed` espúrio em 43011 ms, antes do próprio `debounce_confirmed_at_ms` de 43060 ms. A causa: a interrupção registrou a borda depois do instante lido no início do `loop()`, a subtração sem sinal deu um valor enorme, e o pulso foi confirmado sem cumprir os 60 ms de debounce. A correção em `include/seal_debounce.h` usa diferença com sinal, com teste em `tests/firmware_seal_isr_tests.cpp`.
+
+O CT18 foi repetido no Wokwi CLI 0.29.0, com [`tests/wokwi-complementares/CT18-original`](../tests/wokwi-complementares/README.md) e o binário `demo` de SHA-256 `D0C27D6C70C8FB0388FA6DF79D98B4DCA0ECB03DC377E9AE9D08DD4C757CBB95`. As 20 transições com rede e as 20 sem rede geraram 40 `seal_changed`, sem duplicação; os pulsos de 20 ms e 40 ms não geraram evento nas duas condições, e nenhum registro saiu antes da confirmação do debounce ([Log][v2-ct18-reteste]). A latência `L_det` e o lote de 30 estímulos não foram medidos. O ensaio no protótipo físico está no CT65 da seção 3.4.2. Esse binário difere do usado no reteste de bateria só no debounce do lacre.
 
 #### <a name="cts36-42-interface-v2"></a>CT36–CT42 — interface local do V2
 
@@ -1525,12 +1532,132 @@ CTs novos para comportamentos que o V2 acrescentou: a idade da última posição
 
 ### 3.4.2. Protótipo Físico do Projeto (offline) (sprint 2)	
 
-_Aqui você deve registrar diversas situações de teste, indicando exemplos de leitura (entrada) e escrita (saída) apresentadas pelo seu sistema físico. Estes registros serão utilizados para testar seus componentes, portanto, descreva várias situações, incluindo não apenas casos de sucesso, mas também de possíveis falhas nas leituras de entradas e saídas. <br>
-Siga as nomenclaturas e convenções já utilizadas anteriormente, e não se esqueça dos alinhamentos de negócios e experiência do usuário para pensar em situações representativas. Inclua figuras do protótipo físico e descrições dos testes realizados para ilustrar o funcionamento do protótipo. Continue a numeração de CT a partir da tabela anterior. A tabela a seguir serve como exemplo._
+O protótipo físico leva o firmware do V2 para o ESP32 real, sem servidor. Em duas protoboards de 830 furos estão o ESP32 DevKitC, o LCD 16x2 I2C, o LED vermelho de violação no GPIO13, o buzzer, o módulo GNSS NEO-6M e os botões. As entradas ensaiadas são o sensor digital do lacre (GPIO27), o sensor analógico de bateria, simulado por potenciômetro no GPIO34, e o módulo GNSS (UART no GPIO16).
 
-**CT#** | **Descrição** | **Pré-condição** | **Procedimento de teste** | **Pós-condição/Resultado esperado** | **Observações** (opcional)
-|----------|----------|----------|----------|----------|----------|
-|CT11|ex. Verificação de conexão de rede bem-sucedida. | ex. O dispositivo está desligado.| ex. Ligue o dispositivo, aguarde alguns segundos e verifique se ele estabelece uma conexão bem-sucedida com a rede Wi-Fi. | ex. O LED verde indicador de conexão acende de forma contínua, sinalizando uma conexão bem-sucedida à rede. |
+Na bancada, lacre, rede e ON/OFF são botões de toque, e não chaves deslizantes: cada toque em LACRE ou REDE alterna o estado, e ON/OFF exige 3 s. O botão LACRE simula o sensor real do lacre, previsto como laço de continuidade ou reed switch, e o botão REDE simula a disponibilidade do módulo SIM. Os dois existem porque o contato definitivo depende da fixação no equipamento e a comunicação celular ainda não foi integrada; assim, a abertura do lacre e a falta de rede podem ser provocadas de forma controlada. O firmware foi gravado no ambiente `bancada`, com 1 s = 1 dia e SHA-256 `10D68051B5933F843DC699FEE39CAD5DA99DBB625D0FD743F407B17ED4F06F86`. A execução foi em 05/11/2026, com a Serial gravada a 115200 baud. Esse binário vale para os CT46 a CT52. Depois deles, o despertar do LCD foi corrigido, e os CT53 a CT64, o CT66 e o CT69 rodaram no binário de SHA-256 `AA6D6390660D409708342F849882950BFFA471983CB787F0DE2497A48D7683BF`. O CT65 usou o firmware de teste [`tests/bancada-ct65`](../tests/bancada-ct65/main.cpp), de SHA-256 `6CBBC406EEFC63734AD939304A24EB77F95AE8B4470CCB5986884D0096A8065C`, que inclui o firmware de produção sem mudanças. A montagem está descrita no [relatório de montagem](outros/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/relatorio-montagem-prototipo-fisico.md).
+
+![Protótipo físico na protoboard dupla](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/prototipoVistaSuperior.jpg)
+
+*Figura 3.4.2-1 — Protótipo físico com a fiação reorganizada, visto de cima. Fonte: quadro do vídeo do CT69, 05/11/2026.*
+
+#### Casos de teste
+
+| CT | Descrição | Pré-condição | Procedimento de teste | Pós-condição / resultado esperado | Sensores e saídas |
+|---|---|---|---|---|---|
+| CT46 | Navegação das telas (RF034) | Ligado, sem ciclo | Tocar AVANÇAR cinco vezes e VOLTAR uma vez, esperando 3 s em cada tela | NF, prazo, posição, bateria, lacre e retorno à NF; VOLTAR leva ao lacre | Botões; LCD; `tela=` no heartbeat |
+| CT47 | Abrir o ciclo (RF003) | Ligado, sem ciclo, lacre fechado | Segurar CICLO por 3 s | Contagem "segure mais N s", depois "Ciclo iniciado / aguardando NF"; `CICLO_INICIADO` | Botão; LCD; Serial |
+| CT48 | Toque curto não registra | Ligado, sem ciclo | Soltar CICLO e depois AUTORIZAR antes de 3 s | Nenhum evento; Serial com `solto antes de 3 s` para cada botão | Botões; LCD sem mensagem de confirmação |
+| CT49 | Retirada autorizada (RF007) | Ligado, sem ciclo ativo, lacre fechado | Segurar AUTORIZAR por 3 s; tocar LACRE em até 3 s; tocar LACRE de novo | `AUTORIZACAO_REGISTRADA`, `RETIRADA_AUTORIZADA` e `LACRE_REAPLICADO`, sem violação | Lacre muda de fechado para aberto e volta; **LED apagado**; LCD "Retirada autorizada" |
+| CT50 | Violação do lacre (RF006, RN05) | Ligado, sem ciclo ativo, lacre fechado, sem autorização válida | Tocar LACRE; depois tocar de novo | `VIOLACAO_LACRE`; ao fechar, `LACRE_FECHADO` | Lacre muda de fechado para aberto; **LED pisca**; buzzer toca; LCD "VIOLACAO registrada" |
+| CT51 | Falha do sensor de bateria (RF019, RN10) — caso de falha | Ligado, potenciômetro em cerca de 75% | Ligar o GPIO34 ao GND com um jumper; depois retirar | `SENSOR_BATERIA_FALHA` com ADC = 0; ao retirar, a leitura volta | Sensor analógico vai a zero; LCD "Bateria / sensor com falha" e depois a porcentagem |
+| CT52 | GNSS com fix (RF005) | Ligado, módulo NEO-6M a céu aberto, antena voltada para cima | Aguardar o fix; tocar AVANÇAR até a tela de posição | `fix=valido` no heartbeat, `location_sample` válido e LCD "Ultima posicao / ha N s" | GNSS passa de sem fix para fix válido; LCD; Serial |
+| CT53 | Autorização isolada (RF007) | Ciclo aberto, lacre fechado | Segurar AUTORIZAR por 3 s, sem tocar em LACRE | "Autorizacao ok / vale 3 dias"; `AUTORIZACAO_REGISTRADA` | Botão; LCD; Serial |
+| CT54 | ON/OFF (RF034) | Ligado, Serial aberta | Segurar ON/OFF por 3 s, esperar 10 s e segurar de novo | LCD apagado; `DISPOSITIVO_DESLIGADO`; nenhum heartbeat ou JSON enquanto desligado; novo `STATUS` | Botão; LCD; Serial |
+| CT55 | LCD apaga e acorda (RF034) | Ligado, potenciômetro parado | Esperar 15 s; tocar um botão; esperar apagar; girar o potenciômetro | Apaga em 15 s; o toque acende; a variação acende na tela de bateria | Sensor analógico muda; LCD |
+| CT56 | Recusa sem NF de retorno (RF016) — caso de falha | Ciclo aberto, lacre fechado, sem NF | Segurar CICLO por 3 s | "Nao encerrado / falta NF retorno"; `ENCERRAMENTO_RECUSADO` com `nf_retorno_ausente` | Botão; LCD; Serial |
+| CT57 | Recusa com lacre aberto (RF016) — caso de falha | Ciclo aberto, lacre aberto com autorização | Segurar CICLO por 3 s; depois fechar o lacre | "Nao encerrado / lacre aberto"; motivo `lacre_aberto`; ao fechar, `LACRE_REAPLICADO` | Lacre muda de aberto para fechado; LCD; Serial |
+| CT58 | Encerrar ciclo (RF016) | Ciclo aberto, lacre fechado | Enviar `NF`; segurar CICLO por 3 s | `NF_RETORNO_LANCADA`; "Ciclo encerrado"; `CICLO_ENCERRADO`; `dias_fora=0` | Botão; LCD; Serial |
+| CT59 | NF inválida — caso de falha | Ciclo aberto | Enviar `REMESSA NF@1`; depois `REMESSA NF-000123` | Mensagem de NF inválida, sem mudança; depois a NF é registrada | Serial; LCD |
+| CT60 | Limiares da bateria (RN10) | Potenciômetro acima de 25% | Parar abaixo de 20%, entre 20% e 25%, abaixo de 20%, acima de 25% e abaixo de 20% | Dois `BATERIA_BAIXA`, o segundo só depois de passar de 25% | Sensor analógico muda; LCD "BAIXA" |
+| CT61 | Contato do lacre (RF006) | Ciclo aberto, rede ligada | Tocar LACRE várias vezes, devagar | Um `seal_changed` por transição, sem duplicação | Lacre muda de estado; Serial |
+| CT62 | Reinício real | Ciclo aberto, lacre aberto | Cortar o USB, esperar 5 s e religar | `uptime_ms` volta perto de zero; ciclo e lacre voltam da memória | Lacre e ciclo preservados; Serial |
+| CT63 | Fila e reenvio (RF010) | Ciclo aberto, rede desligada | Gerar eventos de lacre e de status; voltar a rede | `fila=` sobe; reenvio na ordem; fila zera; nenhuma violação falsa | Lacre muda de estado; LCD; Serial |
+| CT64 | Fila cheia — caso de falha | Ciclo aberto, rede desligada | Tocar LACRE 20 vezes; voltar a rede | Descarte do não crítico; `FILA_CHEIA`; `VIOLACAO_LACRE_RESUMO` ao reenviar | Lacre muda de estado; Serial |
+| CT65 | Pulsos curtos do lacre (RF006) — caso de falha | Jumper do GPIO32 ao GPIO27, memória limpa | Firmware de teste aplica pulsos de 20 e 40 ms e 20 toques de 200 ms, com rede e sem rede | Nenhum evento nos pulsos; 20 `seal_changed` por lote | Pulsos no sensor digital; Serial |
+| CT66 | GNSS sem dados (RF005) — caso de falha | A céu aberto, com fix válido | Tirar o fio do TX do módulo; recolocar sem reiniciar a placa | `GNSS_SEM_FIX` com `sem_dados`; `GNSS_RECUPERADO` depois do fix | GNSS perde e recupera dados; LCD; Serial |
+| CT69 | Violação e fechamento com ciclo aberto (RF006, RN05) | Memória limpa, lacre fechado | Abrir o ciclo; tocar LACRE sem autorização; tocar de novo depois de alguns segundos | `VIOLACAO_LACRE` com `ciclo_ativo=true`; ao fechar, `LACRE_FECHADO` | Lacre muda de estado; **LED pisca e apaga ao fechar**; buzzer toca e para; LCD |
+
+#### Resultados
+
+| CT | Situação | Resultado observado | Evidência |
+|---|---|---|---|
+| CT46 | APROVADO | As cinco telas apareceram na ordem, com `tela=` indo de 1 a 5, voltando a 1, e VOLTAR levando à tela 5. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46Navegacao.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46-navegacao.serial.txt) |
+| CT47 | APROVADO | Contagem no LCD e `CICLO_INICIADO` em 550166 ms. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47AbrirCiclo.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47-abrir-ciclo.serial.txt) |
+| CT48 | APROVADO | `BTN_CICLO` e `BTN_AUTORIZAR` soltos antes de 3 s, sem nenhum evento. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48ToqueCurto.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48-toque-curto.serial.txt) |
+| CT49 | APROVADO, com ressalva | Lacre aberto 1,1 s depois da autorização, com `authorized_removal=true`, `RETIRADA_AUTORIZADA` e depois `LACRE_REAPLICADO`. O LED ficou apagado em todos os quadros analisados do vídeo. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizada.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49-retirada-autorizada.serial.txt) |
+| CT50 | APROVADO, com ressalva | `VIOLACAO_LACRE` em 105317 ms e `LACRE_FECHADO` em 117911 ms. No vídeo, o LED pisca com período de 1,0 s, igual ao configurado, e o buzzer pode ser ouvido. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50Violacao.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50-violacao.serial.txt) |
+| CT51 | APROVADO, com ressalva | `SENSOR_BATERIA_FALHA` e LCD "sensor com falha" nas tentativas; a leitura voltou ao retirar o jumper. Foram 8 eventos de falha e 3 `BATERIA_BAIXA` em várias tentativas, descritas nas limitações. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51FalhaSensor.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51-falha-sensor.serial.txt) |
+| CT52 | APROVADO, com ressalva | `fix=valido` aos 560 s de funcionamento, a céu aberto. Depois, 35 heartbeats seguidos com `fix=valido` e duas `location_sample` com `fix_valid=true`. LCD com "Ultima posicao / ha 0 s". | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct52GnssFix.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct52-gnss-com-fix.serial.txt) |
+| CT53 | APROVADO | `AUTORIZACAO_REGISTRADA` em 1160260 ms, sem abertura do lacre. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct53Ct57AutorizacaoRecusa.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct53-autorizacao.serial.txt) |
+| CT54 | APROVADO | `DISPOSITIVO_DESLIGADO` em 1312378 ms e novo `STATUS` em 1328848 ms, sem nenhuma linha na Serial entre os dois. LCD apagado e aceso de novo. Cobre no físico a pendência do CT35. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct54OnOff.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct54-on-off.serial.txt) |
+| CT55 | APROVADO | No vídeo, com cronômetro, o LCD apaga cerca de 15 s depois do toque, e girar o potenciômetro acende a tela de bateria. Parado, ele ficou estável de 1533 s a 1640 s. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct55LcdApagaAcorda.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct55-lcd-apaga-acorda.serial.txt) |
+| CT56 | APROVADO | `ENCERRAMENTO_RECUSADO` com `nf_retorno_ausente` e LCD "Nao encerrado / falta NF retorno"; o ciclo seguiu ativo. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct56RecusaSemNf.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct56-recusa-sem-nf.serial.txt) |
+| CT57 | APROVADO | Lacre aberto 1,6 s depois da autorização, com `authorized_removal=true`; recusa com `lacre_aberto` e `LACRE_REAPLICADO` ao fechar. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct53Ct57AutorizacaoRecusa.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct57-recusa-lacre-aberto.serial.txt) |
+| CT58 | APROVADO | `NF_RETORNO_LANCADA`, depois `CICLO_ENCERRADO` em 1261359 ms, com `dias_fora=0` e LCD "Ciclo encerrado". | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct58EncerrarCiclo.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct58-encerrar-ciclo.serial.txt) |
+| CT59 | APROVADO, com ressalva | A Serial recusou `REMESSA NF@1` e registrou `NF-000123`. O vídeo mostra só a tela final. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct59NfInvalida.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct59-nf-invalida.serial.txt) |
+| CT60 | APROVADO | `BATERIA_BAIXA` em 502,2 s e em 546,2 s; nenhum alerta com 23% nem no retorno a 17%, antes de a leitura passar de 25%. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct60LimiaresBateria.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct60-limiares-bateria.serial.txt) |
+| CT61 | APROVADO, com ressalva | 76 transições, 38 aberturas e 38 fechamentos, alternadas e sem duplicação. Tempo interno entre a confirmação do debounce e o registro de até 105 ms. Uma linha saiu corrompida na Serial e foi contada pelo tempo de confirmação e pela alternância. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct61ContatoLacre.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct61-contato-lacre.serial.txt) |
+| CT62 | APROVADO | Com lacre aberto, depois do corte: `uptime_ms` 1439, `seal=violated`, ciclo 2 ativo e `contexto_restaurado=true`. Repete no físico o que reprovou no CT22. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct62ReinicioReal.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct62-reinicio-real.serial.txt) |
+| CT63 | APROVADO | Fila chegou a 8, com uma `VIOLACAO_LACRE` por abertura e nenhuma falsa. Ao voltar a rede, 8 eventos saíram na ordem, com os tempos originais, e a fila zerou. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct63FilaReenvio.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct63-fila-reenvio.serial.txt) |
+| CT64 | APROVADO | As 10 aberturas foram preservadas: 8 `VIOLACAO_LACRE` e 2 no `VIOLACAO_LACRE_RESUMO`. Eventos não críticos foram descartados ou contados como perdidos. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct64FilaCheia.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct64-fila-cheia.serial.txt) |
+| CT65 | APROVADO, com ressalva | Nenhum evento nos pulsos de 20 e 40 ms e 20 `seal_changed` por lote, com rede e sem rede. Repete no físico o que reprovou no CT18. Sem vídeo, porque os pulsos não são visíveis. | [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct65-pulsos-lacre.serial.txt) |
+| CT66 | APROVADO | `GNSS_SEM_FIX` com `sem_dados` em 608086 ms, cerca de 10 s depois de tirar o fio. `GNSS_RECUPERADO` em 719108 ms, com `tempo_sem_posicao_s=110` e `coletas_sem_fix=3`, sem reiniciar a placa. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct66GnssSemDados.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct66-gnss-sem-dados.serial.txt) |
+| CT69 | APROVADO | `VIOLACAO_LACRE` em 58289 ms, com `ciclo_ativo=true`, e `LACRE_FECHADO` em 80819 ms. No vídeo, o LED pisca a cada 1,0 s e apaga ao fechar o lacre; o buzzer pode ser ouvido e para ao fechar. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct69ViolacaoFechamento.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct69-violacao-fechamento.serial.txt) |
+
+![CT46: tela do lacre](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46LcdFoto.jpg)
+
+*Figura 3.4.2-2 — CT46, tela "Lacre INTEGRO / fechado". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+
+![CT47: ciclo iniciado](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47LcdFoto.jpg)
+
+*Figura 3.4.2-3 — CT47, "Ciclo iniciado / aguardando NF". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+
+![CT48: tela sem mudança](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48LcdFoto.jpg)
+
+*Figura 3.4.2-4 — CT48, a tela "NF da remessa" permanece depois do toque curto. Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+
+![CT49: autorização](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49LcdFoto.jpg)
+
+*Figura 3.4.2-5 — CT49, etapa de autorização, com "Autorizacao ok / vale 3 dias". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+
+![CT49: retirada autorizada](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaLcdFoto.jpg)
+
+*Figura 3.4.2-6 — CT49, "Retirada autorizada". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+
+![CT50: violação registrada](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50LcdFoto.jpg)
+
+*Figura 3.4.2-7 — CT50, "VIOLACAO registrada". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+
+![CT50: LED aceso](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50LedAceso.png) ![CT50: LED apagado](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50LedApagado.png)
+
+*Figura 3.4.2-8 — CT50, LED de violação aceso e apagado no pulso de 1 s. Fonte: quadros do vídeo, 05/11/2026.*
+
+![CT51: sensor com falha](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51LcdFoto.jpg)
+
+*Figura 3.4.2-9 — CT51, "Bateria / sensor com falha". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+
+![CT52: última posição](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct52LcdFoto.jpg)
+
+*Figura 3.4.2-10 — CT52, tela "Ultima posicao / ha 0 s" com o protótipo a céu aberto. Fonte: foto da execução, 05/11/2026.*
+
+![CT69: violação com ciclo aberto](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct69LcdViolacao.jpg) ![CT69: lacre fechado](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct69LcdFechado.jpg)
+
+*Figura 3.4.2-11 — CT69, "VIOLACAO registrada" e "Lacre fechado / apos violacao". Fonte: quadros do vídeo, 05/11/2026.*
+
+As fotos ilustram as telas; o resultado de cada CT vem dos vídeos e da Serial. Recortes dos vídeos com realce do LCD: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacreRealce.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciadoRealce.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudancaRealce.png) · [CT49](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizadaRealce.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistradaRealce.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalhaRealce.png). Quadros sem ajuste: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacre.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciado.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudanca.png) · [CT49](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizada.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistrada.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalha.png)
+
+#### Limitações
+
+- **CT49 e CT50 sem ciclo ativo.** Os eventos desses dois saíram com `ciclo_ativo=false`. O CT57 e o CT69 repetem os mesmos fluxos com ciclo aberto.
+- **CT51 com contato manual.** O jumper foi ligado à mão. Na tentativa do vídeo, a leitura passou por valores abaixo de 20% antes de chegar a zero, e por isso `BATERIA_BAIXA` saiu antes de `SENSOR_BATERIA_FALHA`. As tentativas em 202 s e 329 s geraram a falha sem `BATERIA_BAIXA` antes dela. O evento de falha repete quando o contato oscila, porque a decisão usa uma leitura do ADC. O log traz todas as tentativas.
+- **Potenciômetro com mau contato.** Na rodada dos CT46 a CT52, a leitura oscilou com o potenciômetro parado, e a variação de 3 pontos acendeu o LCD na tela de bateria. Isso aparece no vídeo do CT47, depois do resultado do teste. O contato foi refeito antes do CT55.
+- **Buzzer.** O som do buzzer no CT50 e no CT69 foi conferido de ouvido; frequência e duração não foram medidas.
+- **Sem servidor.** No CT63 e no CT64, reenviar significa publicar na Serial; não há confirmação de entrega.
+- **Botão no lugar do contato.** O CT61 e o CT65 usam o botão ou o jumper no lugar do contato real do lacre. O tempo do CT61 é interno ao firmware, sem referência externa.
+- **Vídeos.** Foram comprimidos para o repositório, com áudio. O CT53 e o CT57 estão no mesmo vídeo.
+- **Bateria simulada.** O potenciômetro não representa bateria, divisor nem tensão real.
+- **GNSS.** O primeiro fix do CT52 levou cerca de 9 minutos. A placa reiniciou entre a transição para `fix=valido` e as coletas registradas, e o fix se manteve. A perda de dados foi ensaiada no CT66; a perda de fix sem rede segue planejada no CT67, e a precisão da posição não foi medida. O módulo é um NEO-6M, não o LC76G-PA escolhido para o dispositivo. As coordenadas estão mascaradas no log.
+
+#### Casos planejados para a próxima sprint
+
+Os casos abaixo estão **PLANEJADOS** e **NÃO EXECUTADOS**. As colunas descrevem o que será ensaiado no protótipo físico; nenhuma linha é resultado de teste.
+
+Os CT24 a CT34 (energia, hardware e comunicação, definidos no [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md)) e os casos futuros CT-F28 e CT-F29 ficam **PLANEJADOS** e **NÃO EXECUTADOS** nesta sprint, porque dependem de plataforma, comunicação, suspensão no firmware, módulo GNSS definitivo, fixação e medições que ainda não existem; os CT-F28 e CT-F29 dependem de funções ainda não implementadas e de validação com o parceiro.
+
+| CT | Caso | Pré-condição | Procedimento de teste | Resultado esperado | Observações |
+|---|---|---|---|---|---|
+| CT67 | Sem fix e sem rede | Rede desligada | Bloquear o sinal; restaurar e voltar a rede | `GNSS_SEM_FIX` na fila; `GNSS_RECUPERADO`; fila zera | Relação com o CT26 |
+| CT68 | Corte durante a gravação | Evento recém-gerado | Cortar o USB logo depois do evento e religar | Fila e contexto consistentes | Só entra se for repetível; relação com o CT29 |
 
 ### 3.4.3. Protótipo do Projeto com MQTT e I2C (sprint 3)	
 
@@ -1616,3 +1743,5 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 56. SENAI PERNAMBUCO. *Gerenciamento da Manutenção*. Disponível em: https://www.pe.senai.br/cursos/gerenciamento-da-manutencao/. Acesso em: 4 nov. 2026.
 57. SENAC SÃO PAULO. *Assistente Fiscal*. Disponível em: https://www.sp.senac.br/cursos-livres/curso-de-assistente-fiscal. Acesso em: 4 nov. 2026.
 58. SENAC SÃO PAULO. *Técnico em Logística*. Disponível em: https://www.sp.senac.br/cursos-tecnicos/curso-tecnico-em-logistica-presencial-ead. Acesso em: 4 nov. 2026.
+59. BRASILAGRO. *CerradinhoBio ampliou lucro em 90% em 2025/26 e aposta em etanol de milho*. Disponível em: https://www.brasilagro.com.br/conteudo/cerradinhobio-ampliou-lucro-em-90-em-202526-e-aposta-grao.html. Acesso em: 4 nov. 2026.
+60. AGÊNCIA NACIONAL DO PETRÓLEO, GÁS NATURAL E BIOCOMBUSTÍVEIS. *Revendedores de combustíveis: ANP divulga orientações devido à chegada do E30 e B15*. Disponível em: https://www.gov.br/anp/pt-br/canais_atendimento/imprensa/noticias-comunicados/revendedores-de-combustiveis-anp-divulga-orientacoes-devido-a-chegada-do-e30-e-b15/. Acesso em: 4 nov. 2026.
