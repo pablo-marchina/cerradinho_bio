@@ -42,6 +42,7 @@ class String {
 struct FakeSerial {
 #ifdef GUARA_HOST_INTEGRATION
  std::string input;
+ mutable std::string output;  // JSON emitido pelo firmware, para assercoes de integracao host
  void inject(const std::string &text){input += text;}
 #endif
  void begin(unsigned long) {}
@@ -61,6 +62,10 @@ struct FakeSerial {
    return -1;
 #endif
  }
+#ifdef GUARA_HOST_INTEGRATION
+ void println(const String &s) const { output += s.c_str(); output += '\n'; }
+ void println(const char *s) const { output += s ? s : ""; output += '\n'; }
+#endif
  template<typename T>void println(const T&)const{}
  template<typename T>void print(const T&)const{}
  template<typename ...Args>void printf(const char*,Args...)const{}

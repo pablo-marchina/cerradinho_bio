@@ -1,6 +1,6 @@
 # CT14-CT16 (V2): recusas de encerramento, encerramento valido e reutilizacao, todos com
-# BTN_CICLO segurado 3 s. CT15: no V2 o mesmo gesto encerra o ciclo ativo; o log nao pode
-# ter VINCULO_RECUSADO.
+# BTN_CICLO segurado 3 s continua iniciando/encerrando. CT15 usa a nova entrada
+# explicita VINCULAR no Monitor Serial para provocar VINCULO_RECUSADO sem fechar ciclo.
 name: CT14-CT16 V2 - encerramento e reutilizacao do ciclo
 version: 1
 steps:
@@ -37,7 +37,10 @@ steps:
   - wait-serial: '"type":"CICLO_INICIADO"'
   - set-control: { part-id: btn_ciclo, control: pressed, value: 0 }
   - delay: 300ms
-  # CT15: novo gesto com ciclo ativo cai no encerramento (NF do ciclo 2 ausente).
+  # CT15: comando de novo vinculo com ciclo 2 ativo deve recusar sem alterar o ciclo.
+  - write-serial: "VINCULAR\n"
+  - wait-serial: '"type":"VINCULO_RECUSADO"'
+  # Gesto de encerramento continua funcionando: ciclo 2 sem NF de retorno deve recusar.
   - set-control: { part-id: btn_ciclo, control: pressed, value: 1 }
   - wait-serial: '"type":"ENCERRAMENTO_RECUSADO"'
   - set-control: { part-id: btn_ciclo, control: pressed, value: 0 }

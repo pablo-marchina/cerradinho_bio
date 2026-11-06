@@ -17,6 +17,13 @@ mkdir -p build
 ./build/firmware_interface_host
 "$CXX" -std=c++17 -O2 -Wall -Wextra -Werror -Iinclude -Itests/firmware_stubs tests/firmware_buttons_tests.cpp -o build/firmware_buttons_host
 ./build/firmware_buttons_host
+# Issue #113: exercitar entrada serial VINCULAR por loop/readCommands em demo e weekly.
+for mode in 1 0; do
+  "$CXX" -std=c++17 -O2 -Wall -Wextra -Werror -DDEMO_MODE="$mode" \
+    -Iinclude -Itests/firmware_stubs tests/firmware_link_command_tests.cpp \
+    -o "build/firmware_link_command_${mode}_host"
+  "./build/firmware_link_command_${mode}_host"
+done
 python3 -m unittest discover -s tests/audit -p "test_*.py" -v
 python3 -m py_compile scripts/export-wokwi.py scripts/audit-docs.py scripts/sprint1_evidence.py scripts/validate-project.py
 python3 scripts/export-wokwi.py
