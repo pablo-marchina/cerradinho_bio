@@ -98,7 +98,7 @@ Rastreabilidade técnica proposta, vinculada aos RF e RN de negócio das seçõe
 
 ## 4. Como registrar e validar
 
-Os CT01–CT23 permanecem na seção 3.4.1 da [documentação principal](../../../documentacao.md). Os CT24–CT34 abaixo estão reservados ao planejamento futuro e não são resultados da Sprint 1. Os exemplos CT11/CT21 nas seções ainda não preenchidas do template não representam novos casos executados.
+Os CT01–CT23 permanecem na seção 3.4.1 da [documentação principal](../../../documentacao.md). Os CT24–CT34 abaixo estão planejados para o futuro e não são resultados da Sprint 1. Os exemplos CT11/CT21 nas seções ainda não preenchidas do template não representam novos casos executados.
 
 Antes de executar, definir metas e condições, identificar versão e configuração e registrar os dados medidos. Usar o registro de execução da seção 3.4.1. Para critérios ainda sem limite acordado, informar a medição e manter a aprovação pendente. Consumo, recepção GNSS, fixação exigem validação física.
 
