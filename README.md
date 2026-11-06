@@ -31,9 +31,9 @@
 
 ## 📜 Descrição
 
-O GuaráTracking é uma solução IoT desenvolvida com a **CerradinhoBio** para acompanhar equipamentos enviados à manutenção externa. Cada ciclo de manutenção recebe um dispositivo reutilizável, fixado ao equipamento com um lacre e vinculado à nota fiscal de remessa, ao fornecedor, ao responsável e ao prazo previsto. O dispositivo informa periodicamente a última localização GNSS válida e registra eventos de lacre; a plataforma calcula os dias fora, sinaliza atraso e permanência acima do limiar configurado (referência inicial de 150 dias) e preserva o histórico quando o dispositivo é reutilizado em outro equipamento. Os dados ficam disponíveis por API para análise em BI. A proposta reduz consultas dispersas e cobranças manuais entre PCM, Fiscal e Logística.
+O GuaráTracking é uma solução IoT desenvolvida com a **CerradinhoBio** para acompanhar equipamentos enviados à manutenção externa. Cada ciclo de manutenção recebe um dispositivo reutilizável, fixado ao equipamento com um lacre e vinculado à nota fiscal de remessa, ao fornecedor, ao responsável e ao prazo previsto. O dispositivo informa periodicamente a última localização GNSS válida e registra eventos de lacre; a plataforma calcula os dias fora, sinaliza atraso e permanência acima do limiar configurado (referência inicial de 150 dias) e preserva o histórico quando o dispositivo é reutilizado em outro equipamento. O projeto prevê uma API para consulta dos dados por ferramentas de BI. A proposta reduz consultas dispersas e cobranças manuais entre PCM, Fiscal e Logística.
 
-O protótipo atual roda no simulador Wokwi com ESP32, GPS customizado, chave de lacre, bateria simulada, LCD 16x2 com botões de navegação, buzzer de violação e botões de autorização e de ciclo. As regras de ciclo, lacre, fila local de eventos e bateria estão implementadas e possuem testes em host, com as evidências dos casos de teste CT01–CT23 e CT35 descritas na [documentação](document/documentacao.md); o CT18 e CT22 mantêm reprovações históricas e CT09 permanece bloqueado (seção 3.4.1). Transporte por MQTT, interface web e API ficam para as próximas sprints. A rede simulada (`SW_REDE`) não representa o estado real do Wi-Fi, e o JSON impresso na Serial não equivale a uma publicação confirmada em servidor.
+O protótipo roda no Wokwi e em um ESP32 físico offline. Na bancada, os testes registraram a perda e a recuperação dos dados do GPS (CT66) e o acionamento do LED e do buzzer na abertura do lacre (CT69). No Wokwi V2, o CT18 reprovou na rodada de 02 e 03/11 por registrar uma falsa abertura do lacre. No reteste de 05/11, o CT18 passou na contagem: registrou uma vez cada uma das 20 transições com rede e das 20 sem rede e ignorou os pulsos curtos. Ainda falta medir a latência de detecção com 30 estímulos por condição. O CT22 aguarda reteste. O CT09 depende da confirmação de recebimento pelo servidor. Os ensaios de bancada CT67 e CT68 seguem planejados. Os resultados por ambiente estão nas seções 3.4.1 e 3.4.2 da [documentação](document/documentacao.md). MQTT, interface web e API estão previstos para as próximas sprints.
 
 Projeto no Wokwi: https://wokwi.com/projects/478276108359405569.
 
@@ -63,7 +63,7 @@ Dentre os arquivos e pastas presentes na raiz do projeto, definem-se:
 
 - <b>AGENT.md</b>: convenções do repositório para pessoas e agentes de IA.
 
-- <b>platformio.ini</b>: ambientes de compilação `demo` e `weekly` do firmware.
+- <b>platformio.ini</b>: ambientes de compilação `demo` e `weekly` para o simulador e `bancada` para o ESP32 físico.
 
 ## 🔧 Execução dos projetos
 
@@ -93,13 +93,27 @@ Com o PlatformIO instalado globalmente, as compilações equivalem a `pio run -e
 3. Para o ambiente `weekly`, selecione `wokwi.weekly.toml` e compile o ambiente correspondente.
 4. Para publicar no Wokwi web, prepare os arquivos com `python scripts/export-wokwi.py` e siga o [guia do circuito](src/firmware/prototipo_wokwi/README.md).
 
-No ambiente `demo`, a localização é coletada a cada 30 segundos e 1 s simula 1 dia nas regras de ciclo. No `weekly`, a coleta ocorre a cada sete dias reais. O protótipo não comprova autonomia real nem cobertura em oficinas; os retestes CT18/CT22 no Wokwi integrado ainda são necessários.
+No ambiente `demo`, a localização é coletada a cada 30 segundos e 1 s simula 1 dia nas regras de ciclo. No `weekly`, a coleta ocorre a cada sete dias reais. A autonomia da bateria e a cobertura em oficinas ainda dependem de medições em campo.
+
+### Execução no ESP32 físico
+
+Siga a pinagem do [guia de montagem](document/outros/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/relatorio-montagem-prototipo-fisico.md) e conecte o ESP32 por USB. No terminal do PlatformIO, na raiz do projeto, execute:
+
+```powershell
+pio run -e bancada -t upload
+pio device monitor -b 115200
+```
+
+No ambiente de bancada, 1 segundo representa 1 dia do ciclo. Os botões LACRE e REDE alternam o estado a cada toque. Para ligar ou desligar o protótipo, mantenha ON/OFF pressionado por 3 segundos.
 
 ### Verificações locais
 
 As verificações em computador, a auditoria da documentação e a compilação para ESP32 podem ser executadas localmente com `scripts/verify-host.sh`, `scripts/audit-docs.py` e PlatformIO. O cenário `tests/wokwi-ci/smoke.yaml` permanece disponível para testes manuais com o Wokwi CLI.
 
 ## 🗃 Histórico de lançamentos
+
+* 0.2.0 - 05/11/2026
+    * Sprint 2: jornadas atual e futura e storyboard de Geraldo, oito requisitos não funcionais, matriz de rastreabilidade atualizada, testes no Wokwi V2 e protótipo físico offline com ESP32, GPS, LCD e alerta de violação do lacre.
 
 * 0.1.0 - 24/10/2026
     * Sprint 1: entendimento do negócio (contexto da indústria, Cinco Forças de Porter, SWOT, Value Proposition Canvas, matriz de riscos, política de privacidade e BOM), personas, requisitos funcionais, regras de negócio, matriz de rastreabilidade e protótipo inicial no Wokwi com os casos de teste CT01–CT23 e CT35.
