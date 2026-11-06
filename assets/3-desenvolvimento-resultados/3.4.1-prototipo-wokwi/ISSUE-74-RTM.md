@@ -33,7 +33,7 @@
 | CT19 | APROVADO (simulador) | RF005, RF015 / RN08, RN22 | [ct19.png](ct19.png) | [ct19FixInvalido.png](ct19FixInvalido.png); [CT19.serial.txt](CT19.serial.txt) | Sem GNSS válido, sinalização local; não valida painel ou satélite físico. |
 | CT20 | APROVADO (simulador) | RF005, RF015 / RN08, RN22 | [ct20.png](ct20.png) | [ct2050m.png](ct2050m.png); [CT20.serial.txt](CT20.serial.txt) | Coletas sintéticas de deslocamento; não implica entrega ao dashboard. |
 | CT21 | APROVADO (NVS no simulador) | RF010 / RN09, RN22 | [ct21.png](ct21.png) | —; [CT21.serial.txt](CT21.serial.txt) | Limite de 16 diagnósticos persistidos na NVS instrumentada. |
-| CT22 | REPROVADO (uptime do ambiente) | RF005, RF010, RF015 / RN08, RN09, RN22 | [ct22.png](ct22.png) | [ct22PontoB.png](ct22PontoB.png); [CT22.serial.txt](CT22.serial.txt) | Dados retidos, mas uptime_ms não reiniciou; não aprovar o CT integralmente. |
+| CT22 | REPROVADO (parcial: uptime; retenção observada) | RF005, RF010, RF015 / RN08, RN09, RN22 | [ct22.png](ct22.png) | [ct22PontoB.png](ct22PontoB.png); [CT22.serial.txt](CT22.serial.txt) | Dados retidos, mas uptime_ms não reiniciou; não aprovar o CT integralmente. |
 | CT23 | APROVADO (entrada sintética) | RF019, RF027 / RN10 | [ct23.png](ct23.png) | [ct23Minimo.png](ct23Minimo.png), [ct23Meio.png](ct23Meio.png); [CT17-CT23.serial.txt](CT17-CT23.serial.txt) | Percentuais sintéticos 0/50/100%; sem calibração física. |
 | CT35 | APROVADO (desligamento lógico) | Transversal / Transversal | [ct35Desligado.png](ct35Desligado.png) | [ct35.png](ct35.png); [CT01-CT07-CT11-CT12-CT35-execucao.serial.txt](CT01-CT07-CT11-CT12-CT35-execucao.serial.txt) | Desligamento lógico, não corte físico de alimentação. |
 
@@ -57,7 +57,7 @@ A situação V2 não substitui retroativamente a situação V1. Onde não há sc
 | CT12 | APROVADO (simulador) | — | [v2-ct12-ct13-ct23.serial.txt](v2-ct12-ct13-ct23.serial.txt) | Histerese com entrada sintética; sem medição da bateria física. |
 | CT13 | APROVADO (diagnóstico simulado) | — | [v2-ct12-ct13-ct23.serial.txt](v2-ct12-ct13-ct23.serial.txt) | ADC zero gera falha; não testa divisor real. |
 | CT14 | APROVADO (simulador) | [ct14V2.png](ct14V2.png) | [v2-ct14-ct16.serial.txt](v2-ct14-ct16.serial.txt) | Encerramento e abertura do ciclo 2 no V2; manter reteste V1 de 23/10. |
-| CT15 | APROVADO (critério V2 parcial) | — | [v2-ct14-ct16.serial.txt](v2-ct14-ct16.serial.txt) | Sem segundo ciclo; VINCULO_RECUSADO não é alcançável pelo gesto atual (RN01 pendente). |
+| CT15 | PARCIAL (recusa RN01 não exercitada) | — | [v2-ct14-ct16.serial.txt](v2-ct14-ct16.serial.txt) | Sem segundo ciclo; VINCULO_RECUSADO não é alcançável pelo gesto atual (RN01 pendente). |
 | CT16 | APROVADO (duas recusas) | — | [v2-ct14-ct16.serial.txt](v2-ct14-ct16.serial.txt) | NF ausente e lacre aberto impedem encerramento; sem PNG V2 próprio. |
 | CT17 | APROVADO (interface simulada) | [ct17V2Tela2.png](ct17V2Tela2.png), [ct17V2Tela3.png](ct17V2Tela3.png), [ct17V2Tela4.png](ct17V2Tela4.png), [ct17V2Tela5.png](ct17V2Tela5.png) | [v2-ct17-ct35.serial.txt](v2-ct17-ct35.serial.txt) | Navegação circular no LCD; evidência transversal. |
 | CT18 | REPROVADO (abertura falsa sem rede) | — | [v2-ct18.serial.txt](v2-ct18.serial.txt) | Pulsos de 20/40 ms lidos como abertura; falsa VIOLACAO_LACRE, sem latência instrumentada. |

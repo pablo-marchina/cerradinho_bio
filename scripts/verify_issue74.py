@@ -95,7 +95,7 @@ def check_status(ct: str, row: dict[str, str], errors: list[str]) -> None:
         errors.append('CT04 V2 deve registrar aprovação nos dois limiares (10 e 150)')
     if ct == 'CT08' and 'PARCIAL' not in v2:
         errors.append('CT08 V2 deve explicitar tela Sem sinal não executada')
-    if ct == 'CT15' and 'parcial' not in v2.lower():
+    if ct == 'CT15' and not v2.startswith('PARCIAL'):
         errors.append('CT15 V2 deve deixar a recusa RN01 pendente')
     if ct == 'CT35' and 'PARCIAL' not in v2:
         errors.append('CT35 V2 deve explicitar ausência de captura do silêncio')

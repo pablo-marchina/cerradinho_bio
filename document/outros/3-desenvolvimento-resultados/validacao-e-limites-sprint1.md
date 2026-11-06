@@ -13,13 +13,15 @@
 | KPI-05 integridade | Ciclos corretos após operação e reinício | ciclos sem duplicidade/perda de metadados / ciclos ensaiados | ≥5 ciclos + falhas injetadas, QA | Relatar separadamente ruptura entre escrita pendente e confirmação NVS |
 | KPI-06 custo | Custo por dispositivo e por ciclo, segregando capital e recorrência | total aprovado de materiais + serviços + frete / dispositivos; amortização em ciclos reais | 1 e 5 unidades, Hardware/Compras | Sem falsa precisão: qualquer linha não cotada mantém total como parcial |
 
-## Cenários para CTs futuros (não executados)
+<a name="cenarios-planejados"></a>
+
+## Cenários de teste planejados (não executados)
 
 | Novo caso proposto | RF/RN | Estímulo, oráculo e tipo de teste | Sprint prevista |
 |---|---|---|---|
 | CT-F01 | RF001 | Criar e consultar equipamento por identificador e foto; rejeitar duplicidade. Integração. | 2–3 |
 | CT-F02 | RF002 / RN02 | Abrir ciclo com/sem NF, fornecedor, responsável e prazo; ausência deve bloquear. Integração. | 2–3 |
-| CT-F03 | RF003 / RN01 | Vincular device a ciclo correto e testar tentativa concorrente em dois dispositivos. Integração. | 2–3 |
+| CT-F03 | RF003, RF004 / RN01 | Vincular um dispositivo a um ciclo e tentar vinculá-lo a outro ciclo ativo: recusar e preservar o vínculo original (RF004). Em cenário separado, tentar abrir simultaneamente dois ciclos para o mesmo equipamento usando dispositivos distintos: aceitar no máximo um (RN01). Integração. Depende de entrada de vínculo acessível com ciclo ativo: hoje o botão chama encerramento, sem alcançar `VINCULO_RECUSADO` em `requestLink()`. | 2–3 |
 | CT-F08 | RF008 | Derrubar Wi-Fi real no simulador/placa, medir tentativa e reconexão; não usar SW_REDE como prova. Dispositivo. | 2 |
 | CT-F09 | RF009 | Inspecionar tópico, JSON, autenticação e ACK MQTT de receptor independente. Integração. | 2–3 |
 | CT-F12 | RF012 / RN12 | Comparar diferença de datas com NF de remessa, horário e fusos; reiniciar sem alterar origem. Integração. | 3 |
@@ -35,13 +37,15 @@
 | CT-F26 | RF026 / RN13 | Parâmetros legais validados pelo Fiscal, modalidades distintas e exceções. Negócio/integração. | 3–4 |
 | CT-F28 | RF028 / RN19 | Alerta preventivo antes do prazo, sem duplicar atraso, limites configurados e aprovados. Sistema. | 3–4 |
 | CT-F29 | RF029 / RN20 | Registrar retorno físico pendente; tentar encerrar sem baixa NF: recusar. Sistema. | 3 |
+| CT-F30 | RF030 / RN18 (tratamento) | Com prazos e destinatários fictícios previamente acordados, avançar o relógio pelos limites de escalonamento; verificar no receptor independente a entrega ao requisitante, coordenador e diretor na etapa correta, sem destinatários indevidos nem repetição para a mesma etapa. Registrar ciclo, etapa e horários. Integração. Depende de canal de e-mail, configuração e aprovação das faixas; não executado. | 3–4 (proposta) |
+| CT-U01 | RNF04.1, RNF04.3, RNF04.4; RF015, RF017, RF022, RF023, RF029 / RN08, RN20 | Teste moderado, sem ajuda, com 9 participantes representativos (3 por perfil) e 2 tarefas por participante: PCM localiza alerta e interpreta posição/horário; Fiscal identifica retorno físico e pendência fiscal; Logística consulta histórico e filtra pendências. Registrar acertos, tempos e erros por perfil. Exigir ao menos 5/6 acertos e mediana de até 3 minutos por perfil, sem interpretar retorno sem baixa fiscal como encerramento. Metas propostas, a validar; depende do painel e dos participantes; não executado. | 3–4 (proposta) |
 
 **Evidências não equivalentes:** CT08/09 não provam reconexão Wi-Fi; CT01/02 não provam MQTT; CT19/20 não provam listagem RF015; CT03/04 não provam NF real como marco temporal; CT14 não prova histórico consultável. Atualizar a RTM ao executar os novos CTs, mantendo IDs, data, firmware SHA, ambiente, estímulos e logs brutos.
 
 ## Correções e análise dos testes históricos
 
-- **CT18 — REPROVADO:** ensaio legado reportou 16/20 transições sem rede; a captura por interrupção (ISR) foi proposta na revisão de 23/10 e adiada para a Sprint 2, por exigir novo reteste completo. Reexecutar exatamente os 20 pulsos e ampliá-los para ≥30, com contagem, timestamp, latências e métrica de overflow. Inclua situação de NVS indisponível.
-- **CT22 — REPROVADO NO AMBIENTE:** NVS previamente validada, mas uptime não reiniciou como esperado e houve watchdog. A investigação do watchdog e dos snapshots duplos ficou para a Sprint 2. Repetir reset manual, watchdog e interrupções em cada etapa da gravação, preservando o oráculo original.
+- **CT18 — REPROVAÇÃO HISTÓRICA:** ensaio legado reportou 16/20 transições sem rede; a captura por interrupção (ISR) foi proposta na revisão de 23/10 e adiada para a Sprint 2, por exigir novo reteste completo. Reexecutar exatamente os 20 pulsos e ampliá-los para ≥30, com contagem, timestamp, latências e métrica de overflow. Inclua situação de NVS indisponível. Atualização de 05/11/2026: o [reteste no Wokwi](../../../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/v2-ct18-reteste.serial.txt) passou nas contagens, assim como o [CT65 físico com jumper](../../../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct65-pulsos-lacre.serial.txt), com 20 transições por condição e nenhum evento nos pulsos de 20/40 ms. Permanecem planejados a ampliação do lote, a latência externa, overflow e falhas NVS; os retestes não apagam as reprovações anteriores.
+- **CT22 — REPROVADO (parcial: uptime):** CT22.a reprovou porque o uptime não reiniciou como esperado e houve watchdog; CT22.b observou retenção das filas `q0..q2` e `p0..p3`; CT22.c observou referência A retida e comparação de B com A. As três asserções pertencem à rodada de 23/10/2026, no [log CT22](../../../assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/CT22.serial.txt). Retenção local não comprova o painel nem aprova o caso global. A investigação do watchdog e dos snapshots duplos ficou para a Sprint 2. Repetir reset manual, watchdog e interrupções em cada etapa da gravação, preservando o oráculo original. O [CT62 físico de 05/11/2026](../../../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct62-reinicio-real.serial.txt) comprovou reinício do uptime e restauração de ciclo/lacre; não comprovou toda a fila, a última posição ou o histórico integral. CT68 permanece planejado para corte durante gravação.
 - **CT09 — BLOQUEADO:** Manter bloqueio até implementar o envio MQTT com confirmação do servidor (Sprint 3). Nunca modificar relatório histórico para fazê-lo passar.
 
 ## Matriz de consistência das personas
