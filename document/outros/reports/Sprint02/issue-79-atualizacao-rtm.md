@@ -45,3 +45,11 @@ CT09 continua bloqueado por falta de ACK. CT63/CT64 reenviam na Serial; não com
 A atualização da develop pela #111 desdobrou os RNFs em 37 subrequisitos. A resolução preserva as fichas e o vocabulário novos, repõe os vínculos planejados da #79 e atualiza a RTM para RNF03.3–RNF03.5, RNF04.3–RNF04.4, RNF06.7, RNF07.4 e RNF08.3–RNF08.6. RNF-REST02 fica como referência técnica dos novos itens físicos RNF08.4–RNF08.6.
 
 CT-U01 cobre os critérios separados de acerto, tempo e interpretação fiscal. Foram preservadas as ressalvas do CT62 e a agregação de violações no CT64, e diferenciadas as rodadas históricas do CT18. Nenhum teste planejado foi promovido a executado. A auditoria de evidências passa, os 555 links seguem válidos e a auditoria geral mantém somente as quatro falhas de extensão de texto preexistentes.
+
+## Atendimento à revisão do MR !62 em 06/11/2026
+
+Correções do comentário 544037: vocabulário de status padronizado; RF006 com nota do reteste; RN a definir para reconexão, contrato MQTT e escalonamento; CT15 V2 PARCIAL no documento e inventário; CT22 separado em uptime reprovado e retenção observada. CT18 também ganhou asserções separadas. Acrescentados resumo 12/7/16, lacunas das RNs, critério de agregação, visão CT→RF/RN e divergências de firmware.
+
+O ramo VINCULO_RECUSADO existe em requestLink(), mas não é alcançado pelo botão com ciclo ativo, que chama requestClose(). A implementação será acompanhada no [card #113](https://git.inteli.edu.br/graduacao/2026-2b/t24/g01/-/issues/113), com estimativa inicial de 2h; datas de execução ficam pendentes de planejamento. Não houve alteração de firmware nesta revisão.
+
+Verificação atual: verify_issue74.py e verify_issue79.py PASS; quatro testes de regressão do verificador de links PASS. Auditoria geral: 562 links locais válidos, 27/31 verificações locais, mesmas quatro pendências anteriores de extensão e duas externas. Âncoras explícitas conferidas localmente e pela API de renderização Markdown do GitLab. Não foram reexecutados ensaios de simulador ou bancada. Os resultados da seção anterior registram verificações históricas, anteriores a esta revisão.
