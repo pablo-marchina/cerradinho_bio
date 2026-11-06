@@ -14,6 +14,7 @@ inline bool seal_stable_for(uint32_t changedAt, uint32_t at, uint32_t debounceMs
   return (int32_t)(at - changedAt) >= (int32_t)debounceMs;
 }
 
+// Trata uma borda: confirma o nivel anterior se ele ficou estavel, depois guarda o novo nivel.
 inline bool seal_on_edge(bool &raw, bool &stable, uint32_t &changedAt,
                          bool nextRaw, uint32_t edgeAt, uint32_t debounceMs,
                          SealDebounceEvent &out) {
