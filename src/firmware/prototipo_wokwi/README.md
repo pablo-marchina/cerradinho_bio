@@ -87,6 +87,16 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify.ps1
 4. Execute **F1 → Wokwi: Start Simulator**. Para visualizar a montagem, abra o `diagram.json` desta pasta.
 5. Para o intervalo semanal real, selecione o `wokwi.weekly.toml` desta pasta.
 
+Na placa física (DevKitC V4 na protoboard dupla), grave o ambiente `bancada`: é o demo com
+botões no lugar das chaves deslizantes (`SWITCH_BUTTONS=1`). LACRE (GPIO27) e REDE (GPIO18)
+alternam a cada toque; ON/OFF (GPIO19) liga ou desliga segurando 3 s. O aparelho começa ligado,
+com o lacre fechado e com sinal. O Wokwi e os ambientes `demo` e `weekly` seguem com as chaves.
+
+```powershell
+pio run -e bancada -t upload
+pio device monitor
+```
+
 Os caminhos do firmware e do chip nos TOMLs são relativos a esta pasta e apontam
 para `.pio/` e `chips/` na raiz. O PlatformIO seleciona somente `src/firmware/main.cpp`,
 evitando compilar o `sketch.ino` de teste junto com o firmware principal.
@@ -206,7 +216,8 @@ chave de sinal, uma mensagem curta fica 2 s por cima da tela ("Ciclo iniciado",
 O LCD só é reescrito quando o texto muda e apaga, com a luz de fundo, depois de 15 s sem
 uso (`LcdTimeoutMs`), porque a luz de fundo é o maior consumo do visor. Qualquer botão o
 acende de novo; com o visor apagado, o primeiro toque em avançar ou voltar só acende,
-sem trocar a tela.
+sem trocar a tela. Uma variação de 3 pontos na bateria simulada, mesmo lenta, também acende
+o visor e abre a tela de bateria.
 
 | Tela | Linha 1 | Linha 2 |
 |---|---|---|

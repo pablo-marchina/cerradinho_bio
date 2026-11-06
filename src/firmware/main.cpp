@@ -6,6 +6,7 @@
 #include <WiFi.h>
 #include <Preferences.h>
 #include <LiquidCrystal_I2C.h>
+#include <Wire.h>
 #include "config.h"
 #include "tracking_math.h"
 #include "cycle_rules.h"
@@ -43,6 +44,7 @@ EventQueue pending;
 BatteryState battery;
 uint32_t lastBatteryCheck = 0;
 int batteryPct = 0;  // ultima leitura, usada pelo LCD sem ler o ADC a cada volta
+int wakeReferencePct = -100;  // bateria no ultimo despertar do LCD; -100 = sem referencia
 bool poweredOn = true;
 bool networkWasAvailable = true;
 String serialLine;
@@ -97,11 +99,23 @@ Button authorizeButton{Config::AuthorizeButtonPin, false, false, 0, 0, false};
 Button cycleButton{Config::CycleButtonPin, false, false, 0, 0, false};
 Button nextButton{Config::NextButtonPin, false, false, 0, 0, false};
 Button previousButton{Config::PreviousButtonPin, false, false, 0, 0, false};
+// SWITCH_BUTTONS: botoes no lugar das chaves de rede e ON/OFF, com o estado guardado aqui.
+Button networkButton{Config::NetworkSwitchPin, false, false, 0, 0, false};
+Button powerButton{Config::PowerSwitchPin, false, false, 0, 0, false};
+bool networkOn = true, powerOn = true;
+bool sealButtonRaw = true, sealButtonStable = true;  // nivel do botao do lacre; HIGH = solto
 LiquidCrystal_I2C lcd(Config::LcdAddress, ScreenController::Columns, 2);
 ScreenController screens;  // telas do LCD (classe propria, usada no setup e no loop)
 ScreenController::Line shownTop = "", shownBottom = "";
 bool lcdLit = true;
-uint32_t lastInteractionAt = 0;  // ultimo botao ou mensagem; o LCD apaga apos LcdTimeoutMs
+uint32_t lastInteractionAt = 0;  // ultimo botao, mensagem ou variacao da bateria; o LCD apaga apos LcdTimeoutMs
+
+// Configura o LCD: fios longos em protoboard corrompem o I2C na velocidade padrao.
+void initLcd() {
+  lcd.init();
+  Wire.setClock(Config::LcdI2cHz);
+  lcd.backlight();
+}
 
 // Tempo do ciclo em ms, sem a volta do millis().
 uint64_t clockMs() {
@@ -113,14 +127,14 @@ uint32_t simulatedDay(uint64_t clock) {
   return (uint32_t)(clock / Config::DayMs);
 }
 
-// Chave de rede (on/off do SIM): esquerda = com sinal.
+// Chave de rede (on/off do SIM): esquerda = com sinal. Com botao, cada toque alterna.
 bool simulatedNetworkAvailable() {
-  return digitalRead(Config::NetworkSwitchPin) == LOW;
+  return Config::SwitchButtons ? networkOn : digitalRead(Config::NetworkSwitchPin) == LOW;
 }
 
-// Chave ON/OFF: esquerda = ligado.
+// Chave ON/OFF: esquerda = ligado. Com botao, segurar LongPressMs alterna.
 bool powerSwitchOn() {
-  return digitalRead(Config::PowerSwitchPin) == LOW;
+  return Config::SwitchButtons ? powerOn : digitalRead(Config::PowerSwitchPin) == LOW;
 }
 
 // Fix recente, com satelites e coordenadas validas.
@@ -133,7 +147,10 @@ bool freshFix() {
 // Nivel de bateria de 0 a 100% lido no potenciometro (ADC1, GPIO34).
 int simulatedBatteryPercent() {
   // Entrada sintetica 0..3,3 V. Nao ligar uma celula diretamente ao GPIO34.
-  return constrain((analogRead(Config::BatteryPin) * 100L) / 4095L, 0L, 100L);
+  // Media de 16 leituras contra o ruido do ADC; a histerese do LCD fica em readBattery().
+  long sum = 0;
+  for (int i = 0; i < 16; ++i) sum += analogRead(Config::BatteryPin);
+  return constrain((sum / 16 * 100L) / 4095L, 0L, 100L);
 }
 
 // Registro de diagnostico na NVS (q0..q15); cheio, preserva os antigos e so imprime o novo.
@@ -551,6 +568,7 @@ bool holdCompleted(Button &button, uint32_t now, const char *name) {
 void readButtons(uint32_t now, uint64_t clock) {
   // Com o LCD apagado, o primeiro toque em avancar/voltar so acende o visor.
   const bool awake = displayAwake(now);
+  if (Config::SwitchButtons && updateButton(networkButton, now)) networkOn = !networkOn;
   if (updateButton(nextButton, now) && awake) screens.next();
   if (updateButton(previousButton, now) && awake) screens.previous();
   if (holdCompleted(authorizeButton, now, "BTN_AUTORIZAR")) {
@@ -575,8 +593,16 @@ void readBattery(uint32_t now) {
   if (now - lastBatteryCheck < Config::BatteryCheckMs) return;
   lastBatteryCheck = now;
   const int raw = analogRead(Config::BatteryPin);
-  batteryPct = simulatedBatteryPercent();
-  const unsigned events = batteryUpdate(&battery, raw, batteryPct);
+  const int percent = simulatedBatteryPercent();
+  // Histerese de 1 ponto so no visor: a regra usa a media, para o alerta nao atrasar (RN10).
+  if (abs(percent - batteryPct) >= 2 || percent == 0 || percent == 100) batteryPct = percent;
+  // Variacao da bateria acende o LCD na tela de bateria. Compara com o ultimo valor que contou
+  // como uso (nao com a leitura anterior), com folga de 3 pontos contra o ruido do ADC.
+  if (abs(batteryPct - wakeReferencePct) >= 3) {
+    if (wakeReferencePct != -100) { lastInteractionAt = now; screens.show(Screen::Battery); }
+    wakeReferencePct = batteryPct;
+  }
+  const unsigned events = batteryUpdate(&battery, raw, percent);
   if (events & BATTERY_EVENT_SENSOR_FAILURE) publishEvent("SENSOR_BATERIA_FALHA");
   if (events & BATTERY_EVENT_LOW) publishEvent("BATERIA_BAIXA");
 }
@@ -666,24 +692,29 @@ void sealTransition(bool opened, uint32_t confirmedAt, uint32_t now, uint64_t cl
 }
 
 // Captura historico de bordas do lacre, inclusive quando Serial/NVS ocupou o loop.
+// Com SWITCH_BUTTONS o debounce acompanha o nivel do botao, e cada toque alterna o lacre.
 void readSeal(uint32_t now, uint64_t clock) {
+  bool &raw = Config::SwitchButtons ? sealButtonRaw : rawSeal;
+  bool &stable = Config::SwitchButtons ? sealButtonStable : stableSeal;
+  const auto apply = [&](const SealDebounceEvent &e) {
+    if (!Config::SwitchButtons) sealTransition(e.opened, e.confirmedAt, now, clock);
+    else if (!e.opened) sealTransition(!stableSeal, e.confirmedAt, now, clock);  // pressionou
+  };
   SealEdge edge{};
   SealDebounceEvent event{};
   while (popSealEdge(edge)) {
-    if (seal_on_edge(rawSeal, stableSeal, sealChangedAt,
+    if (seal_on_edge(raw, stable, sealChangedAt,
                      edge.opened, edge.at, Config::SealDebounceMs, event)) {
-      sealTransition(event.opened, event.confirmedAt, now, clock);
+      apply(event);
     }
   }
   // Reconcilia o nivel corrente se uma borda ocorreu antes da ativacao da ISR.
   const bool actual = digitalRead(Config::SealPin) == HIGH;
-  if (actual != rawSeal && seal_on_edge(rawSeal, stableSeal, sealChangedAt,
-                                        actual, now, Config::SealDebounceMs, event)) {
-    sealTransition(event.opened, event.confirmedAt, now, clock);
+  if (actual != raw && seal_on_edge(raw, stable, sealChangedAt,
+                                    actual, now, Config::SealDebounceMs, event)) {
+    apply(event);
   }
-  if (seal_settle(rawSeal, stableSeal, sealChangedAt, now, Config::SealDebounceMs, event)) {
-    sealTransition(event.opened, event.confirmedAt, now, clock);
-  }
+  if (seal_settle(raw, stable, sealChangedAt, now, Config::SealDebounceMs, event)) apply(event);
   static uint32_t lastOverruns = 0;
   noInterrupts(); const uint32_t overrunCount = sealEdgeOverruns; interrupts();
   if (overrunCount != lastOverruns) {
@@ -702,8 +733,7 @@ void updateBuzzer(uint32_t now) {
                   ((now - alarmStartedAt) / Config::BuzzerBeepMs) % 2 == 0;
   if (on == buzzerOn) return;
   buzzerOn = on;
-  if (on) tone(Config::BuzzerPin, Config::BuzzerFrequencyHz);
-  else noTone(Config::BuzzerPin);
+  ledcWrite(Config::BuzzerChannel, on ? 128 : 0);  // 50% de 8 bits: onda quadrada
 }
 
 // LED vermelho: pulso curto a cada segundo enquanto o lacre segue violado.
@@ -765,12 +795,16 @@ void updateDisplay(uint32_t now, uint64_t clock) {
     return;
   }
   if (!lcdLit) {
-    lcd.backlight();
+    // So a bancada reinicia o LCD: fios longos embaralham o visor, e lcd.init() trava o loop por 1 s.
+    if (Config::SwitchButtons) initLcd();
+    else lcd.backlight();
     lcdLit = true;
   }
   ScreenController::Line top, bottom;
   uint32_t remaining = 0;
-  if (holdRemaining(cycleButton, now, remaining)) {
+  if (holdRemaining(powerButton, now, remaining)) {
+    ScreenController::renderHold("Desligar", remaining, top, bottom);
+  } else if (holdRemaining(cycleButton, now, remaining)) {
     ScreenController::renderHold(cycleActive ? "Encerrar ciclo" : "Iniciar ciclo", remaining,
                                  top, bottom);
   } else if (holdRemaining(authorizeButton, now, remaining)) {
@@ -812,12 +846,12 @@ void setup() {
   pinMode(Config::PowerSwitchPin, INPUT_PULLUP);
   pinMode(Config::NextButtonPin, INPUT_PULLUP);
   pinMode(Config::PreviousButtonPin, INPUT_PULLUP);
-  pinMode(Config::BuzzerPin, OUTPUT);
-  digitalWrite(Config::BuzzerPin, LOW);
+  ledcSetup(Config::BuzzerChannel, Config::BuzzerFrequencyHz, 8);
+  ledcAttachPin(Config::BuzzerPin, Config::BuzzerChannel);
+  ledcWrite(Config::BuzzerChannel, 0);
   pinMode(Config::ViolationLedPin, OUTPUT);
   digitalWrite(Config::ViolationLedPin, LOW);
-  lcd.init();
-  lcd.backlight();
+  initLcd();
   pinMode(Config::BatteryPin, INPUT);
   analogReadResolution(12);
   batteryPct = simulatedBatteryPercent();
@@ -895,6 +929,9 @@ void setup() {
                 Config::LcdAddress, (unsigned long)(Config::LongPressMs / 1000UL),
                 (unsigned long)(Config::LcdTimeoutMs / 1000UL));
   Serial.println("[bancada] SW_REDE simula disponibilidade sem desligar o Wi-Fi; SW_ENERGIA liga/desliga");
+  if (Config::SwitchButtons) {
+    Serial.println("[bancada] botoes: LACRE e REDE alternam a cada toque; ON/OFF segurar 3 s");
+  }
 }
 
 // Uma volta: relogio, chave ON/OFF, LCD, buzzer, LED, entradas, ciclo, NVS, Wi-Fi e coleta de posicao.
@@ -903,12 +940,14 @@ void loop() {
   // O relogio do ciclo segue no desligamento logico da chave ON/OFF.
   const uint64_t clock = simClockUpdate(&simClock, now);
   // Chave ON/OFF: desligar registra o evento e suspende o dispositivo.
+  if (Config::SwitchButtons && holdCompleted(powerButton, now, "BTN_ENERGIA")) powerOn = !powerOn;
   const bool on = powerSwitchOn();
   if (on != poweredOn) {
     if (!on) publishEvent("DISPOSITIVO_DESLIGADO");
     poweredOn = on;
     if (on) {
       lastInteractionAt = now;
+      wakeReferencePct = -100;  // variacao com a chave desligada nao troca a tela ao religar
       if (simulatedNetworkAvailable()) flushPending();  // fila restaurada durante o desligamento
       publishEvent("STATUS");
     }

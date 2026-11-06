@@ -3,6 +3,7 @@
 
 # Databases
 *.csv
+!assets/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/issue74-mapeamento-rtm.csv
 *.tsv
 *.xls
 *.xlsx

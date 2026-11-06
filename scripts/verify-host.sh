@@ -15,6 +15,8 @@ mkdir -p build
 ./build/firmware_seal_isr_host
 "$CXX" -std=c++17 -O2 -Wall -Wextra -Werror -Iinclude -Itests/firmware_stubs tests/firmware_interface_tests.cpp -o build/firmware_interface_host
 ./build/firmware_interface_host
+"$CXX" -std=c++17 -O2 -Wall -Wextra -Werror -Iinclude -Itests/firmware_stubs tests/firmware_buttons_tests.cpp -o build/firmware_buttons_host
+./build/firmware_buttons_host
 python3 -m unittest discover -s tests/audit -p "test_*.py" -v
 python3 -m py_compile scripts/export-wokwi.py scripts/audit-docs.py scripts/sprint1_evidence.py scripts/validate-project.py
 python3 scripts/export-wokwi.py

@@ -16,7 +16,8 @@ void delay(unsigned long v){fakeMs += static_cast<uint32_t>(v);}
 void pinMode(int,int){}
 void digitalWrite(int,int){}
 int digitalRead(int p){return p>=0&&p<64?fakePins[p]:0;}
-int analogRead(int){return 2048;}
+static int fakeAdc = 2048;
+int analogRead(int){return fakeAdc;}
 void analogReadResolution(int){}
 void tone(int,unsigned int,unsigned long){}
 void noTone(int){}
@@ -27,6 +28,7 @@ int digitalPinToInterrupt(int p){return p;}
 static void run(uint32_t ms){ for(uint32_t i=0;i<ms;i+=5){ fakeMs+=5; loop(); } }
 static void hold(int pin, uint32_t ms){ fakePins[pin]=LOW; run(ms); fakePins[pin]=HIGH; run(150); }
 static unsigned screen(){ return static_cast<unsigned>(screens.current()); }
+static void setBattery(int pct){ fakeAdc = (pct * 4095 + 99) / 100; }
 int main(){
   FakeNVS::reset();
   for(int &pin:fakePins) pin=HIGH;
@@ -57,9 +59,39 @@ int main(){
   run(Config::LcdTimeoutMs + 1000);
   assert(!lcdLit);
   const unsigned before = screen();
+  const int lcdInits = LiquidCrystal_I2C::initCalls;
   hold(Config::NextButtonPin, 120);
   assert(lcdLit && screen() == before);
+  assert(LiquidCrystal_I2C::initCalls == lcdInits);  // fora da bancada, acender nao trava o loop
   hold(Config::NextButtonPin, 120);
   assert(screen() == (before + 1) % ScreenCount);
-  std::puts("PASS: boot sem ciclo, vinculo por 3 s, contagem a partir do vinculo e navegacao do LCD (host)");
+  // Descida lenta: 19% real dispara o alerta (RN10), mesmo com a histerese do LCD.
+  for (int pct = 40; pct >= 19; --pct) {
+    setBattery(pct);
+    run(1000);
+  }
+  assert(battery.lowSent);
+  // LCD: variacao de 3 pontos na bateria acende e abre a tela de bateria, mesmo se for lenta.
+  setBattery(60);
+  run(Config::LcdTimeoutMs + 1000);
+  assert(!lcdLit);
+  screens.show(Screen::Seal);
+  for (int pct = 60; pct >= 57; --pct) {
+    setBattery(pct);
+    run(5000);
+    assert(!lcdLit && screens.current() == Screen::Seal);  // ainda abaixo de 3 pontos
+  }
+  setBattery(56);
+  run(5000);
+  assert(lcdLit && screens.current() == Screen::Battery);
+  // Potenciometro girado com a chave desligada nao troca a tela ao religar.
+  screens.show(Screen::Seal);
+  fakePins[Config::PowerSwitchPin] = HIGH;
+  run(500);
+  setBattery(40);
+  run(6000);
+  fakePins[Config::PowerSwitchPin] = LOW;
+  run(500);
+  assert(screens.current() == Screen::Seal);
+  std::puts("PASS: boot sem ciclo, vinculo por 3 s, contagem a partir do vinculo, navegacao do LCD, alerta de bateria e despertar do LCD (host)");
 }

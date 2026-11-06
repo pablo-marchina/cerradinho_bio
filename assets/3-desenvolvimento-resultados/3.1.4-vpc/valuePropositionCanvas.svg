@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="940" viewBox="0 0 1600 940"><rect width="1600" height="940" fill="white"/>
+<style>text{font-family:Arial,sans-serif;fill:#22313e}.title{font-size:28px;font-weight:bold}.section{font-size:18px;font-weight:bold}.small{font-size:13px}.code{font-size:13px;font-weight:bold}.card{font-size:15px;font-weight:bold}</style>
+<text x="40" y="48" class="title">Value Proposition Canvas — GuaráTracking</text>
+<text x="400" y="94" text-anchor="middle" class="section">MAPA DE VALOR</text>
+<text x="1190" y="94" text-anchor="middle" class="section">PERFIL DO CLIENTE: GERALDO (PCM)</text>
+<rect x="40" y="145" width="720" height="730" fill="none" stroke="#344652" stroke-width="3"/>
+<circle cx="1180" cy="510" r="365" fill="none" stroke="#344652" stroke-width="3"/>
+<line x1="40" y1="510" x2="760" y2="510" stroke="#344652" stroke-width="2"/>
+<line x1="815" y1="510" x2="1545" y2="510" stroke="#344652" stroke-width="2"/>
+<text x="94" y="200" class="section">Produtos e serviços</text>
+<text x="440" y="200" class="section">Criadores de ganho</text>
+<text x="440" y="560" class="section">Aliviadores de dor</text>
+<text x="1040" y="200" class="section">Ganhos</text>
+<text x="1340" y="200" class="section">Tarefas</text>
+<text x="1040" y="560" class="section">Dores</text>
+<rect x="70" y="245" width="170" height="105" rx="6" fill="#ffe9a6" stroke="#b5c5cf"/>
+<text x="82" y="268" class="code">PS1</text>
+<text x="82" y="292" class="card">TAG reutilizável</text>
+<rect x="70" y="385" width="170" height="105" rx="6" fill="#ffe9a6" stroke="#b5c5cf"/>
+<text x="82" y="408" class="code">PS2</text>
+<text x="82" y="432" class="card">Cadastro do ciclo</text>
+<rect x="70" y="525" width="170" height="105" rx="6" fill="#ffe9a6" stroke="#b5c5cf"/>
+<text x="82" y="548" class="code">PS3</text>
+<text x="82" y="572" class="card">Painel de</text>
+<text x="82" y="592" class="card">acompanhamento</text>
+<rect x="340" y="245" width="170" height="105" rx="6" fill="#d3efdc" stroke="#b5c5cf"/>
+<text x="352" y="268" class="code">CG1</text>
+<text x="352" y="292" class="card">Painel consolidado</text>
+<rect x="525" y="245" width="170" height="105" rx="6" fill="#d3efdc" stroke="#b5c5cf"/>
+<text x="537" y="268" class="code">CG2</text>
+<text x="537" y="292" class="card">Alertas configuráveis</text>
+<rect x="340" y="360" width="170" height="105" rx="6" fill="#d3efdc" stroke="#b5c5cf"/>
+<text x="352" y="383" class="code">CG3</text>
+<text x="352" y="407" class="card">Histórico consultável</text>
+<rect x="525" y="360" width="170" height="105" rx="6" fill="#d3efdc" stroke="#b5c5cf"/>
+<text x="537" y="383" class="code">CG4</text>
+<text x="537" y="407" class="card">Ciclo completo</text>
+<rect x="340" y="605" width="170" height="105" rx="6" fill="#f9d8d4" stroke="#b5c5cf"/>
+<text x="352" y="628" class="code">AD1</text>
+<text x="352" y="652" class="card">Ciclo registrado</text>
+<rect x="525" y="605" width="170" height="105" rx="6" fill="#f9d8d4" stroke="#b5c5cf"/>
+<text x="537" y="628" class="code">AD2</text>
+<text x="537" y="652" class="card">Posição e prazo</text>
+<rect x="340" y="720" width="170" height="105" rx="6" fill="#f9d8d4" stroke="#b5c5cf"/>
+<text x="352" y="743" class="code">AD3</text>
+<text x="352" y="767" class="card">Histórico de ciclos</text>
+<rect x="525" y="720" width="170" height="105" rx="6" fill="#f9d8d4" stroke="#b5c5cf"/>
+<text x="537" y="743" class="code">AD4</text>
+<text x="537" y="767" class="card">Lacre e retorno</text>
+<rect x="960" y="245" width="170" height="105" rx="6" fill="#d3efdc" stroke="#b5c5cf"/>
+<text x="972" y="268" class="code">G1</text>
+<text x="972" y="292" class="card">Consultar sem ligar</text>
+<rect x="1145" y="245" width="170" height="105" rx="6" fill="#d3efdc" stroke="#b5c5cf"/>
+<text x="1157" y="268" class="code">G2</text>
+<text x="1157" y="292" class="card">Agir antes do prazo</text>
+<rect x="960" y="360" width="170" height="105" rx="6" fill="#d3efdc" stroke="#b5c5cf"/>
+<text x="972" y="383" class="code">G3</text>
+<text x="972" y="407" class="card">Decidir com</text>
+<text x="972" y="427" class="card">evidências</text>
+<rect x="1145" y="360" width="170" height="105" rx="6" fill="#d3efdc" stroke="#b5c5cf"/>
+<text x="1157" y="383" class="code">G4</text>
+<text x="1157" y="407" class="card">Encerrar com</text>
+<text x="1157" y="427" class="card">segurança</text>
+<rect x="1340" y="220" width="170" height="68" rx="6" fill="#d5e5fa" stroke="#b5c5cf"/>
+<text x="1352" y="241" class="code">T1</text>
+<text x="1352" y="266" class="card">Identificar e enviar</text>
+<rect x="1340" y="292" width="170" height="68" rx="6" fill="#d5e5fa" stroke="#b5c5cf"/>
+<text x="1352" y="313" class="code">T2</text>
+<text x="1352" y="338" class="card">Acompanhar oficina</text>
+<rect x="1340" y="364" width="170" height="68" rx="6" fill="#d5e5fa" stroke="#b5c5cf"/>
+<text x="1352" y="385" class="code">T3</text>
+<text x="1352" y="410" class="card">Decidir no atraso</text>
+<rect x="1340" y="436" width="170" height="68" rx="6" fill="#d5e5fa" stroke="#b5c5cf"/>
+<text x="1352" y="457" class="code">T4</text>
+<text x="1352" y="482" class="card">Conferir retorno</text>
+<rect x="960" y="605" width="170" height="105" rx="6" fill="#f9d8d4" stroke="#b5c5cf"/>
+<text x="972" y="628" class="code">D1</text>
+<text x="972" y="652" class="card">Controle disperso</text>
+<rect x="1145" y="605" width="170" height="105" rx="6" fill="#f9d8d4" stroke="#b5c5cf"/>
+<text x="1157" y="628" class="code">D2</text>
+<text x="1157" y="652" class="card">Localização incerta</text>
+<rect x="960" y="720" width="170" height="105" rx="6" fill="#f9d8d4" stroke="#b5c5cf"/>
+<text x="972" y="743" class="code">D3</text>
+<text x="972" y="767" class="card">Histórico</text>
+<text x="972" y="787" class="card">insuficiente</text>
+<rect x="1145" y="720" width="170" height="105" rx="6" fill="#f9d8d4" stroke="#b5c5cf"/>
+<text x="1157" y="743" class="code">D4</text>
+<text x="1157" y="767" class="card">Registro incompleto</text>
+<text x="40" y="912" class="small">Perfil exclusivo de Geraldo (PCM). Fiscal e Logística são partes relacionadas ao processo.</text></svg>

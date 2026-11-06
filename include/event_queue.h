@@ -30,6 +30,7 @@ enum {
   QUEUE_SUMMARIZED              // FILA_CHEIA: fila so com criticos; violacao no resumo
 };
 
+// Esvazia a fila e zera os contadores de perda e de resumo.
 static inline void queueInit(EventQueue *queue) {
   queue->count = 0;
   queue->lost = 0;
@@ -45,6 +46,7 @@ static inline void queueClearSummary(EventQueue *queue) {
   queue->overflowLastMs = 0;
 }
 
+// Remove o evento da posicao informada, mantendo a ordem dos demais.
 static inline void queueRemove(EventQueue *queue, uint8_t index) {
   for (uint8_t i = index; i + 1 < queue->count; ++i) {
     memcpy(queue->text[i], queue->text[i + 1], EVENT_TEXT_MAX);
@@ -53,6 +55,7 @@ static inline void queueRemove(EventQueue *queue, uint8_t index) {
   --queue->count;
 }
 
+// Guarda um evento; cheia, aplica a politica de descarte por criticidade.
 static inline int queuePush(EventQueue *queue, const char *text, bool critical, uint64_t atMs) {
   int result = QUEUE_STORED;
   if (queue->count == EVENT_QUEUE_CAPACITY) {

@@ -5,6 +5,11 @@
 #define DEMO_MODE 1
 #endif
 
+// 1 no ambiente bancada: lacre, rede e ON/OFF sao botoes de toque, nao chaves deslizantes.
+#ifndef SWITCH_BUTTONS
+#define SWITCH_BUTTONS 0
+#endif
+
 #if __has_include("config.local.h")
 #include "config.local.h"
 #endif
@@ -25,6 +30,7 @@ constexpr int BatteryPin = 34;  // ADC1, usado com Wi-Fi.
 constexpr int LcdSdaPin = 21;
 constexpr int LcdSclPin = 22;
 constexpr uint8_t LcdAddress = 0x27;
+constexpr uint32_t LcdI2cHz = 50000;
 constexpr int NextButtonPin = 25;
 constexpr int PreviousButtonPin = 26;
 constexpr int BuzzerPin = 23;  // GPIO27 permanece reservado ao lacre.
@@ -33,6 +39,8 @@ constexpr int AuthorizeButtonPin = 33;
 constexpr int CycleButtonPin = 14;
 constexpr int NetworkSwitchPin = 18;
 constexpr int PowerSwitchPin = 19;  // ON/OFF: esquerda = ligado, direita = desligado.
+// Botoes no lugar das chaves: toque alterna lacre e rede; ON/OFF exige LongPressMs.
+constexpr bool SwitchButtons = SWITCH_BUTTONS;
 constexpr uint32_t GpsBaud = 9600;
 constexpr uint32_t ConsoleBaud = 115200;
 constexpr uint32_t WeekMs = 7UL * 24UL * 60UL * 60UL * 1000UL;
@@ -57,7 +65,8 @@ constexpr uint32_t ButtonDebounceMs = 50;
 constexpr uint32_t LongPressMs = 3000;           // ciclo e autorizacao (V2)
 constexpr uint32_t MessageMs = 2000;             // mensagem do LCD apos um botao
 constexpr uint32_t LcdTimeoutMs = 15000;         // LCD apaga sem uso (energia)
-constexpr uint32_t BuzzerFrequencyHz = 2000;
+constexpr uint32_t BuzzerFrequencyHz = 2700;  // ressonancia do buzzer 12085 medida na bancada
+constexpr uint8_t BuzzerChannel = 0;             // canal PWM (LEDC) do buzzer
 constexpr uint32_t BuzzerBeepMs = 500;           // bipe intermitente a 1 Hz
 constexpr uint32_t BuzzerAlarmMs = 30000;        // PENDENTE DE VALIDACAO
 constexpr uint32_t LedBlinkOnMs = 150;           // pulso curto: visivel e gasta pouco

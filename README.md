@@ -95,9 +95,9 @@ Com o PlatformIO instalado globalmente, as compilações equivalem a `pio run -e
 
 No ambiente `demo`, a localização é coletada a cada 30 segundos e 1 s simula 1 dia nas regras de ciclo. No `weekly`, a coleta ocorre a cada sete dias reais. O protótipo não comprova autonomia real nem cobertura em oficinas; os retestes CT18/CT22 no Wokwi integrado ainda são necessários.
 
-### Integração contínua
+### Verificações locais
 
-A pipeline (`.gitlab-ci.yml`) executa os testes em computador, a auditoria da documentação (`scripts/audit-docs.py`) e a compilação para ESP32. O teste de fumaça no Wokwi (`tests/wokwi-ci/smoke.yaml`) só roda quando a variável `WOKWI_CLI_TOKEN` está configurada como *masked/protected* no GitLab; o token nunca deve ser gravado em arquivo.
+As verificações em computador, a auditoria da documentação e a compilação para ESP32 podem ser executadas localmente com `scripts/verify-host.sh`, `scripts/audit-docs.py` e PlatformIO. O cenário `tests/wokwi-ci/smoke.yaml` permanece disponível para testes manuais com o Wokwi CLI.
 
 ## 🗃 Histórico de lançamentos
 

@@ -1,0 +1,146 @@
+[vivo] tempo=196 s gps_chars=2313 fix=ausente lacre=integro bateria_sim=100% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=198 s gps_chars=2340 fix=ausente lacre=integro bateria_sim=100% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+[vivo] tempo=200 s gps_chars=2362 fix=ausente lacre=integro bateria_sim=100% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+{"device_id":"prototipo-001","type":"SENSOR_BATERIA_FALHA","uptime_ms":202461,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":201,"atraso":false,"permanencia":false,"critico":false}
+[vivo] tempo=203 s gps_chars=2408 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+{"device_id":"prototipo-001","type":"BATERIA_BAIXA","uptime_ms":205663,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":13,"wifi_connected":false,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":204,"atraso":false,"permanencia":false,"critico":false}
+[vivo] tempo=205 s gps_chars=2430 fix=ausente lacre=integro bateria_sim=13% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+{"device_id":"prototipo-001","type":"SENSOR_BATERIA_FALHA","uptime_ms":206063,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":204,"atraso":false,"permanencia":false,"critico":false}
+[vivo] tempo=207 s gps_chars=2463 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=209 s gps_chars=2497 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[gps] sem fix recente; referencia anterior preservada
+{"device_id":"prototipo-001","type":"location_unavailable","uptime_ms":211424,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":68,"wifi_connected":false,"network_sim_available":true,"fix_valid":false,"latitude":null,"longitude":null,"moved":null}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+[vivo] tempo=211 s gps_chars=2514 fix=ausente lacre=integro bateria_sim=71% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=213 s gps_chars=2535 fix=ausente lacre=integro bateria_sim=58% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=215 s gps_chars=2557 fix=ausente lacre=integro bateria_sim=62% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=217 s gps_chars=2569 fix=ausente lacre=integro bateria_sim=74% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=219 s gps_chars=2595 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=221 s gps_chars=2607 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=223 s gps_chars=2639 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=225 s gps_chars=2663 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=227 s gps_chars=2688 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=229 s gps_chars=2711 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=231 s gps_chars=2728 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=233 s gps_chars=2749 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=235 s gps_chars=2771 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=237 s gps_chars=2804 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=239 s gps_chars=2836 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=241 s gps_chars=2865 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=243 s gps_chars=2868 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=245 s gps_chars=2880 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=247 s gps_chars=2899 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=249 s gps_chars=2911 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[gps] sem fix recente; referencia anterior preservada
+{"device_id":"prototipo-001","type":"location_unavailable","uptime_ms":251422,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":79,"wifi_connected":false,"network_sim_available":true,"fix_valid":false,"latitude":null,"longitude":null,"moved":null}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+[vivo] tempo=251 s gps_chars=2930 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=253 s gps_chars=2935 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=255 s gps_chars=2947 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=257 s gps_chars=2960 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=259 s gps_chars=2972 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=261 s gps_chars=2991 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=263 s gps_chars=3003 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=265 s gps_chars=3003 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=267 s gps_chars=3013 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=269 s gps_chars=3023 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=271 s gps_chars=3037 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=273 s gps_chars=3058 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=275 s gps_chars=3081 fix=ausente lacre=integro bateria_sim=78% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=277 s gps_chars=3114 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=279 s gps_chars=3138 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=281 s gps_chars=3173 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=283 s gps_chars=3186 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=285 s gps_chars=3225 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=287 s gps_chars=3261 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=289 s gps_chars=3297 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[gps] sem fix recente; referencia anterior preservada
+{"device_id":"prototipo-001","type":"location_unavailable","uptime_ms":291422,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":79,"wifi_connected":false,"network_sim_available":true,"fix_valid":false,"latitude":null,"longitude":null,"moved":null}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+[vivo] tempo=291 s gps_chars=3320 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=293 s gps_chars=3332 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=295 s gps_chars=3344 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=297 s gps_chars=3367 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=299 s gps_chars=3401 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=301 s gps_chars=3428 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=303 s gps_chars=3452 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=305 s gps_chars=3487 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=307 s gps_chars=3534 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=309 s gps_chars=3546 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=311 s gps_chars=3577 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=313 s gps_chars=3592 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=315 s gps_chars=3628 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=317 s gps_chars=3657 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=319 s gps_chars=3685 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=321 s gps_chars=3692 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=323 s gps_chars=3704 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=325 s gps_chars=3719 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=327 s gps_chars=3722 fix=ausente lacre=integro bateria_sim=79% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+{"device_id":"prototipo-001","type":"SENSOR_BATERIA_FALHA","uptime_ms":329051,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":327,"atraso":false,"permanencia":false,"critico":false}
+[vivo] tempo=329 s gps_chars=3723 fix=ausente lacre=integro bateria_sim=77% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+{"device_id":"prototipo-001","type":"SENSOR_BATERIA_FALHA","uptime_ms":330051,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":328,"atraso":false,"permanencia":false,"critico":false}
+[gps] sem fix recente; referencia anterior preservada
+{"device_id":"prototipo-001","type":"location_unavailable","uptime_ms":331424,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":73,"wifi_connected":false,"network_sim_available":true,"fix_valid":false,"latitude":null,"longitude":null,"moved":null}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+[vivo] tempo=331 s gps_chars=3723 fix=ausente lacre=integro bateria_sim=77% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=333 s gps_chars=3750 fix=ausente lacre=integro bateria_sim=77% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=335 s gps_chars=3787 fix=ausente lacre=integro bateria_sim=77% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=337 s gps_chars=3823 fix=ausente lacre=integro bateria_sim=76% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=339 s gps_chars=3847 fix=ausente lacre=integro bateria_sim=76% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=341 s gps_chars=3871 fix=ausente lacre=integro bateria_sim=76% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=343 s gps_chars=3895 fix=ausente lacre=integro bateria_sim=76% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=345 s gps_chars=3919 fix=ausente lacre=integro bateria_sim=76% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=347 s gps_chars=3955 fix=ausente lacre=integro bateria_sim=76% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=349 s gps_chars=3991 fix=ausente lacre=integro bateria_sim=66% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=351 s gps_chars=4016 fix=ausente lacre=integro bateria_sim=73% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=353 s gps_chars=4037 fix=ausente lacre=integro bateria_sim=75% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=355 s gps_chars=4061 fix=ausente lacre=integro bateria_sim=75% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=357 s gps_chars=4096 fix=ausente lacre=integro bateria_sim=75% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=359 s gps_chars=4130 fix=ausente lacre=integro bateria_sim=60% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=361 s gps_chars=4154 fix=ausente lacre=integro bateria_sim=64% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=363 s gps_chars=4160 fix=ausente lacre=integro bateria_sim=52% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+{"device_id":"prototipo-001","type":"BATERIA_BAIXA","uptime_ms":363673,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":362,"atraso":false,"permanencia":false,"critico":false}
+{"device_id":"prototipo-001","type":"BATERIA_BAIXA","uptime_ms":364073,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":362,"atraso":false,"permanencia":false,"critico":false}
+{"device_id":"prototipo-001","type":"SENSOR_BATERIA_FALHA","uptime_ms":365472,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":364,"atraso":false,"permanencia":false,"critico":false}
+[vivo] tempo=365 s gps_chars=4163 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=367 s gps_chars=4187 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=369 s gps_chars=4203 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[gps] sem fix recente; referencia anterior preservada
+{"device_id":"prototipo-001","type":"location_unavailable","uptime_ms":371422,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"fix_valid":false,"latitude":null,"longitude":null,"moved":null}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+[vivo] tempo=371 s gps_chars=4227 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=373 s gps_chars=4258 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=375 s gps_chars=4277 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=377 s gps_chars=4304 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=379 s gps_chars=4338 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=381 s gps_chars=4362 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+{"device_id":"prototipo-001","type":"SENSOR_BATERIA_FALHA","uptime_ms":383050,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":381,"atraso":false,"permanencia":false,"critico":false}
+[vivo] tempo=383 s gps_chars=4384 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=385 s gps_chars=4408 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=387 s gps_chars=4434 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=389 s gps_chars=4434 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=391 s gps_chars=4435 fix=ausente lacre=integro bateria_sim=0% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=393 s gps_chars=4459 fix=ausente lacre=integro bateria_sim=74% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+{"device_id":"prototipo-001","type":"SENSOR_BATERIA_FALHA","uptime_ms":395250,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":393,"atraso":false,"permanencia":false,"critico":false}
+[vivo] tempo=395 s gps_chars=4471 fix=ausente lacre=integro bateria_sim=74% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=397 s gps_chars=4471 fix=ausente lacre=integro bateria_sim=74% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=399 s gps_chars=4478 fix=ausente lacre=integro bateria_sim=74% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=401 s gps_chars=4487 fix=ausente lacre=integro bateria_sim=74% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=403 s gps_chars=4502 fix=ausente lacre=integro bateria_sim=74% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=405 s gps_chars=4523 fix=ausente lacre=integro bateria_sim=74% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=407 s gps_chars=4558 fix=ausente lacre=integro bateria_sim=74% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=409 s gps_chars=4589 fix=ausente lacre=integro bateria_sim=74% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[gps] sem fix recente; referencia anterior preservada
+{"device_id":"prototipo-001","type":"location_unavailable","uptime_ms":411422,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":74,"wifi_connected":false,"network_sim_available":true,"fix_valid":false,"latitude":null,"longitude":null,"moved":null}
+[registro] diagnostico gravado na NVS; servidor ainda nao configurado
+[vivo] tempo=411 s gps_chars=4611 fix=ausente lacre=integro bateria_sim=74% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=413 s gps_chars=4624 fix=ausente lacre=integro bateria_sim=74% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=415 s gps_chars=4648 fix=ausente lacre=integro bateria_sim=74% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=417 s gps_chars=4673 fix=ausente lacre=integro bateria_sim=74% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=419 s gps_chars=4690 fix=ausente lacre=integro bateria_sim=74% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=421 s gps_chars=4715 fix=ausente lacre=integro bateria_sim=74% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+{"device_id":"prototipo-001","type":"SENSOR_BATERIA_FALHA","uptime_ms":423474,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":0,"wifi_connected":false,"network_sim_available":true,"ciclo_id":0,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":422,"atraso":false,"permanencia":false,"critico":false}
+[vivo] tempo=424 s gps_chars=4755 fix=ausente lacre=integro bateria_sim=76% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=426 s gps_chars=4779 fix=ausente lacre=integro bateria_sim=76% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=428 s gps_chars=4804 fix=ausente lacre=integro bateria_sim=76% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0
+[vivo] tempo=430 s gps_chars=4840 fix=ausente lacre=integro bateria_sim=76% wifi=off rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=4 dias_fora=0 fila=0

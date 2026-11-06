@@ -35,13 +35,19 @@ class ScreenController final {
   static constexpr uint8_t Columns = 16;
   using Line = char[Columns + 1];
 
-  // Avancar e voltar percorrem as cinco telas em ordem circular e fecham a mensagem.
+  // Avancar e voltar percorrem as cinco telas em ordem circular; toda troca fecha a mensagem.
   void next() {
     index_ = (index_ + 1) % ScreenCount;
     messageMs_ = 0;
   }
+  // Volta uma tela, em ordem circular, e fecha a mensagem.
   void previous() {
     index_ = (index_ + ScreenCount - 1) % ScreenCount;
+    messageMs_ = 0;
+  }
+  // Abre uma tela especifica e fecha a mensagem.
+  void show(Screen screen) {
+    index_ = static_cast<uint8_t>(screen);
     messageMs_ = 0;
   }
   Screen current() const { return static_cast<Screen>(index_); }
@@ -54,6 +60,7 @@ class ScreenController final {
     messageMs_ = durationMs;
   }
 
+  // Monta as duas linhas do LCD: a mensagem ativa ou a tela atual.
   void render(const StatusView &view, uint32_t now, Line top, Line bottom) const {
     if (messageMs_ > 0 && now - messageAt_ < messageMs_) {
       copy(top, messageTop_);
@@ -94,6 +101,7 @@ class ScreenController final {
 
   static void copy(Line target, const char *text) { format(target, "%s", text ? text : ""); }
 
+  // Tela da NF da remessa.
   static void renderInvoice(const StatusView &view, Line top, Line bottom) {
     copy(top, "NF da remessa");
     copy(bottom, view.invoice && view.invoice[0] ? view.invoice : "nao informada");
@@ -141,6 +149,7 @@ class ScreenController final {
     }
   }
 
+  // Tela de bateria: porcentagem e estado, ou falha do sensor.
   static void renderBattery(const StatusView &view, Line top, Line bottom) {
     if (view.batterySensorFailed) {
       copy(top, "Bateria");
@@ -151,6 +160,7 @@ class ScreenController final {
     copy(bottom, view.batteryLow ? "BAIXA" : "normal");
   }
 
+  // Tela do lacre: violado, autorizado ou integro.
   static void renderSeal(const StatusView &view, Line top, Line bottom) {
     switch (view.seal) {
       case SealView::Violated:
