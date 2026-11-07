@@ -617,15 +617,19 @@ bool validInvoice(const String &text) {
   return true;
 }
 
-// Comandos no Monitor Serial: NF (lanca a NF de retorno), REMESSA x (NF da remessa,
-// simulando a plataforma) e LIMIAR n (RN03).
+// Comandos locais do Monitor Serial: VINCULAR tenta um novo vinculo (RF003/RF004; RN01),
+// NF lanca a NF de retorno, REMESSA x representa a NF da remessa e LIMIAR n ajusta RN03.
+// VINCULAR e entrada de bancada; nao representa autenticacao nem concorrencia na plataforma.
 void readCommands() {
   while (Serial.available()) {
     const char c = Serial.read();
     if (c != '\n' && c != '\r') { serialLine += c; continue; }
     serialLine.trim();
     serialLine.toUpperCase();
-    if (serialLine == "NF") {
+    if (serialLine == "VINCULAR") {
+      // Entrada explicita, mesmo com ciclo ativo. BTN_CICLO permanece reservado ao encerramento.
+      requestLink(clockMs());
+    } else if (serialLine == "NF") {
       returnInvoiceIssued = true;
       contextDirty = true;
       publishEvent("NF_RETORNO_LANCADA");
@@ -654,7 +658,7 @@ void readCommands() {
         publishEvent("LIMIAR_ALTERADO", false, extra);
       }
     } else if (serialLine.length() > 0) {
-      Serial.println("[comando] use NF, REMESSA x ou LIMIAR n");
+      Serial.println("[comando] use VINCULAR, NF, REMESSA x ou LIMIAR n");
     }
     serialLine = "";
   }
@@ -924,7 +928,7 @@ void setup() {
   Serial.printf("[regras] janela de autorizacao %lu dias; fila sem rede de %u eventos; bateria %u%%/%u%%\r\n",
                 (unsigned long)Config::AuthorizationWindowDays, EVENT_QUEUE_CAPACITY,
                 Config::BatteryLowPct, Config::BatteryRecoverPct);
-  Serial.println("[comandos] NF = lanca NF de retorno; REMESSA x = NF da remessa; LIMIAR n = muda o limiar de permanencia");
+  Serial.println("[comandos] VINCULAR = tenta vinculo local (RF004); NF = NF retorno; REMESSA x = NF remessa; LIMIAR n = limiar");
   Serial.printf("[interface] LCD 16x2 I2C 0x%02X; AVANCAR/VOLTAR trocam a tela; CICLO e AUTORIZAR exigem %lu s; LCD apaga apos %lu s sem uso\r\n",
                 Config::LcdAddress, (unsigned long)(Config::LongPressMs / 1000UL),
                 (unsigned long)(Config::LcdTimeoutMs / 1000UL));

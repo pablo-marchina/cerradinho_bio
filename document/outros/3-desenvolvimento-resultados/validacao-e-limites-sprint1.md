@@ -21,17 +21,17 @@
 |---|---|---|---|
 | CT-F01 | RF001 | Criar e consultar equipamento por identificador e foto; rejeitar duplicidade. Integração. | 2–3 |
 | CT-F02 | RF002 / RN02 | Abrir ciclo com/sem NF, fornecedor, responsável e prazo; ausência deve bloquear. Integração. | 2–3 |
-| CT-F03 | RF003, RF004 / RN01 | Vincular um dispositivo a um ciclo e tentar vinculá-lo a outro ciclo ativo: recusar e preservar o vínculo original (RF004). Em cenário separado, tentar abrir simultaneamente dois ciclos para o mesmo equipamento usando dispositivos distintos: aceitar no máximo um (RN01). Integração. Depende de entrada de vínculo acessível com ciclo ativo: hoje o botão chama encerramento, sem alcançar `VINCULO_RECUSADO` em `requestLink()`. | 2–3 |
+| CT-F03 | RF003, RF004 / RN01 | Vincular um dispositivo a um ciclo e tentar vinculá-lo a outro ciclo ativo: recusar e preservar o vínculo original (RF004). Em cenário separado, tentar abrir simultaneamente dois ciclos para o mesmo equipamento usando dispositivos distintos: aceitar no máximo um (RN01). **Integração/plataforma, não executado.** A entrada local `VINCULAR` da issue #113 já alcança `VINCULO_RECUSADO` e foi testada em host (CT15-HOST); isso **não comprova** bloqueio concorrente no servidor nem testes com dois dispositivos. | 2–3 |
 | CT-F08 | RF008 | Derrubar Wi-Fi real no simulador/placa, medir tentativa e reconexão; não usar SW_REDE como prova. Dispositivo. | 2 |
 | CT-F09 | RF009 | Inspecionar tópico, JSON, autenticação e ACK MQTT de receptor independente. Integração. | 2–3 |
 | CT-F12 | RF012 / RN12 | Comparar diferença de datas com NF de remessa, horário e fusos; reiniciar sem alterar origem. Integração. | 3 |
-| CT-F15 | RF015 / RN08 | Consultar na interface última posição válida, lacre, bateria, prazo, vínculo e atualização do backend. Sistema. | 3 |
+| CT-F15 | RF015 / RN08, RN15 | Consultar na interface última posição válida, lacre, bateria, prazo, vínculo e atualização do backend. Sistema. | 3 |
 | CT-F17 | RF017 / RN11 | Encerrar, reutilizar dispositivo, consultar integralmente os dois históricos após reinício. Sistema. | 3 |
 | CT-F18 | RF018 / RN18 | Confirmar envio ao responsável, entrega no canal e trilha de ciência. Integração. | 3–4 |
 | CT-F20 | RF020 / RN16 | Cadastrar e revogar um device com segredo exclusivo; rejeitar desconhecido. Segurança. | 3 |
 | CT-F21 | RF021 / RN15/17 | UID imutável, autenticação, perfis e acesso negado sem credencial. Segurança. | 3 |
-| CT-F22 | RF022 | Gráficos, faixas, mapa, fonte dos dados e filtros por tipo/ciclo. UI. | 4 |
-| CT-F23 | RF023 / RN18 | Atribuir alerta, registrar tratamento, trilha sem sobrescrever histórico. Sistema. | 4 |
+| CT-F22 | RF022 / RN15 | Gráficos, faixas, mapa, fonte dos dados e filtros por tipo/ciclo. UI. | 4 |
+| CT-F23 | RF023 / RN15, RN18 | Atribuir alerta, registrar tratamento, trilha sem sobrescrever histórico. Sistema. | 4 |
 | CT-F24 | RF024 / RN15 | API com credencial, paginação, IDs, isolamento entre papéis e contrato. Integração. | 4 |
 | CT-F25 | RF025 / RN14 | Relógio do servidor identifica lacuna de comunicação e elimina duplicatas. Backend. | 3–4 |
 | CT-F26 | RF026 / RN13 | Parâmetros legais validados pelo Fiscal, modalidades distintas e exceções. Negócio/integração. | 3–4 |
@@ -39,6 +39,21 @@
 | CT-F29 | RF029 / RN20 | Registrar retorno físico pendente; tentar encerrar sem baixa NF: recusar. Sistema. | 3 |
 | CT-F30 | RF030 / RN18 (tratamento) | Com prazos e destinatários fictícios previamente acordados, avançar o relógio pelos limites de escalonamento; verificar no receptor independente a entrega ao requisitante, coordenador e diretor na etapa correta, sem destinatários indevidos nem repetição para a mesma etapa. Registrar ciclo, etapa e horários. Integração. Depende de canal de e-mail, configuração e aprovação das faixas; não executado. | 3–4 (proposta) |
 | CT-U01 | RNF04.1, RNF04.3, RNF04.4; RF015, RF017, RF022, RF023, RF029 / RN08, RN20 | Teste moderado, sem ajuda, com 9 participantes representativos (3 por perfil) e 2 tarefas por participante: PCM localiza alerta e interpreta posição/horário; Fiscal identifica retorno físico e pendência fiscal; Logística consulta histórico e filtra pendências. Registrar acertos, tempos e erros por perfil. Exigir ao menos 5/6 acertos e mediana de até 3 minutos por perfil, sem interpretar retorno sem baixa fiscal como encerramento. Metas propostas, a validar; depende do painel e dos participantes; não executado. | 3–4 (proposta) |
+| CT-Q01 | RNF07.3; RF003, RF016, RF017; RN01, RN11 | Reproduzir **duas vezes de modo independente**, em host/simulador e a partir de log anonimizado, um defeito já observado. Fixar versão, configuração e estímulos; a mesma condição defeituosa e a sequência lógica devem reaparecer. Salvar entradas, dois logs e comparação. Qualidade/manutenibilidade; **planejado, não executado**. | 3 (proposta) |
+| CT-Q02 | RNF07.4; RF003, RF004, RF016, RF017; RN01, RN11 | Repetir **duas execuções** do mesmo roteiro versionado, coletar estados e eventos, comparar diff e classificar qualquer divergência temporal/física justificada. Guardar logs completos, parâmetros, SHA e resultado. Qualidade/manutenibilidade; **planejado, não executado**. | 3 (proposta) |
+
+## Verificação local RF004/RN01 — issue #113 (CT15-HOST)
+
+**Entrada definida:** enviar `VINCULAR` seguido de Enter no Monitor Serial local. O comando chega ao fluxo de produção `loop()` → `readCommands()` → `requestLink()`. O botão **CICLO segurado por 3 s** mantém o comportamento anterior: iniciar quando inativo e solicitar encerramento quando ativo. A Serial é interface de bancada; **não equivale** a API, autenticação nem concorrência transacional.
+
+| Cenário | Estímulo via entrada real | Oráculo e resultado local | Limite |
+|---|---|---|---|
+| CT15-HOST — recusa | Com ciclo 1 ativo e NF de remessa/retorno lançadas, escrever `VINCULAR` | **APROVADO no host (demo + weekly):** exatamente um `VINCULO_RECUSADO`, `motivo=ciclo_ativo`; mesmo ID, dias, NF, início, contador e lacre; nenhum início ou encerramento adicional | Firmware compilado com stubs de hardware; não é evidência Wokwi ou física |
+| CT15-HOST — regressão | Solicitar `VINCULAR` sem ciclo, encerrar com botão 3 s, reutilizar e tentar encerrar sem NF | **APROVADO no host (demo + weekly):** inicia novo ciclo, encerra ciclo elegível, preserva contador, recusa encerramento com NF ausente e não converte o gesto em vínculo | Fluxo local; sem plataforma |
+| CT15 (Wokwi V2 atualizado) | Executar `tests/wokwi-ci/ct14-16-encerramento.yaml` com o comando `VINCULAR` após abrir o segundo ciclo | **Planejado após a correção:** validar evento, motivo, ciclo 2 intacto e encerramento independente | Não executado; resultado histórico CT15 V2 permanece PARCIAL |
+| CT-F03 (plataforma) | Concorrer dois pedidos de vínculo para o mesmo dispositivo/equipamento | **Planejado:** no máximo um vínculo aceito no backend, sem perder o original | API/autorização/banco de dados não implementados |
+
+Comandos para repetir a verificação local: `bash scripts/verify-host.sh` (compila e executa em ambos os modos) e `bash scripts/check-firmware-syntax.sh`. Os testes e os arquivos de cenário são versionados, mas não substituem os logs de ensaios físicos.
 
 **Evidências não equivalentes:** CT08/09 não provam reconexão Wi-Fi; CT01/02 não provam MQTT; CT19/20 não provam listagem RF015; CT03/04 não provam NF real como marco temporal; CT14 não prova histórico consultável. Atualizar a RTM ao executar os novos CTs, mantendo IDs, data, firmware SHA, ambiente, estímulos e logs brutos.
 

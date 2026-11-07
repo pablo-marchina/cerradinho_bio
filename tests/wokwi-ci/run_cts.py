@@ -147,8 +147,17 @@ def check_ct14_16(lines, events):
         'CT14': (len(closed) == 1 and c['ciclo_ativo'] is False and c['dias_fora'] == 0 and c['ciclos_encerrados'] == 1
                  and [e['ciclo_id'] for e in started] == [1, 2] and s['dias_fora'] == 0,
                  f"encerrado ativo={c.get('ciclo_ativo')} dias={c.get('dias_fora')} n={c.get('ciclos_encerrados')}; novo ciclo_id={s.get('ciclo_id')}"),
-        'CT15 (V2)': (not of(events, 'VINCULO_RECUSADO') and reasons[2:] == ['nf_retorno_ausente'],
-                      f'VINCULO_RECUSADO x{len(of(events, "VINCULO_RECUSADO"))}; gesto com ciclo ativo -> recusa {reasons[2:]}'),
+        'CT15 (V2)': (len(of(events, 'VINCULO_RECUSADO')) == 1
+                      and of(events, 'VINCULO_RECUSADO')[0].get('motivo') == 'ciclo_ativo'
+                      and of(events, 'VINCULO_RECUSADO')[0].get('ciclo_ativo') is True
+                      and of(events, 'VINCULO_RECUSADO')[0].get('ciclo_id') == 2
+                      and len(started) == 2 and len(closed) == 1
+                      and reasons[2:] == ['nf_retorno_ausente']
+                      and of(events, 'VINCULO_RECUSADO')[0]['_line'] <
+                          of(events, 'ENCERRAMENTO_RECUSADO')[-1]['_line'],
+                      f'VINCULO_RECUSADO x{len(of(events, "VINCULO_RECUSADO"))}; '
+                      f'ciclo_id={of(events, "VINCULO_RECUSADO")[0].get("ciclo_id") if of(events, "VINCULO_RECUSADO") else None}; '
+                      f'gesto de encerramento preservado: {reasons[2:]}'),
         'CT16': (reasons[:2] == ['nf_retorno_ausente', 'lacre_aberto'], f'motivos {reasons[:2]}'),
     }
 
