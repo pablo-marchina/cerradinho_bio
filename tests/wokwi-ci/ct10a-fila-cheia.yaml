@@ -1,0 +1,17 @@
+# CT10 rodada A (V2): 1 violacao + 10 LIMIAR sem rede; fila de 8 descarta os nao criticos
+# mais antigos e preserva a violacao.
+name: CT10A V2 - fila cheia com violacao preservada
+version: 1
+steps:
+  - wait-serial: '"type":"STATUS"'
+  - delay: 500ms
+  - set-control: { part-id: sw_rede, control: value, value: 1 }
+  - delay: 300ms
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: '[FILA] guardado: VIOLACAO_LACRE'
+  - write-serial: "LIMIAR 201\nLIMIAR 202\nLIMIAR 203\nLIMIAR 204\nLIMIAR 205\nLIMIAR 206\nLIMIAR 207\nLIMIAR 208\nLIMIAR 209\nLIMIAR 210\n"
+  - wait-serial: '[FILA] 8 pendentes'
+  - delay: 1000ms
+  - set-control: { part-id: sw_rede, control: value, value: 0 }
+  - wait-serial: '[FILA] 0 pendentes'
+  - delay: 500ms

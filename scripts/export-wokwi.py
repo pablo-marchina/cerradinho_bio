@@ -26,7 +26,7 @@ for name in ('gps.chip.c', 'gps.chip.json', 'nmea.h', 'wokwi-api.h'):
         print('Aviso: chips/wokwi-api.h nao gerado. Execute scripts/setup.ps1 antes de compilar o chip customizado.')
     else:
         raise FileNotFoundError(ROOT / 'chips' / src_name)
-(TARGET / 'libraries.txt').write_text('TinyGPSPlus\n', encoding='utf-8')
+(TARGET / 'libraries.txt').write_text('TinyGPSPlus\nLiquidCrystal I2C\n', encoding='utf-8')
 manifest = {'source': 'src/firmware/main.cpp', 'note': 'Exportacao, nao publicacao',
             'files': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                       for p in sorted(TARGET.iterdir()) if p.is_file() and p.name != 'manifest.json'}}

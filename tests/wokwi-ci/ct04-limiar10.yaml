@@ -1,0 +1,19 @@
+# CT04 (V2), rodada com limiar alternativo de 10 dias (comando LIMIAR no Serial).
+name: CT04 V2 - permanencia com limiar 10
+version: 1
+steps:
+  - wait-serial: '"type":"STATUS"'
+  # Vinculo (RF003): o dispositivo liga sem ciclo; CICLO segurado 3 s abre o ciclo 1.
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 1 }
+  - wait-serial: '"type":"CICLO_INICIADO"'
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 0 }
+  - write-serial: "LIMIAR 10\n"
+  - wait-serial: '"type":"LIMIAR_ALTERADO"'
+  - wait-serial: '"type":"ALERTA_PERMANENCIA"'
+  - set-control: { part-id: btn_avancar, control: pressed, value: 1 }
+  - delay: 150ms
+  - set-control: { part-id: btn_avancar, control: pressed, value: 0 }
+  - delay: 300ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct04-lcd-limiar10.png }
+  - wait-serial: 'dias_fora=14'
+  - delay: 500ms

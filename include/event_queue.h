@@ -18,9 +18,9 @@ typedef struct {
   bool critical[EVENT_QUEUE_CAPACITY];
   uint8_t count;
   uint32_t lost;  // eventos nao criticos que nao couberam (todos os guardados eram criticos)
-  uint32_t overflow_count;     // violacoes alem da capacidade, guardadas so no resumo
-  uint64_t overflow_first_ms;  // relogio do ciclo (sim_clock.h) da primeira e da ultima
-  uint64_t overflow_last_ms;
+  uint32_t overflowCount;     // violacoes alem da capacidade, guardadas so no resumo
+  uint64_t overflowFirstMs;  // relogio do ciclo (sim_clock.h) da primeira e da ultima
+  uint64_t overflowLastMs;
 } EventQueue;
 
 enum {
@@ -30,22 +30,24 @@ enum {
   QUEUE_SUMMARIZED              // FILA_CHEIA: fila so com criticos; violacao no resumo
 };
 
-static inline void queue_init(EventQueue *queue) {
+// Esvazia a fila e zera os contadores de perda e de resumo.
+static inline void queueInit(EventQueue *queue) {
   queue->count = 0;
   queue->lost = 0;
-  queue->overflow_count = 0;
-  queue->overflow_first_ms = 0;
-  queue->overflow_last_ms = 0;
+  queue->overflowCount = 0;
+  queue->overflowFirstMs = 0;
+  queue->overflowLastMs = 0;
 }
 
 // Zera o resumo depois de enviado.
-static inline void queue_clear_summary(EventQueue *queue) {
-  queue->overflow_count = 0;
-  queue->overflow_first_ms = 0;
-  queue->overflow_last_ms = 0;
+static inline void queueClearSummary(EventQueue *queue) {
+  queue->overflowCount = 0;
+  queue->overflowFirstMs = 0;
+  queue->overflowLastMs = 0;
 }
 
-static inline void queue_remove(EventQueue *queue, uint8_t index) {
+// Remove o evento da posicao informada, mantendo a ordem dos demais.
+static inline void queueRemove(EventQueue *queue, uint8_t index) {
   for (uint8_t i = index; i + 1 < queue->count; ++i) {
     memcpy(queue->text[i], queue->text[i + 1], EVENT_TEXT_MAX);
     queue->critical[i] = queue->critical[i + 1];
@@ -53,7 +55,8 @@ static inline void queue_remove(EventQueue *queue, uint8_t index) {
   --queue->count;
 }
 
-static inline int queue_push(EventQueue *queue, const char *text, bool critical, uint64_t at_ms) {
+// Guarda um evento; cheia, aplica a politica de descarte por criticidade.
+static inline int queuePush(EventQueue *queue, const char *text, bool critical, uint64_t atMs) {
   int result = QUEUE_STORED;
   if (queue->count == EVENT_QUEUE_CAPACITY) {
     uint8_t oldest = EVENT_QUEUE_CAPACITY;
@@ -65,12 +68,12 @@ static inline int queue_push(EventQueue *queue, const char *text, bool critical,
         ++queue->lost;
         return QUEUE_REJECTED;
       }
-      if (queue->overflow_count == 0) queue->overflow_first_ms = at_ms;
-      queue->overflow_last_ms = at_ms;
-      ++queue->overflow_count;
+      if (queue->overflowCount == 0) queue->overflowFirstMs = atMs;
+      queue->overflowLastMs = atMs;
+      ++queue->overflowCount;
       return QUEUE_SUMMARIZED;
     }
-    queue_remove(queue, oldest);
+    queueRemove(queue, oldest);
     result = QUEUE_STORED_DROPPED_OLDEST;
   }
   strncpy(queue->text[queue->count], text, EVENT_TEXT_MAX - 1);

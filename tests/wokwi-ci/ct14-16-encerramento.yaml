@@ -1,0 +1,47 @@
+# CT14-CT16 (V2): recusas de encerramento, encerramento valido e reutilizacao, todos com
+# BTN_CICLO segurado 3 s continua iniciando/encerrando. CT15 usa a nova entrada
+# explicita VINCULAR no Monitor Serial para provocar VINCULO_RECUSADO sem fechar ciclo.
+name: CT14-CT16 V2 - encerramento e reutilizacao do ciclo
+version: 1
+steps:
+  - wait-serial: '"type":"STATUS"'
+  - delay: 500ms
+  # Vinculo (RF003): o dispositivo liga sem ciclo; CICLO segurado 3 s abre o ciclo 1.
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 1 }
+  - wait-serial: '"type":"CICLO_INICIADO"'
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 0 }
+  # CT16 B: lacre fechado, sem NF de retorno.
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 1 }
+  - wait-serial: '"type":"ENCERRAMENTO_RECUSADO"'
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 0 }
+  - delay: 300ms
+  # CT16 A: NF lancada, lacre aberto.
+  - write-serial: "NF\n"
+  - wait-serial: '"type":"NF_RETORNO_LANCADA"'
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: '"type":"VIOLACAO_LACRE"'
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 1 }
+  - wait-serial: '"type":"ENCERRAMENTO_RECUSADO"'
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 0 }
+  - set-control: { part-id: seal, control: value, value: 0 }
+  - wait-serial: '"type":"LACRE_FECHADO"'
+  - delay: 300ms
+  # CT14: encerramento valido e novo ciclo.
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 1 }
+  - wait-serial: '"type":"CICLO_ENCERRADO"'
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 0 }
+  - delay: 300ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct14-lcd-encerrado.png }
+  - delay: 500ms
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 1 }
+  - wait-serial: '"type":"CICLO_INICIADO"'
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 0 }
+  - delay: 300ms
+  # CT15: comando de novo vinculo com ciclo 2 ativo deve recusar sem alterar o ciclo.
+  - write-serial: "VINCULAR\n"
+  - wait-serial: '"type":"VINCULO_RECUSADO"'
+  # Gesto de encerramento continua funcionando: ciclo 2 sem NF de retorno deve recusar.
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 1 }
+  - wait-serial: '"type":"ENCERRAMENTO_RECUSADO"'
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 0 }
+  - delay: 500ms

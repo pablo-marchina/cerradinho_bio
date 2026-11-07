@@ -1,0 +1,154 @@
+{
+  "framework": "value-proposition",
+  "title": "Value Proposition Canvas — GuaráTracking",
+  "customer": "Geraldo, analista de PCM (P1)",
+  "relatedParties": [
+    "Fiscal",
+    "Logística"
+  ],
+  "items": [
+    {
+      "code": "T1",
+      "group": "jobs",
+      "title": "Identificar e enviar",
+      "description": "Registrar equipamento, oficina e remessa."
+    },
+    {
+      "code": "T2",
+      "group": "jobs",
+      "title": "Acompanhar oficina",
+      "description": "Consultar posição e prazo do reparo."
+    },
+    {
+      "code": "T3",
+      "group": "jobs",
+      "title": "Decidir diante do atraso",
+      "description": "Cobrar, renegociar ou prorrogar."
+    },
+    {
+      "code": "T4",
+      "group": "jobs",
+      "title": "Conferir retorno",
+      "description": "Verificar ativo e estado do lacre."
+    },
+    {
+      "code": "D1",
+      "group": "pains",
+      "title": "Controle disperso",
+      "description": "Planilhas e ligações para obter status."
+    },
+    {
+      "code": "D2",
+      "group": "pains",
+      "title": "Localização incerta",
+      "description": "Posição e prazo nem sempre disponíveis."
+    },
+    {
+      "code": "D3",
+      "group": "pains",
+      "title": "Histórico insuficiente",
+      "description": "Dificulta cobrar e decidir."
+    },
+    {
+      "code": "D4",
+      "group": "pains",
+      "title": "Registro incompleto",
+      "description": "Abertura do lacre ou retorno sem registro."
+    },
+    {
+      "code": "G1",
+      "group": "gains",
+      "title": "Consultar sem ligar",
+      "description": "Status em uma única consulta."
+    },
+    {
+      "code": "G2",
+      "group": "gains",
+      "title": "Agir antes do prazo",
+      "description": "Antecipar cobranças e decisões."
+    },
+    {
+      "code": "G3",
+      "group": "gains",
+      "title": "Decidir com evidências",
+      "description": "Comparar histórico de fornecedores."
+    },
+    {
+      "code": "G4",
+      "group": "gains",
+      "title": "Encerrar com segurança",
+      "description": "Conferir retorno e preservar histórico."
+    },
+    {
+      "code": "PS1",
+      "group": "products",
+      "title": "TAG reutilizável",
+      "description": "Dispositivo com lacre."
+    },
+    {
+      "code": "PS2",
+      "group": "products",
+      "title": "Cadastro do ciclo",
+      "description": "Vínculo com ativo e fornecedor."
+    },
+    {
+      "code": "PS3",
+      "group": "products",
+      "title": "Painel de acompanhamento",
+      "description": "Posição, prazo, alertas e histórico."
+    },
+    {
+      "code": "AD1",
+      "group": "painRelievers",
+      "title": "Ciclo registrado",
+      "description": "Responsável e fornecedor visíveis."
+    },
+    {
+      "code": "AD2",
+      "group": "painRelievers",
+      "title": "Posição e prazo",
+      "description": "Última posição válida e vencimento."
+    },
+    {
+      "code": "AD3",
+      "group": "painRelievers",
+      "title": "Histórico de ciclos",
+      "description": "Registros por fornecedor."
+    },
+    {
+      "code": "AD4",
+      "group": "painRelievers",
+      "title": "Lacre e retorno",
+      "description": "Estado e conferência registrados."
+    },
+    {
+      "code": "CG1",
+      "group": "gainCreators",
+      "title": "Painel consolidado",
+      "description": "Consulta do ciclo em um lugar."
+    },
+    {
+      "code": "CG2",
+      "group": "gainCreators",
+      "title": "Alertas configuráveis",
+      "description": "Sinalização antes do vencimento."
+    },
+    {
+      "code": "CG3",
+      "group": "gainCreators",
+      "title": "Histórico consultável",
+      "description": "Apoio à decisão no atraso."
+    },
+    {
+      "code": "CG4",
+      "group": "gainCreators",
+      "title": "Ciclo completo",
+      "description": "Consulta da saída ao retorno."
+    }
+  ],
+  "settings": {
+    "segmentName": "Geraldo, analista de PCM (P1)",
+    "vpName": "GuaráTracking: TAG reutilizável e plataforma de rastreio"
+  },
+  "version": 2
+}

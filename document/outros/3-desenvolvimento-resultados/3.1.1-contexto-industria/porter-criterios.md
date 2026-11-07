@@ -1,0 +1,13 @@
+# Fundamentação das cinco forças de Porter — CerradinhoBio
+
+**Foco:** o setor do parceiro é bioenergia sucroenergética e etanol de milho, não a indústria de software ou rastreadores. A análise considera o Grupo Cerradinho/CerradinhoBio como agente industrial. Os nomes Raízen, bp bioenergy, São Martinho, FS e Inpasa e as referências públicas constam da seção 3.1.1 de `documentacao.md`.
+
+| Força | Nível (3.1.1) | Mecanismo / contexto da CerradinhoBio | Consequência para o projeto |
+|---|---|---|---|
+| Rivalidade entre concorrentes | Alta | Grandes produtores competem por eficiência industrial, escala, suprimento, logística e capacidade de vender commodities com diferenciação limitada. Matérias-primas e custos industriais impactam margens. | A manutenção externa mais rastreável pode reduzir paradas e incerteza, benefício ainda não quantificado. |
+| Poder de fornecedores | Alta | O negócio de milho depende de grão adquirido no mercado e responde por parcela relevante do resultado. Safra, logística e concentração regional podem elevar preços; peças e serviços especializados também têm substituição limitada no curto prazo. A diversificação cana/milho reduz, mas não elimina a exposição. | Controlar peças e equipamentos enviados a terceiros pode apoiar prazo e disponibilidade industrial, sem reduzir diretamente o preço do milho nem substituir contratos de manutenção. |
+| Poder de compradores | Alta | Grandes distribuidoras concentram a compra de etanol e negociam preço, volume e condições sobre produto padronizado. Açúcar, energia e coprodutos diversificam receitas, mas não anulam o poder desses canais. | Menos interrupções e maior previsibilidade podem beneficiar entregas, mas esse resultado precisa ser medido e não é desempenho já comprovado pelo piloto. |
+| Ameaça de novos entrantes | Média | Novos empreendimentos exigem capital, autorização ambiental, acesso a matéria-prima, energia e logística. Etanol de milho mostra expansão, mas capital e escala criam barreiras. | Eficiência e disponibilidade de ativo ajudam sustentar vantagens de operação existente. |
+| Substitutos | Média | Gasolina, eletrificação e outras rotas de baixo carbono concorrem com o etanol; em sentido contrário, a frota flex e a mistura obrigatória E30 sustentam sua demanda. Bioenergia também disputa espaço com outras fontes renováveis. | A ferramenta interna contribui à eficiência; não altera diretamente a competição entre fontes energéticas. |
+
+**Método de pontuação:** níveis baixa/média/alta são juízo qualitativo fundamentado em modelo de Porter, não ranking financeiro comparável sem indicadores de margem, participação e elasticidade. Pesquisas de campo ou relatórios financeiros adicionais podem revisá-los.

@@ -2,8 +2,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-// Bateria: RF019, RF027; RN10; CT12-CT13. Alerta abaixo de low_pct, rearma acima
-// de recover_pct; leitura zero do ADC e falha do sensor, nao bateria vazia.
+// Bateria: RF019, RF027; RN10; CT12-CT13. Alerta abaixo de lowPct, rearma acima
+// de recoverPct; leitura zero do ADC e falha do sensor, nao bateria vazia.
 
 enum {
   BATTERY_EVENT_LOW = 1u << 0,           // BATERIA_BAIXA
@@ -11,29 +11,31 @@ enum {
 };
 
 typedef struct {
-  uint8_t low_pct;
-  uint8_t recover_pct;
-  bool low_sent;
-  bool failure_sent;
+  uint8_t lowPct;
+  uint8_t recoverPct;
+  bool lowSent;
+  bool failureSent;
 } BatteryState;
 
-static inline void battery_init(BatteryState *battery, uint8_t low_pct, uint8_t recover_pct) {
-  battery->low_pct = low_pct;
-  battery->recover_pct = recover_pct;
-  battery->low_sent = false;
-  battery->failure_sent = false;
+// Comeca sem alerta enviado, com os limiares de alerta e de rearme.
+static inline void batteryInit(BatteryState *battery, uint8_t lowPct, uint8_t recoverPct) {
+  battery->lowPct = lowPct;
+  battery->recoverPct = recoverPct;
+  battery->lowSent = false;
+  battery->failureSent = false;
 }
 
-static inline unsigned battery_update(BatteryState *battery, int raw_adc, int pct) {
-  if (raw_adc == 0) {
-    if (battery->failure_sent) return 0;
-    battery->failure_sent = true;
+// Devolve o evento da leitura: falha com ADC zero, ou alerta uma vez ate rearmar.
+static inline unsigned batteryUpdate(BatteryState *battery, int rawAdc, int pct) {
+  if (rawAdc == 0) {
+    if (battery->failureSent) return 0;
+    battery->failureSent = true;
     return BATTERY_EVENT_SENSOR_FAILURE;
   }
-  battery->failure_sent = false;
-  if (pct > battery->recover_pct) battery->low_sent = false;
-  if (pct < battery->low_pct && !battery->low_sent) {
-    battery->low_sent = true;
+  battery->failureSent = false;
+  if (pct > battery->recoverPct) battery->lowSent = false;
+  if (pct < battery->lowPct && !battery->lowSent) {
+    battery->lowSent = true;
     return BATTERY_EVENT_LOW;
   }
   return 0;

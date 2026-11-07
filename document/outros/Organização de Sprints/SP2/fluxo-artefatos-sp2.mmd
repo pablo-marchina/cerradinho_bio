@@ -1,0 +1,101 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Segoe UI, Arial, sans-serif", "primaryColor": "#D9CCF2", "primaryBorderColor": "#6B4A86", "primaryTextColor": "#182420", "lineColor": "#7D8A84", "clusterBkg": "#7D8A8414", "clusterBorder": "#7D8A84", "titleColor": "#7D8A84", "edgeLabelBackground": "#FFFFFF"}}}%%
+flowchart LR
+    %% Sprint 2 - fluxo de dependências entre os cards
+    %% Linha cheia: dependência dentro do artefato. Tracejada: dependência entre artefatos.
+    %% Verde: pode começar sem esperar outro card. Vermelho: caminho crítico (sem folga).
+
+    subgraph ART5["Art. 5 — Protótipo físico (3.4.2)"]
+        direction LR
+        A5R1["5.R1 Alinhamento<br/>Seg 26/10"]
+        A5R2["5.R2 Dúvidas ao professor<br/>Qua 28/10"]
+        A5_1["5.1 Inventário<br/>Ter 27/10"]
+        A5_2["5.2 Pinagem<br/>Qua 28/10"]
+        A5_3["5.3 Montagem de cada versão<br/>Qua 28/10"]
+        A5_5["5.5 Qualidade do código<br/>Qui 29/10"]
+        A5_6["5.6 CTs escritos<br/>Qua 28/10"]
+        A5_4["5.4 Firmware em cada versão<br/>Qui 29/10"]
+        A5_11["5.11 Comparação e escolha<br/>Qui 29/10"]
+        A5_7["5.7 Execução dos CTs<br/>Sex 30/10"]
+        A5_8["5.8 Correções<br/>Ter 3/11"]
+        A5_9["5.9 Texto 3.4.2<br/>Ter 3/11"]
+        A5_10["5.10 CTs na RTM<br/>Qua 4/11"]
+    end
+
+    subgraph ART6["Art. 6 — RNF, RF, RN, RTM (3.3.x)"]
+        direction LR
+        A6R1["6.R1 Alinhamento<br/>Seg 26/10"]
+        A6R2["6.R2 Dúvidas ao professor<br/>Qua 28/10"]
+        A6_1["6.1 Estrutura da tabela RNF<br/>Ter 27/10"]
+        A6_10["6.10 Prints Wokwi pendentes<br/>Qui 29/10"]
+        A6_2["6.2 Demandas de negócio<br/>Qua 28/10"]
+        A6_3["6.3 RNF Adequação + Desempenho<br/>Sex 30/10"]
+        A6_4["6.4 RNF Compatibilidade + Usabilidade<br/>Sex 30/10"]
+        A6_5["6.5 RNF Confiabilidade + Segurança<br/>Sex 30/10"]
+        A6_6["6.6 RNF Manutenibilidade + Portabilidade<br/>Sex 30/10"]
+        A6_7["6.7 RF e RN<br/>Ter 3/11"]
+        A6_8["6.8 RTM<br/>Qua 4/11"]
+        A6_9["6.9 Consistência cruzada<br/>Qua 4/11"]
+    end
+
+    subgraph ART7["Art. 7 — Jornadas e storyboard (3.2.2)"]
+        direction LR
+        A7R1["7.R1 Alinhamento + ferramenta<br/>Seg 26/10"]
+        A7R2["7.R2 Dúvidas ao professor<br/>Qua 28/10"]
+        A7_1["7.1 Template e fases<br/>Ter 27/10"]
+        A7_2["7.2 Insumos da persona<br/>Ter 27/10"]
+        A7_3["7.3 Jornada atual<br/>Qui 29/10"]
+        A7_4["7.4 Jornada futura<br/>Sex 30/10"]
+        A7_6["7.6 Roteiro do storyboard<br/>Sex 30/10"]
+        A7_5["7.5 Insights e oportunidades<br/>Ter 3/11"]
+        A7_7["7.7 Ilustração do storyboard<br/>Qua 4/11"]
+        A7_8["7.8 Texto 3.2.2<br/>Qua 4/11"]
+    end
+
+
+    %% Art. 5
+    A5R1 --> A5R2
+    A5_1 -->A5_2
+    A5_2 -->A5_3
+    A5_3 -->A5_4
+    A5_5 -->|mesmo main.cpp| A5_4
+    A5_1 -->A5_6
+    A5_4 -->A5_11
+    A5_6 -->|CTs como base| A5_11
+    A5_11 -->|versão escolhida| A5_7
+    A5_6 -->A5_7
+    A5_7 --> A5_8
+    A5_7 -->A5_9
+    A5_6 --> A5_10
+    A6_8 -.->|mesma tabela| A5_10
+
+    %% Art. 6
+    A6R1 --> A6R2
+    A6_1 --> A6_2
+    A6_2 -->A6_3 & A6_4 & A6_5 & A6_6
+    A6_3 & A6_4 & A6_5 & A6_6 --> A6_8
+    A5_4 -.->|o que o hardware revelou| A6_7
+    A5_7 -.->|status dos RFs| A6_7
+    A6_7 --> A6_8
+    A5_6 -.->|IDs dos CTs| A6_8
+    A6_10 -->A6_8
+    A6_8 --> A6_9
+    A7_5 -.->|oportunidades viram RF| A6_9
+
+    %% Art. 7
+    A7R1 --> A7R2
+    A7R1 -->A7_1
+    A7_1 --> A7_3
+    A7_2 --> A7_3
+    A7_3 -->A7_4
+    A7_4 --> A7_5
+    A7_3 --> A7_6
+    A5_6 -.->|reações do sistema| A7_6
+    A7_6 --> A7_7
+    A7_5 --> A7_8
+    A7_7 --> A7_8
+    classDef livre fill:#A8E6B8,stroke:#2E7D32,color:#182420,stroke-width:2px
+    classDef critico fill:#F8B4B4,stroke:#C62828,color:#182420,stroke-width:3px
+    class A5R1,A6R1,A7R1,A5_1,A5_5,A6_1,A6_10,A7_2 livre
+    class A5_2,A5_3,A5_4,A5_11,A5_7 critico
+    classDef espera fill:#D9CCF2,stroke:#6B4A86,color:#182420
+    class A5R2,A5_6,A5_8,A5_9,A5_10,A6R2,A6_2,A6_3,A6_4,A6_5,A6_6,A6_7,A6_8,A6_9,A7R2,A7_1,A7_3,A7_4,A7_6,A7_5,A7_7,A7_8 espera

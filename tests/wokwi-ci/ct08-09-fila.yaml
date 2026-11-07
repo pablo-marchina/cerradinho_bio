@@ -1,0 +1,26 @@
+# CT08-CT09 (V2): violacao guardada sem rede e reenvio na ordem ao reconectar.
+# CT09 segue BLOQUEADO para aprovacao integral: nao ha confirmacao do servidor.
+name: CT08-CT09 V2 - fila sem rede e reconexao
+version: 1
+steps:
+  - wait-serial: '"type":"STATUS"'
+  - delay: 500ms
+  # Vinculo (RF003): o dispositivo liga sem ciclo; CICLO segurado 3 s abre o ciclo 1.
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 1 }
+  - wait-serial: '"type":"CICLO_INICIADO"'
+  - set-control: { part-id: btn_ciclo, control: pressed, value: 0 }
+  - set-control: { part-id: sw_rede, control: value, value: 1 }
+  - delay: 300ms
+  - set-control: { part-id: seal, control: value, value: 1 }
+  - wait-serial: '[FILA] guardado: VIOLACAO_LACRE'
+  - wait-serial: '[FILA] 1 pendente'
+  - delay: 300ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct08-lcd.png }
+  - set-control: { part-id: seal, control: value, value: 0 }
+  - wait-serial: '[FILA] 2 pendentes'
+  - delay: 2000ms
+  - set-control: { part-id: sw_rede, control: value, value: 0 }
+  - wait-serial: '[FILA] rede disponivel'
+  - wait-serial: '[FILA] 0 pendentes'
+  - delay: 300ms
+  - take-screenshot: { part-id: lcd, save-to: ../../build/wokwi-ct/ct09-lcd.png }
