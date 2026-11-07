@@ -1813,6 +1813,20 @@ Quadros dos vídeos, sem ajuste: [CT46](../assets/3-desenvolvimento-resultados/3
 
 </details>
 
+#### Case de apresentação
+
+Para a apresentação da sprint, o protótipo foi montado dentro de uma case de peças de Lego. Os botões ficam presos em peças brancas, o LCD fica à mostra numa abertura, a antena do GNSS fica no topo, e o potenciômetro da bateria simulada é girado por um dos furos. Na demonstração foi usado um firmware dedicado só à apresentação: a tela de posição mostra o nome do bairro mais próximo, buscado numa tabela de pontos gravada na placa ("Bairro (tabela)"), em vez da idade da última posição. Essa variante não faz parte do firmware descrito nesta seção, e os CTs acima não a usam.
+
+<p align="center"><img src="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/caseLegoVistaSuperior.jpg" alt="Protótipo na case de Lego, com o LCD mostrando Bairro (tabela) Butanta" width="360"></p>
+
+*Figura 3.4.2-3 — Protótipo na case de Lego, com a tela de bairro do firmware de apresentação. Fonte: foto do grupo, Sprint 2.*
+
+![Vídeo de apresentação do protótipo na case de Lego](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/caseLegoApresentacao.mp4)
+
+*Vídeo 3.4.2-1 — [Demonstração do protótipo na case](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/caseLegoApresentacao.mp4), em velocidade 2x (49 s). O vídeo mostra as telas de bateria, prazo, bairro e lacre; a autorização e a retirada autorizada; a violação e o fechamento do lacre; a abertura do ciclo e a recusa de encerramento sem NF de retorno; a rede desligada e religada; e o nível da bateria variando até "BAIXA". Fonte: vídeo do grupo, Sprint 2.*
+
+A case serve à demonstração: não foi ensaiada quanto à fixação no equipamento, poeira, umidade ou impacto, e não substitui o invólucro do dispositivo de campo, cujo critério está no RNF08.4.
+
 #### Casos planejados para a próxima sprint
 
 Os casos abaixo estão **PLANEJADOS** e **NÃO EXECUTADOS**; nenhuma linha é resultado de teste. Os CT24 a CT34 (energia, hardware e comunicação, do [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md)) e os CT-F28 e CT-F29 também seguem planejados, porque dependem de plataforma, comunicação, suspensão no firmware, módulo GNSS definitivo, fixação e medições que ainda não existem.
