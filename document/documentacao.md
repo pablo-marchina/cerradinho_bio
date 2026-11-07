@@ -320,7 +320,7 @@ O ChatGPT foi utilizado como ferramenta de apoio durante esse processo. A equipe
 
 A Figura 3.2.2.1 apresenta o ciclo atual de manutenção externa pela perspectiva de Geraldo: seis etapas — preparar, escolher oficina, aprovar e enviar, acompanhar reparo, tratar atraso, retornar e encerrar. Essas etapas cobrem o recebimento da demanda até a conferência do equipamento e a confirmação da regularização fiscal. O cenário usa o motor fictício AT-001 e a Oficina Skibidy, nome fictício sem relação com fornecedor real.
 
-![Jornada atual de Geraldo, da demanda ao encerramento fiscal, com seis fases e curva emocional](../assets/ux/jornada-atual-geraldo.png)
+![Jornada atual de Geraldo, da demanda ao encerramento fiscal, com seis fases e curva emocional](../assets/3-desenvolvimento-resultados/3.2.2-jornada-usuario/jornadaAtualGeraldo.png)
 
 *Figura 3.2.2.1 — Jornada atual de Geraldo. Fonte: elaboração própria com base no kick-off da Cerradinho, na persona da seção 3.2.1 e no TAPI [6].*
 
@@ -337,7 +337,7 @@ Os principais insights são:
 
 A Figura 3.2.2.2 acompanha Geraldo (P1) nas seis fases da jornada atual, com o motor fictício AT-001 e a Oficina Skibidy. Gestor, Fiscal, transportadora e fornecedor aparecem nos pontos de contato; a última linha explicita as responsabilidades do projeto.
 
-![Jornada futura de Geraldo: seis fases, responsabilidades e comparação emocional](../assets/ux/jornada-futura-geraldo.png)
+![Jornada futura de Geraldo: seis fases, responsabilidades e comparação emocional](../assets/3-desenvolvimento-resultados/3.2.2-jornada-usuario/jornadaFuturaGeraldo.png)
 
 *Figura 3.2.2.2 — Jornada futura de Geraldo. Fonte: elaboração própria com base no kick-off da Cerradinho, na persona da seção 3.2.1 e no TAPI [6].*
 
@@ -364,7 +364,7 @@ A construção do storyboard começou pela definição da persona, do contexto, 
 
 O storyboard acompanha Geraldo, analista de PCM responsável pelos equipamentos enviados à manutenção externa. A história mostra sua atuação após uma bomba centrífuga ultrapassar o prazo de retorno combinado com a oficina e o GuaráTracking emitir um alerta de atraso, permitindo que ele consulte os dados e tome uma decisão.
 
-![Storyboard de Geraldo: alerta de atraso, consulta das informações e tomada de decisão](../assets/3-desenvolvimento-resultados/guaratracking-storyboard.png)
+![Storyboard de Geraldo: alerta de atraso, consulta das informações e tomada de decisão](../assets/3-desenvolvimento-resultados/3.2.2-jornada-usuario/storyboardGeraldo.png)
 
 *Figura 3.2.2.3 — Storyboard de Geraldo. Fonte: elaboração própria do Grupo G01 (2026), com apoio do Codex, com base no kick-off da Cerradinho, na persona da seção 3.2.1, no TAPI [6] e no template da disciplina.*
 
@@ -861,7 +861,14 @@ A revisão deverá incluir comentários sobre cada ponto levantado, mostrando co
 
 ## 3.4. Resultados	
 
-_Nesta seção, detalhe os resultados obtidos com a implementação, de acordo com o disposto nas subseções._
+**Onde estávamos e onde estamos.** A tabela resume a evolução dos casos de teste entre as duas sprints; os detalhes estão nas seções 3.4.1 e 3.4.2.
+
+| | Sprint 1 (até 24/10/2026) | Sprint 2 (até 06/11/2026) |
+|---|---|---|
+| Protótipo | Wokwi V1, com LEDs e chaves | Wokwi V2, com LCD, buzzer e LED de violação, e protótipo físico na protoboard |
+| CTs antigos | 24 executados no Wokwi (CT01–CT23 e CT35): 21 aprovados, CT18 e CT22 reprovados e CT09 bloqueado | 20 refatorados para o [V2](#rodada-v2) e executados de novo: as saídas passaram dos LEDs para o LCD, o buzzer e o LED de violação, e os casos com ciclo ganharam o passo de vínculo. No V2, CT08, CT15 e CT35 ficaram parciais e CT19 a CT22 não foram repetidos; CT18 aprovado no reteste de 05/11 e no físico (CT65); CT22 repetido no físico (CT62) e aprovado; CT09 segue bloqueado à espera do servidor |
+| CTs novos | — | 10 no Wokwi V2 ([CT36–CT42](#cts36-42-interface-v2) e [CT43–CT45](#cts43-45)): 9 aprovados e CT43 parcial; 22 físicos (CT46–CT66 e CT69): todos aprovados, 7 com ressalva (CT49, CT50, CT51, CT52, CT59, CT61 e CT65) |
+| Planejados | CT24–CT34 (energia, hardware e comunicação) | CT24–CT34, mais CT67 e CT68 no físico |
 
 ### 3.4.1. Protótipo Inicial do Projeto usando o Simulador Wokwi (sprint 1)
 
@@ -1675,148 +1682,167 @@ CTs novos para comportamentos que o V2 acrescentou: a idade da última posição
 
 ### 3.4.2. Protótipo Físico do Projeto (offline) (sprint 2)	
 
-O protótipo físico leva o firmware do V2 para o ESP32 real, sem servidor. Em duas protoboards de 830 furos estão o ESP32 DevKitC, o LCD 16x2 I2C, o LED vermelho de violação no GPIO13, o buzzer, o módulo GNSS NEO-6M e os botões. As entradas ensaiadas são o sensor digital do lacre (GPIO27), o sensor analógico de bateria, simulado por potenciômetro no GPIO34, e o módulo GNSS (UART no GPIO16).
+O protótipo físico leva o firmware do V2 para um ESP32 real, sem servidor. Em duas protoboards de 830 furos estão o ESP32 DevKitC, o LCD 16x2 I2C, o LED vermelho de violação (GPIO13), o buzzer, o módulo GNSS NEO-6M e sete botões. As entradas ensaiadas são o sensor digital do lacre (GPIO27), o sensor analógico de bateria, simulado por potenciômetro (GPIO34), e o GNSS (UART no GPIO16). A montagem completa está no [relatório de montagem](outros/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/relatorio-montagem-prototipo-fisico.md).
 
-Na bancada, lacre, rede e ON/OFF são botões de toque, e não chaves deslizantes: cada toque em LACRE ou REDE alterna o estado, e ON/OFF exige 3 s. O botão LACRE simula o sensor real do lacre, previsto como laço de continuidade ou reed switch, e o botão REDE simula a disponibilidade do módulo SIM. Os dois existem porque o contato definitivo depende da fixação no equipamento e a comunicação celular ainda não foi integrada; assim, a abertura do lacre e a falta de rede podem ser provocadas de forma controlada. O firmware foi gravado no ambiente `bancada`, com 1 s = 1 dia e SHA-256 `10D68051B5933F843DC699FEE39CAD5DA99DBB625D0FD743F407B17ED4F06F86`. A execução foi em 05/11/2026, com a Serial gravada a 115200 baud. Esse binário vale para os CT46 a CT52. Depois deles, o despertar do LCD foi corrigido, e os CT53 a CT64, o CT66 e o CT69 rodaram no binário de SHA-256 `AA6D6390660D409708342F849882950BFFA471983CB787F0DE2497A48D7683BF`. O CT65 usou o firmware de teste [`tests/bancada-ct65`](../tests/bancada-ct65/main.cpp), de SHA-256 `6CBBC406EEFC63734AD939304A24EB77F95AE8B4470CCB5986884D0096A8065C`, que inclui o firmware de produção sem mudanças. A montagem está descrita no [relatório de montagem](outros/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/relatorio-montagem-prototipo-fisico.md).
+**Por que há sensores simulados.** Na bancada, LACRE e REDE são botões que alternam o estado a cada toque, e ON/OFF exige 3 s. O botão LACRE simula o sensor real do lacre, previsto como laço de continuidade ou reed switch, e o botão REDE simula a disponibilidade do módulo SIM. Os dois existem porque o contato definitivo depende da fixação no equipamento e a comunicação celular ainda não foi integrada; assim, a abertura do lacre e a falta de rede podem ser provocadas de forma controlada. O potenciômetro substitui a bateria pelo mesmo motivo: a bateria do dispositivo de campo, o divisor de tensão e a calibração da leitura ainda não foram montados nem medidos (CT27 e CT30, planejados), e uma descarga real não cabe num ensaio de bancada. Girando o potenciômetro, qualquer nível aparece na hora, o que permite exercitar os limiares de 20% e 25% e a falha do sensor com ADC = 0 previstos na RN10.
 
-![Protótipo físico na protoboard dupla](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/prototipoVistaSuperior.jpg)
+<p align="center"><img src="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/prototipoVistaSuperior.jpg" alt="Protótipo físico na protoboard dupla" width="560"></p>
 
 *Figura 3.4.2-1 — Protótipo físico com a fiação reorganizada, visto de cima. Fonte: quadro do vídeo do CT69, 05/11/2026.*
 
+**Código de cores da fiação.** Como o laboratório não tinha jumpers de cores variadas, a fiação seguiu um código próprio:
+
+- **branco reto:** alimentação da protoboard;
+- **branco enrolado:** os sete botões;
+- **marrom, enrolado:** pinos de alimentação do ESP32 até os trilhos;
+- **azul, enrolado:** demais componentes (potenciômetro, buzzer e LED).
+
+Os jumpers fêmea do LCD e do GNSS seguem em paralelo e não têm código de cor, também por falta de jumpers.
+
 #### Casos de teste
 
-**Condições de execução.** Alimentação USB, GND comum aos módulos e Serial a 115200 baud; usar o ambiente `bancada`, pois `demo` e `weekly` esperam chaves. Antes de cada caso, conferir ciclo, autorização, lacre e fila na Serial, sem presumir que o caso anterior deixou a placa no estado necessário. Para navegar, acender o LCD antes de contar os toques: o primeiro toque com a tela apagada apenas a acende. Os tempos de autorização e de ciclo estão acelerados (1 s real = 1 dia); a pressão longa dos botões continua sendo de 3 s reais. Alertas de prazo e status podem aparecer durante os casos e não são duplicações de eventos de lacre.
+Condições comuns a todos os casos:
 
-**Leitura digital e estado do lacre.** Nos botões com `INPUT_PULLUP`, solto é HIGH e pressionado é LOW. No ambiente `bancada`, cada pressão estável por pelo menos 60 ms alterna o estado lógico do lacre; soltar o botão não fecha o lacre. Conferir a mudança em `seal_changed` e em `lacre=`. O campo `seal="violated"` descreve o contato aberto inclusive na retirada autorizada; `authorized_removal=true` e o tipo do evento distinguem essa retirada da violação de negócio que aciona o alarme.
+- **Ambiente:** firmware `bancada` (o `demo` e o `weekly` esperam chaves), alimentação USB e Serial a 115200 baud. Ciclo e autorização usam tempo acelerado (1 s = 1 dia); a pressão longa continua sendo de 3 s reais.
+- **Estado inicial:** antes de cada caso, conferir ciclo, autorização, lacre e fila na Serial. Com o LCD apagado, o primeiro toque só acende a tela. Alertas de prazo e status podem aparecer no meio dos casos e não são eventos de lacre duplicados.
+- **Entradas digitais:** botões com `INPUT_PULLUP` (solto = HIGH, pressionado = LOW). Cada pressão de LACRE estável por 60 ms alterna o lacre; soltar não o fecha.
+- **LED de violação:** pulso de 150 ms a cada 1 s só durante violação sem autorização; apagado com lacre íntegro, na retirada autorizada e depois do fechamento. Na retirada autorizada o log traz `seal="violated"` com `authorized_removal=true`, e só a violação aciona LED e buzzer.
 
-**Critério das saídas.** O único LED é o vermelho do GPIO13, exclusivo da violação do lacre: espera-se apagado com lacre íntegro ou retirada autorizada, pulsando durante violação sem autorização e apagado após o fechamento. O firmware configura 150 ms aceso por período de 1 s; os vídeos comprovam o piscar, sem medição elétrica da largura do pulso. Bateria baixa, falha analógica e GNSS sem dados usam LCD e Serial e não devem acender esse LED quando o lacre permanece íntegro. Um log não comprova a emissão de luz ou som: essa conferência depende das imagens e dos vídeos indicados em Resultados.
-
-Os casos representam a consulta local do equipamento por Geraldo (P1-C2: CT46, CT52 e CT55), a retirada controlada e a violação do lacre (P1-C3: CT49, CT57 e CT69), falhas que não podem ser confundidas com estado normal (P1-C4: CT51 e CT66) e a conferência de retorno por Clarice (P2-C2: CT56–CT58). As associações completas com RF, RN e RNF estão na [cobertura física da RTM](#rtm-cobertura-fisica).
+Os casos cobrem a consulta local por Geraldo (P1-C2: CT46, CT52 e CT55), a retirada e a violação do lacre (P1-C3: CT49, CT57 e CT69), falhas que não podem se passar por estado normal (P1-C4: CT51 e CT66) e a conferência de retorno por Clarice (P2-C2: CT56 a CT58). Os RF, RN e RNF de cada caso estão na [cobertura física da RTM](#rtm-cobertura-fisica).
 
 | CT | Descrição | Pré-condição | Procedimento de teste | Pós-condição / resultado esperado | Sensores e saídas |
 |---|---|---|---|---|---|
-| CT46 | Navegação das telas (RF034) | Ligado, sem ciclo; LCD aceso na tela NF | Tocar AVANÇAR cinco vezes e VOLTAR uma vez, esperando 3 s em cada tela | NF, prazo, posição, bateria, lacre e retorno à NF; VOLTAR leva ao lacre; ciclo permanece inativo | Botões HIGH→LOW→HIGH; LCD; `tela=` no heartbeat |
-| CT47 | Abrir o ciclo (RF003) | Ligado, sem ciclo, lacre fechado | Segurar CICLO por 3 s | Contagem "segure mais N s", depois "Ciclo iniciado / aguardando NF"; `CICLO_INICIADO` | Botão; LCD; Serial |
-| CT48 | Toque curto não registra | Ligado, sem ciclo, sem autorização vigente, lacre fechado | Pressionar e soltar CICLO antes de 3 s; repetir com AUTORIZAR | Sem `CICLO_INICIADO` nem `AUTORIZACAO_REGISTRADA`; ciclo inativo e autorização ausente; Serial com `solto antes de 3 s` para cada botão | Botões HIGH→LOW→HIGH; LCD sem confirmação; LED apagado |
-| CT49 | Retirada autorizada (RF007) | Ligado, sem ciclo ativo, lacre fechado e sem alarme | Segurar AUTORIZAR por 3 s; após a confirmação, tocar LACRE em até 3 s; tocar LACRE de novo para fechar | `AUTORIZACAO_REGISTRADA`, `RETIRADA_AUTORIZADA` e `LACRE_REAPLICADO`, sem `VIOLACAO_LACRE`; termina com lacre íntegro, autorização consumida e ciclo inativo | Lacre fechado→aberto autorizado→fechado; **LED apagado**, buzzer silencioso; LCD "Retirada autorizada" e depois "Lacre reaplicado" |
-| CT50 | Violação do lacre (RF006, RN05) | Ligado, sem ciclo ativo, lacre fechado, sem autorização válida | Tocar LACRE; depois tocar de novo | `VIOLACAO_LACRE`; ao fechar, `LACRE_FECHADO` | Lacre muda de fechado para aberto; **LED pisca**; buzzer toca; LCD "VIOLACAO registrada" |
-| CT51 | Falha do sensor de bateria (RF019, RN10) — caso de falha | Ligado, lacre íntegro, potenciômetro em cerca de 75%, alimentado por 3V3 | Forçar o sinal do GPIO34 a GND com o jumper de ensaio; depois retirar, restabelecendo o cursor | Com ADC = 0 estável, `SENSOR_BATERIA_FALHA` em vez de interpretar zero como carga vazia; ao recuperar, volta a porcentagem; oscilações e alertas intermediários constam nas limitações | ADC válido→0→válido; LCD "Bateria / sensor com falha" e depois porcentagem; LED de violação deve permanecer apagado |
-| CT52 | GNSS com fix (RF005) | Ligado, módulo NEO-6M a céu aberto, antena voltada para cima | Aguardar o fix; tocar AVANÇAR até a tela de posição | `fix=valido` no heartbeat, `location_sample` válido e LCD "Ultima posicao / ha N s" | GNSS passa de sem fix para fix válido; LCD; Serial |
+| CT46 | Navegação das telas (RF034) | Ligado, sem ciclo; LCD aceso na tela NF | Tocar AVANÇAR cinco vezes e VOLTAR uma vez, esperando 3 s em cada tela | NF, prazo, posição, bateria, lacre e volta à NF; VOLTAR leva ao lacre; ciclo segue inativo | Botões HIGH→LOW→HIGH; LCD; `tela=` no heartbeat |
+| CT47 | Abrir o ciclo (RF003) | Ligado, sem ciclo, lacre fechado | Segurar CICLO por 3 s | Contagem "segure mais N s" e "Ciclo iniciado / aguardando NF"; `CICLO_INICIADO` | Botão; LCD; Serial |
+| CT48 | Toque curto não registra | Ligado, sem ciclo, sem autorização, lacre fechado | Pressionar e soltar CICLO antes de 3 s; repetir com AUTORIZAR | Nenhum `CICLO_INICIADO` nem `AUTORIZACAO_REGISTRADA`; Serial com `solto antes de 3 s` | Botões HIGH→LOW→HIGH; LCD sem mudança; LED apagado |
+| CT49 | Retirada autorizada (RF007) | Ligado, sem ciclo, lacre fechado, sem alarme | Segurar AUTORIZAR por 3 s; tocar LACRE em até 3 s; tocar LACRE de novo | `AUTORIZACAO_REGISTRADA`, `RETIRADA_AUTORIZADA` e `LACRE_REAPLICADO`, sem `VIOLACAO_LACRE` | Lacre fechado→aberto→fechado; **LED apagado**; buzzer mudo; LCD "Retirada autorizada" |
+| CT50 | Violação do lacre (RF006, RN05) | Ligado, sem ciclo, lacre fechado, sem autorização | Tocar LACRE; depois tocar de novo | `VIOLACAO_LACRE`; ao fechar, `LACRE_FECHADO` | Lacre fechado→aberto; **LED pisca**; buzzer toca; LCD "VIOLACAO registrada" |
+| CT51 | Falha do sensor de bateria (RF019, RN10) — falha | Lacre íntegro, potenciômetro em ~75% | Ligar o GPIO34 ao GND com o jumper de ensaio; depois retirar | Com ADC = 0, `SENSOR_BATERIA_FALHA`, e não bateria vazia; ao retirar, volta a porcentagem | ADC válido→0→válido; LCD "sensor com falha"; LED apagado |
+| CT52 | GNSS com fix (RF005) | NEO-6M a céu aberto, antena para cima | Aguardar o fix; ir até a tela de posição | `fix=valido`, `location_sample` válido e LCD "Ultima posicao / ha N s" | GNSS sem fix→fix; LCD; Serial |
 | CT53 | Autorização isolada (RF007) | Ciclo aberto, lacre fechado | Segurar AUTORIZAR por 3 s, sem tocar em LACRE | "Autorizacao ok / vale 3 dias"; `AUTORIZACAO_REGISTRADA` | Botão; LCD; Serial |
-| CT54 | ON/OFF (RF034) | Ligado, Serial aberta | Segurar ON/OFF por 3 s, esperar 10 s e segurar de novo | LCD apagado; `DISPOSITIVO_DESLIGADO`; nenhum heartbeat ou JSON enquanto desligado; novo `STATUS` | Botão; LCD; Serial |
-| CT55 | LCD apaga e acorda (RF034) | Ligado, potenciômetro parado | Esperar 15 s; tocar um botão; esperar apagar; girar o potenciômetro | Apaga em 15 s; o toque acende; a variação acende na tela de bateria | Sensor analógico muda; LCD |
-| CT56 | Recusa sem NF de retorno (RF016) — caso de falha | Ciclo aberto, lacre fechado, sem NF | Segurar CICLO por 3 s | "Nao encerrado / falta NF retorno"; `ENCERRAMENTO_RECUSADO` com `nf_retorno_ausente` | Botão; LCD; Serial |
-| CT57 | Recusa com lacre aberto (RF016) — caso de falha | Ciclo aberto, lacre aberto com autorização | Segurar CICLO por 3 s; depois fechar o lacre | "Nao encerrado / lacre aberto"; motivo `lacre_aberto`; ao fechar, `LACRE_REAPLICADO` | Lacre muda de aberto para fechado; LCD; Serial |
+| CT54 | ON/OFF (RF034) | Ligado, Serial aberta | Segurar ON/OFF por 3 s, esperar 10 s e segurar de novo | LCD apagado; `DISPOSITIVO_DESLIGADO`; nada na Serial enquanto desligado; novo `STATUS` | Botão; LCD; Serial |
+| CT55 | LCD apaga e acorda (RF034) | Ligado, potenciômetro parado | Esperar 15 s; tocar um botão; esperar apagar; girar o potenciômetro | Apaga em 15 s; o toque acende; girar acende na tela de bateria | Sensor analógico; LCD |
+| CT56 | Recusa sem NF de retorno (RF016) — falha | Ciclo aberto, lacre fechado, sem NF | Segurar CICLO por 3 s | "Nao encerrado / falta NF retorno"; `ENCERRAMENTO_RECUSADO` com `nf_retorno_ausente` | Botão; LCD; Serial |
+| CT57 | Recusa com lacre aberto (RF016) — falha | Ciclo aberto, lacre aberto com autorização | Segurar CICLO por 3 s; depois fechar o lacre | "Nao encerrado / lacre aberto"; motivo `lacre_aberto`; ao fechar, `LACRE_REAPLICADO` | Lacre aberto→fechado; LCD; Serial |
 | CT58 | Encerrar ciclo (RF016) | Ciclo aberto, lacre fechado | Enviar `NF`; segurar CICLO por 3 s | `NF_RETORNO_LANCADA`; "Ciclo encerrado"; `CICLO_ENCERRADO`; `dias_fora=0` | Botão; LCD; Serial |
-| CT59 | NF inválida — caso de falha | Ciclo aberto | Enviar `REMESSA NF@1`; depois `REMESSA NF-000123` | Mensagem de NF inválida, sem mudança; depois a NF é registrada | Serial; LCD |
-| CT60 | Limiares da bateria (RF019, RF027; RN10) | Potenciômetro acima de 25%, lacre íntegro | Ajustar abaixo de 20%, entre 20% e 25%, abaixo de 20%, acima de 25% e abaixo de 20%; aguardar a leitura estabilizar em cada patamar | Dois `BATERIA_BAIXA`, o segundo só depois do rearme acima de 25%; patamar intermediário não rearma; termina abaixo de 20% | ADC muda; LCD "BAIXA"; LED de violação deve permanecer apagado |
-| CT61 | Contato do lacre (RF006) | Ciclo aberto, rede ligada | Tocar LACRE várias vezes, devagar | Um `seal_changed` por transição, sem duplicação | Lacre muda de estado; Serial |
-| CT62 | Reinício real | Ciclo aberto, lacre aberto | Cortar o USB, esperar 5 s e religar | `uptime_ms` volta perto de zero; ciclo e lacre voltam da memória | Lacre e ciclo preservados; Serial |
-| CT63 | Fila e reenvio (RF010) | Ciclo aberto, rede desligada | Gerar eventos de lacre e de status; voltar a rede | `fila=` sobe; reenvio na ordem; fila zera; nenhuma violação falsa | Lacre muda de estado; LCD; Serial |
-| CT64 | Fila cheia — caso de falha | Ciclo aberto, rede desligada | Tocar LACRE 20 vezes; voltar a rede | Descarte do não crítico; `FILA_CHEIA`; `VIOLACAO_LACRE_RESUMO` ao reenviar | Lacre muda de estado; Serial |
-| CT65 | Pulsos curtos do lacre (RF006) — caso de falha | Jumper do GPIO32 ao GPIO27, memória limpa | Firmware de teste aplica pulsos de 20 e 40 ms e 20 toques de 200 ms, com rede e sem rede | Nenhum evento nos pulsos; 20 `seal_changed` por lote | Pulsos no sensor digital; Serial |
-| CT66 | GNSS sem dados (RF005) — caso de falha | A céu aberto, com fix válido | Tirar o fio do TX do módulo; recolocar sem reiniciar a placa | `GNSS_SEM_FIX` com `sem_dados`; `GNSS_RECUPERADO` depois do fix | GNSS perde e recupera dados; LCD; Serial |
-| CT69 | Violação e fechamento com ciclo aberto (RF006, RF032, RF035; RN05) | Memória limpa, lacre fechado; após abrir o ciclo, confirmar `ciclo_ativo=true` e ausência de autorização | Segurar CICLO por 3 s; tocar LACRE sem autorização; observar o alarme; tocar LACRE novamente para fechar | `VIOLACAO_LACRE` com `ciclo_ativo=true`; ao fechar, `LACRE_FECHADO`; ciclo continua ativo, lacre íntegro e alarme encerrado | Lacre fechado→aberto não autorizado→fechado; **LED apagado→pulsando→apagado**; buzzer toca e para; LCD "VIOLACAO registrada" e "Lacre fechado / apos violacao" |
+| CT59 | NF inválida — falha | Ciclo aberto | Enviar `REMESSA NF@1`; depois `REMESSA NF-000123` | NF inválida recusada sem mudança; depois a NF é registrada | Serial; LCD |
+| CT60 | Limiares da bateria (RF019, RF027; RN10) | Potenciômetro acima de 25%, lacre íntegro | Levar abaixo de 20%, a 20–25%, abaixo de 20%, acima de 25% e abaixo de 20% | Dois `BATERIA_BAIXA`, o segundo só depois do rearme acima de 25% | ADC; LCD "BAIXA"; LED apagado |
+| CT61 | Contato do lacre (RF006) | Ciclo aberto, rede ligada | Tocar LACRE várias vezes, devagar | Um `seal_changed` por transição, sem duplicação | Lacre; Serial |
+| CT62 | Reinício real | Ciclo aberto, lacre aberto | Cortar o USB, esperar 5 s e religar | `uptime_ms` perto de zero; ciclo e lacre restaurados da memória | Lacre e ciclo preservados; Serial |
+| CT63 | Fila e reenvio (RF010) | Ciclo aberto, rede desligada | Gerar eventos de lacre e de status; religar a rede | `fila=` sobe; reenvio na ordem; fila zera; nenhuma violação falsa | Lacre; LCD; Serial |
+| CT64 | Fila cheia — falha | Ciclo aberto, rede desligada | Tocar LACRE 20 vezes; religar a rede | Descarte do não crítico; `FILA_CHEIA`; `VIOLACAO_LACRE_RESUMO` no reenvio | Lacre; Serial |
+| CT65 | Pulsos curtos do lacre (RF006) — falha | Jumper do GPIO32 ao GPIO27, memória limpa | Firmware de teste aplica pulsos de 20 e 40 ms e 20 toques de 200 ms, com e sem rede | Nenhum evento nos pulsos; 20 `seal_changed` por lote | Pulsos no sensor digital; Serial |
+| CT66 | GNSS sem dados (RF005) — falha | A céu aberto, com fix válido | Tirar o fio do TX do módulo; recolocar sem reiniciar | `GNSS_SEM_FIX` com `sem_dados`; `GNSS_RECUPERADO` depois do fix | GNSS perde e recupera dados; LCD; Serial |
+| CT69 | Violação com ciclo aberto (RF006, RF032, RF035; RN05) | Memória limpa, lacre fechado, sem autorização | Segurar CICLO por 3 s; tocar LACRE; observar o alarme; tocar LACRE de novo | `VIOLACAO_LACRE` com `ciclo_ativo=true`; ao fechar, `LACRE_FECHADO`; ciclo segue ativo | Lacre fechado→aberto→fechado; **LED apagado→pulsando→apagado**; buzzer toca e para |
 
 #### Resultados
 
-Os resultados abaixo pertencem às execuções de 05/11/2026. A revisão documental não representa uma nova rodada física. Exemplos extraídos dos logs: no CT49, a autorização foi registrada em 56932 ms, a abertura autorizada em 58098 ms e a reaplicação em 72801 ms; no CT69, a violação foi registrada em 58289 ms e o fechamento em 80819 ms. No CT60, os dois alertas trazem `battery_sim_pct=19`; os patamares de 23% e 17% entre eles não geraram novo alerta antes do rearme. Esses tempos identificam eventos internos e não medem a latência entre estímulo físico e sinalização.
+Execução de 05/11/2026, conferida nos vídeos e na Serial. Os tempos em ms são internos ao firmware e não medem a latência entre o estímulo físico e a sinalização.
 
 | CT | Situação | Resultado observado | Evidência |
 |---|---|---|---|
-| CT46 | APROVADO | As cinco telas apareceram na ordem, com `tela=` indo de 1 a 5, voltando a 1, e VOLTAR levando à tela 5. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46Navegacao.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46-navegacao.serial.txt) |
+| CT46 | APROVADO | Cinco telas na ordem (`tela=` de 1 a 5 e volta a 1); VOLTAR leva à tela 5. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46Navegacao.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46-navegacao.serial.txt) |
 | CT47 | APROVADO | Contagem no LCD e `CICLO_INICIADO` em 550166 ms. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47AbrirCiclo.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47-abrir-ciclo.serial.txt) |
-| CT48 | APROVADO | `BTN_CICLO` e `BTN_AUTORIZAR` soltos antes de 3 s, sem nenhum evento. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48ToqueCurto.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48-toque-curto.serial.txt) |
-| CT49 | APROVADO, com ressalva | Lacre aberto 1,1 s depois da autorização, com `authorized_removal=true`, `RETIRADA_AUTORIZADA` e depois `LACRE_REAPLICADO`. O LED ficou apagado em todos os quadros analisados do vídeo. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizada.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49-retirada-autorizada.serial.txt) |
-| CT50 | APROVADO, com ressalva | `VIOLACAO_LACRE` em 105317 ms e `LACRE_FECHADO` em 117911 ms. No vídeo, o LED pisca com período de 1,0 s, igual ao configurado, e o buzzer pode ser ouvido. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50Violacao.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50-violacao.serial.txt) |
-| CT51 | APROVADO, com ressalva | `SENSOR_BATERIA_FALHA` e LCD "sensor com falha" nas tentativas; a leitura voltou ao retirar o jumper. Foram 8 eventos de falha e 3 `BATERIA_BAIXA` em várias tentativas, descritas nas limitações. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51FalhaSensor.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51-falha-sensor.serial.txt) |
-| CT52 | APROVADO, com ressalva | `fix=valido` aos 560 s de funcionamento, a céu aberto. Depois, 35 heartbeats seguidos com `fix=valido` e duas `location_sample` com `fix_valid=true`. LCD com "Ultima posicao / ha 0 s". | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct52GnssFix.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct52-gnss-com-fix.serial.txt) |
-| CT53 | APROVADO | `AUTORIZACAO_REGISTRADA` em 1160260 ms, sem abertura do lacre. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct53Ct57AutorizacaoRecusa.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct53-autorizacao.serial.txt) |
-| CT54 | APROVADO | `DISPOSITIVO_DESLIGADO` em 1312378 ms e novo `STATUS` em 1328848 ms, sem nenhuma linha na Serial entre os dois. LCD apagado e aceso de novo. Cobre no físico a pendência do CT35. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct54OnOff.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct54-on-off.serial.txt) |
-| CT55 | APROVADO | No vídeo, com cronômetro, o LCD apaga cerca de 15 s depois do toque, e girar o potenciômetro acende a tela de bateria. Parado, ele ficou estável de 1533 s a 1640 s. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct55LcdApagaAcorda.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct55-lcd-apaga-acorda.serial.txt) |
-| CT56 | APROVADO | `ENCERRAMENTO_RECUSADO` com `nf_retorno_ausente` e LCD "Nao encerrado / falta NF retorno"; o ciclo seguiu ativo. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct56RecusaSemNf.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct56-recusa-sem-nf.serial.txt) |
-| CT57 | APROVADO | Lacre aberto 1,6 s depois da autorização, com `authorized_removal=true`; recusa com `lacre_aberto` e `LACRE_REAPLICADO` ao fechar. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct53Ct57AutorizacaoRecusa.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct57-recusa-lacre-aberto.serial.txt) |
-| CT58 | APROVADO | `NF_RETORNO_LANCADA`, depois `CICLO_ENCERRADO` em 1261359 ms, com `dias_fora=0` e LCD "Ciclo encerrado". | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct58EncerrarCiclo.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct58-encerrar-ciclo.serial.txt) |
-| CT59 | APROVADO, com ressalva | A Serial recusou `REMESSA NF@1` e registrou `NF-000123`. O vídeo mostra só a tela final. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct59NfInvalida.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct59-nf-invalida.serial.txt) |
-| CT60 | APROVADO | `BATERIA_BAIXA` em 502,2 s e em 546,2 s; nenhum alerta com 23% nem no retorno a 17%, antes de a leitura passar de 25%. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct60LimiaresBateria.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct60-limiares-bateria.serial.txt) |
-| CT61 | APROVADO, com ressalva | 76 transições, 38 aberturas e 38 fechamentos, alternadas e sem duplicação. Tempo interno entre a confirmação do debounce e o registro de até 105 ms. Uma linha saiu corrompida na Serial e foi contada pelo tempo de confirmação e pela alternância. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct61ContatoLacre.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct61-contato-lacre.serial.txt) |
-| CT62 | APROVADO | Com lacre aberto, depois do corte: `uptime_ms` 1439, `seal=violated`, ciclo 2 ativo e `contexto_restaurado=true`. Repete no físico o que reprovou no CT22. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct62ReinicioReal.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct62-reinicio-real.serial.txt) |
-| CT63 | APROVADO | Fila chegou a 8, com uma `VIOLACAO_LACRE` por abertura e nenhuma falsa. Ao voltar a rede, 8 eventos saíram na ordem, com os tempos originais, e a fila zerou. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct63FilaReenvio.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct63-fila-reenvio.serial.txt) |
-| CT64 | APROVADO | As 10 aberturas foram preservadas: 8 `VIOLACAO_LACRE` e 2 no `VIOLACAO_LACRE_RESUMO`. Eventos não críticos foram descartados ou contados como perdidos. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct64FilaCheia.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct64-fila-cheia.serial.txt) |
-| CT65 | APROVADO, com ressalva | Nenhum evento nos pulsos de 20 e 40 ms e 20 `seal_changed` por lote, com rede e sem rede. Repete no físico o que reprovou no CT18. Sem vídeo, porque os pulsos não são visíveis. | [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct65-pulsos-lacre.serial.txt) |
-| CT66 | APROVADO | `GNSS_SEM_FIX` com `sem_dados` em 608086 ms, cerca de 10 s depois de tirar o fio. `GNSS_RECUPERADO` em 719108 ms, com `tempo_sem_posicao_s=110` e `coletas_sem_fix=3`, sem reiniciar a placa. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct66GnssSemDados.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct66-gnss-sem-dados.serial.txt) |
-| CT69 | APROVADO | `VIOLACAO_LACRE` em 58289 ms, com `ciclo_ativo=true`, e `LACRE_FECHADO` em 80819 ms. No vídeo, o LED pisca a cada 1,0 s e apaga ao fechar o lacre; o buzzer pode ser ouvido e para ao fechar. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct69ViolacaoFechamento.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct69-violacao-fechamento.serial.txt) |
+| CT48 | APROVADO | CICLO e AUTORIZAR soltos antes de 3 s, sem nenhum evento. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48ToqueCurto.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48-toque-curto.serial.txt) |
+| CT49 | APROVADO, com ressalva¹ | Lacre aberto 1,1 s após a autorização, com `authorized_removal=true`, e depois `LACRE_REAPLICADO`; LED apagado em todo o vídeo. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizada.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49-retirada-autorizada.serial.txt) |
+| CT50 | APROVADO, com ressalva¹ | `VIOLACAO_LACRE` e depois `LACRE_FECHADO`; LED pisca com período de 1,0 s e buzzer audível. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50Violacao.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50-violacao.serial.txt) |
+| CT51 | APROVADO, com ressalva² | `SENSOR_BATERIA_FALHA` e LCD "sensor com falha"; a leitura voltou ao retirar o jumper. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51FalhaSensor.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51-falha-sensor.serial.txt) |
+| CT52 | APROVADO, com ressalva³ | `fix=valido` aos 560 s, 35 heartbeats seguidos com fix e LCD "Ultima posicao / ha 0 s". | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct52GnssFix.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct52-gnss-com-fix.serial.txt) |
+| CT53 | APROVADO | `AUTORIZACAO_REGISTRADA`, sem abertura do lacre. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct53Ct57AutorizacaoRecusa.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct53-autorizacao.serial.txt) |
+| CT54 | APROVADO | `DISPOSITIVO_DESLIGADO`, Serial em silêncio e novo `STATUS` ao religar; cobre no físico a pendência do CT35. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct54OnOff.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct54-on-off.serial.txt) |
+| CT55 | APROVADO | LCD apaga cerca de 15 s após o toque (cronômetro no vídeo); girar o potenciômetro acende a tela de bateria. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct55LcdApagaAcorda.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct55-lcd-apaga-acorda.serial.txt) |
+| CT56 | APROVADO | `ENCERRAMENTO_RECUSADO` com `nf_retorno_ausente`; ciclo segue ativo. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct56RecusaSemNf.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct56-recusa-sem-nf.serial.txt) |
+| CT57 | APROVADO | Recusa com `lacre_aberto` e `LACRE_REAPLICADO` ao fechar. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct53Ct57AutorizacaoRecusa.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct57-recusa-lacre-aberto.serial.txt) |
+| CT58 | APROVADO | `NF_RETORNO_LANCADA` e `CICLO_ENCERRADO` com `dias_fora=0`; LCD "Ciclo encerrado". | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct58EncerrarCiclo.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct58-encerrar-ciclo.serial.txt) |
+| CT59 | APROVADO, com ressalva⁴ | Serial recusou `REMESSA NF@1` e registrou `NF-000123`. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct59NfInvalida.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct59-nf-invalida.serial.txt) |
+| CT60 | APROVADO | `BATERIA_BAIXA` em 502,2 s e 546,2 s (`battery_sim_pct=19`); nada em 23% nem na volta a 17% antes do rearme. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct60LimiaresBateria.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct60-limiares-bateria.serial.txt) |
+| CT61 | APROVADO, com ressalva⁵ | 76 transições (38 aberturas, 38 fechamentos), alternadas e sem duplicação. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct61ContatoLacre.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct61-contato-lacre.serial.txt) |
+| CT62 | APROVADO | Após o corte: `uptime_ms` 1439, `seal=violated`, ciclo 2 ativo e `contexto_restaurado=true`; repete no físico o que reprovou no CT22. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct62ReinicioReal.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct62-reinicio-real.serial.txt) |
+| CT63 | APROVADO | Fila chegou a 8, uma `VIOLACAO_LACRE` por abertura; com a rede, 8 eventos na ordem e com os tempos originais, e fila zerada. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct63FilaReenvio.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct63-fila-reenvio.serial.txt) |
+| CT64 | APROVADO | As 10 aberturas preservadas: 8 `VIOLACAO_LACRE` e 2 no `VIOLACAO_LACRE_RESUMO`; não críticos descartados. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct64FilaCheia.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct64-fila-cheia.serial.txt) |
+| CT65 | APROVADO, com ressalva⁵ | Nenhum evento nos pulsos de 20 e 40 ms e 20 `seal_changed` por lote, com e sem rede; repete no físico o que reprovou no CT18. Sem vídeo: os pulsos não são visíveis. | [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct65-pulsos-lacre.serial.txt) |
+| CT66 | APROVADO | `GNSS_SEM_FIX` (`sem_dados`) cerca de 10 s após tirar o fio; `GNSS_RECUPERADO` com `tempo_sem_posicao_s=110`, sem reiniciar. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct66GnssSemDados.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct66-gnss-sem-dados.serial.txt) |
+| CT69 | APROVADO | `VIOLACAO_LACRE` com `ciclo_ativo=true` e depois `LACRE_FECHADO`; LED pisca a cada 1,0 s e apaga ao fechar; buzzer toca e para. | [Vídeo](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct69ViolacaoFechamento.mp4) · [Serial](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct69-violacao-fechamento.serial.txt) |
 
-![CT46: tela do lacre](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46LcdFoto.jpg)
+**Ressalvas.**
 
-*Figura 3.4.2-2 — CT46, tela "Lacre INTEGRO / fechado". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+1. CT49 e CT50 rodaram sem ciclo ativo (`ciclo_ativo=false`); o CT57 e o CT69 repetem os mesmos fluxos com ciclo aberto. O som do buzzer foi conferido de ouvido, sem medir frequência nem duração.
+2. No CT51 o jumper foi ligado à mão. Na tentativa do vídeo a leitura passou por menos de 20% antes de chegar a zero, então `BATERIA_BAIXA` saiu antes da falha; as tentativas de 202 s e 329 s geraram só a falha. O log traz todas as tentativas.
+3. No CT52 o primeiro fix levou cerca de 9 minutos e a placa reiniciou entre o fix e as coletas registradas, sem perder o fix. A precisão não foi medida, e o NEO-6M não é o LC76G-PA escolhido para o dispositivo. As coordenadas estão mascaradas no log.
+4. No CT59 o vídeo mostra só a tela final; a recusa está na Serial.
+5. CT61 e CT65 usam botão ou jumper no lugar do contato real do lacre. No CT61 uma linha saiu corrompida na Serial e foi contada pelo tempo de confirmação e pela alternância.
 
-![CT47: ciclo iniciado](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47LcdFoto.jpg)
+<p align="center"><b>Telas do LCD e LED de violação</b></p>
 
-*Figura 3.4.2-3 — CT47, "Ciclo iniciado / aguardando NF". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+<table>
+  <tr>
+    <td align="center"><a href="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46LcdFoto.jpg"><img src="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46LcdRecorte.jpg" alt="CT46: Lacre INTEGRO / fechado" width="240"></a><br>CT46 — tela do lacre</td>
+    <td align="center"><a href="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47LcdFoto.jpg"><img src="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47LcdRecorte.jpg" alt="CT47: Ciclo iniciado / aguardando NF" width="240"></a><br>CT47 — ciclo iniciado</td>
+    <td align="center"><a href="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48LcdFoto.jpg"><img src="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48LcdRecorte.jpg" alt="CT48: NF da remessa sem mudança" width="240"></a><br>CT48 — sem mudança após toque curto</td>
+  </tr>
+  <tr>
+    <td align="center"><a href="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49LcdFoto.jpg"><img src="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49LcdRecorte.jpg" alt="CT49: Autorizacao ok / vale 3 dias" width="240"></a><br>CT49 — autorização</td>
+    <td align="center"><a href="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaLcdFoto.jpg"><img src="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaLcdRecorte.jpg" alt="CT49: Retirada autorizada" width="240"></a><br>CT49 — retirada autorizada</td>
+    <td align="center"><a href="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50LcdFoto.jpg"><img src="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50LcdRecorte.jpg" alt="CT50: VIOLACAO registrada" width="240"></a><br>CT50 — violação registrada</td>
+  </tr>
+  <tr>
+    <td align="center"><a href="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50Violacao.mp4"><img src="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50LedRecorte.jpg" alt="CT50: LED de violação aceso e apagado" width="240"></a><br>CT50 — LED aceso e apagado no pulso</td>
+    <td align="center"><a href="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct69LcdViolacao.jpg"><img src="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct69LcdViolacaoRecorte.jpg" alt="CT69: VIOLACAO registrada" width="240"></a><br>CT69 — violação com ciclo aberto</td>
+    <td align="center"><a href="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct69LcdFechado.jpg"><img src="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct69LcdFechadoRecorte.jpg" alt="CT69: Lacre fechado / apos violacao" width="240"></a><br>CT69 — lacre fechado após violação</td>
+  </tr>
+  <tr>
+    <td align="center"><a href="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51LcdFoto.jpg"><img src="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51LcdRecorte.jpg" alt="CT51: Bateria / sensor com falha" width="240"></a><br>CT51 — sensor de bateria com falha</td>
+    <td align="center"><a href="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct52LcdFoto.jpg"><img src="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct52LcdRecorte.jpg" alt="CT52: Ultima posicao / ha 0 s" width="240"></a><br>CT52 — última posição a céu aberto</td>
+    <td></td>
+  </tr>
+</table>
 
-![CT48: tela sem mudança](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48LcdFoto.jpg)
+*Figura 3.4.2-2 — Recortes do LCD e do LED de violação nos CTs físicos; clique em cada imagem para abrir a foto completa (no LED, o vídeo). Fonte: fotos do LCD tiradas à parte da execução e quadros dos vídeos do CT50 e do CT69, 05/11/2026.*
 
-*Figura 3.4.2-4 — CT48, a tela "NF da remessa" permanece depois do toque curto. Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+As fotos ilustram as telas; o resultado de cada CT vem dos vídeos e da Serial.
 
-![CT49: autorização](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49LcdFoto.jpg)
+**Limitações gerais.** Não há servidor: no CT63 e no CT64, reenviar significa publicar na Serial, sem confirmação de entrega. O potenciômetro não representa bateria, divisor nem tensão real; na rodada dos CT46 a CT52 ele teve mau contato, e a oscilação acendeu o LCD na tela de bateria no vídeo do CT47 (o contato foi refeito antes do CT55). Durante a montagem o LCD mostrou caracteres embaralhados, mitigados com I2C a 50 kHz e reinício do LCD ao acender; não há ensaio de desconexão do LCD ou do LED. Os vídeos foram comprimidos, com áudio; o CT53 e o CT57 estão no mesmo vídeo.
 
-*Figura 3.4.2-5 — CT49, etapa de autorização, com "Autorizacao ok / vale 3 dias". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+#### Organização do firmware
 
-![CT49: retirada autorizada](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaLcdFoto.jpg)
+O [firmware](../src/firmware/main.cpp) mantém a inicialização em `setup()` e a coordenação em `loop()`, com procedimentos comentados e nomes descritivos: `readSeal()` filtra as entradas do lacre; `sealTransition()` distingue abertura autorizada, violação e fechamento; `readBattery()` lê o ADC e aplica a regra de bateria; `updateLed()` e `updateBuzzer()` comandam as saídas; `updateDisplay()` atualiza o LCD por meio da classe [`ScreenController`](../include/screen_controller.h). As regras de [lacre](../include/seal_rules.h) e [bateria](../include/battery_rules.h) ficam em funções próprias, e os pinos e tempos ficam em [`Config`](../include/config.h).
 
-*Figura 3.4.2-6 — CT49, "Retirada autorizada". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+<details>
+<summary>Binários gravados e reprodução</summary>
 
-![CT50: violação registrada](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50LcdFoto.jpg)
+| CTs | Firmware | SHA-256 |
+|---|---|---|
+| CT46 a CT52 | `bancada` | `10D68051B5933F843DC699FEE39CAD5DA99DBB625D0FD743F407B17ED4F06F86` |
+| CT53 a CT64, CT66 e CT69 | `bancada`, com o despertar do LCD corrigido | `AA6D6390660D409708342F849882950BFFA471983CB787F0DE2497A48D7683BF` |
+| CT65 | [`tests/bancada-ct65`](../tests/bancada-ct65/main.cpp), que inclui o firmware de produção sem mudanças | `6CBBC406EEFC63734AD939304A24EB77F95AE8B4470CCB5986884D0096A8065C` |
 
-*Figura 3.4.2-7 — CT50, "VIOLACAO registrada". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+Compilação: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build.ps1 -Environment bancada`. Gravação: `pio run -e bancada -t upload`. A captura da Serial segue o [relatório de montagem](outros/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/relatorio-montagem-prototipo-fisico.md). Compilar e rodar os testes de lógica no computador verifica o software; uma nova execução física exige registrar o hash do binário, o estado inicial e novos logs, imagens e vídeos, preservando os resultados acima.
 
-![CT50: LED aceso](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50LedAceso.png) ![CT50: LED apagado](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50LedApagado.png)
+Quadros dos vídeos, sem ajuste: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacre.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciado.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudanca.png) · [CT49](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizada.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistrada.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalha.png). Com realce do LCD: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacreRealce.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciadoRealce.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudancaRealce.png) · [CT49](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizadaRealce.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistradaRealce.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalhaRealce.png).
 
-*Figura 3.4.2-8 — CT50, LED de violação aceso e apagado no pulso de 1 s. Fonte: quadros do vídeo, 05/11/2026.*
+</details>
 
-![CT51: sensor com falha](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51LcdFoto.jpg)
+#### Case de apresentação
 
-*Figura 3.4.2-9 — CT51, "Bateria / sensor com falha". Fonte: foto do LCD no protótipo físico, tirada à parte da execução, 05/11/2026.*
+Para a apresentação da sprint, o protótipo foi montado dentro de uma case de peças de Lego. Os botões ficam presos em peças brancas, o LCD fica à mostra numa abertura, a antena do GNSS fica no topo, e o potenciômetro da bateria simulada é girado por um dos furos. Na demonstração foi usado um firmware dedicado só à apresentação: a tela de posição mostra o nome do bairro mais próximo, buscado numa tabela de pontos gravada na placa ("Bairro (tabela)"), em vez da idade da última posição. Essa variante não faz parte do firmware descrito nesta seção, e os CTs acima não a usam.
 
-![CT52: última posição](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct52LcdFoto.jpg)
+<p align="center"><img src="../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/caseLegoVistaSuperior.jpg" alt="Protótipo na case de Lego, com o LCD mostrando Bairro (tabela) Butanta" width="360"></p>
 
-*Figura 3.4.2-10 — CT52, tela "Ultima posicao / ha 0 s" com o protótipo a céu aberto. Fonte: foto da execução, 05/11/2026.*
+*Figura 3.4.2-3 — Protótipo na case de Lego, com a tela de bairro do firmware de apresentação. Fonte: foto do grupo, Sprint 2.*
 
-![CT69: violação com ciclo aberto](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct69LcdViolacao.jpg) ![CT69: lacre fechado](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct69LcdFechado.jpg)
+![Vídeo de apresentação do protótipo na case de Lego](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/caseLegoApresentacao.mp4)
 
-*Figura 3.4.2-11 — CT69, "VIOLACAO registrada" e "Lacre fechado / apos violacao". Fonte: quadros do vídeo, 05/11/2026.*
+*Vídeo 3.4.2-1 — [Demonstração do protótipo na case](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/caseLegoApresentacao.mp4), em velocidade 2x (49 s). O vídeo mostra as telas de bateria, prazo, bairro e lacre; a autorização e a retirada autorizada; a violação e o fechamento do lacre; a abertura do ciclo e a recusa de encerramento sem NF de retorno; a rede desligada e religada; e o nível da bateria variando até "BAIXA". Fonte: vídeo do grupo, Sprint 2.*
 
-As fotos ilustram as telas; o resultado de cada CT vem dos vídeos e da Serial. Recortes dos vídeos com realce do LCD: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacreRealce.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciadoRealce.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudancaRealce.png) · [CT49](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizadaRealce.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistradaRealce.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalhaRealce.png). Quadros sem ajuste: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacre.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciado.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudanca.png) · [CT49](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizada.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistrada.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalha.png)
-
-#### Limitações
-
-- **CT49 e CT50 sem ciclo ativo.** Os eventos desses dois saíram com `ciclo_ativo=false`. O CT57 e o CT69 repetem os mesmos fluxos com ciclo aberto.
-- **CT51 com contato manual.** O jumper foi ligado à mão. Na tentativa do vídeo, a leitura passou por valores abaixo de 20% antes de chegar a zero, e por isso `BATERIA_BAIXA` saiu antes de `SENSOR_BATERIA_FALHA`. As tentativas em 202 s e 329 s geraram a falha sem `BATERIA_BAIXA` antes dela. O evento de falha repete quando o contato oscila, porque a decisão usa uma leitura do ADC. O log traz todas as tentativas.
-- **Potenciômetro com mau contato.** Na rodada dos CT46 a CT52, a leitura oscilou com o potenciômetro parado, e a variação de 3 pontos acendeu o LCD na tela de bateria. Isso aparece no vídeo do CT47, depois do resultado do teste. O contato foi refeito antes do CT55.
-- **Buzzer.** O som do buzzer no CT50 e no CT69 foi conferido de ouvido; frequência e duração não foram medidas.
-- **Falha de saída no LCD.** O relatório de montagem registra caracteres embaralhados durante a preparação da bancada e a mitigação com I2C a 50 kHz e reinicialização do LCD ao acender. CT46 e CT55 verificam navegação e despertar com essa configuração; não há ensaio de desconexão do LCD ou do LED, nem diagnóstico automático comprovado de saída desconectada.
-- **Sem servidor.** No CT63 e no CT64, reenviar significa publicar na Serial; não há confirmação de entrega.
-- **Botão no lugar do contato.** O CT61 e o CT65 usam o botão ou o jumper no lugar do contato real do lacre. O tempo do CT61 é interno ao firmware, sem referência externa.
-- **Vídeos.** Foram comprimidos para o repositório, com áudio. O CT53 e o CT57 estão no mesmo vídeo.
-- **Bateria simulada.** O potenciômetro não representa bateria, divisor nem tensão real.
-- **GNSS.** O primeiro fix do CT52 levou cerca de 9 minutos. A placa reiniciou entre a transição para `fix=valido` e as coletas registradas, e o fix se manteve. A perda de dados foi ensaiada no CT66; a perda de fix sem rede segue planejada no CT67, e a precisão da posição não foi medida. O módulo é um NEO-6M, não o LC76G-PA escolhido para o dispositivo. As coordenadas estão mascaradas no log.
-
-#### Organização do firmware e reprodução
-
-O [firmware](../src/firmware/main.cpp) mantém a inicialização em `setup()` e a coordenação em `loop()`, com procedimentos comentados e nomes descritivos: `readSeal()` filtra as entradas do lacre; `sealTransition()` distingue abertura autorizada, violação e fechamento; `readBattery()` lê o ADC e aplica a regra de bateria; `updateLed()` e `updateBuzzer()` comandam as saídas; `updateDisplay()` atualiza o LCD por meio da classe [`ScreenController`](../include/screen_controller.h). As regras de [lacre](../include/seal_rules.h) e [bateria](../include/battery_rules.h) ficam encapsuladas em funções próprias, e os pinos e tempos são definidos em [`Config`](../include/config.h).
-
-Para reproduzir a compilação da placa, executar `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build.ps1 -Environment bancada`. A gravação usa `pio run -e bancada -t upload`, e a captura da Serial segue o [relatório de montagem](outros/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/relatorio-montagem-prototipo-fisico.md). Compilar e executar testes de lógica no computador verificam o software; uma nova execução física exige registrar o hash do binário gravado, o estado inicial e os novos logs, imagens e vídeos, preservando os resultados históricos acima.
+A case serve à demonstração: não foi ensaiada quanto à fixação no equipamento, poeira, umidade ou impacto, e não substitui o invólucro do dispositivo de campo, cujo critério está no RNF08.4.
 
 #### Casos planejados para a próxima sprint
 
-Os casos abaixo estão **PLANEJADOS** e **NÃO EXECUTADOS**. As colunas descrevem o que será ensaiado no protótipo físico; nenhuma linha é resultado de teste.
-
-Os CT24 a CT34 (energia, hardware e comunicação, definidos no [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md)) e os casos futuros CT-F28 e CT-F29 ficam **PLANEJADOS** e **NÃO EXECUTADOS** nesta sprint, porque dependem de plataforma, comunicação, suspensão no firmware, módulo GNSS definitivo, fixação e medições que ainda não existem; os CT-F28 e CT-F29 dependem de funções ainda não implementadas e de validação com o parceiro.
+Os casos abaixo estão **PLANEJADOS** e **NÃO EXECUTADOS**; nenhuma linha é resultado de teste. Os CT24 a CT34 (energia, hardware e comunicação, do [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md)) e os CT-F28 e CT-F29 também seguem planejados, porque dependem de plataforma, comunicação, suspensão no firmware, módulo GNSS definitivo, fixação e medições que ainda não existem.
 
 | CT | Caso | Pré-condição | Procedimento de teste | Resultado esperado | Observações |
 |---|---|---|---|---|---|
-| CT67 | Sem fix e sem rede | Rede desligada | Bloquear o sinal; restaurar e voltar a rede | `GNSS_SEM_FIX` na fila; `GNSS_RECUPERADO`; fila zera | Relação com o CT26 |
+| CT67 | Sem fix e sem rede | Rede desligada | Bloquear o sinal; restaurar e religar a rede | `GNSS_SEM_FIX` na fila; `GNSS_RECUPERADO`; fila zera | Relação com o CT26 |
 | CT68 | Corte durante a gravação | Evento recém-gerado | Cortar o USB logo depois do evento e religar | Fila e contexto consistentes | Só entra se for repetível; relação com o CT29 |
 
 ### 3.4.3. Protótipo do Projeto com MQTT e I2C (sprint 3)	
