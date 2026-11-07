@@ -52,6 +52,8 @@ Os pinos abaixo são os usados pelo firmware. Botões ligam o pino ao GND e usam
 
 Todo o conjunto é alimentado pelo USB do computador. O GPIO34 recebe no máximo 3,3 V, porque o potenciômetro fica entre 3V3 e GND.
 
+O GND do ESP32 é a referência comum dos trilhos, do LCD, do GNSS e do potenciômetro. O catodo do LED e o negativo do buzzer retornam ao GND; o anodo do LED recebe o GPIO13 pelo resistor de 220 Ω. A foto registra a organização observada: botões na região superior, ESP32 ao centro, potenciômetro e buzzer abaixo; LCD e GNSS ficam externos às protoboards, ligados por jumpers. As posições históricas abaixo não substituem a conferência elétrica de cada ligação.
+
 ## 4. Posições de referência
 
 As posições usam a notação do guia de montagem: "cima" e "baixo" indicam a protoboard, seguidas da fileira e da coluna. Elas valem para a montagem anterior à reorganização dos fios. O guia previa chaves para lacre, rede e ON/OFF; na bancada, esses três são botões, então suas posições não constam aqui.
@@ -77,8 +79,12 @@ Os 5 V chegam ao GNSS por dois trechos: do ESP32 (cima 20e) ao trilho positivo d
 A placa usa o ambiente `bancada`, que trata lacre, rede e ON/OFF como botões. O ambiente `demo` espera chaves e lê o ON/OFF como desligado, e a placa parece não responder.
 
 ```bash
+pio run -e bancada
 pio run -e bancada -t upload
+pio device monitor -b 115200
 ```
+
+No PowerShell, também é possível compilar com `scripts/build.ps1 -Environment bancada`. Essa opção usa o GNSS real e dispensa a compilação do chip customizado do Wokwi.
 
 Com a placa ligada, a Serial a 115200 baud mostra a linha `[vivo]` a cada 2 s.
 
