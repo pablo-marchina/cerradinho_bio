@@ -145,7 +145,7 @@ Texto 'Vales: cobrança e esquecimento (04); atraso sem dados para decidir (05).
 Texto 'Picos: alívio após aprovação e envio (03); retorno conferido e baixa fiscal confirmada (06).' 30 $picosY 2870 29
 [void]$svg.AppendLine('</svg>')
 [System.IO.Directory]::CreateDirectory($Destino) | Out-Null
-[System.IO.File]::WriteAllText((Join-Path $Destino 'jornada-atual-geraldo.svg'),$svg.ToString(),[System.Text.UTF8Encoding]::new($false))
-$bmp.Save((Join-Path $Destino 'jornada-atual-geraldo.png'),[System.Drawing.Imaging.ImageFormat]::Png)
+[System.IO.File]::WriteAllText((Join-Path $Destino 'jornadaAtualGeraldo.svg'),$svg.ToString(),[System.Text.UTF8Encoding]::new($false))
+$bmp.Save((Join-Path $Destino 'jornadaAtualGeraldo.png'),[System.Drawing.Imaging.ImageFormat]::Png)
 $g.Dispose(); $bmp.Dispose(); $fontes.Dispose()
 Write-Output "SVG e PNG gerados; alturas das linhas: $($alturas -join ', '); altura total: $h."
