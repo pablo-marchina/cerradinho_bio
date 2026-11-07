@@ -1685,8 +1685,10 @@ O protótipo físico leva o firmware do V2 para um ESP32 real, sem servidor. Em 
 
 - **branco reto:** alimentação da protoboard;
 - **branco enrolado:** os sete botões;
-- **marrom:** pinos de alimentação do ESP32 até os trilhos;
-- **azul:** demais componentes (potenciômetro, buzzer e LED).
+- **marrom, enrolado:** pinos de alimentação do ESP32 até os trilhos;
+- **azul, enrolado:** demais componentes (potenciômetro, buzzer e LED).
+
+Os jumpers fêmea do LCD e do GNSS seguem em paralelo e não têm código de cor, também por falta de jumpers.
 
 #### Casos de teste
 
