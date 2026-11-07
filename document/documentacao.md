@@ -861,7 +861,14 @@ A revisão deverá incluir comentários sobre cada ponto levantado, mostrando co
 
 ## 3.4. Resultados	
 
-_Nesta seção, detalhe os resultados obtidos com a implementação, de acordo com o disposto nas subseções._
+**Onde estávamos e onde estamos.** A tabela resume a evolução dos casos de teste entre as duas sprints; os detalhes estão nas seções 3.4.1 e 3.4.2.
+
+| | Sprint 1 (até 24/10/2026) | Sprint 2 (até 06/11/2026) |
+|---|---|---|
+| Protótipo | Wokwi V1, com LEDs e chaves | Wokwi V2, com LCD, buzzer e LED de violação, e protótipo físico na protoboard |
+| CTs antigos | 24 executados no Wokwi (CT01–CT23 e CT35): 21 aprovados, CT18 e CT22 reprovados e CT09 bloqueado | 20 refeitos no [V2](#rodada-v2); CT18 aprovado no reteste de 05/11 e no físico (CT65); CT22 repetido no físico (CT62) e aprovado; CT09 segue bloqueado à espera do servidor |
+| CTs novos | — | 10 no Wokwi V2 ([CT36–CT42](#cts36-42-interface-v2) e [CT43–CT45](#cts43-45)): 9 aprovados e CT43 parcial; 22 físicos (CT46–CT66 e CT69): todos aprovados, 8 com ressalva |
+| Planejados | CT24–CT34 (energia, hardware e comunicação) | CT24–CT34, mais CT67 e CT68 no físico |
 
 ### 3.4.1. Protótipo Inicial do Projeto usando o Simulador Wokwi (sprint 1)
 
