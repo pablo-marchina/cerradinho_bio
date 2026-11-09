@@ -70,3 +70,6 @@ local-notes/
 
 # Rascunhos de revisão e arquivos temporários de agentes de IA (ficam fora do repositório)
 .claude-tmp/
+
+# Configurações do Kiro (não versionar)
+.kiro/settings/mcp.json
