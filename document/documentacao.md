@@ -53,7 +53,40 @@ A centralização das informações pode facilitar a consulta da situação de c
 
 # <a name="c2"></a>2. Metodologia (sprint 3)
 
-_Descreva as etapas da metodologia RM-ODP que foram utilizadas para o desenvolvimento, citando o referencial teórico. Você deve apenas enunciar os métodos, sem dizer ainda como ele foi aplicado e quais resultados obtidos._
+## 2.1. Referencial teórico
+
+O RM-ODP (*Reference Model for Open Distributed Processing*, ou Modelo de Referência para Processamento Distribuído Aberto) fornece uma estrutura conceitual para especificar sistemas distribuídos. Seu referencial reúne conceitos de modelagem, pontos de vista, transparências de distribuição e avaliação de conformidade, permitindo tratar diferentes interesses de um mesmo sistema [[62]](#ref-62). A recomendação ITU-T X.903, publicada também como ISO/IEC 10746-3, define a arquitetura desse modelo e as regras de consistência entre suas especificações [[63]](#ref-63).
+
+Os pontos de vista são perspectivas complementares de descrição. Sua organização não determina fases sequenciais obrigatórias: especificações podem ser desenvolvidas em paralelo e relacionadas por verificações de consistência [[62, seção 9.5]](#ref-62). Assim, a ordem de apresentação abaixo organiza o texto, sem prescrever um ciclo de desenvolvimento.
+
+## 2.2. Pontos de vista do RM-ODP
+
+A arquitetura de referência distingue cinco pontos de vista, pertinentes à descrição de sistemas distribuídos [[63, seção 4.1]](#ref-63):
+
+| Ponto de vista | Finalidade conceitual |
+|---|---|
+| **Empresarial** (*enterprise*) | Delimitar propósito, escopo e políticas do sistema em seu ambiente, caracterizando objetivos, papéis e responsabilidades. |
+| **De informação** (*information*) | Descrever o significado das informações e de seu processamento, incluindo estados e restrições sobre as transformações dos dados. |
+| **Computacional** (*computational*) | Decompor funcionalmente o sistema em objetos que interagem por interfaces, especificando comportamentos e interações. |
+| **De engenharia** (*engineering*) | Descrever os mecanismos e as funções de infraestrutura necessários para sustentar as interações distribuídas entre os objetos. |
+| **De tecnologia** (*technology*) | Caracterizar a seleção de tecnologias para realizar o sistema, considerando as exigências das demais especificações. |
+
+Uma especificação pode reunir um ou mais pontos de vista, mantendo coerência entre os termos e as restrições compartilhadas [[63, seção 4.2.2]](#ref-63).
+
+O percurso metodológico adotado começou pelo ponto de vista empresarial e avançou para o de informação. O primeiro orienta a delimitação dos objetivos, do escopo e das políticas; o segundo, a descrição do significado das informações e das restrições sobre seu processamento. Essa ordem corresponde à organização do trabalho da equipe. A adoção descrita nesta seção abrange esses dois pontos de vista; os demais contextualizam o referencial teórico.
+
+## 2.3. Métodos e atividades de trabalho
+
+Os procedimentos registrados na documentação compreendem análise documental e levantamento de requisitos, especificação de regras e comportamentos, prototipação e testes. Suas finalidades metodológicas seguem a caracterização do SWEBOK Guide [[64, capítulos 1, 5 e 18]](#ref-64):
+
+- **Análise documental e levantamento de requisitos:** identificar necessidades, objetivos e restrições a partir de documentos e do diálogo com as partes interessadas; organizar requisitos funcionais e de qualidade para orientar a especificação [[64, capítulo 1, seções 2–4]](#ref-64).
+- **Especificação de regras e comportamentos:** enunciar condições, ações, estados e respostas esperadas em linguagem natural estruturada, tornando explícitas as restrições do domínio e o comportamento requerido.
+- **Prototipação em simulação e bancada:** construir representações parciais e executáveis para examinar hipóteses de comportamento e viabilidade e apoiar o refinamento da especificação.
+- **Testes orientados por requisitos:** definir condições de execução e resultados esperados, exercitar comportamentos e comparar as observações com os critérios especificados, preservando a relação entre requisito e caso de teste.
+
+Essas atividades admitem retomadas para detalhar ou corrigir especificações. O refinamento acrescenta detalhes à descrição, enquanto a verificação de consistência examina a compatibilidade entre descrições do mesmo sistema [[62, seções 9.1 e 9.5]](#ref-62).
+
+<!-- Confirmação da equipe: o trabalho começou pelo ponto de vista empresarial e avançou para o de informação. Permanece pendente identificar se houve adoção posterior dos pontos de vista computacional, de engenharia ou de tecnologia e confirmar o enquadramento dos procedimentos registrados nas seções 3.2, 3.3 e 3.4. Revisão de Luiz Gustavo Campos Cazelatto ainda não realizada. -->
 
 # <a name="c3"></a>3. Desenvolvimento e Resultados 
 
