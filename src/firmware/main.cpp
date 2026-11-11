@@ -4,6 +4,7 @@
 #include <esp_system.h>
 #include <TinyGPS++.h>
 #include <WiFi.h>
+#include <time.h>
 #include <Preferences.h>
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
@@ -17,6 +18,12 @@
 #include "sim_clock.h"
 #include "screen_controller.h"
 #include "seal_debounce.h"
+#if MQTT_ENABLED
+#include <WiFiClientSecure.h>
+#include <PubSubClient.h>
+// Certificados raiz embutidos no core do ESP32 (inclui o ISRG Root X1 do HiveMQ Cloud).
+extern const uint8_t rootca_crt_bundle_start[] asm("_binary_x509_crt_bundle_start");
+#endif
 
 namespace {
 TinyGPSPlus gps;
@@ -831,6 +838,99 @@ void updateDisplay(uint32_t now, uint64_t clock) {
     memcpy(shownBottom, bottom, sizeof(shownBottom));
   }
 }
+
+#if MQTT_ENABLED
+// Walking skeleton MQTT (card #122): conecta ao HiveMQ Cloud por TLS, publica `status`
+// retido, assina `cmd` e mantem `online` retido com LWT. Contrato: secao 3.4.3, Artefato 8.
+constexpr const char *TopicStatus = MQTT_TOPIC_PREFIX "status";
+constexpr const char *TopicOnline = MQTT_TOPIC_PREFIX "online";
+constexpr const char *TopicCmd = MQTT_TOPIC_PREFIX "cmd";
+constexpr uint32_t MqttRetryMs = 10000;
+constexpr uint32_t MqttStatusMs = 60000;
+WiFiClientSecure mqttNet;
+PubSubClient mqtt(mqttNet);
+uint32_t lastMqttTry = 0, lastMqttStatus = 0;
+bool mqttWasConnected = false, mqttConfigured = false;
+
+// Por enquanto so registra o comando recebido no Serial; a execucao vem nas proximas fatias.
+void onMqttMessage(char *topic, uint8_t *payload, unsigned int length) {
+  Serial.printf("[mqtt] cmd recebido em %s: %.*s\r\n", topic, (int)length, (const char *)payload);
+}
+
+// Estado resumido do dispositivo (retido): lacre, bateria, ciclo, NF, dias fora, GNSS e fila.
+void publishMqttStatus() {
+  String json;
+  json.reserve(256);
+  json = "{\"device_id\":\"";
+  json += Config::DeviceId;
+  json += "\",\"lacre\":\"";
+  json += stableSeal ? "violado" : "integro";
+  json += "\",\"bateria_pct\":";
+  json += batteryPct;
+  json += ",\"ciclo_ativo\":";
+  json += cycleActive ? "true" : "false";
+  json += ",\"nf\":\"";
+  json += shipmentInvoice;
+  json += "\",\"dias_fora\":";
+  json += cycle.daysOut;
+  json += ",\"gnss_fix\":";
+  json += freshFix() ? "true" : "false";
+  json += ",\"fila\":";
+  json += pending.count;
+  json += "}";
+  const bool sent = mqtt.publish(TopicStatus, json.c_str(), true);
+  Serial.printf("[mqtt] status %s (%u bytes)\r\n", sent ? "publicado" : "falhou", (unsigned)json.length());
+}
+
+// Liga o cliente MQTT ao broker; tentativa a cada MqttRetryMs, so com Wi-Fi e rede simulada.
+void updateMqtt(uint32_t now) {
+  if (!mqttConfigured) {
+    mqttConfigured = true;
+#if defined(MQTT_TLS_INSECURE) && MQTT_TLS_INSECURE
+    mqttNet.setInsecure();
+#else
+    mqttNet.setCACertBundle(rootca_crt_bundle_start);
+#endif
+    mqttNet.setTimeout(5);  // segundos; o handshake TLS bloqueia o loop por pouco tempo
+    mqtt.setServer(MQTT_HOST, MQTT_PORT);
+    mqtt.setBufferSize(512);  // o padrao de 256 bytes corta o JSON dos eventos
+    mqtt.setKeepAlive(30);
+    mqtt.setCallback(onMqttMessage);
+    configTime(0, 0, "pool.ntp.org", "time.google.com");  // TLS valida a data do certificado
+  }
+  if (WiFi.status() != WL_CONNECTED || !simulatedNetworkAvailable()) {
+    if (mqtt.connected()) mqtt.disconnect();
+    mqttWasConnected = false;
+    return;
+  }
+  if (mqtt.connected()) {
+    mqtt.loop();
+    if (now - lastMqttStatus >= MqttStatusMs) {
+      lastMqttStatus = now;
+      publishMqttStatus();
+    }
+    return;
+  }
+  if (mqttWasConnected) {
+    Serial.println("[mqtt] desconectado");
+    mqttWasConnected = false;
+  }
+  if (now - lastMqttTry < MqttRetryMs && lastMqttTry != 0) return;
+  lastMqttTry = now;
+  const String clientId = String("guaratracking-") + Config::DeviceId;
+  if (!mqtt.connect(clientId.c_str(), MQTT_USER, MQTT_PASSWORD, TopicOnline, 1, true, "offline")) {
+    Serial.printf("[mqtt] falha na conexao, estado=%d\r\n", mqtt.state());
+    return;
+  }
+  mqttWasConnected = true;
+  Serial.printf("[mqtt] conectado a %s:%d\r\n", MQTT_HOST, (int)MQTT_PORT);
+  mqtt.publish(TopicOnline, "online", true);
+  mqtt.subscribe(TopicCmd);
+  lastMqttStatus = now;
+  publishMqttStatus();
+  showMessage("MQTT ok", "HiveMQ Cloud");
+}
+#endif
 }
 
 // Configura pinos, LCD, GNSS, NVS e Wi-Fi, restaura o contexto e publica o STATUS inicial.
@@ -966,6 +1066,9 @@ void loop() {
   readBattery(now);
   readCommands();
   updateNetwork();
+#if MQTT_ENABLED
+  updateMqtt(now);
+#endif
   updateCycle(clock);
   if (contextDirty && (!contextRetryPending ||
       static_cast<uint32_t>(now - lastContextFailureAt) >= 1000U)) saveContext();
