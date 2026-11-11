@@ -16,6 +16,8 @@ Card: #122 (Walking skeleton, F0). Autor: Arthur Loyola. Branch: `122-walking-sk
 | HiveMQ no Docker do notebook, porta 1883, sem TLS e sem login | **Padrão agora** | Já roda no Docker do Arthur, não depende de conta nem de internet, atende ao contrato (aceita WebSocket na 8000 quando a porta é publicada) |
 | HiveMQ Cloud (TLS, porta 8883, usuário e senha) | **Demanda futura** | Funciona fora do Inteli e é seguro por padrão, mas exige conta e credenciais. O firmware já tem o modo TLS, ativado por `MQTT_TLS 1` |
 
+**Decisão pendente do grupo:** o broker do Docker só serve ao desenvolvimento e à bancada (depende do notebook de quem o roda, da mesma rede do ESP32 e não tem autenticação). O grupo precisa decidir a **plataforma do broker online** (HiveMQ Cloud ou outro serviço) antes de gravar CTs fora do Inteli e de qualquer uso na Cerradinho.
+
 ## Como o firmware escolhe o modo
 
 Tudo vem do `include/secrets.h`, copiado de `include/secrets.example.h`:
@@ -38,7 +40,7 @@ O LCD mostra "MQTT ok" por 2 s ao conectar. As tentativas de reconexão ocorrem 
 
 ## Como testar
 
-1. Suba o broker: `docker compose up -d` em `docker/hivemq` (ou use o contêiner `hivemq` já em execução; ver `docker/hivemq/README.md`). A licença vem do `.env`, que o Git ignora.
+1. Suba o broker: em `docker/hivemq`, copie `.env.example` para `.env` com a licença (ignorado pelo Git) e rode `docker compose up -d`, ou use o contêiner `hivemq` já em execução. Confira http://localhost:8080. Passos completos em `docker/hivemq/README.md`.
 2. Descubra o IP do notebook (`ipconfig`; no dia da implementação foi 10.150.1.141, mas muda com a rede) e ponha em `include/secrets.h`, com o Wi-Fi de 2,4 GHz.
 3. Grave: `pio run -e bancada -t upload`; abra `pio device monitor -b 115200`. Esperado: `[mqtt] conectado a ...` e "MQTT ok" no LCD.
 4. No MQTT Explorer, conecte em `IP:1883` (sem TLS, sem usuário) e assine `guaratracking/prototipo-001/#`. Esperado: `online = online` e `status` retidos.
@@ -50,5 +52,6 @@ O LCD mostra "MQTT ok" por 2 s ao conectar. As tentativas de reconexão ocorrem 
 - Nada foi executado na placa ou contra o broker; as verificações acima estão por fazer e, quando feitas, devem virar CT gravado.
 - O broker local não tem autenticação: só dados fictícios, em rede confiável.
 - Outros dispositivos só alcançam a 1883 se o Firewall do Windows permitir; não foi criada nenhuma regra.
+- Plataforma do broker online a ser decidida pelo grupo (ver "Decisão de broker").
 - O IP do notebook muda com a rede; o `secrets.h` precisa ser atualizado.
 - Próximas fatias: tópico `evento`, `cmd/resposta`, execução dos comandos e o dashboard via WebSocket (porta 8000).
