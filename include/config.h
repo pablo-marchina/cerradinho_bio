@@ -10,9 +10,24 @@
 #define SWITCH_BUTTONS 0
 #endif
 
+// secrets.h (ignorado pelo Git; modelo em secrets.example.h) traz Wi-Fi e broker MQTT.
+// MQTT so liga com secrets.h e PubSubClient presentes; os testes em computador e o
+// Wokwi sem secrets.h continuam sem rede real.
+#if __has_include("secrets.h")
+#include "secrets.h"
+#endif
+#if __has_include("secrets.h") && __has_include(<PubSubClient.h>)
+#define MQTT_ENABLED 1
+#else
+#define MQTT_ENABLED 0
+#endif
+
 #if __has_include("config.local.h")
 #include "config.local.h"
 #endif
+
+// Prefixo de todos os topicos do contrato MQTT (secao 3.4.3 do Artefato 8).
+#define MQTT_TOPIC_PREFIX "guaratracking/prototipo-001/"
 
 #ifndef TRACKER_WIFI_SSID
 #define TRACKER_WIFI_SSID "Wokwi-GUEST"
