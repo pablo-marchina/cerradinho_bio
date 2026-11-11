@@ -1,0 +1,15 @@
+# Broker MQTT local do prototipo (HiveMQ Community/Platform 4 no Docker).
+# Uso: copie .env.example para .env, preencha a licenca e rode `docker compose up -d`.
+# Portas: 1883 = MQTT (ESP32), 8080 = Control Center, 8000 = WebSocket (dashboard).
+# O broker local nao tem autenticacao: use apenas com dados ficticios, em rede confiavel.
+services:
+  hivemq:
+    image: hivemq/hivemq4:latest
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "8080:8080"
+      - "8000:8000"
+    environment:
+      HIVEMQ_LICENSE_KEY: ${HIVEMQ_LICENSE_KEY}
+      HIVEMQ_LOG_BASED_CLUSTERING_ENABLED: "true"
