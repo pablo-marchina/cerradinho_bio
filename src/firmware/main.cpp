@@ -19,10 +19,12 @@
 #include "screen_controller.h"
 #include "seal_debounce.h"
 #if MQTT_ENABLED
-#include <WiFiClientSecure.h>
 #include <PubSubClient.h>
+#if MQTT_TLS
+#include <WiFiClientSecure.h>
 // Certificados raiz embutidos no core do ESP32 (inclui o ISRG Root X1 do HiveMQ Cloud).
 extern const uint8_t rootca_crt_bundle_start[] asm("_binary_x509_crt_bundle_start");
+#endif
 #endif
 
 namespace {
@@ -840,14 +842,19 @@ void updateDisplay(uint32_t now, uint64_t clock) {
 }
 
 #if MQTT_ENABLED
-// Walking skeleton MQTT (card #122): conecta ao HiveMQ Cloud por TLS, publica `status`
+// Walking skeleton MQTT (card #122): conecta ao broker (padrao: HiveMQ no Docker, porta 1883,
+// sem TLS e sem login; TLS com usuario/senha para HiveMQ Cloud por MQTT_TLS 1), publica `status`
 // retido, assina `cmd` e mantem `online` retido com LWT. Contrato: secao 3.4.3, Artefato 8.
 constexpr const char *TopicStatus = MQTT_TOPIC_PREFIX "status";
 constexpr const char *TopicOnline = MQTT_TOPIC_PREFIX "online";
 constexpr const char *TopicCmd = MQTT_TOPIC_PREFIX "cmd";
 constexpr uint32_t MqttRetryMs = 10000;
 constexpr uint32_t MqttStatusMs = 60000;
+#if MQTT_TLS
 WiFiClientSecure mqttNet;
+#else
+WiFiClient mqttNet;
+#endif
 PubSubClient mqtt(mqttNet);
 uint32_t lastMqttTry = 0, lastMqttStatus = 0;
 bool mqttWasConnected = false, mqttConfigured = false;
@@ -886,17 +893,19 @@ void publishMqttStatus() {
 void updateMqtt(uint32_t now) {
   if (!mqttConfigured) {
     mqttConfigured = true;
+#if MQTT_TLS
 #if defined(MQTT_TLS_INSECURE) && MQTT_TLS_INSECURE
     mqttNet.setInsecure();
 #else
     mqttNet.setCACertBundle(rootca_crt_bundle_start);
 #endif
     mqttNet.setTimeout(5);  // segundos; o handshake TLS bloqueia o loop por pouco tempo
+    configTime(0, 0, "pool.ntp.org", "time.google.com");  // TLS valida a data do certificado
+#endif
     mqtt.setServer(MQTT_HOST, MQTT_PORT);
     mqtt.setBufferSize(512);  // o padrao de 256 bytes corta o JSON dos eventos
     mqtt.setKeepAlive(30);
     mqtt.setCallback(onMqttMessage);
-    configTime(0, 0, "pool.ntp.org", "time.google.com");  // TLS valida a data do certificado
   }
   if (WiFi.status() != WL_CONNECTED || !simulatedNetworkAvailable()) {
     if (mqtt.connected()) mqtt.disconnect();
@@ -918,7 +927,10 @@ void updateMqtt(uint32_t now) {
   if (now - lastMqttTry < MqttRetryMs && lastMqttTry != 0) return;
   lastMqttTry = now;
   const String clientId = String("guaratracking-") + Config::DeviceId;
-  if (!mqtt.connect(clientId.c_str(), MQTT_USER, MQTT_PASSWORD, TopicOnline, 1, true, "offline")) {
+  // Usuario vazio = broker local sem autenticacao.
+  const char *user = MQTT_USER[0] ? MQTT_USER : nullptr;
+  const char *password = MQTT_USER[0] ? MQTT_PASSWORD : nullptr;
+  if (!mqtt.connect(clientId.c_str(), user, password, TopicOnline, 1, true, "offline")) {
     Serial.printf("[mqtt] falha na conexao, estado=%d\r\n", mqtt.state());
     return;
   }
@@ -928,7 +940,7 @@ void updateMqtt(uint32_t now) {
   mqtt.subscribe(TopicCmd);
   lastMqttStatus = now;
   publishMqttStatus();
-  showMessage("MQTT ok", "HiveMQ Cloud");
+  showMessage("MQTT ok", MQTT_TLS ? "TLS" : "broker local");
 }
 #endif
 }

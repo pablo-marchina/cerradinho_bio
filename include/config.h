@@ -26,6 +26,11 @@
 #include "config.local.h"
 #endif
 
+// Padrao: broker local (HiveMQ no Docker), porta 1883, sem TLS. MQTT_TLS 1 = HiveMQ Cloud (8883).
+#ifndef MQTT_TLS
+#define MQTT_TLS 0
+#endif
+
 // Prefixo de todos os topicos do contrato MQTT (secao 3.4.3 do Artefato 8).
 #define MQTT_TOPIC_PREFIX "guaratracking/prototipo-001/"
 
