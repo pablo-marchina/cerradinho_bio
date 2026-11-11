@@ -28,6 +28,8 @@
 
 [5. Referências](#c5)
 
+[6. Anexos](#c6)
+
 <br>
 
 
@@ -1931,5 +1933,51 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 58. SENAC SÃO PAULO. *Técnico em Logística*. Disponível em: https://www.sp.senac.br/cursos-tecnicos/curso-tecnico-em-logistica-presencial-ead. Acesso em: 4 nov. 2026.
 59. BRASILAGRO. *CerradinhoBio ampliou lucro em 90% em 2025/26 e aposta em etanol de milho*. Disponível em: https://www.brasilagro.com.br/conteudo/cerradinhobio-ampliou-lucro-em-90-em-202526-e-aposta-grao.html. Acesso em: 4 nov. 2026.
 60. AGÊNCIA NACIONAL DO PETRÓLEO, GÁS NATURAL E BIOCOMBUSTÍVEIS. *Revendedores de combustíveis: ANP divulga orientações devido à chegada do E30 e B15*. Disponível em: https://www.gov.br/anp/pt-br/canais_atendimento/imprensa/noticias-comunicados/revendedores-de-combustiveis-anp-divulga-orientacoes-devido-a-chegada-do-e30-e-b15/. Acesso em: 4 nov. 2026.
-
 61. ISO/IEC. *ISO/IEC 25010:2023 — Systems and software engineering — Systems and software Quality Requirements and Evaluation (SQuaRE) — Product quality model*. 2ª ed., 2023 (nove características). Disponível em: https://www.iso.org/standard/78176.html. Acesso em: 6 nov. 2026.
+62. OPENSTAX. *University Physics Volume 2: 10.5 RC Circuits*. Disponível em: https://openstax.org/books/university-physics-volume-2/pages/10-5-rc-circuits. Acesso em: 11 nov. 2026.
+63. INTELI. *Artefato de Física: Análise Experimental de Circuito RC*. Módulo 2025.2B.IN04, nov. 2025. Material da disciplina. Disponível em: https://drive.google.com/file/d/1tWtIaKf3IM3JIPH30g9S8Dw9lX_doyTs/view?usp=sharing.
+
+## <a name="c6"></a>6. Anexos
+
+### 6.1. Artefato de Física — Circuito RC
+
+#### 6.1.1. Fundamentação teórica
+
+No circuito proposto, apresentado na Figura 6.1-1, R1 e R2 estão em paralelo, e essa associação está em série com o capacitor e a fonte de 5 V.
+
+![Esquema do circuito RC: resistores R1 e R2 em paralelo, em série com o capacitor C e uma fonte de 5 V](../assets/6-anexos/6.1-circuito-rc/circuitoRC.png)
+
+*Figura 6.1-1 — Circuito proposto para o experimento. Fonte: Inteli [63].*
+
+A resistência usada no modelo de carga é a equivalente da associação:
+
+$$
+R_{\mathrm{eq}}=\frac{R_1R_2}{R_1+R_2}
+$$
+
+Ao ligar a fonte, o capacitor inicialmente descarregado acumula cargas opostas em suas placas. Sua tensão cresce rapidamente no início e depois mais lentamente; a corrente diminui à medida que a tensão no capacitor se aproxima da alimentação [62].
+
+Para componentes ideais, alimentação constante e condição inicial $V_C(0)=0$, o modelo é [62]:
+
+$$
+V_C(t)=V_f\left(1-e^{-t/\tau}\right),\qquad \tau=R_{\mathrm{eq}}C
+$$
+
+| Símbolo | Grandeza | Unidade |
+|---|---|---|
+| $V_C(t)$ | Tensão no capacitor no instante $t$ | volt (V) |
+| $V_f$ | Tensão final, igual à alimentação no modelo ideal | volt (V) |
+| $t$ | Tempo desde o início da carga | segundo (s) |
+| $\tau$ | Constante de tempo | segundo (s) |
+| $R_{\mathrm{eq}}$ | Resistência equivalente | ohm (Ω) |
+| $C$ | Capacitância | farad (F) |
+
+O número $e$ é a base do logaritmo natural. A constante $\tau$ caracteriza a rapidez da carga: aumentar a resistência equivalente ou a capacitância aumenta o tempo necessário para atingir a mesma fração da tensão final [62].
+
+Substituindo $t=\tau$:
+
+$$
+\frac{V_C(\tau)}{V_f}=1-e^{-1}\approx0{,}632
+$$
+
+Logo, após uma constante de tempo, a tensão atinge aproximadamente **63,2% do valor final**. Como $Q=CV_C$, a carga atinge a mesma porcentagem [62]. Para a alimentação nominal de 5 V deste experimento, isso corresponde a aproximadamente **3,16 V**, valor teórico, não medido. O capacitor ainda não está totalmente carregado: no modelo ideal, sua tensão se aproxima assintoticamente da alimentação.
