@@ -22,5 +22,9 @@
 // #define MQTT_PORT 8883
 // #define MQTT_USER "SEU_USUARIO_MQTT"
 // #define MQTT_PASSWORD "SUA_SENHA_MQTT"
+// Opcional: CA embutida em vez do bundle do ESP32. Para o EMQX Cloud (porta 8883, usuario e
+// senha obrigatorios; so existe TLS, sem 1883):
+// #include "mqtt_ca_emqx.h"
+// #define MQTT_CA_CERT MQTT_CA_EMQX
 // So para depurar o TLS: aceita qualquer certificado do servidor.
 // #define MQTT_TLS_INSECURE 1

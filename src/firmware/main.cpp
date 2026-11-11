@@ -896,6 +896,8 @@ void updateMqtt(uint32_t now) {
 #if MQTT_TLS
 #if defined(MQTT_TLS_INSECURE) && MQTT_TLS_INSECURE
     mqttNet.setInsecure();
+#elif defined(MQTT_CA_CERT)
+    mqttNet.setCACert(MQTT_CA_CERT);  // CA embutida (secrets.h), ex.: mqtt_ca_emqx.h
 #else
     mqttNet.setCACertBundle(rootca_crt_bundle_start);
 #endif
