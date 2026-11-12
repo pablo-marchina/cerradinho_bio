@@ -941,7 +941,9 @@ void updateMqtt(uint32_t now) {
   }
   if (now - lastMqttTry < MqttRetryMs && lastMqttTry != 0) return;
   lastMqttTry = now;
-  const String clientId = String("guaratracking-") + Config::DeviceId;
+  // Dois clientes com o mesmo clientId se derrubam no broker: MQTT_CLIENT_ID vem do secrets.h.
+  const String clientId = MQTT_CLIENT_ID[0] ? String(MQTT_CLIENT_ID)
+                                            : String("guaratracking-") + Config::DeviceId;
   // Usuario vazio = broker local sem autenticacao.
   const char *user = MQTT_USER[0] ? MQTT_USER : nullptr;
   const char *password = MQTT_USER[0] ? MQTT_PASSWORD : nullptr;

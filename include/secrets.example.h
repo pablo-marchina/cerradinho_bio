@@ -7,6 +7,15 @@
 #define TRACKER_WIFI_SSID "SEU_WIFI"
 #define TRACKER_WIFI_PASSWORD "SUA_SENHA_WIFI"
 
+// Opcionais, para varios ESP32 no mesmo broker (cada pessoa usa valores unicos):
+// - MQTT_CLIENT_ID: nome da conexao no broker. Dois ESP32 com o mesmo MQTT_CLIENT_ID se
+//   derrubam, porque o broker aceita so uma conexao por nome. Padrao: "guaratracking-prototipo-001".
+// - MQTT_DEVICE_ID: nome do dispositivo nos topicos, guaratracking/<nome>/status, evento,
+//   online, cmd e cmd/resposta. Padrao: "prototipo-001". Quem usa outro nome assina
+//   guaratracking/<nome>/# ou, para ver todos, guaratracking/#.
+// #define MQTT_CLIENT_ID "guaratracking-seunome"
+// #define MQTT_DEVICE_ID "prototipo-001-seunome"
+
 // --- Modo 1 (padrao): broker local, EMQX no Docker do notebook (docker/emqx) ---
 // O ESP32 e o notebook precisam estar na mesma rede. O IP muda se a rede mudar:
 // no Windows, confira com `ipconfig` (adaptador Wi-Fi, IPv4).

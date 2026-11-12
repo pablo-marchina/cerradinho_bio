@@ -38,12 +38,22 @@
 #ifndef LCD_SCL_PIN
 #define LCD_SCL_PIN 22
 #endif
+// Nome do dispositivo nos topicos (guaratracking/<nome>/status, evento, online, cmd, cmd/resposta).
+// Deve ser um texto literal; cada ESP32 que compartilha o broker pode usar um nome proprio.
+#ifndef MQTT_DEVICE_ID
+#define MQTT_DEVICE_ID "prototipo-001"
+#endif
+
+// Identificador do cliente no broker: deve ser unico por ESP32. Vazio = guaratracking-<DeviceId>.
+#ifndef MQTT_CLIENT_ID
+#define MQTT_CLIENT_ID ""
+#endif
 #ifndef NETWORK_SWITCH_PIN
 #define NETWORK_SWITCH_PIN 18
 #endif
 
 // Prefixo de todos os topicos do contrato MQTT (secao 3.4.3 do Artefato 8).
-#define MQTT_TOPIC_PREFIX "guaratracking/prototipo-001/"
+#define MQTT_TOPIC_PREFIX "guaratracking/" MQTT_DEVICE_ID "/"
 
 #ifndef TRACKER_WIFI_SSID
 #define TRACKER_WIFI_SSID "Wokwi-GUEST"
@@ -110,5 +120,5 @@ constexpr uint8_t InvoiceMaxLength = 15;         // NF da remessa no LCD
 constexpr uint8_t BatteryLowPct = 20;            // PENDENTE DE VALIDACAO
 constexpr uint8_t BatteryRecoverPct = 25;        // PENDENTE DE VALIDACAO
 constexpr uint32_t BatteryCheckMs = 200;
-constexpr const char *DeviceId = "prototipo-001";
+constexpr const char *DeviceId = MQTT_DEVICE_ID;
 }
