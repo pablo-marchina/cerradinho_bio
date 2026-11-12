@@ -10,9 +10,50 @@
 #define SWITCH_BUTTONS 0
 #endif
 
+// secrets.h (ignorado pelo Git; modelo em secrets.example.h) traz Wi-Fi e broker MQTT.
+// MQTT so liga com secrets.h e PubSubClient presentes; os testes em computador e o
+// Wokwi sem secrets.h continuam sem rede real.
+#if __has_include("secrets.h")
+#include "secrets.h"
+#endif
+#if __has_include("secrets.h") && __has_include(<PubSubClient.h>)
+#define MQTT_ENABLED 1
+#else
+#define MQTT_ENABLED 0
+#endif
+
 #if __has_include("config.local.h")
 #include "config.local.h"
 #endif
+
+// Padrao: broker local (HiveMQ no Docker), porta 1883, sem TLS. MQTT_TLS 1 = HiveMQ Cloud (8883).
+#ifndef MQTT_TLS
+#define MQTT_TLS 0
+#endif
+
+// Pinos sobrescritiveis por -D (teste de bancada com o LCD em outros pinos). Padrao: Wire 21/22.
+#ifndef LCD_SDA_PIN
+#define LCD_SDA_PIN 21
+#endif
+#ifndef LCD_SCL_PIN
+#define LCD_SCL_PIN 22
+#endif
+// Nome do dispositivo nos topicos (guaratracking/<nome>/status, evento, online, cmd, cmd/resposta).
+// Deve ser um texto literal; cada ESP32 que compartilha o broker pode usar um nome proprio.
+#ifndef MQTT_DEVICE_ID
+#define MQTT_DEVICE_ID "prototipo-001"
+#endif
+
+// Identificador do cliente no broker: deve ser unico por ESP32. Vazio = guaratracking-<DeviceId>.
+#ifndef MQTT_CLIENT_ID
+#define MQTT_CLIENT_ID ""
+#endif
+#ifndef NETWORK_SWITCH_PIN
+#define NETWORK_SWITCH_PIN 18
+#endif
+
+// Prefixo de todos os topicos do contrato MQTT (secao 3.4.3 do Artefato 8).
+#define MQTT_TOPIC_PREFIX "guaratracking/" MQTT_DEVICE_ID "/"
 
 #ifndef TRACKER_WIFI_SSID
 #define TRACKER_WIFI_SSID "Wokwi-GUEST"
@@ -27,8 +68,8 @@ constexpr int GpsTx = 17;
 constexpr int SealPin = 27;
 constexpr int BatteryPin = 34;  // ADC1, usado com Wi-Fi.
 // Prototipo V2: LCD 16x2 I2C nos pinos padrao do Wire (SDA 21, SCL 22).
-constexpr int LcdSdaPin = 21;
-constexpr int LcdSclPin = 22;
+constexpr int LcdSdaPin = LCD_SDA_PIN;
+constexpr int LcdSclPin = LCD_SCL_PIN;
 constexpr uint8_t LcdAddress = 0x27;
 constexpr uint32_t LcdI2cHz = 50000;
 constexpr int NextButtonPin = 25;
@@ -37,7 +78,7 @@ constexpr int BuzzerPin = 23;  // GPIO27 permanece reservado ao lacre.
 constexpr int ViolationLedPin = 13;  // LED vermelho com 220 ohm, exigido pela rubrica.
 constexpr int AuthorizeButtonPin = 33;
 constexpr int CycleButtonPin = 14;
-constexpr int NetworkSwitchPin = 18;
+constexpr int NetworkSwitchPin = NETWORK_SWITCH_PIN;
 constexpr int PowerSwitchPin = 19;  // ON/OFF: esquerda = ligado, direita = desligado.
 // Botoes no lugar das chaves: toque alterna lacre e rede; ON/OFF exige LongPressMs.
 constexpr bool SwitchButtons = SWITCH_BUTTONS;
@@ -79,5 +120,5 @@ constexpr uint8_t InvoiceMaxLength = 15;         // NF da remessa no LCD
 constexpr uint8_t BatteryLowPct = 20;            // PENDENTE DE VALIDACAO
 constexpr uint8_t BatteryRecoverPct = 25;        // PENDENTE DE VALIDACAO
 constexpr uint32_t BatteryCheckMs = 200;
-constexpr const char *DeviceId = "prototipo-001";
+constexpr const char *DeviceId = MQTT_DEVICE_ID;
 }

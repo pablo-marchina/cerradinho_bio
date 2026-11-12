@@ -107,6 +107,8 @@ pio device monitor -b 115200
 
 No ambiente de bancada, 1 segundo representa 1 dia do ciclo. Os botões LACRE e REDE alternam o estado a cada toque. Para ligar ou desligar o protótipo, mantenha ON/OFF pressionado por 3 segundos.
 
+Para gravar com MQTT (EMQX Cloud ou o broker local em `docker/emqx`), siga a [orientação do grupo](document/outros/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/orientacao-grupo-mqtt.md): o que instalar, como preencher o `include/secrets.h` e como ver as mensagens no MQTT Explorer.
+
 ### Verificações locais
 
 As verificações em computador, a auditoria da documentação e a compilação para ESP32 podem ser executadas localmente com `scripts/verify-host.sh`, `scripts/audit-docs.py` e PlatformIO. O cenário `tests/wokwi-ci/smoke.yaml` permanece disponível para testes manuais com o Wokwi CLI.
