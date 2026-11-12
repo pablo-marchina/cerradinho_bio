@@ -3,11 +3,11 @@
 // nunca coloque credenciais reais neste arquivo de exemplo.
 // Com secrets.h presente (e a biblioteca PubSubClient instalada), o firmware liga o MQTT.
 
-// Wi-Fi 2,4 GHz da bancada (o ESP32 nao usa 5 GHz).
+// Wi-Fi 2,4 GHz (o ESP32 nao usa 5 GHz nem rede com login por navegador).
 #define TRACKER_WIFI_SSID "SEU_WIFI"
 #define TRACKER_WIFI_PASSWORD "SUA_SENHA_WIFI"
 
-// --- Modo 1 (padrao): broker local, HiveMQ no Docker do notebook ---
+// --- Modo 1 (padrao): broker local, EMQX no Docker do notebook (docker/emqx) ---
 // O ESP32 e o notebook precisam estar na mesma rede. O IP muda se a rede mudar:
 // no Windows, confira com `ipconfig` (adaptador Wi-Fi, IPv4).
 #define MQTT_HOST "192.168.0.10"
@@ -15,15 +15,15 @@
 #define MQTT_USER ""      // vazio = sem autenticacao (broker local)
 #define MQTT_PASSWORD ""
 
-// --- Modo 2 (futuro): HiveMQ Cloud, com TLS e login ---
-// Troque o bloco acima por este:
+// --- Modo 2: EMQX Cloud Serverless (broker online escolhido), com TLS e login ---
+// Troque o bloco do modo 1 por este. O EMQX Cloud so aceita TLS (porta 8883), exige usuario e
+// senha (criados no painel do deployment) e nao deixa assinar `#`: use `guaratracking/#`.
 // #define MQTT_TLS 1
-// #define MQTT_HOST "SEU_CLUSTER.s1.eu.hivemq.cloud"
+// #define MQTT_HOST "SEU_DEPLOYMENT.emqxsl.com"
 // #define MQTT_PORT 8883
 // #define MQTT_USER "SEU_USUARIO_MQTT"
 // #define MQTT_PASSWORD "SUA_SENHA_MQTT"
-// Opcional: CA embutida em vez do bundle do ESP32. Para o EMQX Cloud (porta 8883, usuario e
-// senha obrigatorios; so existe TLS, sem 1883):
+// CA publica que valida o EMQX Cloud (DigiCert Global Root G2), embutida no firmware:
 // #include "mqtt_ca_emqx.h"
 // #define MQTT_CA_CERT MQTT_CA_EMQX
 // So para depurar o TLS: aceita qualquer certificado do servidor.
