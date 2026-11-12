@@ -29,6 +29,7 @@ Tudo vem do `include/secrets.h`, copiado de `include/secrets.example.h`:
 - Modo 1 (broker local): `MQTT_HOST` com o IP do notebook, `MQTT_PORT 1883`, `MQTT_USER ""`. Usuário vazio significa conexão sem autenticação e sem TLS.
 - Modo 2 (EMQX Cloud): `MQTT_TLS 1`, host do deployment, porta 8883, usuário e senha, e a CA pública DigiCert Global Root G2 embutida (`include/mqtt_ca_emqx.h`); `MQTT_TLS_INSECURE 1` serve só para depurar.
 - Sem `secrets.h` (ou sem PubSubClient), o MQTT não compila no firmware. O Wokwi e os testes em computador seguem como antes.
+- Dois defines opcionais permitem vários ESP32 no mesmo broker, cada pessoa com valores únicos: `MQTT_CLIENT_ID` (nome da conexão; dois clientes com o mesmo nome se derrubam, e o padrão é `guaratracking-prototipo-001`) e `MQTT_DEVICE_ID` (nome nos tópicos, `guaratracking/<nome>/status|evento|online|cmd|cmd/resposta`; o padrão é `prototipo-001`). Quem usa outro nome assina `guaratracking/<nome>/#` ou, para ver todos, `guaratracking/#`.
 - Os pinos do LCD e da chave de rede podem ser trocados por `-D` (`LCD_SDA_PIN`, `LCD_SCL_PIN`, `NETWORK_SWITCH_PIN`); o padrão é SDA 21, SCL 22 e chave de rede no 18.
 
 ## Comportamento (contrato 3.4.3)
@@ -51,6 +52,21 @@ O LCD mostra "MQTT ok" por 2 s ao conectar, depois volta à tela anterior e apag
 4. No MQTT Explorer, conecte no broker (no Cloud, com TLS ligado) e assine `guaratracking/#`; em Advanced, retire `#` e `$SYS/#` da lista de assinaturas. Esperado: `online = online` e `status` retidos.
 5. Publique um texto em `guaratracking/prototipo-001/cmd` e confira `[mqtt] cmd recebido` no monitor serial.
 6. Tire a energia do ESP32: após cerca de 45 s (1,5 vez o keep-alive de 30 s) o broker publica `offline` em `online`; ao religar, volta a `online`.
+
+## Ensaio de bancada e CTs a gravar com o protótipo completo
+
+O que foi medido acima é um **ensaio de bancada**: um ESP32 avulso com o LCD I2C, sem o protótipo do grupo (sem LEDs, botões, GNSS e lacre) e sem fotos nem prints oficiais. Ele serviu para provar a cadeia ESP32, broker e cliente e para achar problemas (fiação do I2C, assinatura de `#`, energia do USB). Os casos de teste abaixo devem ser **executados e gravados com o protótipo físico completo**, com a evidência de cada um. A numeração dos CT70 a CT75 segue os cards #123, #124, #125 e #128; os casos de falha sem número serão numerados quando entrarem na RTM (#126).
+
+| CT | Descrição | Pré-condição | Procedimento de teste | Resultado esperado | Evidências a capturar |
+|---|---|---|---|---|---|
+| CT70 | Ao ligar, o broker recebe `online` e `status` retidos | Broker no ar; `secrets.h` preenchido; Wi-Fi de 2,4 GHz; MQTT Explorer assinando `guaratracking/#` | Ligar o protótipo | LCD mostra "MQTT ok" por 2 s; `online = online` e `status` com JSON aparecem no broker | Foto do protótipo montado; foto do LCD com "MQTT ok"; print do MQTT Explorer com `online` e `status`; print do console do EMQX com o cliente conectado |
+| CT71 | A violação do lacre publica no tópico `evento` | CT70 aprovado; lacre fechado | Abrir o lacre (violação) | Evento `VIOLACAO_LACRE` chega em `evento`, `status` retido passa a mostrar o lacre violado, LED e buzzer atuam | Print do Explorer com o `evento` e o `status` novo; vídeo curto do LED e do buzzer; trecho do Serial |
+| CT72 | Broker fora ou sem Wi-Fi: o firmware segue operando e os eventos ficam na fila (RN09) | CT70 aprovado | Desligar o Wi-Fi ou o broker, gerar eventos, restabelecer | LCD mostra a fila subindo; ao voltar, os eventos chegam ao broker na ordem e a fila zera | Prints do Explorer antes e depois; foto do LCD com a fila; trecho do Serial com o reenvio |
+| CT73 | Queda de energia: `online` vira `offline` | CT70 aprovado | Cortar a alimentação do protótipo | Em cerca de 45 s o broker publica `offline` em `online`; ao religar, volta a `online` | Print do Explorer com `offline` e depois `online`; hora da queda e do aviso |
+| CT74 | Comando `cmd` válido (REMESSA) é aceito | CT70 aprovado; #128 implementado | Publicar `{"cmd":"REMESSA","nf":"NF-000123"}` em `cmd` | NF aparece no LCD e `cmd/resposta` responde aceito | Print do Publish e da resposta; foto do LCD com a NF |
+| CT75 | Comando `cmd` inválido é recusado | CT74 aprovado | Publicar uma NF inválida em `cmd` | `cmd/resposta` recusa com o motivo e o LCD não muda | Print da resposta de recusa; foto do LCD inalterado |
+| A numerar | Recebimento do `cmd` pelo ESP32 (ensaio do #122) | CT70 aprovado | Publicar um texto em `guaratracking/<nome>/cmd` | O Serial mostra `[mqtt] cmd recebido`; antes do #128 ele só registra o texto | Print do Publish; trecho do Serial |
+| A numerar | Senha MQTT errada | `secrets.h` com senha errada | Ligar o protótipo | Sem "MQTT ok" no LCD; log com falha de conexão; nada chega ao broker; o firmware segue operando | Trecho do Serial com `[mqtt] falha na conexao`; print do broker sem cliente |
 
 ## Limites e pendências
 

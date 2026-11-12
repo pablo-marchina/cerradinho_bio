@@ -23,6 +23,10 @@ A imagem é `emqx/emqx` com versão fixa (`5.8.9`) e não precisa de licença.
 - No painel (http://localhost:18083) há a lista de clientes e de assinaturas.
 - WebSocket para o dashboard (mqtt.js): `ws://IP-do-notebook:8083/mqtt`.
 
+## Vários ESP32 no mesmo broker
+
+Cada ESP32 precisa de um nome de conexão único, senão um derruba o outro: defina `MQTT_CLIENT_ID` (e, se quiser separar os tópicos, `MQTT_DEVICE_ID`) no `include/secrets.h`, como mostra `include/secrets.example.h`. Quem muda o `MQTT_DEVICE_ID` publica em `guaratracking/<nome>/...` e continua visível para quem assina `guaratracking/#`.
+
 ## Portas
 
 | Porta | Uso |
