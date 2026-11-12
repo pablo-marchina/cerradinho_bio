@@ -1676,7 +1676,7 @@ CTs novos para comportamentos que o V2 acrescentou: a idade da última posição
   - **CT43:** a "sem fix ainda" foi tirada no início de uma execução do CT45, porque a execução do CT43 começou com fix.
   - **CT44:** as capturas do LCD são da execução no Wokwi CLI de 02/11/2026, com o mesmo binário. O log dessa execução se perdeu, e o log de evidência é a repetição no VS Code.
 
-**Evolução do protótipo.** A seção 3.4.2 apresenta os ensaios físicos offline. A partir da seção 3.4.3, permanecem as orientações e os exemplos originais do template, que não são resultados de execução. A proposta de evolução do circuito e os CT24–CT34 estão no [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md).
+**Evolução do protótipo.** A seção 3.4.2 apresenta os ensaios físicos offline, e a seção 3.4.3, o protótipo com MQTT. A partir da seção 3.4.4, permanecem as orientações e os exemplos originais do template, que não são resultados de execução. A proposta de evolução do circuito e os CT24–CT34 estão no [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md).
 
 <a name="prototipo-fisico-offline"></a>
 
@@ -1847,12 +1847,47 @@ Os casos abaixo estão **PLANEJADOS** e **NÃO EXECUTADOS**; nenhuma linha é re
 
 ### 3.4.3. Protótipo do Projeto com MQTT e I2C (sprint 3)	
 
-_Aqui você deve registrar diversas situações de uso de seu sistema como um todo, indicando exemplos de ação do usuário e resposta do sistema, apontando como o ambiente deverá estar configurado para receber a ação e produzir a resposta. Estes registros serão utilizados para testar seu sistema, portanto, descreva várias situações, incluindo não apenas casos de sucesso, mas também de falha nos comportamentos do sistema. <br>
-Siga as nomenclaturas e convenções já utilizadas anteriormente, e não se esqueça dos alinhamentos de negócios e experiência do usuário para pensar em situações representativas. Inclua figuras do protótipo físico e dashboards, além de descrições dos testes realizados para ilustrar o funcionamento do protótipo. Continue a numeração de CT a partir da tabela anterior. A tabela a seguir serve como exemplo._
+O protótipo da seção 3.4.2 passa a se comunicar por MQTT: publica o estado e os eventos do lacre num broker e recebe comandos do dashboard. O LCD 16x2 continua no barramento I2C, e a Serial segue disponível para diagnóstico.
 
-**CT#** | **Configuração do ambiente** | **Ação do usuário** | **Resposta esperada do sistema** 
-|----------|----------|----------|----------|
-|CT21|ex. precisa de um computador conectado na interface, dois ou mais dispositivos que simulem o posicionamento de um item X no espaço físico etc. | ex. usuário logado busca a localização do item X, que está ativo e operando normalmente | ex. interface do sistema acessa os dados da última localização registrada do item X e apresenta, constando local e horário de última atualização | 
+<!-- Esqueleto da 3.4.3. Cada subseção abaixo recebe o conteúdo da fatia correspondente do plano do Art. 8. -->
+
+#### Exceções ao enunciado
+
+Dois itens pedidos no enunciado não foram adicionados ao protótipo: os dois LEDs informacionais e o capacitor do debounce por hardware. A tabela explica por quê, o que cumpre o papel de cada um e onde está a evidência.
+
+| Item do enunciado | O que o protótipo faz | Justificativa | Evidência |
+|---|---|---|---|
+| 2 LEDs informacionais | Nenhum LED. A violação aparece no LCD ("VIOLACAO registrada") e no buzzer; o LED vermelho do GPIO13 da seção 3.4.2 foi retirado da placa e do firmware. | O LCD já cumpre o papel dos LEDs: mostra em texto todos os estados (lacre, bateria, ciclo e posição), e um LED só repetiria essa informação. Além disso, cada LED aceso gasta energia, e o dispositivo precisa durar com bateria todo o período em que o equipamento fica fora (RNF02). | CT80 |
+| Capacitor (debounce por hardware) | Debounce por firmware: o botão só conta quando o nível fica estável por `ButtonDebounceMs` (50 ms), em `updateButton()`, e o lacre por `SealDebounceMs` (60 ms), em `seal_settle()`. As constantes ficam em [`Config`](../include/config.h). | O firmware já filtra o repique do contato, inclusive pulsos curtos de 20 e 40 ms, como mostram os ensaios da seção 3.4.2. Um capacitor por botão somaria componentes sem mudar o resultado. | CT61 e CT65 (seção 3.4.2); CT79 |
+
+O botão com debounce continua no protótipo: é o AVANÇAR (GPIO25), que troca as telas do LCD.
+
+#### Montagem
+
+<!-- Fotos da bancada, ligações (Wi-Fi, I2C, UART e GPIOs) e o que mudou desde a 3.4.2. -->
+
+#### Comunicação MQTT
+
+<!-- Broker, tópicos (status, evento, online, cmd, cmd/resposta) e exemplos de JSON. -->
+
+#### Dashboard
+
+<!-- Telas do dashboard como figuras, com o que cada uma mostra. -->
+
+#### Casos de teste
+
+<!-- CT70 em diante, sem refatorar os CTs anteriores. Incluir casos de sucesso e de falha. -->
+
+| CT | Configuração do ambiente | Ação do usuário | Resposta esperada do sistema |
+|---|---|---|---|
+
+#### Resultados
+
+<!-- Situação de cada CT, resultado observado e evidência (vídeo, Serial, prints do broker e do dashboard). -->
+
+#### Organização do firmware
+
+<!-- Funções novas do MQTT, comentadas, e onde ficam os pinos e os tempos. -->
 
 ### 3.4.4. Protótipo Físico do Projeto (online) (sprint 4)	
 
