@@ -396,6 +396,8 @@ void printPending() {
 #if MQTT_ENABLED
 // Todo evento muda o estado: marca o `status` retido para republicar em updateMqtt().
 bool mqttStatusDirty = false;
+// Publica o JSON do evento no topico `evento` (definida junto do cliente MQTT, mais abaixo).
+void publishMqttEvent(const String &json);
 #endif
 
 // Com rede, o JSON sai no Serial (representa a mensagem MQTT). Sem rede, vai para a
@@ -416,6 +418,9 @@ void publishEvent(const char *type, bool critical = false, const String &extra =
   record += "}";
   if (simulatedNetworkAvailable()) {
     Serial.println(record);
+#if MQTT_ENABLED
+    publishMqttEvent(record);
+#endif
     return;
   }
   const int result = queuePush(&pending, record.c_str(), critical, clockMs());
@@ -859,6 +864,7 @@ void updateDisplay(uint32_t now, uint64_t clock) {
 constexpr const char *TopicStatus = MQTT_TOPIC_PREFIX "status";
 constexpr const char *TopicOnline = MQTT_TOPIC_PREFIX "online";
 constexpr const char *TopicCmd = MQTT_TOPIC_PREFIX "cmd";
+constexpr const char *TopicEvento = MQTT_TOPIC_PREFIX "evento";
 constexpr uint32_t MqttRetryMs = 10000;
 constexpr uint32_t MqttStatusMs = 60000;
 constexpr uint32_t MqttStatusMinMs = 1000;  // intervalo minimo entre dois `status` por evento
@@ -874,6 +880,17 @@ bool mqttWasConnected = false, mqttConfigured = false;
 // Por enquanto so registra o comando recebido no Serial; a execucao vem nas proximas fatias.
 void onMqttMessage(char *topic, uint8_t *payload, unsigned int length) {
   Serial.printf("[mqtt] cmd recebido em %s: %.*s\r\n", topic, (int)length, (const char *)payload);
+}
+
+// Publica o evento (QoS 0, nao retido) so com o broker conectado; a Serial e a fila seguem iguais.
+// beginPublish/write/endPublish enviam em partes, entao o JSON pode passar do buffer de 512 bytes.
+void publishMqttEvent(const String &json) {
+  if (!mqtt.connected()) return;
+  const size_t length = json.length();
+  bool sent = mqtt.beginPublish(TopicEvento, length, false);
+  if (sent) sent = mqtt.write(reinterpret_cast<const uint8_t *>(json.c_str()), length) == length;
+  if (sent) sent = mqtt.endPublish();
+  if (!sent) Serial.println("[mqtt] evento nao publicado");
 }
 
 // Estado resumido do dispositivo (retido): lacre, bateria, ciclo, NF, dias fora, GNSS e fila.
