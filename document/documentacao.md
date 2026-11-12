@@ -1981,3 +1981,86 @@ $$
 $$
 
 Logo, após uma constante de tempo, a tensão atinge aproximadamente **63,2% do valor final**. Como $Q=CV_C$, a carga atinge a mesma porcentagem [62]. Para a alimentação nominal de 5 V deste experimento, isso corresponde a aproximadamente **3,16 V**, valor teórico, não medido. O capacitor ainda não está totalmente carregado: no modelo ideal, sua tensão se aproxima assintoticamente da alimentação.
+
+#### 6.1.2. Projeto e cálculo
+
+O circuito proposto deve apresentar uma constante de tempo próxima de 60 s, dentro do intervalo de 50 a 70 s. Para o grupo 1, o dimensionamento considera $R_1=68\,\mathrm{k\Omega}$ e $C=2200\,\mathrm{\mu F}$. Os valores disponíveis para R2 são 33 kΩ, 39 kΩ, 43 kΩ e 47 kΩ. Os cálculos abaixo utilizam valores nominais; não representam medições dos componentes ou resultados experimentais.
+
+**Conversão das unidades e resistência equivalente desejada**
+
+Para aplicar $\tau=R_{\mathrm{eq}}C$, convertem-se a resistência para ohms e a capacitância para farads:
+
+$$
+R_1=68\,000\,\Omega,\qquad C=2200\times10^{-6}\,\mathrm{F}=0{,}0022\,\mathrm{F}
+$$
+
+Com a meta de $\tau_{\mathrm{alvo}}=60\,\mathrm{s}$:
+
+$$
+R_{\mathrm{eq,alvo}}=\frac{\tau_{\mathrm{alvo}}}{C}
+=\frac{60}{0{,}0022}\,\Omega
+\approx27\,272{,}73\,\Omega=27{,}27\,\mathrm{k\Omega}
+$$
+
+**Determinação de R2**
+
+Como R1 e R2 estão em paralelo, a resistência equivalente é:
+
+$$
+R_{\mathrm{eq}}=\frac{R_1R_2}{R_1+R_2}
+$$
+
+Isolando R2, passo a passo:
+
+$$
+R_{\mathrm{eq}}(R_1+R_2)=R_1R_2
+$$
+
+$$
+R_{\mathrm{eq}}R_1=R_2(R_1-R_{\mathrm{eq}})
+$$
+
+$$
+R_2=\frac{R_{\mathrm{eq}}R_1}{R_1-R_{\mathrm{eq}}}
+=\frac{(60/0{,}0022)\times68\,000}{68\,000-(60/0{,}0022)}\,\Omega
+\approx45\,535{,}71\,\Omega=45{,}54\,\mathrm{k\Omega}
+$$
+
+**Escolha entre os valores disponíveis**
+
+A tabela compara cada opção com o valor calculado, mantendo a precisão nos cálculos e arredondando somente os resultados apresentados.
+
+| R2 disponível | Diferença absoluta em relação a 45,54 kΩ, aproximadamente |
+|---|---|
+| 33 kΩ | 12,54 kΩ |
+| 39 kΩ | 6,54 kΩ |
+| 43 kΩ | 2,54 kΩ |
+| **47 kΩ** | **1,46 kΩ** |
+
+Seleciona-se **R2 = 47 kΩ**, pois apresenta a menor diferença em relação ao valor necessário para atingir a meta de 60 s.
+
+**Resistência equivalente e constante de tempo finais**
+
+Substituindo os valores nominais escolhidos:
+
+$$
+R_{\mathrm{eq,final}}=\frac{68\,000\times47\,000}{68\,000+47\,000}\,\Omega
+=\frac{3\,196\,000\,000}{115\,000}\,\Omega
+\approx27\,791{,}30\,\Omega=27{,}79\,\mathrm{k\Omega}
+$$
+
+A constante de tempo teórica final é:
+
+$$
+\tau_{\mathrm{teorico}}=R_{\mathrm{eq,final}}C
+=\frac{68\,000\times47\,000}{68\,000+47\,000}\times0{,}0022\,\mathrm{s}
+\approx61{,}14\,\mathrm{s}
+$$
+
+O resultado fica aproximadamente 1,14 s acima da meta de 60 s e atende ao intervalo exigido:
+
+$$
+50\,\mathrm{s}\leq61{,}14\,\mathrm{s}\leq70\,\mathrm{s}
+$$
+
+Assim, o dimensionamento seleciona **R1 = 68 kΩ, R2 = 47 kΩ e C = 2200 µF**, com **τ teórico ≈ 61,14 s**. Esse valor será a referência para comparar o comportamento experimental com o modelo de carga.
