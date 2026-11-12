@@ -121,8 +121,10 @@ uint32_t lastInteractionAt = 0;  // ultimo botao, mensagem ou variacao da bateri
 
 // Configura o LCD: fios longos em protoboard corrompem o I2C na velocidade padrao.
 void initLcd() {
+  // Os pinos do LCD primeiro: o init() da biblioteca chama Wire.begin() sem argumentos, e o
+  // core do ESP32 ignora um segundo begin() com o barramento ja iniciado.
+  Wire.begin(Config::LcdSdaPin, Config::LcdSclPin);
   lcd.init();
-  Wire.begin(Config::LcdSdaPin, Config::LcdSclPin);  // lcd.init() usa os pinos padrao do Wire
   Wire.setClock(Config::LcdI2cHz);
   lcd.backlight();
 }
