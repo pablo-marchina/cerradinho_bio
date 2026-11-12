@@ -122,6 +122,7 @@ uint32_t lastInteractionAt = 0;  // ultimo botao, mensagem ou variacao da bateri
 // Configura o LCD: fios longos em protoboard corrompem o I2C na velocidade padrao.
 void initLcd() {
   lcd.init();
+  Wire.begin(Config::LcdSdaPin, Config::LcdSclPin);  // lcd.init() usa os pinos padrao do Wire
   Wire.setClock(Config::LcdI2cHz);
   lcd.backlight();
 }
