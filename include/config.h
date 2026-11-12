@@ -75,7 +75,6 @@ constexpr uint32_t LcdI2cHz = 50000;
 constexpr int NextButtonPin = 25;
 constexpr int PreviousButtonPin = 26;
 constexpr int BuzzerPin = 23;  // GPIO27 permanece reservado ao lacre.
-constexpr int ViolationLedPin = 13;  // LED vermelho com 220 ohm, exigido pela rubrica.
 constexpr int AuthorizeButtonPin = 33;
 constexpr int CycleButtonPin = 14;
 constexpr int NetworkSwitchPin = NETWORK_SWITCH_PIN;
@@ -110,8 +109,7 @@ constexpr uint32_t BuzzerFrequencyHz = 2700;  // ressonancia do buzzer 12085 med
 constexpr uint8_t BuzzerChannel = 0;             // canal PWM (LEDC) do buzzer
 constexpr uint32_t BuzzerBeepMs = 500;           // bipe intermitente a 1 Hz
 constexpr uint32_t BuzzerAlarmMs = 30000;        // PENDENTE DE VALIDACAO
-constexpr uint32_t LedBlinkOnMs = 150;           // pulso curto: visivel e gasta pouco
-constexpr uint32_t LedBlinkPeriodMs = 1000;
+// Sem LED desde a Sprint 3: o LCD e o buzzer ja sinalizam a violacao e o LED gastaria energia (secao 3.4.3).
 // Falhas do GNSS: sem NMEA por GpsNoDataMs = modulo sem dados; fix invalido com ate
 // GpsWeakSatellites satelites = sinal fraco (valor de teste, PENDENTE DE VALIDACAO).
 constexpr uint32_t GpsNoDataMs = 5000;

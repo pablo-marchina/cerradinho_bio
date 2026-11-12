@@ -129,7 +129,7 @@ for switch, message in (('seal', 'Lacre violado'), ('sw_rede', 'Rede indisponive
 config = (root / 'include/config.h').read_text(encoding='utf-8')
 pins = [('GpsRx', 16), ('GpsTx', 17), ('SealPin', 27), ('BatteryPin', 34),
         ('LcdSdaPin', 21), ('LcdSclPin', 22), ('NextButtonPin', 25), ('PreviousButtonPin', 26),
-        ('BuzzerPin', 23), ('ViolationLedPin', 13),
+        ('BuzzerPin', 23),
         ('AuthorizeButtonPin', 33), ('CycleButtonPin', 14), ('NetworkSwitchPin', 18),
         ('PowerSwitchPin', 19)]
 assert len({pin for _, pin in pins}) == len(pins), 'GPIO compartilhado entre funcoes'
@@ -140,7 +140,7 @@ for name, value in [('GpsBaud', 9600), ('ConsoleBaud', 115200), ('HeartbeatMs', 
     assert re.search(rf'\b{name}\s*=\s*{value}\s*;', config), f'Configuracao divergente: {name}'
 source = (root / 'src/firmware/main.cpp').read_text(encoding='utf-8')
 assert 'pinMode(Config::SealPin, INPUT_PULLUP)' in source
-assert 'pinMode(Config::ViolationLedPin, OUTPUT)' in source
+assert 'ViolationLedPin' not in source, 'O LED saiu na Sprint 3'
 for name in ('AuthorizeButtonPin', 'CycleButtonPin', 'NetworkSwitchPin', 'PowerSwitchPin',
              'NextButtonPin', 'PreviousButtonPin'):
     assert f'pinMode(Config::{name}, INPUT_PULLUP)' in source
