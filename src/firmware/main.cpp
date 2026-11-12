@@ -391,9 +391,17 @@ void printPending() {
   Serial.print("\r\n");
 }
 
+#if MQTT_ENABLED
+// Todo evento muda o estado: marca o `status` retido para republicar em updateMqtt().
+bool mqttStatusDirty = false;
+#endif
+
 // Com rede, o JSON sai no Serial (representa a mensagem MQTT). Sem rede, vai para a
 // fila e sai na reconexao, na ordem e com o dia em que ocorreu (RF010; RN09).
 void publishEvent(const char *type, bool critical = false, const String &extra = "") {
+#if MQTT_ENABLED
+  mqttStatusDirty = true;
+#endif
   String record = baseRecord(type);
   record += ",\"ciclo_id\":"; record += cycle.cycleId;
   record += ",\"ciclo_ativo\":"; record += cycleActive ? "true" : "false";
@@ -851,6 +859,7 @@ constexpr const char *TopicOnline = MQTT_TOPIC_PREFIX "online";
 constexpr const char *TopicCmd = MQTT_TOPIC_PREFIX "cmd";
 constexpr uint32_t MqttRetryMs = 10000;
 constexpr uint32_t MqttStatusMs = 60000;
+constexpr uint32_t MqttStatusMinMs = 1000;  // intervalo minimo entre dois `status` por evento
 #if MQTT_TLS
 WiFiClientSecure mqttNet;
 #else
@@ -917,8 +926,11 @@ void updateMqtt(uint32_t now) {
   }
   if (mqtt.connected()) {
     mqtt.loop();
-    if (now - lastMqttStatus >= MqttStatusMs) {
+    // Refresco a cada MqttStatusMs, ou antes se um evento mudou o estado (com intervalo minimo).
+    const uint32_t sinceStatus = now - lastMqttStatus;
+    if (sinceStatus >= MqttStatusMs || (mqttStatusDirty && sinceStatus >= MqttStatusMinMs)) {
       lastMqttStatus = now;
+      mqttStatusDirty = false;
       publishMqttStatus();
     }
     return;
@@ -942,6 +954,7 @@ void updateMqtt(uint32_t now) {
   mqtt.publish(TopicOnline, "online", true);
   mqtt.subscribe(TopicCmd);
   lastMqttStatus = now;
+  mqttStatusDirty = false;
   publishMqttStatus();
   showMessage("MQTT ok", MQTT_TLS ? "TLS" : "broker local");
 }
