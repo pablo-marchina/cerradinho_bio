@@ -51,6 +51,23 @@
 #ifndef NETWORK_SWITCH_PIN
 #define NETWORK_SWITCH_PIN 18
 #endif
+// Demais pinos trocados na montagem alternada (env:bancada-alternada). O padrao e o do
+// Wokwi e da bancada usada nos CTs da secao 3.4.2.
+#ifndef GPS_RX_PIN
+#define GPS_RX_PIN 16
+#endif
+#ifndef PREVIOUS_BUTTON_PIN
+#define PREVIOUS_BUTTON_PIN 26
+#endif
+#ifndef BUZZER_PIN
+#define BUZZER_PIN 23
+#endif
+#ifndef AUTHORIZE_BUTTON_PIN
+#define AUTHORIZE_BUTTON_PIN 33
+#endif
+#ifndef CYCLE_BUTTON_PIN
+#define CYCLE_BUTTON_PIN 14
+#endif
 
 // Prefixo de todos os topicos do contrato MQTT (secao 3.4.3 do Artefato 8).
 #define MQTT_TOPIC_PREFIX "guaratracking/" MQTT_DEVICE_ID "/"
@@ -63,7 +80,7 @@
 #endif
 
 namespace Config {
-constexpr int GpsRx = 16;
+constexpr int GpsRx = GPS_RX_PIN;
 constexpr int GpsTx = 17;
 constexpr int SealPin = 27;
 constexpr int BatteryPin = 34;  // ADC1, usado com Wi-Fi.
@@ -73,12 +90,19 @@ constexpr int LcdSclPin = LCD_SCL_PIN;
 constexpr uint8_t LcdAddress = 0x27;
 constexpr uint32_t LcdI2cHz = 50000;
 constexpr int NextButtonPin = 25;
-constexpr int PreviousButtonPin = 26;
-constexpr int BuzzerPin = 23;  // GPIO27 permanece reservado ao lacre.
-constexpr int AuthorizeButtonPin = 33;
-constexpr int CycleButtonPin = 14;
+constexpr int PreviousButtonPin = PREVIOUS_BUTTON_PIN;
+constexpr int BuzzerPin = BUZZER_PIN;  // GPIO27 permanece reservado ao lacre.
+constexpr int AuthorizeButtonPin = AUTHORIZE_BUTTON_PIN;
+constexpr int CycleButtonPin = CYCLE_BUTTON_PIN;
 constexpr int NetworkSwitchPin = NETWORK_SWITCH_PIN;
 constexpr int PowerSwitchPin = 19;  // ON/OFF: esquerda = ligado, direita = desligado.
+// Botoes e lacre usam INPUT_PULLUP; os GPIO34 a 39 so leem e nao tem pull-up, entao um
+// botao ali nunca muda de nivel. Erro de pino falha na compilacao, nao na bancada.
+constexpr bool hasPullUp(int pin) { return pin < 34 || pin > 39; }
+static_assert(hasPullUp(SealPin) && hasPullUp(NextButtonPin) && hasPullUp(PreviousButtonPin) &&
+              hasPullUp(AuthorizeButtonPin) && hasPullUp(CycleButtonPin) &&
+              hasPullUp(NetworkSwitchPin) && hasPullUp(PowerSwitchPin),
+              "Botao em GPIO34-39, que nao tem pull-up interno");
 // Botoes no lugar das chaves: toque alterna lacre e rede; ON/OFF exige LongPressMs.
 constexpr bool SwitchButtons = SWITCH_BUTTONS;
 constexpr uint32_t GpsBaud = 9600;

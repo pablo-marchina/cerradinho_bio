@@ -133,8 +133,17 @@ pins = [('GpsRx', 16), ('GpsTx', 17), ('SealPin', 27), ('BatteryPin', 34),
         ('AuthorizeButtonPin', 33), ('CycleButtonPin', 14), ('NetworkSwitchPin', 18),
         ('PowerSwitchPin', 19)]
 assert len({pin for _, pin in pins}) == len(pins), 'GPIO compartilhado entre funcoes'
+def pin_source(name):
+    """Valor do pino no config.h: numero direto ou macro sobrescrivivel por -D com padrao no #define."""
+    value = re.search(rf'\b{name}\s*=\s*(\w+)\s*;', config)[1]
+    if value.isdigit():
+        return None, int(value)
+    return value, int(re.search(rf'#define\s+{value}\s+(\d+)\b', config)[1])
+macros = {}
 for name, pin in pins:
-    assert re.search(rf'\b{name}\s*=\s*{pin}\s*;', config), f'Pino divergente: {name}'
+    macro, default = pin_source(name)
+    assert default == pin, f'Pino divergente: {name}'
+    macros[name] = macro
 for name, value in [('GpsBaud', 9600), ('ConsoleBaud', 115200), ('HeartbeatMs', 2000),
                     ('LongPressMs', 3000), ('LcdAddress', '0x27')]:
     assert re.search(rf'\b{name}\s*=\s*{value}\s*;', config), f'Configuracao divergente: {name}'
@@ -155,6 +164,11 @@ assert 'espressif32' in pio['env']['platform'] and 'TinyGPSPlus' in pio['env']['
 assert 'LiquidCrystal_I2C' in pio['env']['lib_deps']
 assert '-DDEMO_MODE=1' in pio['env:demo']['build_flags']
 assert '-DDEMO_MODE=0' in pio['env:weekly']['build_flags']
+# Montagem alternada: os -D trocam pinos, mas nenhum GPIO pode ficar com duas funcoes.
+flags = dict(re.findall(r'-D(\w+)=(\d+)', pio['env:bancada-alternada']['build_flags']))
+assert set(flags) - {'DEMO_MODE', 'SWITCH_BUTTONS'} <= set(macros.values()), 'Flag de pino desconhecida'
+alternate = {name: int(flags.get(macros[name], pin)) for name, pin in pins}
+assert len(set(alternate.values())) == len(alternate), f'GPIO compartilhado na montagem alternada: {alternate}'
 wasm = root / 'chips/gps.chip.wasm'
 assert wasm.read_bytes()[:8] == b'\x00asm\x01\x00\x00\x00', 'GPS nao compilado para WebAssembly'
 for environment, filename in [('demo', 'wokwi.toml'), ('weekly', 'wokwi.weekly.toml')]:
