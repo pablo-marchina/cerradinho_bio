@@ -93,7 +93,6 @@ char shipmentInvoice[Config::InvoiceMaxLength + 1] = "";  // NF da remessa (coma
 bool alarmActive = false;   // buzzer da violacao, limitado a BuzzerAlarmMs
 uint32_t alarmStartedAt = 0;
 bool buzzerOn = false;
-bool ledOn = false;
 GnssState gnssHealth;
 uint32_t lastGpsCharsAt = 0;  // ultimo byte NMEA recebido, para separar sem dados de sem fix
 
@@ -765,14 +764,6 @@ void updateBuzzer(uint32_t now) {
   ledcWrite(Config::BuzzerChannel, on ? 128 : 0);  // 50% de 8 bits: onda quadrada
 }
 
-// LED vermelho: pulso curto a cada segundo enquanto o lacre segue violado.
-void updateLed(uint32_t now) {
-  const bool on = poweredOn && seal.violated && now % Config::LedBlinkPeriodMs < Config::LedBlinkOnMs;
-  if (on == ledOn) return;
-  ledOn = on;
-  digitalWrite(Config::ViolationLedPin, on ? HIGH : LOW);
-}
-
 // Ao fim de cada coleta: registra o inicio e o fim de cada falha do GNSS, uma vez cada.
 void updateGnssHealth(bool valid, uint32_t now, uint64_t clock) {
   const bool receiving = now - lastGpsCharsAt < Config::GpsNoDataMs;
@@ -1002,8 +993,6 @@ void setup() {
   ledcSetup(Config::BuzzerChannel, Config::BuzzerFrequencyHz, 8);
   ledcAttachPin(Config::BuzzerPin, Config::BuzzerChannel);
   ledcWrite(Config::BuzzerChannel, 0);
-  pinMode(Config::ViolationLedPin, OUTPUT);
-  digitalWrite(Config::ViolationLedPin, LOW);
   initLcd();
   pinMode(Config::BatteryPin, INPUT);
   analogReadResolution(12);
@@ -1087,7 +1076,7 @@ void setup() {
   }
 }
 
-// Uma volta: relogio, chave ON/OFF, LCD, buzzer, LED, entradas, ciclo, NVS, Wi-Fi e coleta de posicao.
+// Uma volta: relogio, chave ON/OFF, LCD, buzzer, entradas, ciclo, NVS, Wi-Fi e coleta de posicao.
 void loop() {
   const uint32_t now = millis();
   // O relogio do ciclo segue no desligamento logico da chave ON/OFF.
@@ -1107,7 +1096,6 @@ void loop() {
   }
   updateDisplay(now, clock);
   updateBuzzer(now);
-  updateLed(now);
   if (!poweredOn) return;
   readSeal(now, clock);  // antes de I/O potencialmente bloqueante
   readGps();
