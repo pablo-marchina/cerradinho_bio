@@ -400,6 +400,19 @@ bool mqttConnected();
 bool publishMqttEvent(const char *json);
 #endif
 
+#if MQTT_ENABLED
+// Eventos periodicos nao mudam o estado do dispositivo e nao republicam o `status` retido: no
+// demo o STATUS_SEMANAL sai a cada ~7 s e gastaria a cota do broker. Os demais eventos (violacao
+// do lacre, bateria, ciclo, GNSS, autorizacao, limiar etc.) mudam o estado e o republicam.
+bool eventChangesStatus(const char *type) {
+  static const char *const periodicTypes[] = {"STATUS", "STATUS_SEMANAL"};
+  for (const char *periodic : periodicTypes) {
+    if (strcmp(type, periodic) == 0) return false;
+  }
+  return true;
+}
+#endif
+
 // Com MQTT, so ha rede com o broker conectado; sem MQTT, vale a chave de sinal.
 bool networkOnline() {
 #if MQTT_ENABLED
@@ -423,7 +436,7 @@ bool sendRecord(const char *json) {
 // fila e sai na reconexao, na ordem e com o dia em que ocorreu (RF010; RN09).
 void publishEvent(const char *type, bool critical = false, const String &extra = "") {
 #if MQTT_ENABLED
-  mqttStatusDirty = true;
+  if (eventChangesStatus(type)) mqttStatusDirty = true;
 #endif
   String record = baseRecord(type);
   record += ",\"ciclo_id\":"; record += cycle.cycleId;
