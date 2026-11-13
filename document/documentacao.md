@@ -1847,12 +1847,11 @@ Os casos abaixo estão **PLANEJADOS** e **NÃO EXECUTADOS**; nenhuma linha é re
 
 ### 3.4.3. Protótipo do Projeto com MQTT e I2C (sprint 3)	
 
-_Aqui você deve registrar diversas situações de uso de seu sistema como um todo, indicando exemplos de ação do usuário e resposta do sistema, apontando como o ambiente deverá estar configurado para receber a ação e produzir a resposta. Estes registros serão utilizados para testar seu sistema, portanto, descreva várias situações, incluindo não apenas casos de sucesso, mas também de falha nos comportamentos do sistema. <br>
-Siga as nomenclaturas e convenções já utilizadas anteriormente, e não se esqueça dos alinhamentos de negócios e experiência do usuário para pensar em situações representativas. Inclua figuras do protótipo físico e dashboards, além de descrições dos testes realizados para ilustrar o funcionamento do protótipo. Continue a numeração de CT a partir da tabela anterior. A tabela a seguir serve como exemplo._
+O broker adotado é o EMQX. Para desenvolvimento, a versão 5.8.9 roda no Docker com MQTT TCP na porta 1883, WebSocket no caminho `ws://IP-do-notebook:8083/mqtt` e painel na porta 18083. O caminho local foi exercitado nos dois sentidos: um dispositivo simulado publicou `status` por MQTT TCP e um cliente que representa o dashboard recebeu por WebSocket; depois, o dashboard simulado publicou `cmd` por WebSocket e o cliente MQTT TCP recebeu o mesmo JSON. Esse ensaio comprova o transporte local, mas não substitui os CTs do protótipo físico, o teste do Firewall entre equipamentos nem a validação do WSS no broker online.
 
-**CT#** | **Configuração do ambiente** | **Ação do usuário** | **Resposta esperada do sistema** 
-|----------|----------|----------|----------|
-|CT21|ex. precisa de um computador conectado na interface, dois ou mais dispositivos que simulem o posicionamento de um item X no espaço físico etc. | ex. usuário logado busca a localização do item X, que está ativo e operando normalmente | ex. interface do sistema acessa os dados da última localização registrada do item X e apresenta, constando local e horário de última atualização | 
+O [contrato MQTT entre dispositivo e dashboard](outros/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/contrato-topicos-dashboard.md) define os tópicos `status`, `evento`, `online`, `cmd` e `cmd/resposta`, com exemplos JSON, retenção, origem dos dados, comandos e correspondência com as telas. Ele também distingue o que vem do ESP32 do que pertence ao backend, como fornecedor, prazo comercial, situação fiscal, tratamento de alertas e agregações da visão geral.
+
+Após a issue #122, o firmware publica `status` e `online` e assina `cmd`. A publicação de `evento`, a execução de comandos, a correlação por `command_id` e o tópico `cmd/resposta` permanecem como implementação posterior; portanto, os exemplos do contrato não são apresentados como funcionalidades já concluídas. A confirmação formal do responsável pelo dashboard também permanece pendente até a revisão da versão 1.
 
 ### 3.4.4. Protótipo Físico do Projeto (online) (sprint 4)	
 
