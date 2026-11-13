@@ -35,7 +35,7 @@ Fileira de cima completa: 5V, CMD, D3, D2, 13, GND, 12, 14, 27, 26, 25, 33, 32, 
 | do meio (`bb2`) | 3V3 | GND |
 | de baixo (`bb2`) | 5 V | GND |
 
-Os GND dos três pares são unidos por jumpers. Na placa real os trilhos são divididos ao meio (há uma interrupção na coluna 30): se for usar os dois lados de um trilho, ligue-os com um jumper.
+Os GND dos três pares são unidos por jumpers. Na placa real os trilhos são divididos ao meio (há uma interrupção na coluna 30). Por isso cada um dos 6 trilhos usados tem uma ponte curta (furos 23 e 28) ligando a metade esquerda à direita; sem elas, a metade esquerda e boa parte da direita ficariam sem GND e sem alimentação do ESP32.
 
 ## Limitação
 
