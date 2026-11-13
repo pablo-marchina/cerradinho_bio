@@ -32,7 +32,7 @@
 #endif
 
 // Pinagem padrao = montagem alternada da bancada (secao 3.4.2). Todos os pinos podem ser trocados
-// por -D; os ambientes demo e weekly (Wokwi) voltam aos pinos antigos pelo platformio.ini.
+// por -D. O diagrama do Wokwi (demo e weekly) usa esta mesma pinagem.
 #ifndef LCD_SDA_PIN
 #define LCD_SDA_PIN 21
 #endif

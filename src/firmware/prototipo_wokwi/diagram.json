@@ -30,26 +30,6 @@
       "rotate": 90
     },
     {
-      "type": "wokwi-led",
-      "id": "led",
-      "top": 9,
-      "left": 202.6,
-      "attrs": {
-        "color": "red",
-        "label": ""
-      }
-    },
-    {
-      "type": "wokwi-resistor",
-      "id": "r_led",
-      "top": 83.75,
-      "left": 198.2,
-      "attrs": {
-        "value": "220"
-      },
-      "rotate": 90
-    },
-    {
       "type": "chip-gps",
       "id": "gps",
       "top": 330,
@@ -201,24 +181,6 @@
     },
     {
       "type": "wokwi-text",
-      "id": "ledLabel",
-      "top": -114,
-      "left": 195.6,
-      "attrs": {
-        "text": "LED 13\n220R"
-      }
-    },
-    {
-      "type": "wokwi-text",
-      "id": "ledLabelArrow",
-      "top": -66,
-      "left": 214.6,
-      "attrs": {
-        "text": "▼"
-      }
-    },
-    {
-      "type": "wokwi-text",
       "id": "batteryLabel",
       "top": -138,
       "left": 368.1,
@@ -349,7 +311,7 @@
       "top": 296,
       "left": 700,
       "attrs": {
-        "text": "▼ GPS SIMULADO | TX->RX2 16 | RX->TX2 17"
+        "text": "▼ GPS SIMULADO | TX->VP (GPIO36) | RX->TX2 17"
       }
     },
     {
@@ -358,7 +320,7 @@
       "top": 556.05,
       "left": 686.4,
       "attrs": {
-        "text": "◀ LCD 16x2 I2C (0x27) | SDA 21 | SCL 22 | VCC no VIN"
+        "text": "◀ LCD 16x2 I2C (0x27) | SDA 21 | SCL 23 | VCC no VIN"
       }
     },
     {
@@ -367,7 +329,7 @@
       "top": 660,
       "left": -10,
       "attrs": {
-        "text": "AVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nSerial: REMESSA x = NF da remessa | NF = lanca NF de retorno | LIMIAR n = muda o limiar\nChave de rede simula o SIM (on/off); Wi-Fi real independente. Sem transporte ao servidor.\nDemo: 1 s = 1 dia no ciclo, coleta GPS a cada 30 s. Nao valida consumo ou autonomia.\nFios: preto GND | vermelho 3V3 | laranja VIN 5V | amarelo botoes e chaves | ciano bateria\n      verde SDA | azul SCL | roxo buzzer | cinza GPS\nLED vermelho (GPIO13, 220 ohm) pisca enquanto o lacre esta violado\nProtoboard: duas de 830 furos com um trilho so no meio; ESP32 sobre ele (pinos na linha j de cima e na d de baixo)\nTrilhos: de cima +3V3/-GND; do meio +3V3/-GND; de baixo +5V (VIN, LCD)/-GND\nNo Wokwi a...e fica em cima em cada placa; na bancada a placa de cima tem a linha j no topo"
+        "text": "Pinagem ALTERNADA (padrao do config.h): SCL 23 | GNSS RX 36 | VOLTAR 32 | buzzer 12 | AUTORIZAR 15 | CICLO 5 | REDE 16\nSem LED (Art. 8): violacao aparece no LCD e no buzzer. Compile o ambiente wokwi-alternada.\nAVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nSerial: REMESSA x = NF da remessa | NF = lanca NF de retorno | LIMIAR n = muda o limiar\nChave de rede simula o SIM (on/off); Wi-Fi real independente.\nDemo: 1 s = 1 dia no ciclo, coleta GPS a cada 30 s. Nao valida consumo ou autonomia.\nFios: preto GND | vermelho 3V3 | laranja VIN 5V | amarelo botoes e chaves | ciano bateria | verde SDA | azul SCL | roxo buzzer | cinza GPS"
       }
     }
   ],
@@ -398,7 +360,7 @@
     ],
     [
       "gps:TX",
-      "esp:RX2",
+      "esp:VP",
       "gray",
       []
     ],
@@ -537,30 +499,6 @@
     [
       "seal:3",
       "bb1:50t.a",
-      "",
-      []
-    ],
-    [
-      "r_led:2",
-      "bb1:22b.f",
-      "",
-      []
-    ],
-    [
-      "r_led:1",
-      "bb1:22t.b",
-      "",
-      []
-    ],
-    [
-      "led:A",
-      "bb1:22t.a",
-      "",
-      []
-    ],
-    [
-      "led:C",
-      "bb1:21t.a",
       "",
       []
     ],
@@ -793,37 +731,22 @@
       []
     ],
     [
-      "bb1:24b.f",
+      "bb2:27t.e",
       "bb1:13t.a",
       "yellow",
-      [
-        "v-130.2",
-        "h-110.4",
-        "v58",
-        "h4.8"
-      ]
+      []
     ],
     [
-      "bb1:26b.f",
+      "bb1:29b.f",
       "bb1:6t.a",
       "yellow",
-      [
-        "v-140.2",
-        "h-196.8",
-        "v68",
-        "h4.8"
-      ]
+      []
     ],
     [
-      "bb1:28b.f",
+      "bb2:22t.e",
       "bb1:55t.a",
       "yellow",
-      [
-        "v-148.2",
-        "h254.4",
-        "v76",
-        "h4.8"
-      ]
+      []
     ],
     [
       "bb1:27b.f",
@@ -925,12 +848,6 @@
       ]
     ],
     [
-      "bb1:21t.e",
-      "bb1:21b.g",
-      "black",
-      []
-    ],
-    [
       "bb2:20t.e",
       "bb2:tp.10",
       "red",
@@ -990,13 +907,10 @@
       ]
     ],
     [
-      "bb2:34t.e",
+      "bb1:23b.f",
       "bb2:41b.g",
       "purple",
-      [
-        "v43.2",
-        "h67.2"
-      ]
+      []
     ],
     [
       "bb2:29t.e",
@@ -1008,13 +922,10 @@
       ]
     ],
     [
-      "bb2:28t.e",
+      "bb2:25t.e",
       "bb2:52b.g",
       "yellow",
-      [
-        "v62.4",
-        "h230.4"
-      ]
+      []
     ],
     [
       "bb2:40b.j",
@@ -1059,13 +970,10 @@
       ]
     ],
     [
-      "bb2:33t.e",
+      "bb2:34t.e",
       "lcd:SCL",
       "blue",
-      [
-        "h4.8",
-        "v297.1"
-      ]
+      []
     ],
     [
       "lcd:GND",
