@@ -892,7 +892,7 @@ void publishCmdResponse(const char *id, const char *action, bool ok, const char 
 constexpr long NetworkOffMaxSeconds = 3600;
 
 // Executa um comando do dashboard e responde sempre. true = executado.
-bool handleDashboardCommand(const char *payload, size_t length) {
+[[maybe_unused]] bool handleDashboardCommand(const char *payload, size_t length) {
   char id[DashboardCmd::MaxId + 1] = "";
   char action[DashboardCmd::MaxText + 1] = "";
   char value[DashboardCmd::MaxText + 1] = "";
@@ -977,7 +977,7 @@ String cmdResponseJson(const char *id, const char *action, bool ok, const char *
 
 #if !MQTT_ENABLED
 void publishCmdResponse(const char *id, const char *action, bool ok, const char *error) {
-  Serial.printf("[cmd] resposta %s\r\n", cmdResponseJson(id, action, ok, error).c_str());
+  Serial.println(String("[cmd] resposta ") + cmdResponseJson(id, action, ok, error));
 }
 #endif
 
@@ -1021,7 +1021,7 @@ bool mqttConnected() { return mqtt.connected(); }
 // Resposta ao comando: Serial e, com broker conectado, cmd/resposta (QoS 0, nao retida).
 void publishCmdResponse(const char *id, const char *action, bool ok, const char *error) {
   const String json = cmdResponseJson(id, action, ok, error);
-  Serial.printf("[cmd] resposta %s\r\n", json.c_str());
+  Serial.println(String("[cmd] resposta ") + json);
   if (mqtt.connected()) mqtt.publish(TopicCmdResposta, json.c_str(), false);
 }
 

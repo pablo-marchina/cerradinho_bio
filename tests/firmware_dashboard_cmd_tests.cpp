@@ -73,7 +73,7 @@ int main() {
   expectError(("{\"acao\":\"" + big + "\"}").c_str(), "payload_grande");
 
   // ---- telas do LCD ----
-  const unsigned screen0 = screens.current();
+  const Screen screen0 = screens.current();
   expectOk("{\"id\":\"t1\",\"acao\":\"avancar\"}", "t1", "avancar");
   assert(screens.current() != screen0);
   expectOk("{\"id\":\"t2\",\"acao\":\"voltar\"}", "t2", "voltar");
