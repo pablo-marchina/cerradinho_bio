@@ -396,11 +396,31 @@ void printPending() {
 #if MQTT_ENABLED
 // Todo evento muda o estado: marca o `status` retido para republicar em updateMqtt().
 bool mqttStatusDirty = false;
-// Publica o JSON do evento no topico `evento` (definida junto do cliente MQTT, mais abaixo).
-void publishMqttEvent(const String &json);
+// Definidas junto do cliente MQTT, mais abaixo.
+bool mqttConnected();
+bool publishMqttEvent(const char *json);
 #endif
 
-// Com rede, o JSON sai no Serial (representa a mensagem MQTT). Sem rede, vai para a
+// Com MQTT, so ha rede com o broker conectado; sem MQTT, vale a chave de sinal.
+bool networkOnline() {
+#if MQTT_ENABLED
+  return simulatedNetworkAvailable() && mqttConnected();
+#else
+  return simulatedNetworkAvailable();
+#endif
+}
+
+// Envia um JSON: Serial (log) e, com MQTT, o topico `evento`. false = nao saiu, fica na fila.
+bool sendRecord(const char *json) {
+  Serial.println(json);
+#if MQTT_ENABLED
+  return publishMqttEvent(json);
+#else
+  return true;
+#endif
+}
+
+// Com rede, o JSON sai no Serial e no MQTT. Sem rede (ou se a publicacao falhar), vai para a
 // fila e sai na reconexao, na ordem e com o dia em que ocorreu (RF010; RN09).
 void publishEvent(const char *type, bool critical = false, const String &extra = "") {
 #if MQTT_ENABLED
@@ -416,13 +436,7 @@ void publishEvent(const char *type, bool critical = false, const String &extra =
   record += ",\"critico\":"; record += critical ? "true" : "false";
   record += extra;
   record += "}";
-  if (simulatedNetworkAvailable()) {
-    Serial.println(record);
-#if MQTT_ENABLED
-    publishMqttEvent(record);
-#endif
-    return;
-  }
+  if (networkOnline() && sendRecord(record.c_str())) return;
   const int result = queuePush(&pending, record.c_str(), critical, clockMs());
   if (result == QUEUE_SUMMARIZED) {
     Serial.printf("[FILA] FILA_CHEIA: so ha violacoes; %s somado ao resumo (%lu no resumo)\r\n",
@@ -446,15 +460,16 @@ void publishEvent(const char *type, bool critical = false, const String &extra =
 }
 
 // Rede de volta: reenvia a fila na ordem e depois o resumo das violacoes excedentes.
+// Com MQTT, so esvazia com o broker conectado (updateMqtt chama de novo ao conectar).
 void flushPending() {
-  if (!hasPending()) return;
+  if (!hasPending() || !networkOnline()) return;
   Serial.printf("[FILA] rede disponivel; reenviando %u evento(s) na ordem\r\n", pending.count);
   while (pending.count > 0) {
-    Serial.println(pending.text[0]);
+    if (!sendRecord(pending.text[0])) break;  // so sai da fila o que foi publicado
     queueRemove(&pending, 0);
   }
   // As violacoes do resumo ocorreram depois das guardadas na fila: saem por ultimo.
-  if (pending.overflowCount > 0) {
+  if (pending.count == 0 && pending.overflowCount > 0) {
     String extra = ",\"quantidade\":";
     extra += pending.overflowCount;
     extra += ",\"dia_primeira\":"; extra += simulatedDay(pending.overflowFirstMs);
@@ -547,8 +562,10 @@ void updateNetwork() {
   networkWasAvailable = available;
   char bottom[ScreenController::Columns + 1];
   if (available) {
-    const unsigned sent = pending.count + (pending.overflowCount > 0 ? 1u : 0u);
+    // Com MQTT o broker ainda reconecta aqui: a fila sai depois, em updateMqtt.
+    const unsigned before = pending.count + (pending.overflowCount > 0 ? 1u : 0u);
     flushPending();
+    const unsigned sent = before - pending.count - (pending.overflowCount > 0 ? 1u : 0u);
     snprintf(bottom, sizeof(bottom), "enviados: %u", sent);
     showMessage("Sinal ok", bottom);
   } else {
@@ -882,15 +899,18 @@ void onMqttMessage(char *topic, uint8_t *payload, unsigned int length) {
   Serial.printf("[mqtt] cmd recebido em %s: %.*s\r\n", topic, (int)length, (const char *)payload);
 }
 
-// Publica o evento (QoS 0, nao retido) so com o broker conectado; a Serial e a fila seguem iguais.
+bool mqttConnected() { return mqtt.connected(); }
+
+// Publica o evento (QoS 0, nao retido); false = desconectado ou falha, e quem chama enfileira.
 // beginPublish/write/endPublish enviam em partes, entao o JSON pode passar do buffer de 512 bytes.
-void publishMqttEvent(const String &json) {
-  if (!mqtt.connected()) return;
-  const size_t length = json.length();
+bool publishMqttEvent(const char *json) {
+  if (!mqtt.connected()) return false;
+  const size_t length = strlen(json);
   bool sent = mqtt.beginPublish(TopicEvento, length, false);
-  if (sent) sent = mqtt.write(reinterpret_cast<const uint8_t *>(json.c_str()), length) == length;
+  if (sent) sent = mqtt.write(reinterpret_cast<const uint8_t *>(json), length) == length;
   if (sent) sent = mqtt.endPublish();
   if (!sent) Serial.println("[mqtt] evento nao publicado");
+  return sent;
 }
 
 // Estado resumido do dispositivo (retido): lacre, bateria, ciclo, NF, dias fora, GNSS e fila.
@@ -974,6 +994,7 @@ void updateMqtt(uint32_t now) {
   Serial.printf("[mqtt] conectado a %s:%d\r\n", MQTT_HOST, (int)MQTT_PORT);
   mqtt.publish(TopicOnline, "online", true);
   mqtt.subscribe(TopicCmd);
+  flushPending();  // eventos guardados sem broker saem antes do `status`, que entao mostra a fila
   lastMqttStatus = now;
   mqttStatusDirty = false;
   publishMqttStatus();
