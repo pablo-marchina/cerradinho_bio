@@ -88,7 +88,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify.ps1
 5. Para o intervalo semanal real, selecione o `wokwi.weekly.toml` desta pasta.
 
 Na placa física (DevKitC V4 na protoboard dupla), grave o ambiente `bancada`: é o demo com
-botões no lugar das chaves deslizantes (`SWITCH_BUTTONS=1`). LACRE (GPIO27) e REDE (GPIO18)
+botões no lugar das chaves deslizantes (`SWITCH_BUTTONS=1`). LACRE (GPIO27) e REDE (GPIO16 na pinagem padrão, a montagem alternada; GPIO18 no Wokwi)
 alternam a cada toque; ON/OFF (GPIO19) liga ou desliga segurando 3 s. O aparelho começa ligado,
 com o lacre fechado e com sinal. O Wokwi e os ambientes `demo` e `weekly` seguem com as chaves.
 

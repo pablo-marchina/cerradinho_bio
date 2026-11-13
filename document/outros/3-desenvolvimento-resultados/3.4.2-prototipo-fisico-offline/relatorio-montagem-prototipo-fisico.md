@@ -26,9 +26,9 @@ Este relatório descreve como o protótipo físico offline foi montado, quais pr
 
 Os pinos abaixo são os usados pelo firmware. Botões ligam o pino ao GND e usam o pull-up interno do ESP32, então não precisam de resistor externo.
 
-A coluna **Montagem dos CTs** é a usada nos casos de teste da seção 3.4.2, que continuam valendo para ela. A **montagem alternada** troca sete pinos (em negrito), usa o ambiente `bancada-alternada` (seção 5) e não tem o LED: ele foi retirado da placa e do firmware, e a violação aparece no LCD e no buzzer (seção 3.4.3 da documentação).
+A **montagem alternada** é a pinagem padrão do firmware desde a Sprint 3 (ambiente `bancada`, também chamado `bancada-alternada`; seção 5). A coluna **Montagem dos CTs** é a pinagem antiga, usada nos casos de teste da seção 3.4.2 (CT46 a CT69), que continuam valendo para ela e podem ser reproduzidos com o ambiente `bancada-antiga`. A montagem alternada troca sete pinos (em negrito) e não tem o LED: ele foi retirado da placa e do firmware, e a violação aparece no LCD e no buzzer (seção 3.4.3 da documentação).
 
-| Componente | Sinal | Montagem dos CTs | Montagem alternada |
+| Componente | Sinal | Montagem dos CTs (pinagem antiga) | Montagem alternada (padrão) |
 |---|---|---|---|
 | LCD | SDA | 21 | 21 |
 | LCD | SCL | 22 | **23** |
@@ -92,7 +92,7 @@ No PowerShell, também é possível compilar com `scripts/build.ps1 -Environment
 
 Com a placa ligada, a Serial a 115200 baud mostra a linha `[vivo]` a cada 2 s.
 
-Na montagem alternada, troque `bancada` por `bancada-alternada` nos comandos acima. Os ambientes `demo`, `weekly` e `bancada` continuam nos pinos antigos, então o Wokwi e os CTs já executados não mudam.
+A montagem alternada é a padrão: `bancada` e `bancada-alternada` (apelido) usam os pinos novos. Os ambientes `demo` e `weekly` (Wokwi) e o `bancada-antiga` continuam nos pinos antigos, então o simulador e os CTs já executados não mudam; para reproduzir os CTs da 3.4.2, troque `bancada` por `bancada-antiga` nos comandos acima.
 
 **Pinos de boot da montagem alternada.** O GPIO5 (CICLO), o GPIO12 (buzzer) e o GPIO15 (AUTORIZAR) influenciam a partida do ESP32. Não segure CICLO nem AUTORIZAR ao ligar a placa, e nada pode puxar o GPIO12 para 3,3 V: com ele em nível alto no boot, o ESP32 escolhe 1,8 V para a memória flash e não parte.
 
