@@ -85,7 +85,7 @@ constexpr int GpsRx = GPS_RX_PIN;
 constexpr int GpsTx = 17;
 constexpr int SealPin = 27;
 constexpr int BatteryPin = 34;  // ADC1, usado com Wi-Fi.
-// Prototipo V2: LCD 16x2 I2C (SDA 21, SCL 23 na montagem alternada; 22 no Wokwi).
+// Prototipo V2: LCD 16x2 I2C (SDA 21, SCL 23; 22 no bancada-antiga).
 constexpr int LcdSdaPin = LCD_SDA_PIN;
 constexpr int LcdSclPin = LCD_SCL_PIN;
 constexpr uint8_t LcdAddress = 0x27;
