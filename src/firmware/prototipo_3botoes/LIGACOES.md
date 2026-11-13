@@ -85,6 +85,12 @@ Posição = contagem de 1 a 19 a partir do USB. A coluna do furo é a do diagram
 | amarelo | protoboard de BAIXO, coluna 31, linha E | protoboard de BAIXO, coluna 48, linha A | GPIO19 → botão ON/OFF |
 | preto | protoboard de BAIXO, coluna 46, linha B | trilho do MEIO, GND (-), furo 37 | GND do ON/OFF → trilho do meio |
 | vermelho | protoboard de CIMA, coluna 38, linha F | trilho de CIMA, 3V3 (+), furo 40 | pino 3V3 → trilho de cima (3V3) |
+| preto | trilho de CIMA, GND (-), furo 23 | trilho de CIMA, GND (-), furo 28 | ponte sobre a interrupção do trilho (une as duas metades) |
+| vermelho | trilho de CIMA, 3V3 (+), furo 23 | trilho de CIMA, 3V3 (+), furo 28 | ponte sobre a interrupção do trilho (une as duas metades) |
+| preto | trilho do MEIO, GND (-), furo 23 | trilho do MEIO, GND (-), furo 28 | ponte sobre a interrupção do trilho (une as duas metades) |
+| vermelho | trilho do MEIO, 3V3 (+), furo 23 | trilho do MEIO, 3V3 (+), furo 28 | ponte sobre a interrupção do trilho (une as duas metades) |
+| preto | trilho de BAIXO, GND (-), furo 23 | trilho de BAIXO, GND (-), furo 28 | ponte sobre a interrupção do trilho (une as duas metades) |
+| laranja | trilho de BAIXO, 5V (+), furo 23 | trilho de BAIXO, 5V (+), furo 28 | ponte sobre a interrupção do trilho (une as duas metades) |
 | cinza | GNSS TX | pino VP (GPIO36), fileira de cima, posição 17 | GNSS → ESP32 |
 | cinza | GNSS RX | pino 17, fileira de baixo, posição 9 | ESP32 → GNSS |
 
