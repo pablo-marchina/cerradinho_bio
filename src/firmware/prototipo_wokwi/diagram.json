@@ -149,7 +149,7 @@
       "top": -138,
       "left": 28.1,
       "attrs": {
-        "text": "VOLTAR\nGPIO26\nanterior"
+        "text": "VOLTAR\nGPIO32\nanterior"
       }
     },
     {
@@ -167,7 +167,7 @@
       "top": -138,
       "left": 104.3,
       "attrs": {
-        "text": "CICLO\nGPIO14\n3 s"
+        "text": "CICLO\nGPIO5\n3 s"
       }
     },
     {
@@ -203,7 +203,7 @@
       "top": -138,
       "left": 503.0,
       "attrs": {
-        "text": "AUTORIZ\nGPIO33\n3 s"
+        "text": "AUTORIZ\nGPIO15\n3 s"
       }
     },
     {
@@ -266,7 +266,7 @@
       "top": 407.9,
       "left": 507.55,
       "attrs": {
-        "text": "SIM | GPIO18 | esq=on"
+        "text": "SIM | GPIO16 | esq=on"
       }
     },
     {
@@ -302,7 +302,7 @@
       "top": 455.9,
       "left": 402.9,
       "attrs": {
-        "text": "BUZZER | GPIO23 | bipa na violacao"
+        "text": "BUZZER | GPIO12 | bipa na violacao"
       }
     },
     {
@@ -329,7 +329,7 @@
       "top": 660,
       "left": -10,
       "attrs": {
-        "text": "Pinagem ALTERNADA (padrao do config.h): SCL 23 | GNSS RX 36 | VOLTAR 32 | buzzer 12 | AUTORIZAR 15 | CICLO 5 | REDE 16\nSem LED (Art. 8): violacao aparece no LCD e no buzzer. Compile o ambiente wokwi-alternada.\nAVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nSerial: REMESSA x = NF da remessa | NF = lanca NF de retorno | LIMIAR n = muda o limiar\nChave de rede simula o SIM (on/off); Wi-Fi real independente.\nDemo: 1 s = 1 dia no ciclo, coleta GPS a cada 30 s. Nao valida consumo ou autonomia.\nFios: preto GND | vermelho 3V3 | laranja VIN 5V | amarelo botoes e chaves | ciano bateria | verde SDA | azul SCL | roxo buzzer | cinza GPS"
+        "text": "Pinagem ALTERNADA (padrao do config.h): SCL 23 | GNSS RX 36 | VOLTAR 32 | buzzer 12 | AUTORIZAR 15 | CICLO 5 | REDE 16\nSem LED (Art. 8): violacao aparece no LCD e no buzzer. Os ambientes demo e weekly ja usam esta pinagem.\nAVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nSerial: REMESSA x = NF da remessa | NF = lanca NF de retorno | LIMIAR n = muda o limiar\nChave de rede simula o SIM (on/off); Wi-Fi real independente.\nDemo: 1 s = 1 dia no ciclo, coleta GPS a cada 30 s. Nao valida consumo ou autonomia.\nFios: preto GND | vermelho 3V3 | laranja VIN 5V | amarelo botoes e chaves | ciano bateria | verde SDA | azul SCL | roxo buzzer | cinza GPS"
       }
     }
   ],
