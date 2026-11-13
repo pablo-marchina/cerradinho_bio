@@ -235,8 +235,8 @@
     {
       "type": "wokwi-text",
       "id": "railMidLabel",
-      "top": 190,
-      "left": 650,
+      "top": 196,
+      "left": 700,
       "attrs": {
         "text": "TRILHO DO MEIO:\n3V3 (+) / GND (-)"
       }
@@ -244,7 +244,7 @@
     {
       "type": "wokwi-text",
       "id": "railBotLabel",
-      "top": 360,
+      "top": 385,
       "left": 20,
       "attrs": {
         "text": "TRILHO DE BAIXO: 5V/VIN (+) / GND (-)"
