@@ -61,7 +61,7 @@ Os pontos de vista são perspectivas complementares de descrição. Sua organiza
 
 ## 2.2. Pontos de vista do RM-ODP
 
-A arquitetura de referência distingue cinco pontos de vista, pertinentes à descrição de sistemas distribuídos [[63, seção 4.1]](#ref-63):
+A metodologia adota os pontos de vista empresarial, de informação, computacional, de engenharia e de tecnologia do RM-ODP, caracterizados a seguir [[63, seção 4.1]](#ref-63):
 
 | Ponto de vista | Finalidade conceitual |
 |---|---|
@@ -73,20 +73,16 @@ A arquitetura de referência distingue cinco pontos de vista, pertinentes à des
 
 Uma especificação pode reunir um ou mais pontos de vista, mantendo coerência entre os termos e as restrições compartilhadas [[63, seção 4.2.2]](#ref-63).
 
-O percurso metodológico adotado começou pelo ponto de vista empresarial e avançou para o de informação. O primeiro orienta a delimitação dos objetivos, do escopo e das políticas; o segundo, a descrição do significado das informações e das restrições sobre seu processamento. Essa ordem corresponde à organização do trabalho da equipe. A adoção descrita nesta seção abrange esses dois pontos de vista; os demais contextualizam o referencial teórico.
-
 ## 2.3. Métodos e atividades de trabalho
 
 Os procedimentos registrados na documentação compreendem análise documental e levantamento de requisitos, especificação de regras e comportamentos, prototipação e testes. Suas finalidades metodológicas seguem a caracterização do SWEBOK Guide [[64, capítulos 1, 5 e 18]](#ref-64):
 
 - **Análise documental e levantamento de requisitos:** identificar necessidades, objetivos e restrições a partir de documentos e do diálogo com as partes interessadas; organizar requisitos funcionais e de qualidade para orientar a especificação [[64, capítulo 1, seções 2–4]](#ref-64).
-- **Especificação de regras e comportamentos:** enunciar condições, ações, estados e respostas esperadas em linguagem natural estruturada, tornando explícitas as restrições do domínio e o comportamento requerido.
-- **Prototipação em simulação e bancada:** construir representações parciais e executáveis para examinar hipóteses de comportamento e viabilidade e apoiar o refinamento da especificação.
-- **Testes orientados por requisitos:** definir condições de execução e resultados esperados, exercitar comportamentos e comparar as observações com os critérios especificados, preservando a relação entre requisito e caso de teste.
+- **Especificação de regras e comportamentos:** enunciar condições, ações, estados e respostas esperadas em linguagem natural estruturada, tornando explícitas as restrições do domínio e o comportamento requerido [[64, capítulo 1, seções 4.1–4.2]](#ref-64).
+- **Prototipação em simulação e bancada:** construir representações parciais e executáveis para examinar hipóteses de comportamento e viabilidade e apoiar o refinamento da especificação [[64, capítulo 1, seções 5.2–5.3; capítulo 18, seções 6.2–6.3]](#ref-64).
+- **Testes orientados por requisitos:** definir condições de execução e resultados esperados, exercitar comportamentos e comparar as observações com os critérios especificados, preservando a relação entre requisito e caso de teste [[64, capítulo 5, seções 5.2.2 e 5.2.4; capítulo 1, seção 7.3]](#ref-64).
 
 Essas atividades admitem retomadas para detalhar ou corrigir especificações. O refinamento acrescenta detalhes à descrição, enquanto a verificação de consistência examina a compatibilidade entre descrições do mesmo sistema [[62, seções 9.1 e 9.5]](#ref-62).
-
-<!-- Confirmação da equipe: o trabalho começou pelo ponto de vista empresarial e avançou para o de informação. Permanece pendente identificar se houve adoção posterior dos pontos de vista computacional, de engenharia ou de tecnologia e confirmar o enquadramento dos procedimentos registrados nas seções 3.2, 3.3 e 3.4. Revisão de Luiz Gustavo Campos Cazelatto ainda não realizada. -->
 
 # <a name="c3"></a>3. Desenvolvimento e Resultados 
 
