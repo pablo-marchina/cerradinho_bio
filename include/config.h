@@ -31,12 +31,13 @@
 #define MQTT_TLS 0
 #endif
 
-// Pinos sobrescritiveis por -D (teste de bancada com o LCD em outros pinos). Padrao: Wire 21/22.
+// Pinagem padrao = montagem alternada da bancada (secao 3.4.2). Todos os pinos podem ser trocados
+// por -D; os ambientes demo e weekly (Wokwi) voltam aos pinos antigos pelo platformio.ini.
 #ifndef LCD_SDA_PIN
 #define LCD_SDA_PIN 21
 #endif
 #ifndef LCD_SCL_PIN
-#define LCD_SCL_PIN 22
+#define LCD_SCL_PIN 23
 #endif
 // Nome do dispositivo nos topicos (guaratracking/<nome>/status, evento, online, cmd, cmd/resposta).
 // Deve ser um texto literal; cada ESP32 que compartilha o broker pode usar um nome proprio.
@@ -49,24 +50,24 @@
 #define MQTT_CLIENT_ID ""
 #endif
 #ifndef NETWORK_SWITCH_PIN
-#define NETWORK_SWITCH_PIN 18
+#define NETWORK_SWITCH_PIN 16
 #endif
-// Demais pinos trocados na montagem alternada (env:bancada-alternada). O padrao e o do
-// Wokwi e da bancada usada nos CTs da secao 3.4.2.
+// Demais pinos da montagem alternada. Pinos de boot: GPIO5 (CICLO), GPIO12 (buzzer) e GPIO15
+// (AUTORIZAR); nao segure CICLO nem AUTORIZAR ao ligar e nada pode puxar o GPIO12 para 3,3 V.
 #ifndef GPS_RX_PIN
-#define GPS_RX_PIN 16
+#define GPS_RX_PIN 36
 #endif
 #ifndef PREVIOUS_BUTTON_PIN
-#define PREVIOUS_BUTTON_PIN 26
+#define PREVIOUS_BUTTON_PIN 32
 #endif
 #ifndef BUZZER_PIN
-#define BUZZER_PIN 23
+#define BUZZER_PIN 12
 #endif
 #ifndef AUTHORIZE_BUTTON_PIN
-#define AUTHORIZE_BUTTON_PIN 33
+#define AUTHORIZE_BUTTON_PIN 15
 #endif
 #ifndef CYCLE_BUTTON_PIN
-#define CYCLE_BUTTON_PIN 14
+#define CYCLE_BUTTON_PIN 5
 #endif
 
 // Prefixo de todos os topicos do contrato MQTT (secao 3.4.3 do Artefato 8).
@@ -84,7 +85,7 @@ constexpr int GpsRx = GPS_RX_PIN;
 constexpr int GpsTx = 17;
 constexpr int SealPin = 27;
 constexpr int BatteryPin = 34;  // ADC1, usado com Wi-Fi.
-// Prototipo V2: LCD 16x2 I2C nos pinos padrao do Wire (SDA 21, SCL 22).
+// Prototipo V2: LCD 16x2 I2C (SDA 21, SCL 23 na montagem alternada; 22 no Wokwi).
 constexpr int LcdSdaPin = LCD_SDA_PIN;
 constexpr int LcdSclPin = LCD_SCL_PIN;
 constexpr uint8_t LcdAddress = 0x27;
