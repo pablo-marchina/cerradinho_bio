@@ -22,10 +22,10 @@
       "attrs": {}
     },
     {
-      "type": "wokwi-esp32-devkit-v1",
+      "type": "board-esp32-devkit-c-v4",
       "id": "esp",
-      "top": 102.75,
-      "left": 211.45,
+      "top": 97.15,
+      "left": 250.55,
       "attrs": {},
       "rotate": 90
     },
@@ -82,7 +82,7 @@
       "type": "wokwi-buzzer",
       "id": "buzzer",
       "top": 208.2,
-      "left": 373.4,
+      "left": 498.2,
       "attrs": {
         "volume": "0.1"
       }
@@ -103,7 +103,7 @@
       "top": -300,
       "left": -10,
       "attrs": {
-        "text": "GUARATRACKING | Bancada com 3 botoes e pinos afastados (VOLTAR 4, buzzer 13, SCL 22)"
+        "text": "GUARATRACKING | Bancada com 3 botoes - ESP32 DevKitC 38 pinos (VOLTAR 4, buzzer 13, SCL 22)"
       }
     },
     {
@@ -202,7 +202,7 @@
       "top": 296,
       "left": 700,
       "attrs": {
-        "text": "▼ GPS SIMULADO | TX->VP (GPIO36) | RX->TX2 17"
+        "text": "▼ GPS SIMULADO | TX->VP (GPIO36) | RX->pino 17"
       }
     },
     {
@@ -211,7 +211,7 @@
       "top": 556.05,
       "left": 686.4,
       "attrs": {
-        "text": "◀ LCD 16x2 I2C (0x27) | SDA 21 | SCL 22 | VCC no VIN"
+        "text": "◀ LCD 16x2 I2C (0x27) | SDA 21 | SCL 22 | VCC no 5V"
       }
     },
     {
@@ -220,7 +220,7 @@
       "top": 660,
       "left": -10,
       "attrs": {
-        "text": "3 botoes: ON/OFF (19, 3 s), AVANCAR (25), VOLTAR (4). Lacre, rede, autorizacao e ciclo virao do dashboard por MQTT cmd (ainda nao implementado no firmware)\nPinos do ambiente bancada-3botoes: VOLTAR 4 | buzzer 13 | SCL 22 | SDA 21 | GNSS RX 36 | sem LED\nAVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nFios: preto GND | vermelho 3V3 | laranja VIN 5V | amarelo botoes | ciano bateria | verde SDA | azul SCL | roxo buzzer | cinza GPS"
+        "text": "3 botoes: ON/OFF (19, 3 s), AVANCAR (25), VOLTAR (4). Lacre, rede, autorizacao e ciclo virao do dashboard por MQTT cmd (ainda nao implementado no firmware)\nPlaca: ESP32 DevKitC de 38 pinos (USB a esquerda). Pinos do ambiente bancada-3botoes: VOLTAR 4 | buzzer 13 | SCL 22 | SDA 21 | GNSS RX 36 | GNSS TX no 17 | sem LED\nAVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nFios: preto GND | vermelho 3V3 | laranja 5V | amarelo botoes | ciano bateria | verde SDA | azul SCL | roxo buzzer | cinza GPS"
       }
     },
     {
@@ -247,32 +247,32 @@
       "top": 385,
       "left": 20,
       "attrs": {
-        "text": "TRILHO DE BAIXO: 5V/VIN (+) / GND (-)"
+        "text": "TRILHO DE BAIXO: 5V (+) / GND (-)"
       }
     }
   ],
   "connections": [
     [
-      "esp:TX0",
+      "esp:TX",
       "$serialMonitor:RX",
       "",
       []
     ],
     [
-      "esp:RX0",
+      "esp:RX",
       "$serialMonitor:TX",
       "",
       []
     ],
     [
       "gps:VCC",
-      "esp:VIN",
+      "esp:5V",
       "orange",
       []
     ],
     [
       "gps:GND",
-      "esp:GND.1",
+      "esp:GND.3",
       "black",
       []
     ],
@@ -284,8 +284,236 @@
     ],
     [
       "gps:RX",
-      "esp:TX2",
+      "esp:17",
       "gray",
+      []
+    ],
+    [
+      "esp:5V",
+      "bb1:20b.j",
+      "",
+      []
+    ],
+    [
+      "esp:CMD",
+      "bb1:21b.j",
+      "",
+      []
+    ],
+    [
+      "esp:D3",
+      "bb1:22b.j",
+      "",
+      []
+    ],
+    [
+      "esp:D2",
+      "bb1:23b.j",
+      "",
+      []
+    ],
+    [
+      "esp:13",
+      "bb1:24b.j",
+      "",
+      []
+    ],
+    [
+      "esp:GND.1",
+      "bb1:25b.j",
+      "",
+      []
+    ],
+    [
+      "esp:12",
+      "bb1:26b.j",
+      "",
+      []
+    ],
+    [
+      "esp:14",
+      "bb1:27b.j",
+      "",
+      []
+    ],
+    [
+      "esp:27",
+      "bb1:28b.j",
+      "",
+      []
+    ],
+    [
+      "esp:26",
+      "bb1:29b.j",
+      "",
+      []
+    ],
+    [
+      "esp:25",
+      "bb1:30b.j",
+      "",
+      []
+    ],
+    [
+      "esp:33",
+      "bb1:31b.j",
+      "",
+      []
+    ],
+    [
+      "esp:32",
+      "bb1:32b.j",
+      "",
+      []
+    ],
+    [
+      "esp:35",
+      "bb1:33b.j",
+      "",
+      []
+    ],
+    [
+      "esp:34",
+      "bb1:34b.j",
+      "",
+      []
+    ],
+    [
+      "esp:VN",
+      "bb1:35b.j",
+      "",
+      []
+    ],
+    [
+      "esp:VP",
+      "bb1:36b.j",
+      "",
+      []
+    ],
+    [
+      "esp:EN",
+      "bb1:37b.j",
+      "",
+      []
+    ],
+    [
+      "esp:3V3",
+      "bb1:38b.j",
+      "",
+      []
+    ],
+    [
+      "esp:CLK",
+      "bb2:20t.d",
+      "",
+      []
+    ],
+    [
+      "esp:D0",
+      "bb2:21t.d",
+      "",
+      []
+    ],
+    [
+      "esp:D1",
+      "bb2:22t.d",
+      "",
+      []
+    ],
+    [
+      "esp:15",
+      "bb2:23t.d",
+      "",
+      []
+    ],
+    [
+      "esp:2",
+      "bb2:24t.d",
+      "",
+      []
+    ],
+    [
+      "esp:0",
+      "bb2:25t.d",
+      "",
+      []
+    ],
+    [
+      "esp:4",
+      "bb2:26t.d",
+      "",
+      []
+    ],
+    [
+      "esp:16",
+      "bb2:27t.d",
+      "",
+      []
+    ],
+    [
+      "esp:17",
+      "bb2:28t.d",
+      "",
+      []
+    ],
+    [
+      "esp:5",
+      "bb2:29t.d",
+      "",
+      []
+    ],
+    [
+      "esp:18",
+      "bb2:30t.d",
+      "",
+      []
+    ],
+    [
+      "esp:19",
+      "bb2:31t.d",
+      "",
+      []
+    ],
+    [
+      "esp:GND.3",
+      "bb2:32t.d",
+      "",
+      []
+    ],
+    [
+      "esp:21",
+      "bb2:33t.d",
+      "",
+      []
+    ],
+    [
+      "esp:RX",
+      "bb2:34t.d",
+      "",
+      []
+    ],
+    [
+      "esp:TX",
+      "bb2:35t.d",
+      "",
+      []
+    ],
+    [
+      "esp:22",
+      "bb2:36t.d",
+      "",
+      []
+    ],
+    [
+      "esp:23",
+      "bb2:37t.d",
+      "",
+      []
+    ],
+    [
+      "esp:GND.2",
+      "bb2:38t.d",
+      "",
       []
     ],
     [
@@ -356,197 +584,38 @@
     ],
     [
       "buzzer:1",
-      "bb2:40b.f",
+      "bb2:53b.f",
       "",
       []
     ],
     [
       "buzzer:2",
-      "bb2:41b.f",
+      "bb2:54b.f",
       "",
       []
     ],
     [
-      "esp:EN",
-      "bb1:34b.j",
-      "",
-      []
-    ],
-    [
-      "esp:VP",
-      "bb1:33b.j",
-      "",
-      []
-    ],
-    [
-      "esp:VN",
-      "bb1:32b.j",
-      "",
-      []
-    ],
-    [
-      "esp:D34",
-      "bb1:31b.j",
-      "",
-      []
-    ],
-    [
-      "esp:D35",
-      "bb1:30b.j",
-      "",
-      []
-    ],
-    [
-      "esp:D32",
-      "bb1:29b.j",
-      "",
-      []
-    ],
-    [
-      "esp:D33",
-      "bb1:28b.j",
-      "",
-      []
-    ],
-    [
-      "esp:D25",
-      "bb1:27b.j",
-      "",
-      []
-    ],
-    [
-      "esp:D26",
-      "bb1:26b.j",
-      "",
-      []
-    ],
-    [
-      "esp:D14",
-      "bb1:24b.j",
-      "",
-      []
-    ],
-    [
-      "esp:D12",
-      "bb1:23b.j",
-      "",
-      []
-    ],
-    [
-      "esp:D13",
-      "bb1:22b.j",
-      "",
-      []
-    ],
-    [
-      "esp:GND.2",
-      "bb1:21b.j",
-      "",
-      []
-    ],
-    [
-      "esp:VIN",
-      "bb1:20b.j",
-      "",
-      []
-    ],
-    [
-      "esp:D23",
-      "bb2:34t.d",
-      "",
-      []
-    ],
-    [
-      "esp:D22",
-      "bb2:33t.d",
-      "",
-      []
-    ],
-    [
-      "esp:TX0",
-      "bb2:32t.d",
-      "",
-      []
-    ],
-    [
-      "esp:RX0",
-      "bb2:31t.d",
-      "",
-      []
-    ],
-    [
-      "esp:D21",
-      "bb2:30t.d",
-      "",
-      []
-    ],
-    [
-      "esp:D19",
-      "bb2:29t.d",
-      "",
-      []
-    ],
-    [
-      "esp:D18",
-      "bb2:28t.d",
-      "",
-      []
-    ],
-    [
-      "esp:TX2",
-      "bb2:26t.d",
-      "",
-      []
-    ],
-    [
-      "esp:D4",
-      "bb2:24t.d",
-      "",
-      []
-    ],
-    [
-      "esp:D2",
-      "bb2:23t.d",
-      "",
-      []
-    ],
-    [
-      "esp:GND.1",
-      "bb2:21t.d",
-      "",
-      []
-    ],
-    [
-      "esp:3V3",
-      "bb2:20t.d",
-      "",
-      []
-    ],
-    [
-      "bb2:24t.e",
+      "bb2:26t.e",
       "bb1:6t.a",
       "yellow",
       []
     ],
     [
-      "bb1:27b.f",
+      "bb1:30b.f",
       "bb1:61t.a",
       "yellow",
       [
-        "v-158.2",
-        "h321.6",
-        "v86",
-        "h4.8"
+        "v-22.6",
+        "h240.55",
+        "v-56",
+        "h57.05"
       ]
     ],
     [
-      "bb1:31b.f",
+      "bb1:34b.f",
       "bb1:40t.e",
       "cyan",
-      [
-        "v14.4",
-        "h86.4"
-      ]
+      []
     ],
     [
       "bb1:4t.b",
@@ -589,17 +658,7 @@
       ]
     ],
     [
-      "bb2:20t.e",
-      "bb2:tp.10",
-      "red",
-      [
-        "h-71.2",
-        "v-72.1",
-        "h4.8"
-      ]
-    ],
-    [
-      "bb2:21t.e",
+      "bb2:32t.e",
       "bb2:tn.9",
       "black",
       [
@@ -648,14 +707,18 @@
       ]
     ],
     [
-      "bb1:22b.f",
-      "bb2:41b.g",
+      "bb1:24b.f",
+      "bb2:54b.g",
       "purple",
-      []
+      [
+        "h-56.85",
+        "v221.4",
+        "h344.85"
+      ]
     ],
     [
-      "bb2:40b.j",
-      "bb2:bn.32",
+      "bb2:53b.j",
+      "bb2:bn.43",
       "black",
       [
         "v15.5",
@@ -665,16 +728,13 @@
       ]
     ],
     [
-      "bb2:30t.e",
+      "bb2:33t.e",
       "lcd:SDA",
       "green",
-      [
-        "h4.8",
-        "v287.6"
-      ]
+      []
     ],
     [
-      "bb2:33t.e",
+      "bb2:36t.e",
       "lcd:SCL",
       "blue",
       []
@@ -722,7 +782,7 @@
       []
     ],
     [
-      "bb2:29t.e",
+      "bb2:31t.e",
       "bb2:48t.a",
       "yellow",
       []
@@ -737,6 +797,12 @@
         "v19.2",
         "h4.8"
       ]
+    ],
+    [
+      "bb1:38b.f",
+      "bb1:tp.22",
+      "red",
+      []
     ]
   ]
 }
