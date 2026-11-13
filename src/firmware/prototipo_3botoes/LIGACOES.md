@@ -52,8 +52,8 @@ Posição = contagem de 1 a 19 a partir do USB. A coluna do furo é a do diagram
 | 12 | GPIO19 | 31 | botão ON/OFF |
 | 13 | GND.3 | 32 | GND |
 | 14 | GPIO21 | 33 | LCD SDA |
-| 15 | GPIORX | 34 | serial (RX0, USB) |
-| 16 | GPIOTX | 35 | serial (TX0, USB) |
+| 15 | RX | 34 | serial (RX0, USB) |
+| 16 | TX | 35 | serial (TX0, USB) |
 | 17 | GPIO22 | 36 | LCD SCL |
 | 18 | GPIO23 | 37 | (não usado) |
 | 19 | GND.2 | 38 | GND (livre) |
