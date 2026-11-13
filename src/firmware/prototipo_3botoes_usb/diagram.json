@@ -41,6 +41,15 @@
       }
     },
     {
+      "type": "wokwi-potentiometer",
+      "id": "battery",
+      "top": -17.5,
+      "left": 361.8,
+      "attrs": {
+        "value": "800"
+      }
+    },
+    {
       "type": "wokwi-lcd1602",
       "id": "lcd",
       "top": 500,
@@ -94,7 +103,7 @@
       "top": -300,
       "left": -10,
       "attrs": {
-        "text": "GUARATRACKING | Bancada com 3 botoes, alimentada pelo USB (sem bateria)"
+        "text": "GUARATRACKING | Bancada 3 botões, alimentada pelo USB, sem pilha"
       }
     },
     {
@@ -111,6 +120,24 @@
       "id": "navLabel2Arrow",
       "top": -66,
       "left": 56.1,
+      "attrs": {
+        "text": "▼"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "batteryLabel",
+      "top": -138,
+      "left": 368.1,
+      "attrs": {
+        "text": "Potenciômetro simula\na bateria (GPIO34)"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "batteryLabelArrow",
+      "top": -66,
+      "left": 391.6,
       "attrs": {
         "text": "▼"
       }
@@ -193,7 +220,7 @@
       "top": 660,
       "left": -10,
       "attrs": {
-        "text": "3 botoes: ON/OFF (19, 3 s), AVANCAR (25), VOLTAR (4). Lacre, rede, autorizacao e ciclo virao do dashboard por MQTT cmd (ainda nao implementado no firmware)\nSem bateria: a placa e alimentada pelo cabo USB do computador. GPIO34 fica fixo em 3V3 (nivel 100%) para o firmware nao ler um pino solto\nPlaca: ESP32 DevKitC de 38 pinos (USB a esquerda). Pinos do ambiente bancada-3botoes: VOLTAR 4 | buzzer 13 | SCL 22 | SDA 21 | GNSS RX 36 | GNSS TX no 17 | sem LED\nFios: preto GND | vermelho 3V3 | laranja 5V | amarelo botoes | verde SDA | azul SCL | roxo buzzer | cinza GPS"
+        "text": "3 botoes: ON/OFF (19, 3 s), AVANCAR (25), VOLTAR (4). Lacre, rede, autorizacao e ciclo virao do dashboard por MQTT cmd (ainda nao implementado no firmware)\nPlaca: ESP32 DevKitC de 38 pinos (USB a esquerda). Pinos do ambiente bancada-3botoes: VOLTAR 4 | buzzer 13 | SCL 22 | SDA 21 | GNSS RX 36 | GNSS TX no 17 | sem LED\nAVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nFios: preto GND | vermelho 3V3 | laranja 5V | amarelo botoes | ciano bateria | verde SDA | azul SCL | roxo buzzer | cinza GPS"
       }
     },
     {
@@ -221,6 +248,15 @@
       "left": 20,
       "attrs": {
         "text": "TRILHO DE BAIXO: 5V (+) / GND (-)"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "usbLabel",
+      "top": 150,
+      "left": 700,
+      "attrs": {
+        "text": "◀ Alimentação: USB do computador (sem pilha)"
       }
     }
   ],
@@ -538,6 +574,24 @@
       []
     ],
     [
+      "battery:GND",
+      "bb1:39t.a",
+      "",
+      []
+    ],
+    [
+      "battery:SIG",
+      "bb1:40t.a",
+      "",
+      []
+    ],
+    [
+      "battery:VCC",
+      "bb1:41t.a",
+      "",
+      []
+    ],
+    [
       "buzzer:1",
       "bb2:53b.f",
       "",
@@ -572,6 +626,15 @@
       ]
     ],
     [
+      "bb1:34b.f",
+      "bb1:40t.e",
+      "cyan",
+      [
+        "v-13.6",
+        "h57.6"
+      ]
+    ],
+    [
       "bb1:4t.b",
       "bb1:tn.2",
       "black",
@@ -588,6 +651,26 @@
       [
         "h-4",
         "v-33.3",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb1:39t.c",
+      "bb1:tn.27",
+      "black",
+      [
+        "h-52",
+        "v-42.9",
+        "h4.8"
+      ]
+    ],
+    [
+      "bb1:41t.d",
+      "bb1:tp.36",
+      "red",
+      [
+        "h34.4",
+        "v-62.5",
         "h4.8"
       ]
     ],
@@ -774,15 +857,6 @@
       "bb2:bp.28",
       "orange",
       []
-    ],
-    [
-      "bb1:34b.f",
-      "bb1:tp.30",
-      "red",
-      [
-        "v-13.6",
-        "h34.74"
-      ]
     ]
   ]
 }

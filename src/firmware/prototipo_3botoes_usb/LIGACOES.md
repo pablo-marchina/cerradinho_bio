@@ -1,6 +1,6 @@
-# Ligações do protótipo de 3 botões
+# Ligações do protótipo de 3 botões, alimentado pelo USB
 
-Gerado a partir de `diagram.json`. Placa: **ESP32 DevKitC de 38 pinos**, USB à esquerda, sobre as duas protoboards empilhadas. A fileira de **cima** da placa fica na protoboard de **cima** (linha J) e a de **baixo** na protoboard de **baixo** (linha D). Alimentação pelo cabo USB do computador, sem bateria. Ambiente: `bancada-3botoes`.
+Gerado a partir de `diagram.json`. Placa: **ESP32 DevKitC de 38 pinos**, USB à esquerda, sobre as duas protoboards empilhadas. A fileira de **cima** da placa fica na protoboard de **cima** (linha J) e a de **baixo** na protoboard de **baixo** (linha D). Mesmo circuito do `prototipo_3botoes`, alimentado pelo cabo USB da ESP32 ligado ao computador, sem pilha nem fonte externa; o potenciômetro continua simulando a bateria (GPIO34). Ambiente: `bancada-3botoes`.
 
 Cores: preto GND, vermelho 3V3, laranja 5V, amarelo botões, ciano bateria, verde SDA, azul SCL, roxo buzzer, cinza GNSS.
 
@@ -28,11 +28,11 @@ Posição = contagem de 1 a 19 a partir do USB. A coluna do furo é a do diagram
 | 12 | GPIO33 | 31 | (não usado) |
 | 13 | GPIO32 | 32 | (não usado) |
 | 14 | GPIO35 | 33 | (não usado) |
-| 15 | GPIO34 | 34 | fixo em 3V3 (sem bateria, nível 100%) |
+| 15 | GPIO34 | 34 | potenciômetro da bateria (sinal) |
 | 16 | VN | 35 | (não usado) |
 | 17 | VP | 36 | GNSS TX (GPIO36) |
 | 18 | EN | 37 | (não usado) |
-| 19 | 3V3 | 38 | alimentação 3,3 V (GPIO34 fixo) |
+| 19 | 3V3 | 38 | alimentação 3,3 V (potenciômetro) |
 
 ### Fileira de baixo (protoboard de BAIXO, linha D)
 
@@ -66,8 +66,11 @@ Posição = contagem de 1 a 19 a partir do USB. A coluna do furo é a do diagram
 | preto | GNSS GND | trilho de BAIXO, GND (-), furo 46 | GNSS GND → trilho de baixo (GND) |
 | amarelo | protoboard de BAIXO, coluna 26, linha E | protoboard de CIMA, coluna 6, linha A | GPIO4 → botão VOLTAR |
 | amarelo | protoboard de CIMA, coluna 30, linha F | protoboard de CIMA, coluna 61, linha A | GPIO25 → botão AVANÇAR |
+| ciano | protoboard de CIMA, coluna 34, linha F | protoboard de CIMA, coluna 40, linha E | GPIO34 ← sinal do potenciômetro |
 | preto | protoboard de CIMA, coluna 4, linha B | trilho de CIMA, GND (-), furo 2 | GND do botão VOLTAR → trilho de cima |
 | preto | protoboard de CIMA, coluna 59, linha B | trilho de CIMA, GND (-), furo 48 | GND do botão AVANÇAR → trilho de cima |
+| preto | protoboard de CIMA, coluna 39, linha C | trilho de CIMA, GND (-), furo 27 | GND do potenciômetro → trilho de cima |
+| vermelho | protoboard de CIMA, coluna 41, linha D | trilho de CIMA, 3V3 (+), furo 36 | 3V3 do potenciômetro ← trilho de cima |
 | preto | protoboard de BAIXO, coluna 32, linha E | trilho do MEIO, GND (-), furo 9 | GND da placa → trilho do meio (GND) |
 | laranja | protoboard de CIMA, coluna 20, linha I | trilho de BAIXO, 5V (+), furo 8 | pino 5V → trilho de baixo (5V) |
 | vermelho | trilho de CIMA, 3V3 (+), furo 1 | trilho do MEIO, 3V3 (+), furo 1 | une o 3V3 do trilho de cima ao do meio |
@@ -88,7 +91,6 @@ Posição = contagem de 1 a 19 a partir do USB. A coluna do furo é a do diagram
 | vermelho | trilho do MEIO, 3V3 (+), furo 23 | trilho do MEIO, 3V3 (+), furo 28 | ponte sobre a interrupção do trilho (une as duas metades) |
 | preto | trilho de BAIXO, GND (-), furo 23 | trilho de BAIXO, GND (-), furo 28 | ponte sobre a interrupção do trilho (une as duas metades) |
 | laranja | trilho de BAIXO, 5V (+), furo 23 | trilho de BAIXO, 5V (+), furo 28 | ponte sobre a interrupção do trilho (une as duas metades) |
-| vermelho | protoboard de CIMA, coluna 34, linha F | trilho de CIMA, 3V3 (+), furo 30 | GPIO34 → trilho de cima (3V3): sem bateria, nível 100% |
 | cinza | GNSS TX | pino VP (GPIO36), fileira de cima, posição 17 | GNSS → ESP32 |
 | cinza | GNSS RX | pino 17, fileira de baixo, posição 9 | ESP32 → GNSS |
 
@@ -102,6 +104,7 @@ Posição = contagem de 1 a 19 a partir do USB. A coluna do furo é a do diagram
 | Botão AVANÇAR | terminal 2 | coluna 59 da protoboard de cima (jumper preto ao GND) |
 | Botão ON/OFF | terminal 1 | coluna 48 da protoboard de baixo (jumper amarelo do GPIO19) |
 | Botão ON/OFF | terminal 2 | coluna 46 da protoboard de baixo (jumper preto ao GND) |
+| Potenciômetro | GND, sinal, VCC | colunas 39, 40, 41 da protoboard de cima (GND ao trilho, sinal ao GPIO34, VCC ao 3V3) |
 | Buzzer | negativo, positivo | colunas 53 e 54 da protoboard de baixo (negativo ao GND, positivo ao GPIO13) |
 | LCD I2C | GND, VCC, SDA, SCL | GND e VCC aos trilhos de baixo, SDA ao GPIO21, SCL ao GPIO22 |
 | GNSS | VCC, GND, TX, RX | VCC e GND aos trilhos de baixo, TX ao VP (GPIO36), RX ao pino 17 |
