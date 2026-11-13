@@ -1,0 +1,10 @@
+# Bancada com 3 botoes (ON/OFF, AVANCAR e VOLTAR) na pinagem alternada.
+# Compile antes: pio run -e bancada. Lacre, rede, autorizacao e ciclo ficam fora do diagrama.
+[wokwi]
+version = 1
+firmware = "../../../.pio/build/bancada/firmware.bin"
+elf = "../../../.pio/build/bancada/firmware.elf"
+
+[[chip]]
+name = "gps"
+binary = "../../../chips/gps.chip.wasm"
