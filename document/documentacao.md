@@ -59,21 +59,23 @@ A centralização das informações pode facilitar a consulta da situação de c
 
 O RM-ODP (*Reference Model for Open Distributed Processing*, ou Modelo de Referência para Processamento Distribuído Aberto) fornece uma estrutura conceitual para especificar sistemas distribuídos. Seu referencial reúne conceitos de modelagem, pontos de vista, transparências de distribuição e avaliação de conformidade, permitindo tratar diferentes interesses de um mesmo sistema [[64]](#ref-64). A recomendação ITU-T X.903, publicada também como ISO/IEC 10746-3, define a arquitetura desse modelo e as regras de consistência entre suas especificações [[65]](#ref-65).
 
-Os pontos de vista são perspectivas complementares de descrição. Sua organização não determina fases sequenciais obrigatórias: especificações podem ser desenvolvidas em paralelo e relacionadas por verificações de consistência [[64, seção 9.5]](#ref-64). Assim, a ordem de apresentação abaixo organiza o texto, sem prescrever um ciclo de desenvolvimento.
+Os pontos de vista são perspectivas complementares de descrição. Sua organização não determina fases sequenciais obrigatórias: especificações podem ser desenvolvidas em paralelo e relacionadas por verificações de consistência [[64, seção 9.5]](#ref-64). Neste documento, cada ponto de vista é tratado como uma etapa de especificação; a ordem de apresentação abaixo organiza o texto, sem prescrever um ciclo de desenvolvimento.
 
 ## 2.2. Pontos de vista do RM-ODP
 
-A metodologia adota os pontos de vista empresarial, de informação, computacional, de engenharia e de tecnologia do RM-ODP, caracterizados a seguir [[65, seção 4.1]](#ref-65):
+A metodologia adota os cinco pontos de vista do RM-ODP — empresarial, de informação, computacional, de engenharia e de tecnologia —, que a norma considera um conjunto necessário e suficiente para especificar um sistema distribuído [[65, seção 4.1]](#ref-65). Cada ponto de vista tem uma linguagem própria, com conceitos e regras de estruturação, descrita a seguir [[65, seção 4.2.2]](#ref-65).
 
-| Ponto de vista | Finalidade conceitual |
-|---|---|
-| **Empresarial** (*enterprise*) | Delimitar propósito, escopo e políticas do sistema em seu ambiente, caracterizando objetivos, papéis e responsabilidades. |
-| **De informação** (*information*) | Descrever o significado das informações e de seu processamento, incluindo estados e restrições sobre as transformações dos dados. |
-| **Computacional** (*computational*) | Decompor funcionalmente o sistema em objetos que interagem por interfaces, especificando comportamentos e interações. |
-| **De engenharia** (*engineering*) | Descrever os mecanismos e as funções de infraestrutura necessários para sustentar as interações distribuídas entre os objetos. |
-| **De tecnologia** (*technology*) | Caracterizar a seleção de tecnologias para realizar o sistema, considerando as exigências das demais especificações. |
+**Ponto de vista empresarial** (*enterprise*). Define o propósito, o escopo e as políticas do sistema em seu ambiente. O sistema e o ambiente são representados como uma **comunidade**: um conjunto de objetos reunidos para atingir um objetivo, expresso em um contrato. A especificação identifica os **papéis** desempenhados pelo sistema e pelos demais participantes, as **atividades** realizadas e as **políticas** que regem as interações, o uso de recursos e as obrigações do ambiente. Cada papel é caracterizado por permissões, obrigações, proibições e comportamento esperado; requisitos legais, de segurança e códigos de prática entram como contratos de ambiente [[65, seções 5.1–5.2]](#ref-65).
 
-Uma especificação pode reunir um ou mais pontos de vista, mantendo coerência entre os termos e as restrições compartilhadas [[65, seção 4.2.2]](#ref-65).
+**Ponto de vista de informação** (*information*). Define o significado das informações tratadas pelo sistema e de seu processamento, independentemente de como são representadas ou armazenadas. A especificação descreve **objetos de informação**, seus relacionamentos e três tipos de esquema: o **invariante**, com as condições que devem ser sempre verdadeiras; o **estático**, com o estado dos objetos em um instante; e o **dinâmico**, com as mudanças de estado permitidas [[65, seções 6, 6.1 e 6.2]](#ref-65).
+
+**Ponto de vista computacional** (*computational*). Decompõe funcionalmente o sistema em **objetos computacionais** que interagem por **interfaces**, sem fixar ainda onde cada objeto será executado. As interfaces podem ser de **sinal**, de **operação** (anúncios, sem resposta, ou interrogações, com resposta) ou de **fluxo** (*stream*), e cada uma tem uma assinatura que define as interações aceitas. Ligações entre interfaces podem ser representadas por **objetos de ligação** (*binding objects*) [[65, seções 7.1–7.2]](#ref-65).
+
+**Ponto de vista de engenharia** (*engineering*). Descreve os mecanismos e funções de infraestrutura que permitem a interação distribuída entre os objetos computacionais. Sua linguagem organiza o sistema em **nós** (unidades localizadas no espaço que reúnem funções de processamento, armazenamento e comunicação), **cápsulas**, **clusters** e **objetos básicos de engenharia**. A comunicação entre objetos de nós diferentes ocorre por **canais**, compostos por *stubs*, *binders*, objetos de protocolo e, quando há fronteiras entre domínios, interceptadores. Cabe também à engenharia descrever como são realizadas as transparências de distribuição. Essas transparências, que ocultam dos usuários aspectos como localização e falhas, são exigidas nas especificações empresarial, de informação e computacional [[65, seções 4.4 e 8.1–8.2]](#ref-65).
+
+**Ponto de vista de tecnologia** (*technology*). Define as tecnologias escolhidas para implementar o sistema. A especificação apresenta **objetos de tecnologia** que representam os componentes de hardware e software e os enlaces de comunicação entre eles; associa cada objeto a um **padrão implementável**; e indica as informações adicionais que a implementação deve fornecer para teste (IXIT) [[65, seções 9.1–9.2]](#ref-65).
+
+Uma especificação pode reunir um ou mais pontos de vista, mantendo coerência entre os termos e as restrições compartilhadas [[65, seção 4.2.2]](#ref-65). A norma define correspondências de consistência entre as especificações computacional e de informação, de engenharia e computacional, e de tecnologia e de engenharia [[65, seção 10]](#ref-65).
 
 ## 2.3. Métodos e atividades de trabalho
 
@@ -84,7 +86,7 @@ Os procedimentos registrados na documentação compreendem análise documental e
 - **Prototipação em simulação e bancada:** construir representações parciais e executáveis para examinar hipóteses de comportamento e viabilidade e apoiar o refinamento da especificação [[66, capítulo 1, seções 5.2–5.3; capítulo 18, seções 6.2–6.3]](#ref-66).
 - **Testes orientados por requisitos:** definir condições de execução e resultados esperados, exercitar comportamentos e comparar as observações com os critérios especificados, preservando a relação entre requisito e caso de teste [[66, capítulo 5, seções 5.2.2 e 5.2.4; capítulo 1, seção 7.3]](#ref-66).
 
-Essas atividades admitem retomadas para detalhar ou corrigir especificações. O refinamento acrescenta detalhes à descrição, enquanto a verificação de consistência examina a compatibilidade entre descrições do mesmo sistema [[64, seções 9.1 e 9.5]](#ref-64).
+Essas atividades admitem retomadas para detalhar ou corrigir especificações. O refinamento acrescenta detalhes à descrição, enquanto a verificação de consistência examina a compatibilidade entre descrições do mesmo sistema [[64, seções 9.1, 9.2 e 9.5]](#ref-64).
 
 # <a name="c3"></a>3. Desenvolvimento e Resultados 
 
