@@ -26,7 +26,7 @@ Este relatório descreve como o protótipo físico offline foi montado, quais pr
 
 Os pinos abaixo são os usados pelo firmware. Botões ligam o pino ao GND e usam o pull-up interno do ESP32, então não precisam de resistor externo.
 
-A coluna **Montagem dos CTs** é a usada nos casos de teste da seção 3.4.2, que continuam valendo para ela. A **montagem alternada** troca sete pinos (em negrito) e usa o ambiente `bancada-alternada` (seção 5).
+A coluna **Montagem dos CTs** é a usada nos casos de teste da seção 3.4.2, que continuam valendo para ela. A **montagem alternada** troca sete pinos (em negrito), usa o ambiente `bancada-alternada` (seção 5) e não tem o LED: ele foi retirado da placa e do firmware, e a violação aparece no LCD e no buzzer (seção 3.4.3 da documentação).
 
 | Componente | Sinal | Montagem dos CTs | Montagem alternada |
 |---|---|---|---|
@@ -41,7 +41,7 @@ A coluna **Montagem dos CTs** é a usada nos casos de teste da seção 3.4.2, qu
 | Botão ON/OFF | Entrada | 19 | 19 |
 | Potenciômetro | Pino do meio | 34 | 34 |
 | Buzzer | Positivo | 23 | **12** |
-| LED, pelo resistor de 220 Ω | Anodo | 13 | 13 |
+| LED, pelo resistor de 220 Ω | Anodo | 13 | — (retirado) |
 | GNSS | TX do módulo | 16 | **36 (VP)** |
 | GNSS | RX do módulo (opcional) | 17 | 17 |
 
