@@ -900,7 +900,14 @@ bool mqttWasConnected = false, mqttConfigured = false;
 
 // Por enquanto so registra o comando recebido no Serial; a execucao vem nas proximas fatias.
 void onMqttMessage(char *topic, uint8_t *payload, unsigned int length) {
-  Serial.printf("[mqtt] cmd recebido em %s: %.*s\r\n", topic, (int)length, (const char *)payload);
+  // O payload do PubSubClient nao termina em nulo: o texto e copiado com o tamanho exato.
+  if (length == 0) {
+    Serial.printf("[mqtt] cmd vazio em %s (0 bytes)\r\n", topic);
+    return;
+  }
+  String text;
+  text.concat(reinterpret_cast<const char *>(payload), length);
+  Serial.printf("[mqtt] cmd recebido em %s (%u bytes): %s\r\n", topic, length, text.c_str());
 }
 
 bool mqttConnected() { return mqtt.connected(); }
@@ -997,7 +1004,9 @@ void updateMqtt(uint32_t now) {
   mqttWasConnected = true;
   Serial.printf("[mqtt] conectado a %s:%d\r\n", MQTT_HOST, (int)MQTT_PORT);
   mqtt.publish(TopicOnline, "online", true);
-  mqtt.subscribe(TopicCmd);
+  // O PubSubClient nao le o SUBACK: false = nao saiu; true = foi enviada, sem saber se a ACL aceitou.
+  const bool cmdSubscribed = mqtt.subscribe(TopicCmd);
+  Serial.printf("[mqtt] assinatura de cmd %s\r\n", cmdSubscribed ? "enviada ao broker" : "nao enviada");
   flushPending();  // eventos guardados sem broker saem antes do `status`, que entao mostra a fila
   lastMqttStatus = now;
   mqttStatusDirty = false;
