@@ -14,7 +14,7 @@ Este guia é para quem vai gravar o firmware no ESP32 e ver as mensagens no brok
 ## 2. O que separar
 
 - ESP32 (DevKit), **cabo USB de dados, curto e bom** e uma porta USB direta do notebook (sem hub). Cabo ruim causa reinício em loop ("Brownout detector was triggered").
-- LCD I2C: GND no GND, VCC no **5V/VIN**, SDA no **GPIO21**, SCL no **GPIO22**. Evite o GPIO18, que o firmware usa para a chave de rede. Confirme os pinos do protótipo final com o Arthur.
+- LCD I2C: GND no GND, VCC no **5V/VIN**, SDA no **GPIO21**, SCL no **GPIO23** (montagem alternada, a pinagem padrão do firmware). Os demais pinos da montagem alternada: REDE 16, GNSS RX 36, VOLTAR 32, buzzer 12, AUTORIZAR 15, CICLO 5, AVANÇAR 25, lacre 27, bateria 34, ON/OFF 19. Os pinos 12, 5 e 15 são pinos de boot: não segure CICLO nem AUTORIZAR ao ligar, e nada pode puxar o GPIO12 para 3,3 V. Os ambientes `demo` e `weekly` (Wokwi) continuam nos pinos antigos (SCL 22, REDE 18, GNSS RX 16, VOLTAR 26, buzzer 23, AUTORIZAR 33, CICLO 14).
 - Uma rede Wi-Fi **2,4 GHz** com internet e sem login por navegador. O ESP32 **não funciona em 5 GHz**. O hotspot do celular costuma servir, e a rede do Inteli provavelmente não.
 - A rede precisa deixar sair a **porta 8883** (MQTT com TLS). Se não conectar com tudo certo, troque de rede.
 
