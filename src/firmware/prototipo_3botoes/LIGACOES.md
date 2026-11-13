@@ -73,7 +73,6 @@ Posição = contagem de 1 a 19 a partir do USB. A coluna do furo é a do diagram
 | vermelho | protoboard de CIMA, coluna 41, linha D | trilho de CIMA, 3V3 (+), furo 36 | 3V3 do potenciômetro ← trilho de cima |
 | preto | protoboard de BAIXO, coluna 32, linha E | trilho do MEIO, GND (-), furo 9 | GND da placa → trilho do meio (GND) |
 | laranja | protoboard de CIMA, coluna 20, linha I | trilho de BAIXO, 5V (+), furo 8 | pino 5V → trilho de baixo (5V) |
-| vermelho | trilho de CIMA, 3V3 (+), furo 1 | trilho do MEIO, 3V3 (+), furo 1 | une o 3V3 do trilho de cima ao do meio |
 | preto | trilho de CIMA, GND (-), furo 50 | trilho do MEIO, GND (-), furo 50 | une o GND do trilho de cima ao do meio |
 | preto | trilho de BAIXO, GND (-), furo 50 | trilho do MEIO, GND (-), furo 50 | une o GND do trilho de baixo ao do meio |
 | roxo | protoboard de CIMA, coluna 24, linha F | protoboard de BAIXO, coluna 54, linha G | GPIO13 → buzzer (positivo) |
@@ -88,7 +87,6 @@ Posição = contagem de 1 a 19 a partir do USB. A coluna do furo é a do diagram
 | preto | trilho de CIMA, GND (-), furo 23 | trilho de CIMA, GND (-), furo 28 | ponte sobre a interrupção do trilho (une as duas metades) |
 | vermelho | trilho de CIMA, 3V3 (+), furo 23 | trilho de CIMA, 3V3 (+), furo 28 | ponte sobre a interrupção do trilho (une as duas metades) |
 | preto | trilho do MEIO, GND (-), furo 23 | trilho do MEIO, GND (-), furo 28 | ponte sobre a interrupção do trilho (une as duas metades) |
-| vermelho | trilho do MEIO, 3V3 (+), furo 23 | trilho do MEIO, 3V3 (+), furo 28 | ponte sobre a interrupção do trilho (une as duas metades) |
 | preto | trilho de BAIXO, GND (-), furo 23 | trilho de BAIXO, GND (-), furo 28 | ponte sobre a interrupção do trilho (une as duas metades) |
 | laranja | trilho de BAIXO, 5V (+), furo 23 | trilho de BAIXO, 5V (+), furo 28 | ponte sobre a interrupção do trilho (une as duas metades) |
 | cinza | GNSS TX | pino VP (GPIO36), fileira de cima, posição 17 | GNSS → ESP32 |
@@ -114,7 +112,7 @@ Posição = contagem de 1 a 19 a partir do USB. A coluna do furo é a do diagram
 | Trilho | + | − |
 |---|---|---|
 | de cima | 3V3 | GND |
-| do meio | 3V3 | GND |
+| do meio | sem uso | GND |
 | de baixo | 5V | GND |
 
 Os GND dos três pares são unidos por jumpers pretos. Na placa real os trilhos são divididos ao meio (interrupção na coluna 30): para usar os dois lados de um trilho, ligue-os com um jumper.
