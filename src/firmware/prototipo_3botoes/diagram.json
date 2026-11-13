@@ -103,7 +103,7 @@
       "top": -300,
       "left": -10,
       "attrs": {
-        "text": "GUARATRACKING | Bancada com 3 botoes: ON/OFF, AVANCAR e VOLTAR"
+        "text": "GUARATRACKING | Bancada com 3 botoes e pinos afastados (VOLTAR 4, buzzer 13, SCL 22)"
       }
     },
     {
@@ -112,7 +112,7 @@
       "top": -138,
       "left": 28.1,
       "attrs": {
-        "text": "VOLTAR\nGPIO32\nanterior"
+        "text": "VOLTAR\nGPIO4\nanterior"
       }
     },
     {
@@ -193,7 +193,7 @@
       "top": 455.9,
       "left": 402.9,
       "attrs": {
-        "text": "BUZZER | GPIO12 | bipa na violacao"
+        "text": "BUZZER | GPIO13 | bipa na violacao"
       }
     },
     {
@@ -211,7 +211,7 @@
       "top": 556.05,
       "left": 686.4,
       "attrs": {
-        "text": "◀ LCD 16x2 I2C (0x27) | SDA 21 | SCL 23 | VCC no VIN"
+        "text": "◀ LCD 16x2 I2C (0x27) | SDA 21 | SCL 22 | VCC no VIN"
       }
     },
     {
@@ -220,7 +220,34 @@
       "top": 660,
       "left": -10,
       "attrs": {
-        "text": "3 botoes: ON/OFF (19, 3 s), AVANCAR (25), VOLTAR (32). Lacre, rede, autorizacao e ciclo virao do dashboard por MQTT cmd (ainda nao implementado no firmware)\nPinagem ALTERNADA (padrao do config.h): SCL 23 | GNSS RX 36 | VOLTAR 32 | buzzer 12\nSem LED (Art. 8): violacao aparece no LCD e no buzzer. Compile o ambiente bancada.\nAVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nFios: preto GND | vermelho 3V3 | laranja VIN 5V | amarelo botoes | ciano bateria | verde SDA | azul SCL | roxo buzzer | cinza GPS"
+        "text": "3 botoes: ON/OFF (19, 3 s), AVANCAR (25), VOLTAR (4). Lacre, rede, autorizacao e ciclo virao do dashboard por MQTT cmd (ainda nao implementado no firmware)\nPinos do ambiente bancada-3botoes: VOLTAR 4 | buzzer 13 | SCL 22 | SDA 21 | GNSS RX 36 | sem LED\nAVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nFios: preto GND | vermelho 3V3 | laranja VIN 5V | amarelo botoes | ciano bateria | verde SDA | azul SCL | roxo buzzer | cinza GPS"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "railTopLabel",
+      "top": -35,
+      "left": 10,
+      "attrs": {
+        "text": "TRILHO DE CIMA: 3V3 (+) / GND (-)"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "railMidLabel",
+      "top": 190,
+      "left": 650,
+      "attrs": {
+        "text": "TRILHO DO MEIO:\n3V3 (+) / GND (-)"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "railBotLabel",
+      "top": 360,
+      "left": 20,
+      "attrs": {
+        "text": "TRILHO DE BAIXO: 5V/VIN (+) / GND (-)"
       }
     }
   ],
@@ -496,7 +523,7 @@
       []
     ],
     [
-      "bb1:29b.f",
+      "bb2:24t.e",
       "bb1:6t.a",
       "yellow",
       []
@@ -621,7 +648,7 @@
       ]
     ],
     [
-      "bb1:23b.f",
+      "bb1:22b.f",
       "bb2:41b.g",
       "purple",
       []
@@ -647,7 +674,7 @@
       ]
     ],
     [
-      "bb2:34t.e",
+      "bb2:33t.e",
       "lcd:SCL",
       "blue",
       []

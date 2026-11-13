@@ -1,20 +1,30 @@
 # Diagrama de 3 botões
 
-Circuito do Wokwi com só três botões, na pinagem alternada da bancada: **ON/OFF**, **AVANÇAR** e **VOLTAR**. Ele parte do `../prototipo_bancada` e não substitui nenhum outro diagrama (`prototipo_wokwi` continua com chaves, e os CTs do Wokwi seguem nele).
+Circuito do Wokwi com só três botões (**ON/OFF**, **AVANÇAR** e **VOLTAR**), na mesma montagem da bancada: duas protoboards de 830 furos empilhadas (`bb1` em cima e `bb2` embaixo), com o ESP32 sobre o trilho do meio. Não substitui nenhum outro diagrama: `prototipo_wokwi` segue com chaves e os CTs do Wokwi continuam nele.
 
 ## Mapa de pinos
 
 | Item | GPIO | Observação |
 |---|---|---|
-| ON/OFF | 19 | botão para o GND; segurar 3 s |
-| AVANÇAR | 25 | botão para o GND; próxima tela do LCD |
-| VOLTAR | 32 | botão para o GND; tela anterior |
-| Bateria (potenciômetro) | 34 | ADC1 |
-| Buzzer | 12 | |
-| LCD I2C | SDA 21, SCL 23 | VCC no VIN |
-| GNSS (chip `gps`) | RX do ESP no 36 (VP), TX do ESP no 17 | |
+| ON/OFF | 19 | botão entre o GPIO e o GND; segurar 3 s |
+| AVANÇAR | 25 | botão entre o GPIO e o GND; próxima tela do LCD |
+| VOLTAR | 4 | botão entre o GPIO e o GND; tela anterior |
+| Bateria (potenciômetro) | 34 | ADC1; extremos em 3V3 e GND |
+| Buzzer | 13 | positivo no GPIO, negativo no GND |
+| LCD I2C | SDA 21, SCL 22 | VCC no VIN |
+| GNSS (chip `gps`) | RX do ESP no 36 (VP), TX do ESP no 17 | VCC no VIN |
 
-Não há LED. Compile o ambiente `bancada` (`pio run -e bancada`); o `wokwi.toml` aponta para esse firmware.
+Não há LED. O ambiente é `bancada-3botoes` (`pio run -e bancada-3botoes`); o `wokwi.toml` aponta para esse firmware. Só VOLTAR, buzzer e SCL diferem do padrão do `config.h` (por `-D` no `platformio.ini`); ON/OFF, AVANÇAR e SDA não são configuráveis por `-D`.
+
+## Alimentação (3 pares de trilhos)
+
+| Trilho | + | − |
+|---|---|---|
+| de cima (`bb1`) | 3V3 | GND |
+| do meio (`bb2`) | 3V3 | GND |
+| de baixo (`bb2`) | 5 V (VIN) | GND |
+
+Os GND dos três pares são unidos por jumpers. Na placa real os trilhos são divididos ao meio (há uma interrupção na coluna 30): se for usar os dois lados de um trilho, ligue-os com um jumper.
 
 ## Limitação
 

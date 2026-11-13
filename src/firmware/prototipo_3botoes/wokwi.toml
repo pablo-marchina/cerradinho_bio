@@ -1,9 +1,9 @@
-# Bancada com 3 botoes (ON/OFF, AVANCAR e VOLTAR) na pinagem alternada.
-# Compile antes: pio run -e bancada. Lacre, rede, autorizacao e ciclo ficam fora do diagrama.
+# Bancada com 3 botoes (ON/OFF, AVANCAR e VOLTAR) e pinos afastados: VOLTAR 4, buzzer 13, SCL 22.
+# Compile antes: pio run -e bancada-3botoes. Lacre, rede, autorizacao e ciclo ficam fora do diagrama.
 [wokwi]
 version = 1
-firmware = "../../../.pio/build/bancada/firmware.bin"
-elf = "../../../.pio/build/bancada/firmware.elf"
+firmware = "../../../.pio/build/bancada-3botoes/firmware.bin"
+elf = "../../../.pio/build/bancada-3botoes/firmware.elf"
 
 [[chip]]
 name = "gps"
