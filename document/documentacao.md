@@ -55,7 +55,38 @@ A centralização das informações pode facilitar a consulta da situação de c
 
 # <a name="c2"></a>2. Metodologia (sprint 3)
 
-_Descreva as etapas da metodologia RM-ODP que foram utilizadas para o desenvolvimento, citando o referencial teórico. Você deve apenas enunciar os métodos, sem dizer ainda como ele foi aplicado e quais resultados obtidos._
+## 2.1. Referencial teórico
+
+O RM-ODP (*Reference Model for Open Distributed Processing*, ou Modelo de Referência para Processamento Distribuído Aberto) fornece uma estrutura conceitual para especificar sistemas distribuídos. Seu referencial reúne conceitos de modelagem, pontos de vista, transparências de distribuição e avaliação de conformidade, permitindo tratar diferentes interesses de um mesmo sistema [[64]](#ref-64). A recomendação ITU-T X.903, publicada também como ISO/IEC 10746-3, define a arquitetura desse modelo e as regras de consistência entre suas especificações [[65]](#ref-65).
+
+Os pontos de vista são perspectivas complementares de descrição. Sua organização não determina fases sequenciais obrigatórias: especificações podem ser desenvolvidas em paralelo e relacionadas por verificações de consistência [[64, seção 9.5]](#ref-64). Neste documento, cada ponto de vista é tratado como uma etapa de especificação; a ordem de apresentação abaixo organiza o texto, sem prescrever um ciclo de desenvolvimento.
+
+## 2.2. Pontos de vista do RM-ODP
+
+A metodologia adota os cinco pontos de vista do RM-ODP — empresarial, de informação, computacional, de engenharia e de tecnologia —, que a norma considera um conjunto necessário e suficiente para especificar um sistema distribuído [[65, seção 4.1]](#ref-65). Cada ponto de vista tem uma linguagem própria, com conceitos e regras de estruturação, descrita a seguir [[65, seção 4.2.2]](#ref-65).
+
+**Ponto de vista empresarial** (*enterprise*). Define o propósito, o escopo e as políticas do sistema em seu ambiente. O sistema e o ambiente são representados como uma **comunidade**: um conjunto de objetos reunidos para atingir um objetivo, expresso em um contrato. A especificação identifica os **papéis** desempenhados pelo sistema e pelos demais participantes, as **atividades** realizadas e as **políticas** que regem as interações, o uso de recursos e as obrigações do ambiente. Cada papel é caracterizado por permissões, obrigações, proibições e comportamento esperado; requisitos legais, de segurança e códigos de prática entram como contratos de ambiente [[65, seções 5.1–5.2]](#ref-65).
+
+**Ponto de vista de informação** (*information*). Define o significado das informações tratadas pelo sistema e de seu processamento, independentemente de como são representadas ou armazenadas. A especificação descreve **objetos de informação**, seus relacionamentos e três tipos de esquema: o **invariante**, com as condições que devem ser sempre verdadeiras; o **estático**, com o estado dos objetos em um instante; e o **dinâmico**, com as mudanças de estado permitidas [[65, seções 6, 6.1 e 6.2]](#ref-65).
+
+**Ponto de vista computacional** (*computational*). Decompõe funcionalmente o sistema em **objetos computacionais** que interagem por **interfaces**, sem fixar ainda onde cada objeto será executado. As interfaces podem ser de **sinal**, de **operação** (anúncios, sem resposta, ou interrogações, com resposta) ou de **fluxo** (*stream*), e cada uma tem uma assinatura que define as interações aceitas. Ligações entre interfaces podem ser representadas por **objetos de ligação** (*binding objects*) [[65, seções 7.1–7.2]](#ref-65).
+
+**Ponto de vista de engenharia** (*engineering*). Descreve os mecanismos e funções de infraestrutura que permitem a interação distribuída entre os objetos computacionais. Sua linguagem organiza o sistema em **nós** (unidades localizadas no espaço que reúnem funções de processamento, armazenamento e comunicação), **cápsulas**, **clusters** e **objetos básicos de engenharia**. A comunicação entre objetos de nós diferentes ocorre por **canais**, compostos por *stubs*, *binders*, objetos de protocolo e, quando há fronteiras entre domínios, interceptadores. Cabe também à engenharia descrever como são realizadas as transparências de distribuição. Essas transparências, que ocultam dos usuários aspectos como localização e falhas, são exigidas nas especificações empresarial, de informação e computacional [[65, seções 4.4 e 8.1–8.2]](#ref-65).
+
+**Ponto de vista de tecnologia** (*technology*). Define as tecnologias escolhidas para implementar o sistema. A especificação apresenta **objetos de tecnologia** que representam os componentes de hardware e software e os enlaces de comunicação entre eles; associa cada objeto a um **padrão implementável**; e indica as informações adicionais que a implementação deve fornecer para teste (IXIT) [[65, seções 9.1–9.2]](#ref-65).
+
+Uma especificação pode reunir um ou mais pontos de vista, mantendo coerência entre os termos e as restrições compartilhadas [[65, seção 4.2.2]](#ref-65). A norma define correspondências de consistência entre as especificações computacional e de informação, de engenharia e computacional, e de tecnologia e de engenharia [[65, seção 10]](#ref-65).
+
+## 2.3. Métodos e atividades de trabalho
+
+Os procedimentos registrados na documentação compreendem análise documental e levantamento de requisitos, especificação de regras e comportamentos, prototipação e testes. Suas finalidades metodológicas seguem a caracterização do SWEBOK Guide [[66, capítulos 1, 5 e 18]](#ref-66):
+
+- **Análise documental e levantamento de requisitos:** identificar necessidades, objetivos e restrições a partir de documentos e do diálogo com as partes interessadas; organizar requisitos funcionais e de qualidade para orientar a especificação [[66, capítulo 1, seções 2–4]](#ref-66).
+- **Especificação de regras e comportamentos:** enunciar condições, ações, estados e respostas esperadas em linguagem natural estruturada, tornando explícitas as restrições do domínio e o comportamento requerido [[66, capítulo 1, seções 4.1–4.2]](#ref-66).
+- **Prototipação em simulação e bancada:** construir representações parciais e executáveis para examinar hipóteses de comportamento e viabilidade e apoiar o refinamento da especificação [[66, capítulo 1, seções 5.2–5.3; capítulo 18, seções 6.2–6.3]](#ref-66).
+- **Testes orientados por requisitos:** definir condições de execução e resultados esperados, exercitar comportamentos e comparar as observações com os critérios especificados, preservando a relação entre requisito e caso de teste [[66, capítulo 5, seções 5.2.2 e 5.2.4; capítulo 1, seção 7.3]](#ref-66).
+
+Essas atividades admitem retomadas para detalhar ou corrigir especificações. O refinamento acrescenta detalhes à descrição, enquanto a verificação de consistência examina a compatibilidade entre descrições do mesmo sistema [[64, seções 9.1, 9.2 e 9.5]](#ref-64).
 
 # <a name="c3"></a>3. Desenvolvimento e Resultados 
 
@@ -1936,6 +1967,9 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 61. ISO/IEC. *ISO/IEC 25010:2023 — Systems and software engineering — Systems and software Quality Requirements and Evaluation (SQuaRE) — Product quality model*. 2ª ed., 2023 (nove características). Disponível em: https://www.iso.org/standard/78176.html. Acesso em: 6 nov. 2026.
 62. OPENSTAX. *University Physics Volume 2: 10.5 RC Circuits*. Disponível em: https://openstax.org/books/university-physics-volume-2/pages/10-5-rc-circuits. Acesso em: 11 nov. 2026.
 63. INTELI. *Artefato de Física: Análise Experimental de Circuito RC*. Módulo 2025.2B.IN04, nov. 2025. Material da disciplina. Disponível em: https://drive.google.com/file/d/1tWtIaKf3IM3JIPH30g9S8Dw9lX_doyTs/view?usp=sharing.
+64. <a name="ref-64"></a>INTERNATIONAL TELECOMMUNICATION UNION. *Information technology — Open Distributed Processing — Reference Model: Overview*. Recomendação ITU-T X.901 (08/1997), também publicada como ISO/IEC 10746-1. Genebra: ITU, 1997. Disponível em: [ITU-T X.901](https://www.itu.int/rec/T-REC-X.901-199708-I/en). Acesso em: 10 nov. 2026.
+65. <a name="ref-65"></a>INTERNATIONAL TELECOMMUNICATION UNION. *Information technology — Open distributed processing — Reference model: Architecture*. Recomendação ITU-T X.903 (10/2009), também publicada como ISO/IEC 10746-3. Genebra: ITU, 2009. Disponível em: [ITU-T X.903](https://www.itu.int/rec/T-REC-X.903-200910-I/en). Acesso em: 10 nov. 2026.
+66. <a name="ref-66"></a>WASHIZAKI, Hironori (ed.). *Guide to the Software Engineering Body of Knowledge (SWEBOK Guide)*. Versão 4.0a, lançamento de agosto de 2026. IEEE Computer Society, 2026. Disponível em: [SWEBOK Guide — PDF](https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf). Acesso em: 10 nov. 2026.
 
 ## <a name="c6"></a>6. Anexos
 
