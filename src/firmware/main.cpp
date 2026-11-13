@@ -18,6 +18,7 @@
 #include "sim_clock.h"
 #include "screen_controller.h"
 #include "seal_debounce.h"
+#include "dashboard_cmd.h"
 #if MQTT_ENABLED
 #include <PubSubClient.h>
 #if MQTT_TLS
@@ -111,6 +112,7 @@ Button previousButton{Config::PreviousButtonPin, false, false, 0, 0, false};
 Button networkButton{Config::NetworkSwitchPin, false, false, 0, 0, false};
 Button powerButton{Config::PowerSwitchPin, false, false, 0, 0, false};
 bool networkOn = true, powerOn = true;
+uint32_t networkRestoreAt = 0;  // comando `rede` desligada por tempo limitado: religa neste millis(); 0 = sem prazo
 bool sealButtonRaw = true, sealButtonStable = true;  // nivel do botao do lacre; HIGH = solto
 LiquidCrystal_I2C lcd(Config::LcdAddress, ScreenController::Columns, 2);
 ScreenController screens;  // telas do LCD (classe propria, usada no setup e no loop)
@@ -618,6 +620,18 @@ bool holdCompleted(Button &button, uint32_t now, const char *name) {
   return true;
 }
 
+// Registra a autorizacao de retirada (botao AUTORIZAR por 3 s ou comando `autorizar` do dashboard).
+void registerAuthorization(uint64_t clock) {
+  sealAuthorize(&seal, clock);
+  contextDirty = true;
+  String extra = ",\"janela_dias\":";
+  extra += Config::AuthorizationWindowDays;
+  publishEvent("AUTORIZACAO_REGISTRADA", false, extra);
+  char bottom[ScreenController::Columns + 1];
+  snprintf(bottom, sizeof(bottom), "vale %lu dias", (unsigned long)Config::AuthorizationWindowDays);
+  showMessage("Autorizacao ok", bottom);
+}
+
 // Navegacao do LCD e acoes de 3 s (autorizacao e ciclo).
 void readButtons(uint32_t now, uint64_t clock) {
   // Com o LCD apagado, o primeiro toque em avancar/voltar so acende o visor.
@@ -625,16 +639,7 @@ void readButtons(uint32_t now, uint64_t clock) {
   if (Config::SwitchButtons && updateButton(networkButton, now)) networkOn = !networkOn;
   if (updateButton(nextButton, now) && awake) screens.next();
   if (updateButton(previousButton, now) && awake) screens.previous();
-  if (holdCompleted(authorizeButton, now, "BTN_AUTORIZAR")) {
-    sealAuthorize(&seal, clock);
-    contextDirty = true;
-    String extra = ",\"janela_dias\":";
-    extra += Config::AuthorizationWindowDays;
-    publishEvent("AUTORIZACAO_REGISTRADA", false, extra);
-    char bottom[ScreenController::Columns + 1];
-    snprintf(bottom, sizeof(bottom), "vale %lu dias", (unsigned long)Config::AuthorizationWindowDays);
-    showMessage("Autorizacao ok", bottom);
-  }
+  if (holdCompleted(authorizeButton, now, "BTN_AUTORIZAR")) registerAuthorization(clock);
   // Segurar 3 s inicia o ciclo quando nao ha ciclo ativo e encerra quando ha.
   if (holdCompleted(cycleButton, now, "BTN_CICLO")) {
     if (cycleActive) requestClose();
@@ -878,6 +883,104 @@ void updateDisplay(uint32_t now, uint64_t clock) {
   }
 }
 
+// ---- Comandos do dashboard (topico cmd) ----
+// Contrato: document/outros/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/protocolo-mqtt-dashboard.md.
+// Cada comando e um JSON {"id":"...","acao":"...","valor":"...","segundos":N} e recebe uma resposta
+// {"id","acao","ok"[,"erro"]} em cmd/resposta. As acoes repetem o que os botoes fazem na placa.
+void publishCmdResponse(const char *id, const char *action, bool ok, const char *error);
+
+constexpr long NetworkOffMaxSeconds = 3600;
+
+// Executa um comando do dashboard e responde sempre. true = executado.
+bool handleDashboardCommand(const char *payload, size_t length) {
+  char id[DashboardCmd::MaxId + 1] = "";
+  char action[DashboardCmd::MaxText + 1] = "";
+  char value[DashboardCmd::MaxText + 1] = "";
+  const auto fail = [&](const char *error) {
+    publishCmdResponse(id, action, false, error);
+    return false;
+  };
+  if (length == 0) return fail("json_vazio");
+  if (length > DashboardCmd::MaxPayload) return fail("payload_grande");
+  DashboardCmd::textValue(payload, length, "id", id, sizeof(id));
+  if (!DashboardCmd::textValue(payload, length, "acao", action, sizeof(action))) return fail("acao_ausente");
+  DashboardCmd::textValue(payload, length, "valor", value, sizeof(value));
+  const uint32_t now = millis();
+  const uint64_t clock = clockMs();
+  const auto is = [&](const char *name) { return std::strcmp(action, name) == 0; };
+  const bool known = is("avancar") || is("voltar") || is("ligar") || is("desligar") || is("autorizar") ||
+                     is("ciclo_iniciar") || is("vincular") || is("ciclo_encerrar") || is("lacre") || is("rede");
+  if (!known) return fail("acao_desconhecida");
+  if (!poweredOn && !is("ligar")) return fail("dispositivo_desligado");
+
+  if (is("avancar") || is("voltar")) {
+    lastInteractionAt = now;  // acende o LCD, como qualquer botao
+    if (is("avancar")) screens.next();
+    else screens.previous();
+  } else if (is("ligar") || is("desligar")) {
+    if (!Config::SwitchButtons) return fail("somente_modo_botoes");
+    powerOn = is("ligar");  // loop() registra DISPOSITIVO_DESLIGADO e o retorno
+  } else if (is("autorizar")) {
+    registerAuthorization(clock);
+  } else if (is("ciclo_iniciar") || is("vincular")) {
+    if (cycleActive) return fail("ciclo_ativo");
+    requestLink(clock);
+  } else if (is("ciclo_encerrar")) {
+    const bool wasActive = cycleActive;
+    requestClose();  // recusa sozinho: sem ciclo, lacre aberto ou sem NF de retorno
+    if (!wasActive) return fail("sem_ciclo_ativo");
+    if (cycleActive) return fail("encerramento_recusado");
+  } else if (is("lacre")) {
+    if (!Config::SwitchButtons) return fail("somente_modo_botoes");
+    const bool toOpen = std::strcmp(value, "aberto") == 0;
+    if (!toOpen && std::strcmp(value, "fechado") != 0) return fail("valor_invalido");
+    if (toOpen == stableSeal) return fail(toOpen ? "lacre_ja_aberto" : "lacre_ja_fechado");
+    sealTransition(toOpen, now, now, clock);
+  } else if (is("rede")) {
+    if (!Config::SwitchButtons) return fail("somente_modo_botoes");
+    if (std::strcmp(value, "ligada") == 0) {
+      networkOn = true;
+      networkRestoreAt = 0;
+    } else if (std::strcmp(value, "desligada") == 0) {
+      // Sem a rede o broker nao entrega mais comandos: o prazo religa sozinho.
+      long seconds = 0;
+      if (!DashboardCmd::intValue(payload, length, "segundos", 1, NetworkOffMaxSeconds, &seconds)) {
+        return fail("segundos_invalido");
+      }
+      networkOn = false;
+      networkRestoreAt = now + static_cast<uint32_t>(seconds) * 1000UL;
+      if (networkRestoreAt == 0) networkRestoreAt = 1;
+    } else {
+      return fail("valor_invalido");
+    }
+  }
+  publishCmdResponse(id, action, true, nullptr);
+  return true;
+}
+
+// Resposta no Serial e, com MQTT, no topico cmd/resposta (QoS 0, nao retida).
+String cmdResponseJson(const char *id, const char *action, bool ok, const char *error) {
+  String json = "{\"id\":\"";
+  json += id;
+  json += "\",\"acao\":\"";
+  json += action;
+  json += "\",\"ok\":";
+  json += ok ? "true" : "false";
+  if (error) {
+    json += ",\"erro\":\"";
+    json += error;
+    json += "\"";
+  }
+  json += "}";
+  return json;
+}
+
+#if !MQTT_ENABLED
+void publishCmdResponse(const char *id, const char *action, bool ok, const char *error) {
+  Serial.printf("[cmd] resposta %s\r\n", cmdResponseJson(id, action, ok, error).c_str());
+}
+#endif
+
 #if MQTT_ENABLED
 // Walking skeleton MQTT (card #122): conecta ao broker (padrao: HiveMQ no Docker, porta 1883,
 // sem TLS e sem login; TLS com usuario/senha para HiveMQ Cloud por MQTT_TLS 1), publica `status`
@@ -885,6 +988,7 @@ void updateDisplay(uint32_t now, uint64_t clock) {
 constexpr const char *TopicStatus = MQTT_TOPIC_PREFIX "status";
 constexpr const char *TopicOnline = MQTT_TOPIC_PREFIX "online";
 constexpr const char *TopicCmd = MQTT_TOPIC_PREFIX "cmd";
+constexpr const char *TopicCmdResposta = MQTT_TOPIC_PREFIX "cmd/resposta";
 constexpr const char *TopicEvento = MQTT_TOPIC_PREFIX "evento";
 constexpr uint32_t MqttRetryMs = 10000;
 constexpr uint32_t MqttStatusMs = 60000;
@@ -898,19 +1002,28 @@ PubSubClient mqtt(mqttNet);
 uint32_t lastMqttTry = 0, lastMqttStatus = 0;
 bool mqttWasConnected = false, mqttConfigured = false;
 
-// Por enquanto so registra o comando recebido no Serial; a execucao vem nas proximas fatias.
+// Comando do dashboard: registra no Serial e executa (handleDashboardCommand responde em cmd/resposta).
 void onMqttMessage(char *topic, uint8_t *payload, unsigned int length) {
   // O payload do PubSubClient nao termina em nulo: o texto e copiado com o tamanho exato.
   if (length == 0) {
     Serial.printf("[mqtt] cmd vazio em %s (0 bytes)\r\n", topic);
+    handleDashboardCommand("", 0);
     return;
   }
   String text;
   text.concat(reinterpret_cast<const char *>(payload), length);
   Serial.printf("[mqtt] cmd recebido em %s (%u bytes): %s\r\n", topic, length, text.c_str());
+  handleDashboardCommand(text.c_str(), text.length());
 }
 
 bool mqttConnected() { return mqtt.connected(); }
+
+// Resposta ao comando: Serial e, com broker conectado, cmd/resposta (QoS 0, nao retida).
+void publishCmdResponse(const char *id, const char *action, bool ok, const char *error) {
+  const String json = cmdResponseJson(id, action, ok, error);
+  Serial.printf("[cmd] resposta %s\r\n", json.c_str());
+  if (mqtt.connected()) mqtt.publish(TopicCmdResposta, json.c_str(), false);
+}
 
 // Publica o evento (QoS 0, nao retido); false = desconectado ou falha, e quem chama enfileira.
 // beginPublish/write/endPublish enviam em partes, entao o JSON pode passar do buffer de 512 bytes.
@@ -1124,6 +1237,11 @@ void loop() {
   const uint32_t now = millis();
   // O relogio do ciclo segue no desligamento logico da chave ON/OFF.
   const uint64_t clock = simClockUpdate(&simClock, now);
+  // Comando `rede` desligada: a rede simulada volta sozinha no fim do prazo.
+  if (networkRestoreAt != 0 && static_cast<int32_t>(now - networkRestoreAt) >= 0) {
+    networkOn = true;
+    networkRestoreAt = 0;
+  }
   // Chave ON/OFF: desligar registra o evento e suspende o dispositivo.
   if (Config::SwitchButtons && holdCompleted(powerButton, now, "BTN_ENERGIA")) powerOn = !powerOn;
   const bool on = powerSwitchOn();
@@ -1139,7 +1257,12 @@ void loop() {
   }
   updateDisplay(now, clock);
   updateBuzzer(now);
-  if (!poweredOn) return;
+  if (!poweredOn) {
+#if MQTT_ENABLED
+    updateMqtt(now);  // desligado ainda escuta o `cmd`, para o dashboard poder ligar de novo
+#endif
+    return;
+  }
   readSeal(now, clock);  // antes de I/O potencialmente bloqueante
   readGps();
   readButtons(now, clock);
