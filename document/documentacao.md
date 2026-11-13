@@ -28,6 +28,8 @@
 
 [5. Referências](#c5)
 
+[6. Anexos](#c6)
+
 <br>
 
 
@@ -55,13 +57,13 @@ A centralização das informações pode facilitar a consulta da situação de c
 
 ## 2.1. Referencial teórico
 
-O RM-ODP (*Reference Model for Open Distributed Processing*, ou Modelo de Referência para Processamento Distribuído Aberto) fornece uma estrutura conceitual para especificar sistemas distribuídos. Seu referencial reúne conceitos de modelagem, pontos de vista, transparências de distribuição e avaliação de conformidade, permitindo tratar diferentes interesses de um mesmo sistema [[62]](#ref-62). A recomendação ITU-T X.903, publicada também como ISO/IEC 10746-3, define a arquitetura desse modelo e as regras de consistência entre suas especificações [[63]](#ref-63).
+O RM-ODP (*Reference Model for Open Distributed Processing*, ou Modelo de Referência para Processamento Distribuído Aberto) fornece uma estrutura conceitual para especificar sistemas distribuídos. Seu referencial reúne conceitos de modelagem, pontos de vista, transparências de distribuição e avaliação de conformidade, permitindo tratar diferentes interesses de um mesmo sistema [[64]](#ref-64). A recomendação ITU-T X.903, publicada também como ISO/IEC 10746-3, define a arquitetura desse modelo e as regras de consistência entre suas especificações [[65]](#ref-65).
 
-Os pontos de vista são perspectivas complementares de descrição. Sua organização não determina fases sequenciais obrigatórias: especificações podem ser desenvolvidas em paralelo e relacionadas por verificações de consistência [[62, seção 9.5]](#ref-62). Assim, a ordem de apresentação abaixo organiza o texto, sem prescrever um ciclo de desenvolvimento.
+Os pontos de vista são perspectivas complementares de descrição. Sua organização não determina fases sequenciais obrigatórias: especificações podem ser desenvolvidas em paralelo e relacionadas por verificações de consistência [[64, seção 9.5]](#ref-64). Assim, a ordem de apresentação abaixo organiza o texto, sem prescrever um ciclo de desenvolvimento.
 
 ## 2.2. Pontos de vista do RM-ODP
 
-A metodologia adota os pontos de vista empresarial, de informação, computacional, de engenharia e de tecnologia do RM-ODP, caracterizados a seguir [[63, seção 4.1]](#ref-63):
+A metodologia adota os pontos de vista empresarial, de informação, computacional, de engenharia e de tecnologia do RM-ODP, caracterizados a seguir [[65, seção 4.1]](#ref-65):
 
 | Ponto de vista | Finalidade conceitual |
 |---|---|
@@ -71,18 +73,18 @@ A metodologia adota os pontos de vista empresarial, de informação, computacion
 | **De engenharia** (*engineering*) | Descrever os mecanismos e as funções de infraestrutura necessários para sustentar as interações distribuídas entre os objetos. |
 | **De tecnologia** (*technology*) | Caracterizar a seleção de tecnologias para realizar o sistema, considerando as exigências das demais especificações. |
 
-Uma especificação pode reunir um ou mais pontos de vista, mantendo coerência entre os termos e as restrições compartilhadas [[63, seção 4.2.2]](#ref-63).
+Uma especificação pode reunir um ou mais pontos de vista, mantendo coerência entre os termos e as restrições compartilhadas [[65, seção 4.2.2]](#ref-65).
 
 ## 2.3. Métodos e atividades de trabalho
 
-Os procedimentos registrados na documentação compreendem análise documental e levantamento de requisitos, especificação de regras e comportamentos, prototipação e testes. Suas finalidades metodológicas seguem a caracterização do SWEBOK Guide [[64, capítulos 1, 5 e 18]](#ref-64):
+Os procedimentos registrados na documentação compreendem análise documental e levantamento de requisitos, especificação de regras e comportamentos, prototipação e testes. Suas finalidades metodológicas seguem a caracterização do SWEBOK Guide [[66, capítulos 1, 5 e 18]](#ref-66):
 
-- **Análise documental e levantamento de requisitos:** identificar necessidades, objetivos e restrições a partir de documentos e do diálogo com as partes interessadas; organizar requisitos funcionais e de qualidade para orientar a especificação [[64, capítulo 1, seções 2–4]](#ref-64).
-- **Especificação de regras e comportamentos:** enunciar condições, ações, estados e respostas esperadas em linguagem natural estruturada, tornando explícitas as restrições do domínio e o comportamento requerido [[64, capítulo 1, seções 4.1–4.2]](#ref-64).
-- **Prototipação em simulação e bancada:** construir representações parciais e executáveis para examinar hipóteses de comportamento e viabilidade e apoiar o refinamento da especificação [[64, capítulo 1, seções 5.2–5.3; capítulo 18, seções 6.2–6.3]](#ref-64).
-- **Testes orientados por requisitos:** definir condições de execução e resultados esperados, exercitar comportamentos e comparar as observações com os critérios especificados, preservando a relação entre requisito e caso de teste [[64, capítulo 5, seções 5.2.2 e 5.2.4; capítulo 1, seção 7.3]](#ref-64).
+- **Análise documental e levantamento de requisitos:** identificar necessidades, objetivos e restrições a partir de documentos e do diálogo com as partes interessadas; organizar requisitos funcionais e de qualidade para orientar a especificação [[66, capítulo 1, seções 2–4]](#ref-66).
+- **Especificação de regras e comportamentos:** enunciar condições, ações, estados e respostas esperadas em linguagem natural estruturada, tornando explícitas as restrições do domínio e o comportamento requerido [[66, capítulo 1, seções 4.1–4.2]](#ref-66).
+- **Prototipação em simulação e bancada:** construir representações parciais e executáveis para examinar hipóteses de comportamento e viabilidade e apoiar o refinamento da especificação [[66, capítulo 1, seções 5.2–5.3; capítulo 18, seções 6.2–6.3]](#ref-66).
+- **Testes orientados por requisitos:** definir condições de execução e resultados esperados, exercitar comportamentos e comparar as observações com os critérios especificados, preservando a relação entre requisito e caso de teste [[66, capítulo 5, seções 5.2.2 e 5.2.4; capítulo 1, seção 7.3]](#ref-66).
 
-Essas atividades admitem retomadas para detalhar ou corrigir especificações. O refinamento acrescenta detalhes à descrição, enquanto a verificação de consistência examina a compatibilidade entre descrições do mesmo sistema [[62, seções 9.1 e 9.5]](#ref-62).
+Essas atividades admitem retomadas para detalhar ou corrigir especificações. O refinamento acrescenta detalhes à descrição, enquanto a verificação de consistência examina a compatibilidade entre descrições do mesmo sistema [[64, seções 9.1 e 9.5]](#ref-64).
 
 # <a name="c3"></a>3. Desenvolvimento e Resultados 
 
@@ -1960,8 +1962,137 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 58. SENAC SÃO PAULO. *Técnico em Logística*. Disponível em: https://www.sp.senac.br/cursos-tecnicos/curso-tecnico-em-logistica-presencial-ead. Acesso em: 4 nov. 2026.
 59. BRASILAGRO. *CerradinhoBio ampliou lucro em 90% em 2025/26 e aposta em etanol de milho*. Disponível em: https://www.brasilagro.com.br/conteudo/cerradinhobio-ampliou-lucro-em-90-em-202526-e-aposta-grao.html. Acesso em: 4 nov. 2026.
 60. AGÊNCIA NACIONAL DO PETRÓLEO, GÁS NATURAL E BIOCOMBUSTÍVEIS. *Revendedores de combustíveis: ANP divulga orientações devido à chegada do E30 e B15*. Disponível em: https://www.gov.br/anp/pt-br/canais_atendimento/imprensa/noticias-comunicados/revendedores-de-combustiveis-anp-divulga-orientacoes-devido-a-chegada-do-e30-e-b15/. Acesso em: 4 nov. 2026.
-
 61. ISO/IEC. *ISO/IEC 25010:2023 — Systems and software engineering — Systems and software Quality Requirements and Evaluation (SQuaRE) — Product quality model*. 2ª ed., 2023 (nove características). Disponível em: https://www.iso.org/standard/78176.html. Acesso em: 6 nov. 2026.
-62. <a name="ref-62"></a>INTERNATIONAL TELECOMMUNICATION UNION. *Information technology — Open Distributed Processing — Reference Model: Overview*. Recomendação ITU-T X.901 (08/1997), também publicada como ISO/IEC 10746-1. Genebra: ITU, 1997. Disponível em: [ITU-T X.901](https://www.itu.int/rec/T-REC-X.901-199708-I/en). Acesso em: 10 nov. 2026.
-63. <a name="ref-63"></a>INTERNATIONAL TELECOMMUNICATION UNION. *Information technology — Open distributed processing — Reference model: Architecture*. Recomendação ITU-T X.903 (10/2009), também publicada como ISO/IEC 10746-3. Genebra: ITU, 2009. Disponível em: [ITU-T X.903](https://www.itu.int/rec/T-REC-X.903-200910-I/en). Acesso em: 10 nov. 2026.
-64. <a name="ref-64"></a>WASHIZAKI, Hironori (ed.). *Guide to the Software Engineering Body of Knowledge (SWEBOK Guide)*. Versão 4.0a, lançamento de agosto de 2026. IEEE Computer Society, 2026. Disponível em: [SWEBOK Guide — PDF](https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf). Acesso em: 10 nov. 2026.
+62. OPENSTAX. *University Physics Volume 2: 10.5 RC Circuits*. Disponível em: https://openstax.org/books/university-physics-volume-2/pages/10-5-rc-circuits. Acesso em: 11 nov. 2026.
+63. INTELI. *Artefato de Física: Análise Experimental de Circuito RC*. Módulo 2025.2B.IN04, nov. 2025. Material da disciplina. Disponível em: https://drive.google.com/file/d/1tWtIaKf3IM3JIPH30g9S8Dw9lX_doyTs/view?usp=sharing.
+64. <a name="ref-64"></a>INTERNATIONAL TELECOMMUNICATION UNION. *Information technology — Open Distributed Processing — Reference Model: Overview*. Recomendação ITU-T X.901 (08/1997), também publicada como ISO/IEC 10746-1. Genebra: ITU, 1997. Disponível em: [ITU-T X.901](https://www.itu.int/rec/T-REC-X.901-199708-I/en). Acesso em: 10 nov. 2026.
+65. <a name="ref-65"></a>INTERNATIONAL TELECOMMUNICATION UNION. *Information technology — Open distributed processing — Reference model: Architecture*. Recomendação ITU-T X.903 (10/2009), também publicada como ISO/IEC 10746-3. Genebra: ITU, 2009. Disponível em: [ITU-T X.903](https://www.itu.int/rec/T-REC-X.903-200910-I/en). Acesso em: 10 nov. 2026.
+66. <a name="ref-66"></a>WASHIZAKI, Hironori (ed.). *Guide to the Software Engineering Body of Knowledge (SWEBOK Guide)*. Versão 4.0a, lançamento de agosto de 2026. IEEE Computer Society, 2026. Disponível em: [SWEBOK Guide — PDF](https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf). Acesso em: 10 nov. 2026.
+
+## <a name="c6"></a>6. Anexos
+
+### 6.1. Artefato de Física — Circuito RC
+
+#### 6.1.1. Fundamentação teórica
+
+No circuito proposto, apresentado na Figura 6.1-1, R1 e R2 estão em paralelo, e essa associação está em série com o capacitor e a fonte de 5 V.
+
+![Esquema do circuito RC: resistores R1 e R2 em paralelo, em série com o capacitor C e uma fonte de 5 V](../assets/6-anexos/6.1-circuito-rc/circuitoRC.png)
+
+*Figura 6.1-1 — Circuito proposto para o experimento. Fonte: Inteli [63].*
+
+A resistência usada no modelo de carga é a equivalente da associação:
+
+$$
+R_{\mathrm{eq}}=\frac{R_1R_2}{R_1+R_2}
+$$
+
+Ao ligar a fonte, o capacitor inicialmente descarregado acumula cargas opostas em suas placas. Sua tensão cresce rapidamente no início e depois mais lentamente; a corrente diminui à medida que a tensão no capacitor se aproxima da alimentação [62].
+
+Para componentes ideais, alimentação constante e condição inicial $V_C(0)=0$, o modelo é [62]:
+
+$$
+V_C(t)=V_f\left(1-e^{-t/\tau}\right),\qquad \tau=R_{\mathrm{eq}}C
+$$
+
+| Símbolo | Grandeza | Unidade |
+|---|---|---|
+| $V_C(t)$ | Tensão no capacitor no instante $t$ | volt (V) |
+| $V_f$ | Tensão final, igual à alimentação no modelo ideal | volt (V) |
+| $t$ | Tempo desde o início da carga | segundo (s) |
+| $\tau$ | Constante de tempo | segundo (s) |
+| $R_{\mathrm{eq}}$ | Resistência equivalente | ohm (Ω) |
+| $C$ | Capacitância | farad (F) |
+
+O número $e$ é a base do logaritmo natural. A constante $\tau$ caracteriza a rapidez da carga: aumentar a resistência equivalente ou a capacitância aumenta o tempo necessário para atingir a mesma fração da tensão final [62].
+
+Substituindo $t=\tau$:
+
+$$
+\frac{V_C(\tau)}{V_f}=1-e^{-1}\approx0{,}632
+$$
+
+Logo, após uma constante de tempo, a tensão atinge aproximadamente **63,2% do valor final**. Como $Q=CV_C$, a carga atinge a mesma porcentagem [62]. Para a alimentação nominal de 5 V deste experimento, isso corresponde a aproximadamente **3,16 V**, valor teórico, não medido. O capacitor ainda não está totalmente carregado: no modelo ideal, sua tensão se aproxima assintoticamente da alimentação.
+
+#### 6.1.2. Projeto e cálculo
+
+O circuito proposto deve apresentar uma constante de tempo próxima de 60 s, dentro do intervalo de 50 a 70 s. Para o grupo 1, o dimensionamento considera $R_1=68\,\mathrm{k\Omega}$ e $C=2200\,\mathrm{\mu F}$. Os valores disponíveis para R2 são 33 kΩ, 39 kΩ, 43 kΩ e 47 kΩ. Os cálculos abaixo utilizam valores nominais; não representam medições dos componentes ou resultados experimentais.
+
+**Conversão das unidades e resistência equivalente desejada**
+
+Para aplicar $\tau=R_{\mathrm{eq}}C$, convertem-se a resistência para ohms e a capacitância para farads:
+
+$$
+R_1=68\,000\,\Omega,\qquad C=2200\times10^{-6}\,\mathrm{F}=0{,}0022\,\mathrm{F}
+$$
+
+Com a meta de $\tau_{\mathrm{alvo}}=60\,\mathrm{s}$:
+
+$$
+R_{\mathrm{eq,alvo}}=\frac{\tau_{\mathrm{alvo}}}{C}
+=\frac{60}{0{,}0022}\,\Omega
+\approx27\,272{,}73\,\Omega=27{,}27\,\mathrm{k\Omega}
+$$
+
+**Determinação de R2**
+
+Como R1 e R2 estão em paralelo, a resistência equivalente é:
+
+$$
+R_{\mathrm{eq}}=\frac{R_1R_2}{R_1+R_2}
+$$
+
+Isolando R2, passo a passo:
+
+$$
+R_{\mathrm{eq}}(R_1+R_2)=R_1R_2
+$$
+
+$$
+R_{\mathrm{eq}}R_1=R_2(R_1-R_{\mathrm{eq}})
+$$
+
+$$
+R_2=\frac{R_{\mathrm{eq}}R_1}{R_1-R_{\mathrm{eq}}}
+=\frac{(60/0{,}0022)\times68\,000}{68\,000-(60/0{,}0022)}\,\Omega
+\approx45\,535{,}71\,\Omega=45{,}54\,\mathrm{k\Omega}
+$$
+
+**Escolha entre os valores disponíveis**
+
+A tabela compara cada opção com o valor calculado, mantendo a precisão nos cálculos e arredondando somente os resultados apresentados.
+
+| R2 disponível | Diferença absoluta em relação a 45,54 kΩ, aproximadamente |
+|---|---|
+| 33 kΩ | 12,54 kΩ |
+| 39 kΩ | 6,54 kΩ |
+| 43 kΩ | 2,54 kΩ |
+| **47 kΩ** | **1,46 kΩ** |
+
+Seleciona-se **R2 = 47 kΩ**, pois apresenta a menor diferença em relação ao valor necessário para atingir a meta de 60 s.
+
+**Resistência equivalente e constante de tempo finais**
+
+Substituindo os valores nominais escolhidos:
+
+$$
+R_{\mathrm{eq,final}}=\frac{68\,000\times47\,000}{68\,000+47\,000}\,\Omega
+=\frac{3\,196\,000\,000}{115\,000}\,\Omega
+\approx27\,791{,}30\,\Omega=27{,}79\,\mathrm{k\Omega}
+$$
+
+A constante de tempo teórica final é:
+
+$$
+\tau_{\mathrm{teorico}}=R_{\mathrm{eq,final}}C
+=\frac{68\,000\times47\,000}{68\,000+47\,000}\times0{,}0022\,\mathrm{s}
+\approx61{,}14\,\mathrm{s}
+$$
+
+O resultado fica aproximadamente 1,14 s acima da meta de 60 s e atende ao intervalo exigido:
+
+$$
+50\,\mathrm{s}\leq61{,}14\,\mathrm{s}\leq70\,\mathrm{s}
+$$
+
+Assim, o dimensionamento seleciona **R1 = 68 kΩ, R2 = 47 kΩ e C = 2200 µF**, com **τ teórico ≈ 61,14 s**. Esse valor será a referência para comparar o comportamento experimental com o modelo de carga.
