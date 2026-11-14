@@ -59,20 +59,20 @@
       }
     },
     {
-      "type": "wokwi-pushbutton",
+      "type": "wokwi-pushbutton-6mm",
       "id": "btn_voltar",
-      "top": 100.35,
-      "left": 30.45,
+      "top": 92.11,
+      "left": 50.61,
       "attrs": {
         "color": "white"
       },
       "rotate": 90
     },
     {
-      "type": "wokwi-pushbutton",
+      "type": "wokwi-pushbutton-6mm",
       "id": "btn_avancar",
-      "top": 100.35,
-      "left": 558.45,
+      "top": 92.11,
+      "left": 578.61,
       "attrs": {
         "color": "white"
       },
@@ -88,10 +88,10 @@
       }
     },
     {
-      "type": "wokwi-pushbutton",
+      "type": "wokwi-pushbutton-6mm",
       "id": "sw_energia",
-      "top": 274.35,
-      "left": 433.65,
+      "top": 266.11,
+      "left": 453.81,
       "attrs": {
         "color": "black"
       },
@@ -533,7 +533,7 @@
     ],
     [
       "btn_voltar:1.r",
-      "bb1:6b.j",
+      "bb1:6b.f",
       "",
       []
     ],
@@ -545,7 +545,7 @@
     ],
     [
       "btn_voltar:2.r",
-      "bb1:4b.j",
+      "bb1:4b.f",
       "",
       []
     ],
@@ -557,7 +557,7 @@
     ],
     [
       "btn_avancar:1.r",
-      "bb1:61b.j",
+      "bb1:61b.f",
       "",
       []
     ],
@@ -569,7 +569,7 @@
     ],
     [
       "btn_avancar:2.r",
-      "bb1:59b.j",
+      "bb1:59b.f",
       "",
       []
     ],
@@ -772,7 +772,7 @@
     ],
     [
       "sw_energia:1.r",
-      "bb2:48b.j",
+      "bb2:48b.f",
       "",
       []
     ],
@@ -784,7 +784,7 @@
     ],
     [
       "sw_energia:2.r",
-      "bb2:46b.j",
+      "bb2:46b.f",
       "",
       []
     ],
