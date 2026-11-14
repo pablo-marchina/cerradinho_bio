@@ -30,7 +30,7 @@ Tudo vem do `include/secrets.h`, copiado de `include/secrets.example.h`:
 - Modo 2 (EMQX Cloud): `MQTT_TLS 1`, host do deployment, porta 8883, usuário e senha, e a CA pública DigiCert Global Root G2 embutida (`include/mqtt_ca_emqx.h`); `MQTT_TLS_INSECURE 1` serve só para depurar.
 - Sem `secrets.h` (ou sem PubSubClient), o MQTT não compila no firmware. O Wokwi e os testes em computador seguem como antes.
 - Dois defines opcionais permitem vários ESP32 no mesmo broker, cada pessoa com valores únicos: `MQTT_CLIENT_ID` (nome da conexão; dois clientes com o mesmo nome se derrubam, e o padrão é `guaratracking-prototipo-001`) e `MQTT_DEVICE_ID` (nome nos tópicos, `guaratracking/<nome>/status|evento|online|cmd|cmd/resposta`; o padrão é `prototipo-001`). Quem usa outro nome assina `guaratracking/<nome>/#` ou, para ver todos, `guaratracking/#`.
-- Os pinos do LCD e da chave de rede podem ser trocados por `-D` (`LCD_SDA_PIN`, `LCD_SCL_PIN`, `NETWORK_SWITCH_PIN`); o padrão é SDA 21, SCL 22 e chave de rede no 18.
+- Os pinos do LCD e da chave de rede podem ser trocados por `-D` (`LCD_SDA_PIN`, `LCD_SCL_PIN`, `NETWORK_SWITCH_PIN`); o padrão é a montagem alternada da bancada (SDA 21, SCL 23, REDE 16, GNSS RX 36, VOLTAR 32, buzzer 12, AUTORIZAR 15 e CICLO 5), e os ambientes `demo` e `weekly` (Wokwi) seguem nos pinos antigos (SCL 22, REDE 18, GNSS RX 16, VOLTAR 26, buzzer 23, AUTORIZAR 33 e CICLO 14).
 
 ## Comportamento (contrato 3.4.3)
 

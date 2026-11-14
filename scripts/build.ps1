@@ -1,4 +1,4 @@
-param([ValidateSet('demo', 'weekly', 'bancada', 'bancada-alternada')][string]$Environment = 'demo')
+param([ValidateSet('demo', 'weekly', 'bancada', 'bancada-alternada', 'bancada-antiga')][string]$Environment = 'demo')
 . (Join-Path $PSScriptRoot 'common.ps1')
 
 $previousSdk = $env:WASI_SDK_PATH
