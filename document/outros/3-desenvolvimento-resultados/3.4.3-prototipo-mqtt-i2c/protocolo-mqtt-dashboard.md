@@ -4,7 +4,7 @@ Contrato entre o dashboard e o firmware do protótipo (comandos implementados em
 
 ## 1. Tópicos
 
-Prefixo: `guaratracking/<device_id>/` (protótipo: `guaratracking/prototipo-001/`). QoS 0. Nenhuma mensagem é retida, exceto `online` (ver abaixo).
+Prefixo: `guaratracking/<device_id>/` (protótipo: `guaratracking/prototipo-001/`). QoS 0. Só `status` e `online` são retidos; as demais mensagens não.
 
 | Tópico | Sentido | Conteúdo |
 |---|---|---|

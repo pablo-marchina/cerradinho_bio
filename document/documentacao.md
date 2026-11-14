@@ -1864,11 +1864,107 @@ O botão com debounce continua no protótipo: é o AVANÇAR (GPIO25), que troca 
 
 #### Montagem
 
-<!-- Fotos da bancada, ligações (Wi-Fi, I2C, UART e GPIOs) e o que mudou desde a 3.4.2. -->
+A montagem é a **alternada**: os mesmos componentes da seção 3.4.2 (ESP32 DevKitC, LCD 16x2 com módulo I2C, módulo GNSS GY-GPS6MV2, buzzer, botões, chave do lacre e potenciômetro da bateria), com os pinos de entrada e saída espaçados para facilitar a fiação na protoboard. A tabela abaixo traz as ligações de cada função, e as demais conexões (alimentação e terra comuns, jumpers fêmea do LCD e do GNSS) seguem a seção 3.4.2. O ambiente do firmware é o `bancada` (alias `bancada-alternada`); a pinagem anterior continua disponível em `bancada-antiga`, para reproduzir os CT46 a CT69.
+
+| Função | GPIO | Observação |
+|---|---|---|
+| LCD I2C (SDA / SCL) | 21 / 23 | VCC no 5 V (VIN) e GND comum |
+| GNSS (RX do ESP32) | 36 | UART; alimentação de 5 V |
+| ON/OFF | 19 | chave que liga e desliga logicamente o dispositivo |
+| AVANÇAR | 25 | troca a tela do LCD |
+| VOLTAR | 32 | volta a tela do LCD |
+| AUTORIZAR | 15 | pino de boot: não segurar ao ligar |
+| CICLO | 5 | pino de boot: não segurar ao ligar |
+| REDE (simulação) | 16 | chave que simula a falta de rede |
+| Lacre | 27 | chave que simula o lacre |
+| Bateria (ADC) | 34 | leitura do potenciômetro |
+| Buzzer | 12 | o GPIO12 não pode ser puxado a 3,3 V no boot |
+
+![Montagem alternada do protótipo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/prototipoMontagemAlternada.jpg)
+
+*Figura 3.4.3-1 — Protótipo físico na montagem alternada, visto de cima, com o ESP32, o LCD, o GNSS, os botões e o buzzer ligados. Fonte: foto do grupo, 12/11/2026.*
+
+> **IMAGEM A INCLUIR:** `prototipoMontagemAlternada.jpg`, protótipo físico na montagem alternada, visto de cima, com o ESP32, o LCD, o GNSS, os botões e o buzzer ligados.
+
+![Diagrama da montagem alternada no Wokwi](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/diagramaMontagemAlternada.png)
+
+*Figura 3.4.3-2 — Diagrama da montagem alternada no Wokwi, com os GPIO da tabela acima. Fonte: captura do simulador Wokwi for VS Code.*
+
+> **IMAGEM A INCLUIR:** `diagramaMontagemAlternada.png`, diagrama da montagem alternada no Wokwi, com os GPIO da tabela acima.
+
+**O que mudou desde a 3.4.2:** pinagem alternada; LED de violação retirado (ver "Exceções ao enunciado"); Wi-Fi e MQTT ligados pelo `include/secrets.h`; no boot, o dispositivo conecta ao Wi-Fi de 2,4 GHz e depois ao broker. Duas observações de montagem: o USB do notebook pode não sustentar o pico de corrente do rádio com o GNSS ligado (*brownout* em loop; ver Resultados), e o contato do conector de 4 vias do módulo GNSS é frágil.
 
 #### Comunicação MQTT
 
-<!-- Broker, tópicos (status, evento, online, cmd, cmd/resposta) e exemplos de JSON. -->
+**Plataforma.** O broker é o **EMQX Cloud Serverless**, com TLS na porta 8883, usuário e senha, escolhido pelo grupo porque funciona fora da rede do Inteli, aceita WebSocket seguro (para o dashboard) e foi testado com o ESP32. Para desenvolvimento há um **EMQX 5.8.9 local no Docker** (`docker/emqx`), na porta 1883, sem TLS nem login, que só deve receber dados fictícios. O firmware usa a biblioteca PubSubClient, com a CA pública do EMQX embutida (`include/mqtt_ca_emqx.h`). As credenciais ficam só no `include/secrets.h` de cada pessoa, que o Git ignora; nunca vão para o repositório, para prints ou para a documentação. A cota do plano gratuito do EMQX é limitada, e por isso o `status` não sai a cada heartbeat.
+
+**Tópicos.** O prefixo é `guaratracking/<device_id>/` (protótipo: `prototipo-001`), com QoS 0.
+
+| Tópico | Sentido | Retido | Conteúdo |
+|---|---|---|---|
+| `status` | dispositivo → broker | sim | Estado atual: lacre, bateria, ciclo, NF, dias fora, posição e fila. Sai ao conectar, a cada 60 s e quando um evento muda o estado (no mínimo 1 s entre dois) |
+| `evento` | dispositivo → broker | não | Um JSON por evento (violação do lacre, autorização, ciclo, rede, energia), o mesmo que sai na Serial |
+| `online` | dispositivo → broker | sim | `online` ao conectar; `offline` pelo Last Will, quando o broker perde o dispositivo (keep-alive de 30 s; cerca de 40 a 47 s nos ensaios) |
+| `cmd` | dashboard → dispositivo | não | Comando em JSON |
+| `cmd/resposta` | dispositivo → dashboard | não | Resultado de cada comando |
+
+Exemplo de comando com a resposta:
+
+```text
+cmd           {"id":"a1","acao":"lacre","valor":"aberto"}
+cmd/resposta  {"id":"a1","acao":"lacre","ok":true}
+cmd/resposta  {"id":"a2","acao":"abrir","ok":false,"erro":"acao_desconhecida"}
+```
+
+Os campos do `status` e do `evento` são os do JSON que o firmware já imprime na Serial (seção 3.4.2), com `device_id` e `type` (por exemplo `VIOLACAO_LACRE`).
+
+**Comandos (`cmd`).** JSON plano de até 256 bytes, sem escapes (`\`): `{"id":"a1","acao":"lacre","valor":"aberto","segundos":30}`. O `id` (até 32 caracteres) é devolvido na resposta para casar pedido e resposta; `acao` é obrigatória; `valor` (até 24 caracteres) só vale em `lacre` e `rede`; `segundos` (1 a 3600) é obrigatório em `rede` com `desligada`.
+
+| `acao` | `valor` | O que faz (equivale a) |
+|---|---|---|
+| `avancar` | | Próxima tela do LCD (botão AVANÇAR); acende o visor |
+| `voltar` | | Tela anterior do LCD (botão VOLTAR); acende o visor |
+| `ligar` | | Liga o dispositivo (chave ON/OFF) |
+| `desligar` | | Desliga logicamente; o dispositivo segue ouvindo `cmd` para poder ligar de novo |
+| `autorizar` | | Registra a autorização de retirada (botão AUTORIZAR por 3 s) |
+| `ciclo_iniciar` (ou `vincular`) | | Inicia o ciclo de remessa (botão CICLO por 3 s sem ciclo ativo) |
+| `ciclo_encerrar` | | Encerra o ciclo (botão CICLO por 3 s com ciclo ativo) |
+| `lacre` | `aberto` ou `fechado` | Simula o lacre aberto ou fechado |
+| `rede` | `ligada` ou `desligada` | Liga ou desliga a rede simulada; `desligada` exige `segundos` e a rede volta sozinha ao fim do prazo |
+
+`lacre`, `rede`, `ligar` e `desligar` só valem no modo com chaves, que é o do protótipo. Com a rede desligada o broker não entrega comandos, por isso o prazo em `segundos` é obrigatório. Com o dispositivo desligado, só `ligar` é aceito.
+
+**Resposta (`cmd/resposta`).** Cada comando recebido gera exatamente uma resposta, mesmo quando recusado: `{"id":"a1","acao":"lacre","ok":true}` ou `{"id":"a1","acao":"lacre","ok":false,"erro":"lacre_ja_aberto"}`. Em JSON inválido, `id` e `acao` voltam vazios quando não puderam ser lidos. `ok:true` significa que o comando foi aceito e executado; o efeito aparece em seguida em `evento` e `status`.
+
+| `erro` | Quando |
+|---|---|
+| `json_vazio` | Payload com 0 bytes |
+| `payload_grande` | Mais de 256 bytes |
+| `acao_ausente` | Sem o campo `acao` ou JSON ilegível |
+| `acao_desconhecida` | `acao` fora da tabela |
+| `dispositivo_desligado` | Qualquer comando, exceto `ligar`, com o dispositivo desligado |
+| `somente_modo_botoes` | `ligar`, `desligar`, `lacre` ou `rede` fora do modo com chaves |
+| `valor_invalido` | `valor` diferente dos aceitos em `lacre` ou `rede` |
+| `lacre_ja_aberto` / `lacre_ja_fechado` | O lacre já está no estado pedido |
+| `segundos_invalido` | `rede` `desligada` sem `segundos` ou fora de 1 a 3600 |
+| `ciclo_ativo` | `ciclo_iniciar` com ciclo em andamento |
+| `sem_ciclo_ativo` | `ciclo_encerrar` sem ciclo |
+| `encerramento_recusado` | `ciclo_encerrar` recusado (lacre aberto ou sem NF de retorno) |
+
+**Pré-requisitos.** Wi-Fi de **2,4 GHz** (o ESP32 não usa 5 GHz), sem login por navegador e com a porta **8883** liberada; a rede do Inteli provavelmente não serve, e o hotspot do celular costuma servir. Cada placa precisa de `MQTT_CLIENT_ID` e `MQTT_DEVICE_ID` próprios no `secrets.h`, senão duas placas se derrubam no mesmo broker. Os pinos 12, 5 e 15 são pinos de boot: não segurar CICLO nem AUTORIZAR ao ligar.
+
+![MQTT Explorer com online e status](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70ExplorerOnlineStatus.png)
+
+*Figura 3.4.3-3 — MQTT Explorer assinando `guaratracking/#`, com `online` e o `status` retidos logo depois de ligar o protótipo. Fonte: captura do MQTT Explorer, 12/11/2026.*
+
+> **IMAGEM A INCLUIR:** `ct70ExplorerOnlineStatus.png`, mQTT Explorer assinando `guaratracking/#`, com `online` e o `status` retidos logo depois de ligar o protótipo.
+
+**Como acompanhar no MQTT Explorer.**
+
+1. Instalar o MQTT Explorer (mqtt-explorer.com) e criar uma conexão com o host do deployment, porta 8883, TLS ligado, e o usuário e a senha MQTT do deployment (criados em *Access Control* no EMQX, e não o e-mail da conta; com o e-mail, o firmware recebe `estado=5`, não autorizado).
+2. Em *Advanced*, retirar `#` e `$SYS/#` da lista de assinaturas e assinar `guaratracking/#`; o EMQX recusa a assinatura de `#`.
+3. Ligar o protótipo: devem aparecer `online = online` e o `status` retidos, e o LCD mostra "MQTT ok / TLS" por 2 s.
+4. Para enviar um comando, publicar em `guaratracking/<device_id>/cmd` um JSON como os acima, com texto no corpo (um Publish sem texto chega vazio e recebe `json_vazio`), e ler a resposta em `cmd/resposta`.
 
 #### Dashboard
 
@@ -1876,18 +1972,164 @@ O botão com debounce continua no protótipo: é o AVANÇAR (GPIO25), que troca 
 
 #### Casos de teste
 
-<!-- CT70 em diante, sem refatorar os CTs anteriores. Incluir casos de sucesso e de falha. -->
+Condições comuns: firmware `bancada` (montagem alternada), alimentação USB estável, Serial a 115200 baud, Wi-Fi de 2,4 GHz com a porta 8883 liberada, EMQX Cloud no ar, `secrets.h` preenchido com nomes únicos e MQTT Explorer assinando `guaratracking/#`. Os CT70 em diante não alteram os CTs anteriores.
 
 | CT | Configuração do ambiente | Ação do usuário | Resposta esperada do sistema |
 |---|---|---|---|
+| CT70 | Broker no ar; dispositivo sem energia | Ligar o protótipo | O LCD mostra "MQTT ok" por 2 s; o broker recebe `online = online` e o `status` retidos |
+| CT71 | CT70 aprovado; lacre fechado | Abrir o lacre (violação) | O evento `VIOLACAO_LACRE` chega em `evento` no mesmo segundo; o `status` retido passa a mostrar o lacre violado; o LCD mostra "VIOLACAO registrada" e o buzzer toca |
+| CT72 | CT70 aprovado | Desligar o Wi-Fi ou o broker, gerar eventos, restabelecer | O LCD mostra a fila subindo; ao voltar, os eventos chegam ao broker na ordem em que ocorreram e a fila zera (RN09) |
+| CT73 | CT70 aprovado | Cortar a alimentação do protótipo | Em até 45 s o broker publica `offline` em `online`; ao religar, volta a `online` |
+| CT74 | CT70 aprovado; dispositivo ligado | Publicar `{"id":"1","acao":"avancar"}` em `cmd`, e depois `voltar` | `cmd/resposta` devolve `ok:true` com o mesmo `id`; o LCD troca para a tela seguinte e depois volta |
+| CT75 | CT74 aprovado; lacre fechado | Publicar `{"id":"2","acao":"lacre","valor":"aberto"}` e depois `"fechado"` | `ok:true` nas duas; o lacre abre e fecha como pelo botão, com o `evento` e o `status` correspondentes |
+| CT76 | CT74 aprovado | Publicar `{"id":"3","acao":"abrir"}`, depois o mesmo `lacre` aberto duas vezes, e um Publish sem texto | `ok:false` com `acao_desconhecida`, `lacre_ja_aberto` e `json_vazio`; nada muda no dispositivo |
+| CT77 | CT74 aprovado | Publicar `{"id":"4","acao":"rede","valor":"desligada","segundos":60}` | `ok:true`; o dispositivo fica sem rede simulada e os eventos entram na fila; ao fim dos 60 s a rede volta sozinha e a fila é enviada |
+| CT78 | CT74 aprovado | Publicar `desligar` e, em seguida, `avancar` e `ligar` | `desligar` e `ligar` respondem `ok:true`; `avancar` com o dispositivo desligado responde `ok:false` com `dispositivo_desligado` |
 
 #### Resultados
 
-<!-- Situação de cada CT, resultado observado e evidência (vídeo, Serial, prints do broker e do dashboard). -->
+Estado em 14/11/2026. Os resultados abaixo vêm de **ensaios de bancada** no protótipo físico contra o EMQX Cloud, com a Serial e o MQTT Explorer como instrumentos. Os CTs oficiais ainda precisam ser regravados com todas as evidências e com a alimentação estável.
+
+| CT | Situação | Resultado observado | O que falta |
+|---|---|---|---|
+| CT70 | Aprovado no ensaio | Boot, conexão TLS e `status` em 6 s; `online` e `status` retidos no Explorer; "MQTT ok / TLS" no LCD | Print do console do EMQX com o cliente conectado |
+| CT71 | Aprovado no ensaio | `VIOLACAO_LACRE` no `evento` com o mesmo `uptime_ms` da Serial (146531), com e sem ciclo ativo; `status` republicado no mesmo segundo; LCD "VIOLACAO registrada" e, ao fechar, "Lacre fechado" | Print do `status` com o lacre violado; conferir o buzzer no áudio do vídeo |
+| CT72 | Não executado | — | Executar com o protótipo |
+| CT73 | Aprovado no ensaio | `offline` cerca de 40 s depois de tirar o USB e `online` ao religar | Print do Explorer com `offline` e `online` e a hora da queda |
+| CT74 | Aprovado no ensaio | `ok:true` com o `id` devolvido; o LCD mudou de tela | Prints do Publish e da resposta; foto do LCD |
+| CT75 | Aprovado no ensaio | `lacre` `aberto` e `fechado` com `ok:true` | Prints do Explorer; o `evento` correspondente |
+| CT76 | Parcial | `acao_desconhecida` observado; `json_vazio` e `lacre_ja_aberto` estão cobertos no teste de host (`scripts/verify-host.sh`) | Executar os três no protótipo, com prints |
+| CT77 | Não executado | — | Executar com o protótipo |
+| CT78 | Não executado | — | Executar com o protótipo |
+
+
+<a name="evidencias-ct70"></a>
+<details>
+<summary>CT70 — Conexão e `status` retido: evidências</summary>
+
+![CT70: LCD com MQTT ok](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70LcdMqttOk.jpg)
+
+*Figura 3.4.3-CT70-1 — LCD mostrando "MQTT ok / TLS" depois da conexão. Fonte: foto do grupo, 12/11/2026.*
+
+> **IMAGEM A INCLUIR:** `ct70LcdMqttOk.jpg`, lCD mostrando "MQTT ok / TLS" depois da conexão.
+
+![CT70: Explorer com online e status](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70ExplorerOnlineStatus.png)
+
+*Figura 3.4.3-CT70-2 — `online` e `status` retidos no MQTT Explorer. Fonte: captura do MQTT Explorer, 12/11/2026.*
+
+> **IMAGEM A INCLUIR:** `ct70ExplorerOnlineStatus.png`, `online` e `status` retidos no MQTT Explorer.
+
+![CT70: console do EMQX](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70ConsoleEmqx.png)
+
+*Figura 3.4.3-CT70-3 — Console do EMQX com o cliente conectado (host e usuário mascarados). Fonte: captura do console do EMQX Cloud.*
+
+> **IMAGEM A INCLUIR:** `ct70ConsoleEmqx.png`, console do EMQX com o cliente conectado (host e usuário mascarados).
+
+</details>
+
+<a name="evidencias-ct71"></a>
+<details>
+<summary>CT71 — Violação do lacre: evidências</summary>
+
+![CT71: LCD com violação](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct71LcdViolacao.png)
+
+*Figura 3.4.3-CT71-1 — LCD com "VIOLACAO registrada". Fonte: quadro do vídeo do ensaio, 12/11/2026.*
+
+> **IMAGEM A INCLUIR:** `ct71LcdViolacao.png`, lCD com "VIOLACAO registrada".
+
+![CT71: evento no Explorer](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct71ExplorerViolacao.png)
+
+*Figura 3.4.3-CT71-2 — `VIOLACAO_LACRE` no tópico `evento`, com o mesmo `uptime_ms` da Serial. Fonte: captura do MQTT Explorer, 12/11/2026.*
+
+> **IMAGEM A INCLUIR:** `ct71ExplorerViolacao.png`, `VIOLACAO_LACRE` no tópico `evento`, com o mesmo `uptime_ms` da Serial.
+
+![CT71: status violado](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct71ExplorerStatusViolado.png)
+
+*Figura 3.4.3-CT71-3 — `status` retido com `"lacre":"violado"`. Fonte: captura do MQTT Explorer.*
+
+> **IMAGEM A INCLUIR:** `ct71ExplorerStatusViolado.png`, `status` retido com `"lacre":"violado"`.
+
+![CT71: LCD com lacre fechado](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct71LcdLacreFechado.png)
+
+*Figura 3.4.3-CT71-4 — LCD com "Lacre fechado / apos violacao". Fonte: quadro do vídeo do ensaio, 12/11/2026.*
+
+> **IMAGEM A INCLUIR:** `ct71LcdLacreFechado.png`, lCD com "Lacre fechado / apos violacao".
+
+</details>
+
+<a name="evidencias-ct73"></a>
+<details>
+<summary>CT73 — Queda de energia e Last Will: evidências</summary>
+
+![CT73: offline no Explorer](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct73ExplorerOffline.png)
+
+*Figura 3.4.3-CT73-1 — `online = offline` no MQTT Explorer depois de tirar o USB, com a hora da queda anotada. Fonte: captura do MQTT Explorer.*
+
+> **IMAGEM A INCLUIR:** `ct73ExplorerOffline.png`, `online = offline` no MQTT Explorer depois de tirar o USB, com a hora da queda anotada.
+
+![CT73: online de volta](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct73ExplorerOnline.png)
+
+*Figura 3.4.3-CT73-2 — `online = online` depois de religar o protótipo. Fonte: captura do MQTT Explorer.*
+
+> **IMAGEM A INCLUIR:** `ct73ExplorerOnline.png`, `online = online` depois de religar o protótipo.
+
+</details>
+
+<a name="evidencias-ct74-ct78"></a>
+<details>
+<summary>CT74 a CT78 — Comandos do dashboard: evidências</summary>
+
+![CT74: avançar](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct74PublishAvancar.png)
+
+*Figura 3.4.3-CT74-1 — Publish de `avancar` em `cmd` e a resposta `ok:true` em `cmd/resposta`. Fonte: captura do MQTT Explorer.*
+
+> **IMAGEM A INCLUIR:** `ct74PublishAvancar.png`, publish de `avancar` em `cmd` e a resposta `ok:true` em `cmd/resposta`.
+
+![CT74: LCD](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct74LcdAvancar.jpg)
+
+*Figura 3.4.3-CT74-2 — LCD na tela seguinte depois do comando. Fonte: foto do grupo.*
+
+> **IMAGEM A INCLUIR:** `ct74LcdAvancar.jpg`, lCD na tela seguinte depois do comando.
+
+![CT75: lacre por comando](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct75LacreAberto.png)
+
+*Figura 3.4.3-CT75-1 — Comando `lacre` `aberto` e a resposta, com o `evento` correspondente. Fonte: captura do MQTT Explorer.*
+
+> **IMAGEM A INCLUIR:** `ct75LacreAberto.png`, comando `lacre` `aberto` e a resposta, com o `evento` correspondente.
+
+![CT76: comando recusado](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct76Recusas.png)
+
+*Figura 3.4.3-CT76-1 — Respostas `acao_desconhecida`, `lacre_ja_aberto` e `json_vazio`. Fonte: captura do MQTT Explorer.*
+
+> **IMAGEM A INCLUIR:** `ct76Recusas.png`, respostas `acao_desconhecida`, `lacre_ja_aberto` e `json_vazio`.
+
+![CT77: rede desligada por tempo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct77RedeDesligada.png)
+
+*Figura 3.4.3-CT77-1 — Comando `rede` `desligada` com 60 s, a fila no LCD e o reenvio ao fim do prazo. Fonte: captura do MQTT Explorer e foto do LCD.*
+
+> **IMAGEM A INCLUIR:** `ct77RedeDesligada.png`, comando `rede` `desligada` com 60 s, a fila no LCD e o reenvio ao fim do prazo.
+
+![CT78: dispositivo desligado](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct78Desligado.png)
+
+*Figura 3.4.3-CT78-1 — Respostas de `desligar`, `avancar` (`dispositivo_desligado`) e `ligar`. Fonte: captura do MQTT Explorer.*
+
+> **IMAGEM A INCLUIR:** `ct78Desligado.png`, respostas de `desligar`, `avancar` (`dispositivo_desligado`) e `ligar`.
+
+</details>
+
+**Anomalias encontradas.** (1) *Brownout* em loop no boot do rádio, três vezes no dia, com o 5 V do USB do notebook, o LCD e o GNSS; recolocar o 5 V do GNSS resolveu, e a correção definitiva é uma fonte de 5 V e 2 A ou um capacitor de 470 a 1000 µF perto do ESP32. (2) No demo (1 s = 1 dia), o `STATUS_SEMANAL` sai a cada 7 s e cobre o último `evento` no Explorer; o `status` deixou de ser republicado por eventos periódicos, mas o evento continua saindo. (3) O boot imprimia que o envio ao broker estava pendente; a mensagem foi corrigida. (4) A NF de retorno é aceita sem ciclo ativo, o que ainda precisa de decisão do grupo. (5) O firmware agora registra se a assinatura de `cmd` foi enviada, mas, com o PubSubClient, não sabe se a ACL do broker a aceitou. (6) Em uma das montagens, o GNSS só recebe caracteres quando se mexe nos fios, por mau contato no conector de 4 vias.
 
 #### Organização do firmware
 
-<!-- Funções novas do MQTT, comentadas, e onde ficam os pinos e os tempos. -->
+Tudo do MQTT fica em `src/firmware/main.cpp`, dentro de `#if MQTT_ENABLED`; sem MQTT, o firmware se comporta como na 3.4.2. Os tópicos (`TopicStatus`, `TopicEvento`, `TopicOnline`, `TopicCmd` e `TopicCmdResposta`) e os tempos (`MqttStatusMs` de 60 s e `MqttStatusMinMs` de 1 s) são constantes no início do bloco do MQTT; os pinos ficam em `include/config.h`.
+
+| Função | O que faz |
+|---|---|
+| `updateMqtt()` | Mantém o Wi-Fi e o broker, conecta com o Last Will em `online`, assina `cmd`, reenvia a fila e republica o `status` |
+| `publishEvent()` | Envia o JSON do evento à Serial e ao tópico `evento`; se não sair, o evento fica na fila (RN09) |
+| `publishMqttStatus()` | Publica o `status` retido |
+| `handleDashboardCommand()` | Valida e executa o comando de `cmd` e responde em `cmd/resposta` com `{id,acao,ok[,erro]}` |
+| `dashboard_cmd.h` | Lê o JSON do comando (id, ação, valor e segundos) e os limites do payload, testado no host por `scripts/verify-host.sh` |
 
 ### 3.4.4. Protótipo Físico do Projeto (online) (sprint 4)	
 
