@@ -1214,7 +1214,11 @@ void setup() {
   updateDisplay(millis(), clockMs());
   Serial.println("[boot] aguardando GPS; heartbeat aparece a cada 2 s");
   if (!cycleActive) Serial.println("[ciclo] sem ciclo ativo; segure CICLO por 3 s para iniciar e use REMESSA x para a NF");
-  Serial.println("[transporte] JSON na serial + fila local; envio HTTP/MQTT pendente");
+#if MQTT_ENABLED
+  Serial.println("[transporte] JSON na serial + fila local; envio ao broker MQTT");
+#else
+  Serial.println("[transporte] JSON na serial + fila local; MQTT desligado");
+#endif
   Serial.printf("[ciclo] 1 dia = %lu s; status a cada %lu dias; prazo %lu; limiar %lu\r\n",
                 Config::DayMs / 1000UL, (unsigned long)Config::StatusIntervalDays,
                 (unsigned long)Config::ExpectedReturnDays,
