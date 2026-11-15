@@ -29,6 +29,7 @@ O comando `rede` tira a rede simulada por N segundos; os eventos ficam na fila e
 
 | Marque | Arquivo | O que é |
 |---|---|---|
+| [x] | `ct77RedeDesligada3Botoes.mp4` | vídeo da rede desligada por tempo, com a fila e o reenvio |
 | [ ] | `ct77RedeDesligada.png` | comando, resposta e eventos no Explorer |
 | [ ] | `ct77FilaLcd.jpg` | foto do LCD com a fila |
 | [ ] | `ct77-rede-desligada.serial.txt` | Serial do reenvio |
