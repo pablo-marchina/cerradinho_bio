@@ -29,7 +29,7 @@ Ao cortar a alimentação, o broker publica `offline` em `online`; ao religar, v
 
 | Marque | Arquivo | O que é |
 |---|---|---|
-| [x] | `ct73QuedaEnergia3Botoes.mp4` | vídeo da queda de energia (USB desligado e LCD apagando); não mostra o `offline` no Explorer |
+| [x] | `ct73QuedaEnergia3Botoes.mp4` | vídeo da queda de energia (USB desligado, LCD apagando, `online = offline` no Explorer e cronômetro); a linha do host do broker está tarjada |
 | [ ] | `ct73ExplorerOffline.png` | Explorer com `offline` |
 | [ ] | `ct73ExplorerOnline.png` | Explorer com `online` de volta |
 
@@ -44,7 +44,7 @@ Ao cortar a alimentação, o broker publica `offline` em `online`; ao religar, v
 | Data e hora | |
 | Firmware (ambiente e commit) | |
 | Situação | [ X ] Aprovado  [ ] Reprovado  [ ] Parcial |
-| Observado | O `offline` chegou ao broker cerca de 34 s depois de tirar o USB (estimado pelo Arthur, sem cronômetro; esperado até 45 s). O vídeo mostra a queda, mas não o `offline` no Explorer. |
+| Observado | O `offline` chegou ao broker cerca de 34 s depois de tirar o USB (estimado pelo Arthur, sem cronômetro; esperado até 45 s). O vídeo mostra a queda, o `online = offline` no Explorer e um cronômetro. |
 | Problemas | |
 
 ## Depois de executar

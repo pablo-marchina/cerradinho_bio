@@ -1923,7 +1923,7 @@ Todo tópico começa com o prefixo `guaratracking/<device_id>/` (no protótipo, 
 | `cmd` | dashboard | não | O comando a executar, em JSON |
 | `cmd/resposta` | dispositivo | não | O resultado de **cada** comando, em JSON |
 
-> **Retido** quer dizer que o broker guarda a última mensagem e a entrega a quem assinar depois. Por isso o dashboard já abre com o `status` e o `online` mais recentes. O `evento` e a `cmd/resposta` **não** são guardados: quem não estava assinando na hora perde a mensagem.
+> ⚠️ **Retido** quer dizer que o broker guarda a última mensagem e a entrega a quem assinar depois. Por isso o dashboard já abre com o `status` e o `online` mais recentes. O `evento` e a `cmd/resposta` **não** são guardados: quem não estava assinando na hora perde a mensagem.
 
 ##### Anatomia de um comando (tópico `cmd`)
 
@@ -1972,7 +1972,7 @@ Os comandos que mexem no lacre, na rede simulada e no desligamento (`lacre`, `re
 | `{"id":"12","acao":"rede","valor":"desligada","segundos":60}` | Tira a rede simulada por 60 s: os eventos ficam na fila e saem sozinhos quando a rede volta | `status.fila` sobe; no fim do prazo os eventos chegam em ordem | `segundos_invalido`, `valor_invalido`, `somente_modo_botoes` |
 | `{"id":"13","acao":"rede","valor":"ligada"}` | Religa a rede simulada na hora e cancela o prazo | a fila é enviada | `valor_invalido`, `somente_modo_botoes` |
 
-> **Atenção:** com a rede desligada o broker **não entrega** comandos ao dispositivo. Por isso o `segundos` é obrigatório: é ele que faz a rede voltar.
+> ⚠️ **Atenção:** com a rede desligada o broker **não entrega** comandos ao dispositivo. Por isso o `segundos` é obrigatório: é ele que faz a rede voltar.
 
 ##### A resposta (tópico `cmd/resposta`)
 
@@ -1987,7 +1987,7 @@ Cada comando recebido gera **exatamente uma** resposta, mesmo quando é recusado
 |---|---|---|---|
 | `id` | texto | sempre | O mesmo `id` do pedido. Vazio se o JSON era ilegível |
 | `acao` | texto | sempre | A mesma `acao` do pedido. Vazia se não deu para lê-la |
-| `ok` | verdadeiro/falso | sempre | `true` = o comando foi **aceito e executado**; o efeito aparece depois em `evento` e `status`. `false` = foi **recusado** e nada mudou |
+| `ok` | verdadeiro/falso | sempre | ✅ `true` = o comando foi **aceito e executado**; o efeito aparece depois em `evento` e `status`. ❌ `false` = foi **recusado** e nada mudou |
 | `erro` | texto | só quando `ok` é `false` | O **motivo** da recusa, da tabela abaixo |
 
 | `erro` | O que aconteceu |
@@ -2051,7 +2051,7 @@ Um JSON por acontecimento. Todos começam com os mesmos campos:
 | `dia_ocorrencia` | inteiro | Dia do relógio em que o evento aconteceu |
 | `atraso` | verdadeiro/falso | O ciclo já passou do prazo (RN04) |
 | `permanencia` | verdadeiro/falso | O ciclo passou do limiar de permanência (RN04) |
-| `critico` | verdadeiro/falso | `true` nos eventos que pedem aviso imediato (violação do lacre) |
+| `critico` | verdadeiro/falso | 🚨 `true` nos eventos que pedem aviso imediato (violação do lacre) |
 
 | `type` | Quando acontece | Campos a mais |
 |---|---|---|
@@ -2135,7 +2135,7 @@ Estado em 15/11/2026. O CT70, o CT71, o CT74, o CT75, o CT76 e o CT78 foram exec
 | CT70 | Aprovado | Wi-Fi e conexão TLS em cerca de 7 s depois do boot; "MQTT ok / TLS" no LCD; `online` e `status` retidos no Explorer; a fila restaurada (1 evento) é reenviada e a Serial mostra `0 pendentes` (vídeo) | Print do console do EMQX com o cliente conectado |
 | CT71 | Aprovado | A violação por comando (`lacre` `aberto`) gera `VIOLACAO_LACRE` no `evento` e o `status` passa a mostrar o lacre violado; o fechamento gera `LACRE_FECHADO`; conferido com e sem ciclo ativo, no LCD e no buzzer (vídeo) | — |
 | CT72 | Aprovado | Com o Wi-Fi fora, a fila subiu e a tela de conexão do LCD mostrou o MQTT sem sinal e a fila; ao religar, os eventos foram enviados na ordem e a fila zerou (vídeo) | — |
-| CT73 | Aprovado | `offline` cerca de 34 s depois de tirar o USB (tempo estimado, sem cronômetro; esperado até 45 s); a queda de energia foi gravada no protótipo de 3 botões (vídeo) | Print do Explorer com `offline` e `online` (o vídeo não o mostra) |
+| CT73 | Aprovado | `offline` cerca de 34 s depois de tirar o USB (esperado até 45 s); o vídeo mostra a queda de energia no protótipo de 3 botões, o `online = offline` no Explorer e um cronômetro | — |
 | CT74 | Aprovado | `avancar` troca para a tela seguinte e `voltar` retorna, com `ok:true` e o `id` devolvido, visíveis no Explorer e no LCD (vídeo) | — |
 | CT75 | Aprovado | `lacre` `aberto` e `fechado` com `ok:true`, com o `evento` e o `status` correspondentes (vídeo) | — |
 | CT76 | Aprovado | `acao_desconhecida`, `lacre_ja_aberto`, `lacre_ja_fechado` e `json_vazio` recusados com `ok:false` e o `erro` esperado, sem mudar o dispositivo; o comando recusado também acende o LCD (vídeo) | — |
@@ -2200,7 +2200,7 @@ Vídeo do ensaio, com a Serial, o LCD e o Explorer: [Vídeo](../assets/3-desenvo
 <details>
 <summary>CT73 — Queda de energia e Last Will: evidências</summary>
 
-Vídeo da queda de energia no protótipo de 3 botões (USB desligado e LCD apagando): [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct73QuedaEnergia3Botoes.mp4).
+Vídeo da queda de energia no protótipo de 3 botões (USB desligado, LCD apagando, `online = offline` no Explorer e cronômetro; a linha do host do broker está tarjada): [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct73QuedaEnergia3Botoes.mp4).
 
 *Figura 3.4.3-CT73-1 — `online = offline` no MQTT Explorer depois de tirar o USB, com a hora da queda anotada. Fonte: captura do MQTT Explorer.*
 
