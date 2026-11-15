@@ -573,18 +573,23 @@ void requestLink(uint64_t clock) {
 
 // Chave de sinal (on/off do SIM): reenvia a fila na volta e mostra o resultado no LCD.
 void updateNetwork() {
-  const bool available = simulatedNetworkAvailable();
+  // Com MQTT, a rede so existe com o Wi-Fi e o broker conectados (networkOnline); a queda real
+  // mostra "Sem sinal" no LCD como a chave simulada (#124).
+  const bool available = networkOnline();
   if (available == networkWasAvailable) return;
   networkWasAvailable = available;
+  static bool announced = false;  // a 1a conexao depois do boot e silenciosa: o "MQTT ok" ja a anuncia
   char bottom[ScreenController::Columns + 1];
   if (available) {
     // Com MQTT o broker ainda reconecta aqui: a fila sai depois, em updateMqtt.
     const unsigned before = pending.count + (pending.overflowCount > 0 ? 1u : 0u);
     flushPending();
+    if (!announced) return;
     const unsigned sent = before - pending.count - (pending.overflowCount > 0 ? 1u : 0u);
     snprintf(bottom, sizeof(bottom), "enviados: %u", sent);
     showMessage("Sinal ok", bottom);
   } else {
+    announced = true;
     snprintf(bottom, sizeof(bottom), "na fila: %u", pending.count);
     showMessage("Sem sinal", bottom);
   }
@@ -681,6 +686,27 @@ bool validInvoice(const String &text) {
 // Comandos locais do Monitor Serial: VINCULAR tenta um novo vinculo (RF003/RF004; RN01),
 // NF lanca a NF de retorno, REMESSA x representa a NF da remessa e LIMIAR n ajusta RN03.
 // VINCULAR e entrada de bancada; nao representa autenticacao nem concorrencia na plataforma.
+// NF de retorno (RN11): so com ciclo ativo e uma vez por ciclo. nullptr = aceita; senao, o motivo.
+const char *registerReturnInvoice() {
+  if (!cycleActive) return "sem_ciclo_ativo";
+  if (returnInvoiceIssued) return "nf_ja_lancada";
+  returnInvoiceIssued = true;
+  contextDirty = true;
+  publishEvent("NF_RETORNO_LANCADA");
+  return nullptr;
+}
+
+// NF de remessa (RN02): so com ciclo ativo e no formato aceito. nullptr = aceita; senao, o motivo.
+const char *registerShipmentInvoice(const String &invoice) {
+  if (!cycleActive) return "sem_ciclo_ativo";
+  if (!validInvoice(invoice)) return "nf_invalida";
+  snprintf(shipmentInvoice, sizeof(shipmentInvoice), "%s", invoice.c_str());
+  contextDirty = true;
+  Serial.printf("[comando] NF da remessa registrada: %s\r\n", shipmentInvoice);
+  showMessage("NF registrada", shipmentInvoice);
+  return nullptr;
+}
+
 void readCommands() {
   while (Serial.available()) {
     const char c = Serial.read();
@@ -691,22 +717,16 @@ void readCommands() {
       // Entrada explicita, mesmo com ciclo ativo. BTN_CICLO permanece reservado ao encerramento.
       requestLink(clockMs());
     } else if (serialLine == "NF") {
-      returnInvoiceIssued = true;
-      contextDirty = true;
-      publishEvent("NF_RETORNO_LANCADA");
+      if (const char *error = registerReturnInvoice()) Serial.printf("[comando] NF de retorno recusada: %s\r\n", error);
     } else if (serialLine.startsWith("REMESSA ")) {
       String invoice = serialLine.substring(8);
       invoice.trim();
-      if (!cycleActive) {
+      const char *error = registerShipmentInvoice(invoice);
+      if (error && !cycleActive) {
         Serial.println("[comando] sem ciclo ativo; inicie o ciclo antes da REMESSA");
-      } else if (!validInvoice(invoice)) {
+      } else if (error) {
         Serial.printf("[comando] NF invalida; use ate %u letras, digitos, '-', '.' ou '/'\r\n",
                       Config::InvoiceMaxLength);
-      } else {
-        snprintf(shipmentInvoice, sizeof(shipmentInvoice), "%s", invoice.c_str());
-        contextDirty = true;
-        Serial.printf("[comando] NF da remessa registrada: %s\r\n", shipmentInvoice);
-        showMessage("NF registrada", shipmentInvoice);
       }
     } else if (serialLine.startsWith("LIMIAR ")) {
       const long days = serialLine.substring(7).toInt();
@@ -870,7 +890,8 @@ void updateDisplay(uint32_t now, uint64_t clock) {
     const StatusView view{shipmentInvoice, cycleActive, cycle.daysOut,
                           cycle.expectedReturnDays, haveLatest || havePrevious, haveLatest,
                           (uint32_t)((now - latestAt) / 1000UL), batteryPct, battery.lowSent,
-                          battery.failureSent, sealView(clock), stableSeal};
+                          battery.failureSent, sealView(clock), stableSeal,
+                          networkOnline(), static_cast<uint32_t>(pending.count)};
     screens.render(view, now, top, bottom);
   }
   if (strcmp(top, shownTop) != 0) {
@@ -912,7 +933,8 @@ constexpr long NetworkOffMaxSeconds = 3600;
   const uint64_t clock = clockMs();
   const auto is = [&](const char *name) { return std::strcmp(action, name) == 0; };
   const bool known = is("avancar") || is("voltar") || is("ligar") || is("desligar") || is("autorizar") ||
-                     is("ciclo_iniciar") || is("vincular") || is("ciclo_encerrar") || is("lacre") || is("rede");
+                     is("ciclo_iniciar") || is("vincular") || is("ciclo_encerrar") || is("lacre") || is("rede") ||
+                     is("remessa") || is("nf_retorno");
   if (!known) return fail("acao_desconhecida");
   if (!poweredOn && !is("ligar")) return fail("dispositivo_desligado");
 
@@ -939,6 +961,13 @@ constexpr long NetworkOffMaxSeconds = 3600;
     if (!toOpen && std::strcmp(value, "fechado") != 0) return fail("valor_invalido");
     if (toOpen == stableSeal) return fail(toOpen ? "lacre_ja_aberto" : "lacre_ja_fechado");
     sealTransition(toOpen, now, now, clock);
+  } else if (is("remessa")) {
+    String invoice = value;
+    invoice.trim();
+    invoice.toUpperCase();  // como na Serial, que converte a linha toda
+    if (const char *error = registerShipmentInvoice(invoice)) return fail(error);
+  } else if (is("nf_retorno")) {
+    if (const char *error = registerReturnInvoice()) return fail(error);
   } else if (is("rede")) {
     if (!Config::SwitchButtons) return fail("somente_modo_botoes");
     if (std::strcmp(value, "ligada") == 0) {
@@ -1177,7 +1206,7 @@ void setup() {
   gnssInit(&gnssHealth);
   restorePending();
   batteryInit(&battery, Config::BatteryLowPct, Config::BatteryRecoverPct);
-  networkWasAvailable = simulatedNetworkAvailable();
+  networkWasAvailable = networkOnline();  // com MQTT, falso ate o broker conectar
   poweredOn = powerSwitchOn();
   StoredContext context{};
   const bool restored = restoreContext(context);

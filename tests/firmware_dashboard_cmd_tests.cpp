@@ -127,12 +127,25 @@ int main() {
   run(50);
   assert(poweredOn);
 
-  // ---- encerramento com NF de retorno ----
-  Serial.inject("NF\n");
+  // ---- NF de remessa e de retorno (RN02, RN11) ----
+  expectError("{\"acao\":\"remessa\",\"valor\":\"NF 1\"}", "nf_invalida");  // espaco nao vale
+  expectError("{\"acao\":\"remessa\"}", "nf_invalida");
+  expectOk("{\"id\":\"n1\",\"acao\":\"remessa\",\"valor\":\"nf-000123\"}", "n1", "remessa");
+  assert(std::strcmp(shipmentInvoice, "NF-000123") == 0);
+  expectOk("{\"id\":\"n2\",\"acao\":\"nf_retorno\"}", "n2", "nf_retorno");
+  assert(returnInvoiceIssued && contains(Serial.output, "\"type\":\"NF_RETORNO_LANCADA\""));
+  expectError("{\"acao\":\"nf_retorno\"}", "nf_ja_lancada");  // uma NF de retorno por ciclo
+  Serial.output.clear();
+  Serial.inject("NF\n");  // a Serial segue a mesma regra
   run(50);
+  assert(!contains(Serial.output, "NF_RETORNO_LANCADA"));  // recusada: nao repete o evento
+
+  // ---- encerramento com NF de retorno ----
   expectOk("{\"id\":\"c4\",\"acao\":\"ciclo_encerrar\"}", "c4", "ciclo_encerrar");
   assert(!cycleActive);
   expectError("{\"acao\":\"ciclo_encerrar\"}", "sem_ciclo_ativo");
+  expectError("{\"acao\":\"nf_retorno\"}", "sem_ciclo_ativo");  // sem ciclo nao ha NF
+  expectError("{\"acao\":\"remessa\",\"valor\":\"NF-1\"}", "sem_ciclo_ativo");
 
   // ---- "vincular" e alias de ciclo_iniciar ----
   expectOk("{\"id\":\"v1\",\"acao\":\"vincular\"}", "v1", "vincular");
