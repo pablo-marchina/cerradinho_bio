@@ -1953,11 +1953,9 @@ Os campos do `status` e do `evento` são os do JSON que o firmware já imprime n
 
 **Pré-requisitos.** Wi-Fi de **2,4 GHz** (o ESP32 não usa 5 GHz), sem login por navegador e com a porta **8883** liberada; a rede do Inteli provavelmente não serve, e o hotspot do celular costuma servir. Cada placa precisa de `MQTT_CLIENT_ID` e `MQTT_DEVICE_ID` próprios no `secrets.h`, senão duas placas se derrubam no mesmo broker. Os pinos 12, 5 e 15 são pinos de boot: não segurar CICLO nem AUTORIZAR ao ligar.
 
-![MQTT Explorer com online e status](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70ExplorerOnlineStatus.png)
+![MQTT Explorer com online e status](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70ExplorerOnlineStatus3Botoes.png)
 
-*Figura 3.4.3-3 — MQTT Explorer assinando `guaratracking/#`, com `online` e o `status` retidos logo depois de ligar o protótipo. Fonte: captura do MQTT Explorer, 12/11/2026.*
-
-> **IMAGEM A INCLUIR:** `ct70ExplorerOnlineStatus.png`, mQTT Explorer assinando `guaratracking/#`, com `online` e o `status` retidos logo depois de ligar o protótipo.
+*Figura 3.4.3-3 — MQTT Explorer assinando `guaratracking/#`, com `online` e o `status` retidos logo depois de ligar o protótipo. Fonte: captura do MQTT Explorer, 15/11/2026.*
 
 **Como acompanhar no MQTT Explorer.**
 
@@ -1976,19 +1974,19 @@ Condições comuns: firmware `bancada` (montagem alternada), alimentação USB e
 
 | CT | Configuração do ambiente | Ação do usuário | Resposta esperada do sistema |
 |---|---|---|---|
-| CT70 | Broker no ar; dispositivo sem energia | Ligar o protótipo | O LCD mostra "MQTT ok" por 2 s; o broker recebe `online = online` e o `status` retidos |
-| CT71 | CT70 aprovado; lacre fechado | Abrir o lacre (violação) | O evento `VIOLACAO_LACRE` chega em `evento` no mesmo segundo; o `status` retido passa a mostrar o lacre violado; o LCD mostra "VIOLACAO registrada" e o buzzer toca |
+| CT70 | Aprovado | Wi-Fi e conexão TLS em cerca de 7 s depois do boot; `online` e `status` retidos no Explorer; a fila restaurada (1 evento) é reenviada e a Serial mostra `0 pendentes`; "MQTT ok" no LCD | Print do console do EMQX com o cliente conectado; foto do LCD |
+| CT71 | Aprovado | A violação por comando (`lacre` `aberto`) gera `VIOLACAO_LACRE` no `evento` e o `status` passa a mostrar o lacre violado; o fechamento gera `LACRE_FECHADO`; conferido com e sem ciclo ativo, no LCD e no buzzer (vídeo) | — |
 | CT72 | CT70 aprovado | Desligar o Wi-Fi ou o broker, gerar eventos, restabelecer | O LCD mostra a fila subindo; ao voltar, os eventos chegam ao broker na ordem em que ocorreram e a fila zera (RN09) |
 | CT73 | CT70 aprovado | Cortar a alimentação do protótipo | Em até 45 s o broker publica `offline` em `online`; ao religar, volta a `online` |
-| CT74 | CT70 aprovado; dispositivo ligado | Publicar `{"id":"1","acao":"avancar"}` em `cmd`, e depois `voltar` | `cmd/resposta` devolve `ok:true` com o mesmo `id`; o LCD troca para a tela seguinte e depois volta |
-| CT75 | CT74 aprovado; lacre fechado | Publicar `{"id":"2","acao":"lacre","valor":"aberto"}` e depois `"fechado"` | `ok:true` nas duas; o lacre abre e fecha como pelo botão, com o `evento` e o `status` correspondentes |
-| CT76 | CT74 aprovado | Publicar `{"id":"3","acao":"abrir"}`, depois o mesmo `lacre` aberto duas vezes, e um Publish sem texto | `ok:false` com `acao_desconhecida`, `lacre_ja_aberto` e `json_vazio`; nada muda no dispositivo |
+| CT74 | Aprovado | `avancar` troca para a tela seguinte e `voltar` retorna, com `ok:true` e o `id` devolvido, visíveis no Explorer e no LCD (vídeo) | — |
+| CT75 | Aprovado | `lacre` `aberto` e `fechado` com `ok:true`, com o `evento` e o `status` correspondentes (vídeo) | — |
+| CT76 | Aprovado | `acao_desconhecida`, `lacre_ja_aberto`, `lacre_ja_fechado` e `json_vazio` recusados com `ok:false` e o `erro` esperado, sem mudar o dispositivo; o comando recusado também acende o LCD (vídeo) | — |
 | CT77 | CT74 aprovado | Publicar `{"id":"4","acao":"rede","valor":"desligada","segundos":60}` | `ok:true`; o dispositivo fica sem rede simulada e os eventos entram na fila; ao fim dos 60 s a rede volta sozinha e a fila é enviada |
-| CT78 | CT74 aprovado | Publicar `desligar` e, em seguida, `avancar` e `ligar` | `desligar` e `ligar` respondem `ok:true`; `avancar` com o dispositivo desligado responde `ok:false` com `dispositivo_desligado` |
+| CT78 | Aprovado | `desligar` e `ligar` com `ok:true` e `avancar` desligado recusado com `dispositivo_desligado`; pelo botão ON/OFF o `evento` também muda, e o tipo observado foi `STATUS_SEMANAL` (vídeo) | — |
 
 #### Resultados
 
-Estado em 14/11/2026. Os resultados abaixo vêm de **ensaios de bancada** no protótipo físico contra o EMQX Cloud, com a Serial e o MQTT Explorer como instrumentos. Os CTs oficiais ainda precisam ser regravados com todas as evidências e com a alimentação estável.
+Estado em 15/11/2026. O CT70, o CT71, o CT74, o CT75, o CT76 e o CT78 foram executados no protótipo de 3 botões contra o EMQX Cloud, com a Serial, o MQTT Explorer e vídeos como instrumentos; o CT73 foi ensaiado no protótipo físico completo, e o CT72 e o CT77 ainda não foram executados.
 
 | CT | Situação | Resultado observado | O que falta |
 |---|---|---|---|
@@ -2011,13 +2009,11 @@ Estado em 14/11/2026. Os resultados abaixo vêm de **ensaios de bancada** no pro
 
 *Figura 3.4.3-CT70-1 — LCD mostrando "MQTT ok / TLS" depois da conexão. Fonte: foto do grupo, 12/11/2026.*
 
-> **IMAGEM A INCLUIR:** `ct70LcdMqttOk.jpg`, lCD mostrando "MQTT ok / TLS" depois da conexão.
+> **IMAGEM A INCLUIR:** `ct70LcdMqttOk.jpg`, LCD mostrando "MQTT ok / TLS" depois da conexão.
 
-![CT70: Explorer com online e status](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70ExplorerOnlineStatus.png)
+![CT70: Explorer com online e status](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70ExplorerOnlineStatus3Botoes.png)
 
-*Figura 3.4.3-CT70-2 — `online` e `status` retidos no MQTT Explorer. Fonte: captura do MQTT Explorer, 12/11/2026.*
-
-> **IMAGEM A INCLUIR:** `ct70ExplorerOnlineStatus.png`, `online` e `status` retidos no MQTT Explorer.
+*Figura 3.4.3-CT70-2 — `online` e `status` retidos no MQTT Explorer. Fonte: captura do MQTT Explorer, 15/11/2026.*
 
 ![CT70: console do EMQX](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70ConsoleEmqx.png)
 
@@ -2025,17 +2021,23 @@ Estado em 14/11/2026. Os resultados abaixo vêm de **ensaios de bancada** no pro
 
 > **IMAGEM A INCLUIR:** `ct70ConsoleEmqx.png`, console do EMQX com o cliente conectado (host e usuário mascarados).
 
+![CT70: Serial com a conexão](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70Serial3Botoes.png)
+
+*Figura 3.4.3-CT70-4 — Serial no boot: conexão ao broker, reenvio de 1 evento da fila e `0 pendentes`, com o host mascarado. Fonte: captura do terminal do PlatformIO, 15/11/2026.*
+
 </details>
 
 <a name="evidencias-ct71"></a>
 <details>
 <summary>CT71 — Violação do lacre: evidências</summary>
 
+Vídeo do ensaio, com o LCD, o buzzer e o Explorer: [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct71Violacao3Botoes.mp4).
+
 ![CT71: LCD com violação](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct71LcdViolacao.png)
 
 *Figura 3.4.3-CT71-1 — LCD com "VIOLACAO registrada". Fonte: quadro do vídeo do ensaio, 12/11/2026.*
 
-> **IMAGEM A INCLUIR:** `ct71LcdViolacao.png`, lCD com "VIOLACAO registrada".
+> **IMAGEM A INCLUIR:** `ct71LcdViolacao.png`, LCD com "VIOLACAO registrada".
 
 ![CT71: evento no Explorer](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct71ExplorerViolacao.png)
 
@@ -2053,7 +2055,7 @@ Estado em 14/11/2026. Os resultados abaixo vêm de **ensaios de bancada** no pro
 
 *Figura 3.4.3-CT71-4 — LCD com "Lacre fechado / apos violacao". Fonte: quadro do vídeo do ensaio, 12/11/2026.*
 
-> **IMAGEM A INCLUIR:** `ct71LcdLacreFechado.png`, lCD com "Lacre fechado / apos violacao".
+> **IMAGEM A INCLUIR:** `ct71LcdLacreFechado.png`, LCD com "Lacre fechado / apos violacao".
 
 </details>
 
@@ -2079,41 +2081,13 @@ Estado em 14/11/2026. Os resultados abaixo vêm de **ensaios de bancada** no pro
 <details>
 <summary>CT74 a CT78 — Comandos do dashboard: evidências</summary>
 
-![CT74: avançar](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct74PublishAvancar.png)
-
-*Figura 3.4.3-CT74-1 — Publish de `avancar` em `cmd` e a resposta `ok:true` em `cmd/resposta`. Fonte: captura do MQTT Explorer.*
-
-> **IMAGEM A INCLUIR:** `ct74PublishAvancar.png`, publish de `avancar` em `cmd` e a resposta `ok:true` em `cmd/resposta`.
-
-![CT74: LCD](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct74LcdAvancar.jpg)
-
-*Figura 3.4.3-CT74-2 — LCD na tela seguinte depois do comando. Fonte: foto do grupo.*
-
-> **IMAGEM A INCLUIR:** `ct74LcdAvancar.jpg`, lCD na tela seguinte depois do comando.
-
-![CT75: lacre por comando](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct75LacreAberto.png)
-
-*Figura 3.4.3-CT75-1 — Comando `lacre` `aberto` e a resposta, com o `evento` correspondente. Fonte: captura do MQTT Explorer.*
-
-> **IMAGEM A INCLUIR:** `ct75LacreAberto.png`, comando `lacre` `aberto` e a resposta, com o `evento` correspondente.
-
-![CT76: comando recusado](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct76Recusas.png)
-
-*Figura 3.4.3-CT76-1 — Respostas `acao_desconhecida`, `lacre_ja_aberto` e `json_vazio`. Fonte: captura do MQTT Explorer.*
-
-> **IMAGEM A INCLUIR:** `ct76Recusas.png`, respostas `acao_desconhecida`, `lacre_ja_aberto` e `json_vazio`.
+Vídeos do ensaio, com o Explorer, o protótipo e o LCD: CT74 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct74Comandos3Botoes.mp4), CT75 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct75Lacre3Botoes.mp4), CT76 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct76Recusas3Botoes.mp4) e CT78 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct78Desligado3Botoes.mp4). O CT77 ainda não foi executado.
 
 ![CT77: rede desligada por tempo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct77RedeDesligada.png)
 
 *Figura 3.4.3-CT77-1 — Comando `rede` `desligada` com 60 s, a fila no LCD e o reenvio ao fim do prazo. Fonte: captura do MQTT Explorer e foto do LCD.*
 
 > **IMAGEM A INCLUIR:** `ct77RedeDesligada.png`, comando `rede` `desligada` com 60 s, a fila no LCD e o reenvio ao fim do prazo.
-
-![CT78: dispositivo desligado](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct78Desligado.png)
-
-*Figura 3.4.3-CT78-1 — Respostas de `desligar`, `avancar` (`dispositivo_desligado`) e `ligar`. Fonte: captura do MQTT Explorer.*
-
-> **IMAGEM A INCLUIR:** `ct78Desligado.png`, respostas de `desligar`, `avancar` (`dispositivo_desligado`) e `ligar`.
 
 </details>
 
