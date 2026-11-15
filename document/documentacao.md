@@ -1911,21 +1911,21 @@ Os casos de teste da 3.4.3 rodam em duas montagens da bancada. Elas usam os mesm
 
 **Plataforma.** O broker é o **EMQX Cloud Serverless**, com TLS na porta 8883, usuário e senha, escolhido pelo grupo porque funciona fora da rede do Inteli, aceita WebSocket seguro (para o dashboard) e foi testado com o ESP32. Para desenvolvimento há um **EMQX 5.8.9 local no Docker** (`docker/emqx`), na porta 1883, sem TLS nem login, que só deve receber dados fictícios. O firmware usa a biblioteca PubSubClient, com a CA pública do EMQX embutida (`include/mqtt_ca_emqx.h`). As credenciais ficam só no `include/secrets.h` de cada pessoa, que o Git ignora; nunca vão para o repositório, para prints ou para a documentação. A cota do plano gratuito do EMQX é limitada, e por isso o `status` não sai a cada heartbeat.
 
-##### 🧭 Mapa dos tópicos
+##### Mapa dos tópicos
 
 Todo tópico começa com o prefixo `guaratracking/<device_id>/` (no protótipo, `<device_id>` é o `MQTT_DEVICE_ID` do `secrets.h`; o padrão é `prototipo-001`). Tudo usa **QoS 0**. O dashboard **assina** `status`, `evento`, `online` e `cmd/resposta`, e **publica** em `cmd`. O broker recusa assinar `#` e `$SYS/#`.
 
 | Tópico | Quem publica | Retido | O que vem nele |
 |---|---|---|---|
-| `status` | 📟 dispositivo | ✅ sim | Retrato do estado atual (lacre, bateria, ciclo, NF, fila). Sai ao conectar, a cada 60 s e logo depois de um evento que muda o estado (no mínimo 1 s entre dois) |
-| `evento` | 📟 dispositivo | ❌ não | Um JSON por acontecimento (violação, ciclo, autorização, bateria, GNSS, energia). É o mesmo JSON que sai na Serial |
-| `online` | 📟 dispositivo / broker | ✅ sim | Texto puro: `online` ao conectar e `offline` quando o broker perde o dispositivo (Last Will, cerca de 40 a 47 s depois da queda) |
-| `cmd` | 🖥️ dashboard | ❌ não | O comando a executar, em JSON |
-| `cmd/resposta` | 📟 dispositivo | ❌ não | O resultado de **cada** comando, em JSON |
+| `status` | dispositivo | sim | Retrato do estado atual (lacre, bateria, ciclo, NF, fila). Sai ao conectar, a cada 60 s e logo depois de um evento que muda o estado (no mínimo 1 s entre dois) |
+| `evento` | dispositivo | não | Um JSON por acontecimento (violação, ciclo, autorização, bateria, GNSS, energia). É o mesmo JSON que sai na Serial |
+| `online` | dispositivo / broker | sim | Texto puro: `online` ao conectar e `offline` quando o broker perde o dispositivo (Last Will, cerca de 40 a 47 s depois da queda) |
+| `cmd` | dashboard | não | O comando a executar, em JSON |
+| `cmd/resposta` | dispositivo | não | O resultado de **cada** comando, em JSON |
 
-> ⚠️ **Retido** quer dizer que o broker guarda a última mensagem e a entrega a quem assinar depois. Por isso o dashboard já abre com o `status` e o `online` mais recentes. O `evento` e a `cmd/resposta` **não** são guardados: quem não estava assinando na hora perde a mensagem.
+> **Retido** quer dizer que o broker guarda a última mensagem e a entrega a quem assinar depois. Por isso o dashboard já abre com o `status` e o `online` mais recentes. O `evento` e a `cmd/resposta` **não** são guardados: quem não estava assinando na hora perde a mensagem.
 
-##### 📥 Anatomia de um comando (tópico `cmd`)
+##### Anatomia de um comando (tópico `cmd`)
 
 O comando é um JSON plano (sem objetos dentro de objetos), de até **256 bytes**, sem a barra invertida `\`. A ordem dos campos não importa, e campos que o firmware não conhece são ignorados.
 
@@ -1935,16 +1935,16 @@ O comando é um JSON plano (sem objetos dentro de objetos), de até **256 bytes*
 
 | Campo | Tipo | Obrigatório | Para que serve | Limites e regras |
 |---|---|---|---|---|
-| `id` | texto | recomendado | 🏷️ Etiqueta do pedido. O dispositivo a devolve igual na resposta, para o dashboard saber **qual** comando foi respondido | até 32 caracteres. Use um valor novo a cada envio (um contador ou um sufixo aleatório) |
-| `acao` | texto | **sim** | 🎯 O que fazer. É o nome do comando (lista abaixo) | até 24 caracteres; só os nomes da lista |
-| `valor` | texto | só em `lacre`, `rede` e `remessa` | 🔧 O argumento do comando: `aberto` ou `fechado` (`lacre`), `ligada` ou `desligada` (`rede`) e o número da NF (`remessa`) | até 24 caracteres |
-| `segundos` | número inteiro | só em `rede` com `desligada` | ⏱️ Por quanto tempo a rede simulada fica desligada. Depois disso ela volta sozinha | de 1 a 3600, sem aspas |
+| `id` | texto | recomendado | Etiqueta do pedido. O dispositivo a devolve igual na resposta, para o dashboard saber **qual** comando foi respondido | até 32 caracteres. Use um valor novo a cada envio (um contador ou um sufixo aleatório) |
+| `acao` | texto | **sim** | O que fazer. É o nome do comando (lista abaixo) | até 24 caracteres; só os nomes da lista |
+| `valor` | texto | só em `lacre`, `rede` e `remessa` | O argumento do comando: `aberto` ou `fechado` (`lacre`), `ligada` ou `desligada` (`rede`) e o número da NF (`remessa`) | até 24 caracteres |
+| `segundos` | número inteiro | só em `rede` com `desligada` | Por quanto tempo a rede simulada fica desligada. Depois disso ela volta sozinha | de 1 a 3600, sem aspas |
 
-##### 📋 Todos os comandos, prontos para copiar
+##### Todos os comandos, prontos para copiar
 
 Os comandos que mexem no lacre, na rede simulada e no desligamento (`lacre`, `rede`, `ligar` e `desligar`) só valem no modo com chaves, que é o do protótipo de 3 botões. Com o dispositivo desligado, **só** `ligar` é aceito.
 
-**🖥️ Tela e energia**
+**Tela e energia**
 
 | Comando (JSON) | O que faz | Efeito que o dashboard enxerga | Erros possíveis |
 |---|---|---|---|
@@ -1953,7 +1953,7 @@ Os comandos que mexem no lacre, na rede simulada e no desligamento (`lacre`, `re
 | `{"id":"3","acao":"desligar"}` | Desliga logicamente: o LCD apaga, mas a placa continua ouvindo o `cmd` | evento `DISPOSITIVO_DESLIGADO` | `somente_modo_botoes` |
 | `{"id":"4","acao":"ligar"}` | Liga de novo o dispositivo | evento `STATUS` | `somente_modo_botoes` |
 
-**🔄 Ciclo, autorização e NF**
+**Ciclo, autorização e NF**
 
 | Comando (JSON) | O que faz | Efeito que o dashboard enxerga | Erros possíveis |
 |---|---|---|---|
@@ -1963,7 +1963,7 @@ Os comandos que mexem no lacre, na rede simulada e no desligamento (`lacre`, `re
 | `{"id":"8","acao":"autorizar"}` | Registra a autorização de retirada, válida por 3 dias (RN06) | evento `AUTORIZACAO_REGISTRADA` | `dispositivo_desligado` |
 | `{"id":"9","acao":"ciclo_encerrar"}` | Encerra o ciclo. Exige **lacre fechado** e **NF de retorno** lançada | evento `CICLO_ENCERRADO`; `status.ciclo_ativo` vira `false` | `sem_ciclo_ativo`, `encerramento_recusado` (e o evento `ENCERRAMENTO_RECUSADO` com o `motivo`) |
 
-**🔒 Simulações da bancada**
+**Simulações da bancada**
 
 | Comando (JSON) | O que faz | Efeito que o dashboard enxerga | Erros possíveis |
 |---|---|---|---|
@@ -1972,9 +1972,9 @@ Os comandos que mexem no lacre, na rede simulada e no desligamento (`lacre`, `re
 | `{"id":"12","acao":"rede","valor":"desligada","segundos":60}` | Tira a rede simulada por 60 s: os eventos ficam na fila e saem sozinhos quando a rede volta | `status.fila` sobe; no fim do prazo os eventos chegam em ordem | `segundos_invalido`, `valor_invalido`, `somente_modo_botoes` |
 | `{"id":"13","acao":"rede","valor":"ligada"}` | Religa a rede simulada na hora e cancela o prazo | a fila é enviada | `valor_invalido`, `somente_modo_botoes` |
 
-> ⚠️ Com a rede desligada o broker **não entrega** comandos ao dispositivo. Por isso o `segundos` é obrigatório: é ele que faz a rede voltar.
+> **Atenção:** com a rede desligada o broker **não entrega** comandos ao dispositivo. Por isso o `segundos` é obrigatório: é ele que faz a rede voltar.
 
-##### 📤 A resposta (tópico `cmd/resposta`)
+##### A resposta (tópico `cmd/resposta`)
 
 Cada comando recebido gera **exatamente uma** resposta, mesmo quando é recusado.
 
@@ -1987,7 +1987,7 @@ Cada comando recebido gera **exatamente uma** resposta, mesmo quando é recusado
 |---|---|---|---|
 | `id` | texto | sempre | O mesmo `id` do pedido. Vazio se o JSON era ilegível |
 | `acao` | texto | sempre | A mesma `acao` do pedido. Vazia se não deu para lê-la |
-| `ok` | verdadeiro/falso | sempre | ✅ `true` = o comando foi **aceito e executado**; o efeito aparece depois em `evento` e `status`. ❌ `false` = foi **recusado** e nada mudou |
+| `ok` | verdadeiro/falso | sempre | `true` = o comando foi **aceito e executado**; o efeito aparece depois em `evento` e `status`. `false` = foi **recusado** e nada mudou |
 | `erro` | texto | só quando `ok` é `false` | O **motivo** da recusa, da tabela abaixo |
 
 | `erro` | O que aconteceu |
@@ -2007,7 +2007,7 @@ Cada comando recebido gera **exatamente uma** resposta, mesmo quando é recusado
 | `nf_ja_lancada` | `nf_retorno` quando a NF de retorno deste ciclo já foi lançada |
 | `encerramento_recusado` | `ciclo_encerrar` com lacre aberto ou sem NF de retorno |
 
-##### 📊 O `status` (retido)
+##### O `status` (retido)
 
 Um retrato do dispositivo, para o dashboard desenhar o estado atual sem esperar um evento.
 
@@ -2018,15 +2018,15 @@ Um retrato do dispositivo, para o dashboard desenhar o estado atual sem esperar 
 | Campo | Tipo | Significado |
 |---|---|---|
 | `device_id` | texto | Qual dispositivo é (o mesmo `<device_id>` do tópico) |
-| `lacre` | texto | 🔒 `integro` ou `violado` |
-| `bateria_pct` | inteiro 0 a 100 | 🔋 Nível da bateria (no protótipo, o potenciômetro) |
+| `lacre` | texto | `integro` ou `violado` |
+| `bateria_pct` | inteiro 0 a 100 | Nível da bateria (no protótipo, o potenciômetro) |
 | `ciclo_ativo` | verdadeiro/falso | Há um ciclo de remessa em andamento |
 | `nf` | texto | Número da NF de remessa do ciclo; vazio (`""`) se não foi informada |
 | `dias_fora` | inteiro | Dias fora, contados desde a remessa (no demo, 1 s = 1 dia) |
-| `gnss_fix` | verdadeiro/falso | 🛰️ O GNSS tem posição válida agora |
+| `gnss_fix` | verdadeiro/falso | O GNSS tem posição válida agora |
 | `fila` | inteiro | Quantos eventos estão guardados esperando a conexão (RN09). Como a fila sai **antes** de o `status` ser publicado, quase sempre chega `0` |
 
-##### 📣 Os eventos (tópico `evento`)
+##### Os eventos (tópico `evento`)
 
 Um JSON por acontecimento. Todos começam com os mesmos campos:
 
@@ -2037,12 +2037,12 @@ Um JSON por acontecimento. Todos começam com os mesmos campos:
 | Campo | Tipo | Significado |
 |---|---|---|
 | `device_id` | texto | Qual dispositivo gerou o evento |
-| `type` | texto | 🏷️ **O tipo do evento** (tabela abaixo). É por ele que o dashboard decide o que mostrar |
+| `type` | texto | **O tipo do evento** (tabela abaixo). É por ele que o dashboard decide o que mostrar |
 | `uptime_ms` | inteiro | Milissegundos desde que a placa ligou. Serve para **ordenar** eventos; não é data nem hora real |
 | `clock` | texto | `uptime_only`: o dispositivo ainda não tem data e hora reais |
 | `demo` | verdadeiro/falso | `true` quando o relógio do ciclo está acelerado (1 s = 1 dia) |
-| `seal` | texto | 🔒 `intact` ou `violated` |
-| `battery_sim_pct` | inteiro | 🔋 Bateria no momento |
+| `seal` | texto | `intact` ou `violated` |
+| `battery_sim_pct` | inteiro | Bateria no momento |
 | `wifi_connected` | verdadeiro/falso | O Wi-Fi estava conectado |
 | `network_sim_available` | verdadeiro/falso | A rede simulada estava ligada |
 | `ciclo_id` | inteiro | Número do ciclo (1, 2, 3...) |
@@ -2051,12 +2051,12 @@ Um JSON por acontecimento. Todos começam com os mesmos campos:
 | `dia_ocorrencia` | inteiro | Dia do relógio em que o evento aconteceu |
 | `atraso` | verdadeiro/falso | O ciclo já passou do prazo (RN04) |
 | `permanencia` | verdadeiro/falso | O ciclo passou do limiar de permanência (RN04) |
-| `critico` | verdadeiro/falso | 🚨 `true` nos eventos que pedem aviso imediato (violação do lacre) |
+| `critico` | verdadeiro/falso | `true` nos eventos que pedem aviso imediato (violação do lacre) |
 
 | `type` | Quando acontece | Campos a mais |
 |---|---|---|
-| `VIOLACAO_LACRE` 🚨 | Lacre aberto sem autorização vigente (RN05) | — |
-| `VIOLACAO_LACRE_RESUMO` 🚨 | Violações que não couberam na fila cheia, somadas | `quantidade` e primeira/última ocorrência |
+| `VIOLACAO_LACRE` | Lacre aberto sem autorização vigente (RN05) | — |
+| `VIOLACAO_LACRE_RESUMO` | Violações que não couberam na fila cheia, somadas | `quantidade` e primeira/última ocorrência |
 | `LACRE_FECHADO` | Lacre fechado depois de uma violação | — |
 | `RETIRADA_AUTORIZADA` | Lacre aberto com autorização vigente (RN06) | — |
 | `LACRE_REAPLICADO` | Lacre fechado depois de uma retirada autorizada | — |
@@ -2077,13 +2077,13 @@ Um JSON por acontecimento. Todos começam com os mesmos campos:
 | `GNSS_RECUPERADO` | A posição GNSS voltou | — |
 | `DISPOSITIVO_DESLIGADO` | Dispositivo desligado logicamente | — |
 
-##### 🔁 Um exemplo do começo ao fim
+##### Um exemplo do começo ao fim
 
 ```text
-1. 🖥️ dashboard  → cmd           {"id":"10","acao":"lacre","valor":"aberto"}
-2. 📟 dispositivo → cmd/resposta  {"id":"10","acao":"lacre","ok":true}
-3. 📟 dispositivo → evento        {"type":"VIOLACAO_LACRE","critico":true,...}
-4. 📟 dispositivo → status        {"lacre":"violado",...}          (retido)
+1. dashboard    → cmd           {"id":"10","acao":"lacre","valor":"aberto"}
+2. dispositivo  → cmd/resposta  {"id":"10","acao":"lacre","ok":true}
+3. dispositivo  → evento        {"type":"VIOLACAO_LACRE","critico":true,...}
+4. dispositivo  → status        {"lacre":"violado",...}          (retido)
 ```
 
 **Dicas para quem for integrar o dashboard**
