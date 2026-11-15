@@ -1995,7 +1995,7 @@ Estado em 15/11/2026. O CT70, o CT71, o CT74, o CT75, o CT76 e o CT78 foram exec
 
 | CT | Situação | Resultado observado | O que falta |
 |---|---|---|---|
-| CT70 | Aprovado | Wi-Fi e conexão TLS em cerca de 7 s depois do boot; `online` e `status` retidos no Explorer; a fila restaurada (1 evento) é reenviada e a Serial mostra `0 pendentes`; "MQTT ok" no LCD | Print do console do EMQX com o cliente conectado; foto do LCD |
+| CT70 | Aprovado | Wi-Fi e conexão TLS em cerca de 7 s depois do boot; "MQTT ok / TLS" no LCD; `online` e `status` retidos no Explorer; a fila restaurada (1 evento) é reenviada e a Serial mostra `0 pendentes` (vídeo) | Print do console do EMQX com o cliente conectado |
 | CT71 | Aprovado | A violação por comando (`lacre` `aberto`) gera `VIOLACAO_LACRE` no `evento` e o `status` passa a mostrar o lacre violado; o fechamento gera `LACRE_FECHADO`; conferido com e sem ciclo ativo, no LCD e no buzzer (vídeo) | — |
 | CT72 | Aprovado | Com o Wi-Fi fora, a fila subiu e a tela de conexão do LCD mostrou o MQTT sem sinal e a fila; ao religar, os eventos foram enviados na ordem e a fila zerou (vídeo) | — |
 | CT73 | Aprovado | `offline` cerca de 34 s depois de tirar o USB (tempo estimado, sem cronômetro; esperado até 45 s); a queda de energia foi gravada no protótipo de 3 botões (vídeo) | Print do Explorer com `offline` e `online` (o vídeo não o mostra) |
@@ -2004,18 +2004,14 @@ Estado em 15/11/2026. O CT70, o CT71, o CT74, o CT75, o CT76 e o CT78 foram exec
 | CT76 | Aprovado | `acao_desconhecida`, `lacre_ja_aberto`, `lacre_ja_fechado` e `json_vazio` recusados com `ok:false` e o `erro` esperado, sem mudar o dispositivo; o comando recusado também acende o LCD (vídeo) | — |
 | CT77 | Aprovado | `rede` desligada por tempo com `ok:true`; a fila subiu durante o prazo e, ao fim, os eventos foram enviados na ordem e a fila zerou (vídeo) | — |
 | CT78 | Aprovado | `desligar` e `ligar` com `ok:true` e `avancar` desligado recusado com `dispositivo_desligado`; pelo botão ON/OFF o `evento` também muda, e o tipo observado foi `STATUS_SEMANAL` (vídeo) | — |
-| CT83 | Não executado | — | Executar com o protótipo |
+| CT83 | Aprovado | Executado conforme o roteiro: `remessa` e `nf_retorno` recusados sem ciclo (`sem_ciclo_ativo`); com ciclo, NF inválida recusada (`nf_invalida`) e válida exibida no LCD; NF de retorno aceita uma vez (`nf_ja_lancada` na segunda); ciclo encerrado | Vídeo do ensaio |
 
 
 <a name="evidencias-ct70"></a>
 <details>
 <summary>CT70 — Conexão e `status` retido: evidências</summary>
 
-![CT70: LCD com MQTT ok](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70LcdMqttOk.jpg)
-
-*Figura 3.4.3-CT70-1 — LCD mostrando "MQTT ok / TLS" depois da conexão. Fonte: foto do grupo, 12/11/2026.*
-
-> **IMAGEM A INCLUIR:** `ct70LcdMqttOk.jpg`, LCD mostrando "MQTT ok / TLS" depois da conexão.
+Vídeo do ensaio, com o LCD ("MQTT ok / TLS") e o Explorer (host mascarado): [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70Conexao3Botoes.mp4).
 
 ![CT70: Explorer com online e status](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70ExplorerOnlineStatus3Botoes.png)
 

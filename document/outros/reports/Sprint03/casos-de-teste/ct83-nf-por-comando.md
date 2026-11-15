@@ -39,8 +39,8 @@ O dashboard registra a NF de remessa e a NF de retorno pelo `cmd`, com as mesmas
 |---|---|
 | Data e hora | |
 | Firmware (ambiente e commit) | |
-| Situação | [ ] Aprovado  [ ] Reprovado  [ ] Parcial |
-| Observado | |
+| Situação | [ X ] Aprovado  [ ] Reprovado  [ ] Parcial |
+| Observado | Executado pelo Arthur conforme o roteiro. O vídeo ainda não foi registrado: o arquivo enviado era cópia do vídeo do CT73. |
 | Problemas | |
 
 ## Depois de executar
