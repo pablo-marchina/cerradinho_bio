@@ -220,7 +220,7 @@
       "top": 660,
       "left": -10,
       "attrs": {
-        "text": "3 botoes: ON/OFF (19, 3 s), AVANCAR (25), VOLTAR (4). Lacre, rede, autorizacao e ciclo virao do dashboard por MQTT cmd (ainda nao implementado no firmware)\nPlaca: ESP32 DevKitC de 38 pinos (USB a esquerda). Pinos do ambiente bancada-3botoes: VOLTAR 4 | buzzer 13 | SCL 22 | SDA 21 | GNSS RX 36 | GNSS TX no 17 | sem LED\nAVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre) em ordem circular\nFios: preto GND | vermelho 3V3 | laranja 5V | amarelo botoes | ciano bateria | verde SDA | azul SCL | roxo buzzer | cinza GPS"
+        "text": "3 botoes: ON/OFF (19, 3 s), AVANCAR (25), VOLTAR (4). Lacre, rede, autorizacao e ciclo sao simulados pelos comandos MQTT do dashboard (topico cmd, ver a secao 3.4.3)\nPlaca: ESP32 DevKitC de 38 pinos (USB a esquerda). Pinos do ambiente bancada-3botoes: VOLTAR 4 | buzzer 13 | SCL 22 | SDA 21 | GNSS RX 36 | GNSS TX no 17 | sem LED\nAVANCAR/VOLTAR trocam a tela do LCD (NF, prazo, posicao, bateria, lacre, conexao) em ordem circular\nFios: preto GND | vermelho 3V3 | laranja 5V | amarelo botoes | ciano bateria | verde SDA | azul SCL | roxo buzzer | cinza GPS"
       }
     },
     {
