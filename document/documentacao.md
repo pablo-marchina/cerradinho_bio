@@ -1997,7 +1997,7 @@ Estado em 15/11/2026. O CT70, o CT71, o CT74, o CT75, o CT76 e o CT78 foram exec
 |---|---|---|---|
 | CT70 | Aprovado | Wi-Fi e conexão TLS em cerca de 7 s depois do boot; `online` e `status` retidos no Explorer; a fila restaurada (1 evento) é reenviada e a Serial mostra `0 pendentes`; "MQTT ok" no LCD | Print do console do EMQX com o cliente conectado; foto do LCD |
 | CT71 | Aprovado | A violação por comando (`lacre` `aberto`) gera `VIOLACAO_LACRE` no `evento` e o `status` passa a mostrar o lacre violado; o fechamento gera `LACRE_FECHADO`; conferido com e sem ciclo ativo, no LCD e no buzzer (vídeo) | — |
-| CT72 | Parcial | Com o Wi-Fi fora, a fila subiu na Serial e `online` ficou `offline`; ao religar, os eventos foram enviados | O LCD não mostrava a fila na queda real do Wi-Fi (corrigido com a tela de conexão); regravar com a foto da tela |
+| CT72 | Aprovado | Com o Wi-Fi fora, a fila subiu e a tela de conexão do LCD mostrou o MQTT sem sinal e a fila; ao religar, os eventos foram enviados na ordem e a fila zerou (vídeo) | Foto da tela de conexão e prints do Explorer, antes e depois |
 | CT73 | Aprovado no ensaio | `offline` cerca de 40 s depois de tirar o USB e `online` ao religar | Print do Explorer com `offline` e `online` e a hora da queda |
 | CT74 | Aprovado | `avancar` troca para a tela seguinte e `voltar` retorna, com `ok:true` e o `id` devolvido, visíveis no Explorer e no LCD (vídeo) | — |
 | CT75 | Aprovado | `lacre` `aberto` e `fechado` com `ok:true`, com o `evento` e o `status` correspondentes (vídeo) | — |
@@ -2062,6 +2062,20 @@ Vídeo do ensaio, com o LCD, o buzzer e o Explorer: [Vídeo](../assets/3-desenvo
 *Figura 3.4.3-CT71-4 — LCD com "Lacre fechado / apos violacao". Fonte: quadro do vídeo do ensaio, 12/11/2026.*
 
 > **IMAGEM A INCLUIR:** `ct71LcdLacreFechado.png`, LCD com "Lacre fechado / apos violacao".
+
+</details>
+
+<a name="evidencias-ct72"></a>
+<details>
+<summary>CT72 — Fila sem rede: evidências</summary>
+
+Vídeo do ensaio, com a Serial, o LCD e o Explorer: [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct72FilaSemRede3Botoes.mp4).
+
+![CT72: tela de conexão com a fila](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct72FilaLcd.jpg)
+
+*Figura 3.4.3-CT72-1 — Tela de conexão do LCD com `MQTT: sem sinal` e a fila de eventos. Fonte: foto do grupo.*
+
+> **IMAGEM A INCLUIR:** `ct72FilaLcd.jpg`, tela de conexão do LCD com `MQTT: sem sinal` e a fila de eventos.
 
 </details>
 

@@ -32,6 +32,7 @@ Com o Wi-Fi ou o broker fora, o firmware segue operando e guarda os eventos; ao 
 
 | Marque | Arquivo | O que é |
 |---|---|---|
+| [x] | `ct72FilaSemRede3Botoes.mp4` | vídeo do teste, com a Serial, o LCD e o Explorer |
 | [ ] | `ct72ExplorerAntes.png` | Explorer antes |
 | [ ] | `ct72ExplorerDepois.png` | Explorer depois |
 | [ ] | `ct72FilaLcd.jpg` | foto da tela de conexão do LCD com a fila |
@@ -49,8 +50,8 @@ Com o Wi-Fi ou o broker fora, o firmware segue operando e guarda os eventos; ao 
 |---|---|
 | Data e hora | |
 | Firmware (ambiente e commit) | |
-| Situação | [ ] Aprovado  [ ] Reprovado  [ ] Parcial |
-| Observado | |
+| Situação | [ X ] Aprovado  [ ] Reprovado  [ ] Parcial |
+| Observado | Executado no protótipo de 3 botões com o firmware da tela de conexão (hotspot desligado, eventos gerados na Serial, hotspot religado); registrado em vídeo. |
 | Problemas | |
 
 ## Depois de executar
