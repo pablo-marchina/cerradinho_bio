@@ -31,7 +31,8 @@ Ao ligar, o broker recebe `online` e o `status` retidos, e o LCD mostra "MQTT ok
 
 | Marque | Arquivo | O que é |
 |---|---|---|
-| [ ] | `ct70LcdMqttOk.jpg` | foto do LCD |
+| [x] | `ct70Conexao3Botoes.mp4` | vídeo do ensaio, com o LCD "MQTT ok / TLS" e o Explorer (host mascarado no vídeo) |
+| [x] | `ct70LcdMqttOk.jpg` | foto do LCD (coberto pelo vídeo) |
 | [x] | `ct70ExplorerOnlineStatus3Botoes.png` | Explorer com `online` e `status` (host mascarado) |
 | [ ] | `ct70ConsoleEmqx.png` | console do EMQX com o cliente |
 | [ ] | `ct70-conexao-mqtt.serial.txt` | trecho da Serial do boot |
