@@ -2,7 +2,7 @@
 
 **Card:** #128 · **Seção:** 3.4.3 · **Antes:** [`00-preparacao.md`](00-preparacao.md) · **Índice:** [README](README.md)
 
-**Ordem de execução:** 3 de 9 · anterior: [CT74](ct74-comandos-de-tela.md) · **próximo: [CT71](ct71-violacao-do-lacre.md)**
+**Ordem de execução:** 3 de 10 · anterior: [CT74](ct74-comandos-de-tela.md) · **próximo: [CT71](ct71-violacao-do-lacre.md)**
 
 ## Objetivo
 

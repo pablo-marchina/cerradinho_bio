@@ -2,7 +2,7 @@
 
 **Card:** #123 · **Seção:** 3.4.3 · **Antes:** [`00-preparacao.md`](00-preparacao.md) · **Índice:** [README](README.md)
 
-**Ordem de execução:** 4 de 9 · anterior: [CT75](ct75-lacre-por-comando.md) · **próximo: [CT76](ct76-comandos-recusados.md)**
+**Ordem de execução:** 4 de 10 · anterior: [CT75](ct75-lacre-por-comando.md) · **próximo: [CT76](ct76-comandos-recusados.md)**
 
 ## Objetivo
 
@@ -16,7 +16,7 @@ A violação gera `VIOLACAO_LACRE` no `evento` no mesmo segundo, e o `status` re
 
 1. Siga o `ct75-lacre-por-comando.md`, passos 2 a 5.
 2. Repita **uma vez com ciclo ativo** (envie `{"id":"5","acao":"ciclo_iniciar"}` antes) e confirme `ciclo_ativo=true` no evento.
-3. Feche o ciclo no final, se precisar (`ciclo_encerrar` exige lacre fechado e NF de retorno; veja o CT76).
+3. **Encerre o ciclo no final**, senão ele segue ativo depois de reiniciar, entra em atraso e atrapalha os CTs seguintes: lacre fechado, digite `NF` na Serial e publique `{"id":"61","acao":"ciclo_encerrar"}` (`ok:true` e `CICLO_ENCERRADO`; sem o lacre fechado ou sem a NF vem `encerramento_recusado`).
 
 ## Resultado esperado
 

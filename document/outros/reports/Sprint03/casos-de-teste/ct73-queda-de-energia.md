@@ -2,7 +2,7 @@
 
 **Card:** #124 · **Seção:** 3.4.3 · **Antes:** [`00-preparacao.md`](00-preparacao.md) · **Índice:** [README](README.md)
 
-**Ordem de execução:** 9 de 9 · anterior: [CT72](ct72-fila-sem-rede.md) · **próximo: fim: atualize a 3.4.3 e a RTM (#126)**
+**Ordem de execução:** 10 de 10 · anterior: [CT72](ct72-fila-sem-rede.md) · **próximo: fim: atualize a 3.4.3 e a RTM (#126)**
 
 ## Objetivo
 

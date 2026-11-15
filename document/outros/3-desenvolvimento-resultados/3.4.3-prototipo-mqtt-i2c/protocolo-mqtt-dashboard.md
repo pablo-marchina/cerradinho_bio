@@ -28,7 +28,7 @@ JSON plano, até 256 bytes, sem escapes (`\`) nos textos:
 |---|---|---|
 | `id` | recomendado | Texto de até 32 caracteres, devolvido na resposta para casar pedido e resposta |
 | `acao` | sim | Nome do comando (tabela abaixo) |
-| `valor` | só em `lacre` e `rede` | Texto de até 24 caracteres |
+| `valor` | só em `lacre`, `rede` e `remessa` | Texto de até 24 caracteres |
 | `segundos` | só em `rede` com `desligada` | Inteiro de 1 a 3600 |
 
 ### Comandos
@@ -42,6 +42,8 @@ JSON plano, até 256 bytes, sem escapes (`\`) nos textos:
 | `autorizar` | | Registra a autorização de retirada (botão AUTORIZAR por 3 s) |
 | `ciclo_iniciar` (ou `vincular`) | | Inicia o ciclo de remessa (botão CICLO por 3 s sem ciclo ativo) |
 | `ciclo_encerrar` | | Encerra o ciclo (botão CICLO por 3 s com ciclo ativo) |
+| `remessa` | número da NF (até 15 caracteres: letras, dígitos, `-`, `.` ou `/`) | Registra a NF de remessa do ciclo ativo (equivale a `REMESSA x` na Serial) |
+| `nf_retorno` | | Lança a NF de retorno do ciclo ativo, uma vez por ciclo (equivale a `NF` na Serial) |
 | `lacre` | `aberto` ou `fechado` | Simula o lacre aberto ou fechado |
 | `rede` | `ligada` ou `desligada` | Liga ou desliga a rede simulada; `desligada` exige `segundos` e volta sozinha ao fim do prazo |
 
@@ -50,6 +52,7 @@ Observações:
 - `lacre` e `rede` (e `ligar`/`desligar`) só valem no modo com chaves (`Config::SwitchButtons`), que é o do protótipo de 3 botões.
 - Com a rede desligada o broker não entrega comandos, por isso o prazo em `segundos` é obrigatório: a rede volta sozinha.
 - Com o dispositivo desligado, só `ligar` é aceito.
+- `remessa` e `nf_retorno` só valem com ciclo ativo (RN02 e RN11); a NF de retorno é lançada uma vez por ciclo, e o mesmo vale para o comando `NF` da Serial.
 
 ## 3. Resposta (`cmd/resposta`)
 
@@ -76,7 +79,9 @@ Em caso de JSON inválido, `id` e `acao` voltam vazios quando não puderam ser l
 | `lacre_ja_aberto` / `lacre_ja_fechado` | O lacre já está no estado pedido |
 | `segundos_invalido` | `rede` `desligada` sem `segundos` ou fora de 1 a 3600 |
 | `ciclo_ativo` | `ciclo_iniciar` com ciclo em andamento |
-| `sem_ciclo_ativo` | `ciclo_encerrar` sem ciclo |
+| `sem_ciclo_ativo` | `ciclo_encerrar`, `remessa` ou `nf_retorno` sem ciclo ativo |
+| `nf_invalida` | `remessa` sem `valor` ou com número fora do formato |
+| `nf_ja_lancada` | `nf_retorno` quando a NF de retorno do ciclo já foi lançada |
 | `encerramento_recusado` | `ciclo_encerrar` recusado (lacre aberto ou sem NF de retorno) |
 
 Uma resposta `ok:true` significa que o comando foi aceito e executado; o efeito aparece em seguida em `evento` e `status`.

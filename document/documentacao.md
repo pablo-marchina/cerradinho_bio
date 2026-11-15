@@ -1892,7 +1892,7 @@ A montagem é a **alternada**: os mesmos componentes da seção 3.4.2 (ESP32 Dev
 
 > **IMAGEM A INCLUIR:** `diagramaMontagemAlternada.png`, diagrama da montagem alternada no Wokwi, com os GPIO da tabela acima.
 
-**O que mudou desde a 3.4.2:** pinagem alternada; LED de violação retirado (ver "Exceções ao enunciado"); Wi-Fi e MQTT ligados pelo `include/secrets.h`; no boot, o dispositivo conecta ao Wi-Fi de 2,4 GHz e depois ao broker. Duas observações de montagem: o USB do notebook pode não sustentar o pico de corrente do rádio com o GNSS ligado (*brownout* em loop; ver Resultados), e o contato do conector de 4 vias do módulo GNSS é frágil.
+**O que mudou desde a 3.4.2:** o LCD ganhou uma sexta tela, "Conexão" (depois da tela do lacre), com o estado do MQTT (`MQTT: conectado` ou `MQTT: sem sinal`) e a quantidade de eventos na fila; pinagem alternada; LED de violação retirado (ver "Exceções ao enunciado"); Wi-Fi e MQTT ligados pelo `include/secrets.h`; no boot, o dispositivo conecta ao Wi-Fi de 2,4 GHz e depois ao broker. Duas observações de montagem: o USB do notebook pode não sustentar o pico de corrente do rádio com o GNSS ligado (*brownout* em loop; ver Resultados), e o contato do conector de 4 vias do módulo GNSS é frágil.
 
 #### Comunicação MQTT
 
@@ -1918,7 +1918,7 @@ cmd/resposta  {"id":"a2","acao":"abrir","ok":false,"erro":"acao_desconhecida"}
 
 Os campos do `status` e do `evento` são os do JSON que o firmware já imprime na Serial (seção 3.4.2), com `device_id` e `type` (por exemplo `VIOLACAO_LACRE`).
 
-**Comandos (`cmd`).** JSON plano de até 256 bytes, sem escapes (`\`): `{"id":"a1","acao":"lacre","valor":"aberto","segundos":30}`. O `id` (até 32 caracteres) é devolvido na resposta para casar pedido e resposta; `acao` é obrigatória; `valor` (até 24 caracteres) só vale em `lacre` e `rede`; `segundos` (1 a 3600) é obrigatório em `rede` com `desligada`.
+**Comandos (`cmd`).** JSON plano de até 256 bytes, sem escapes (`\`): `{"id":"a1","acao":"lacre","valor":"aberto","segundos":30}`. O `id` (até 32 caracteres) é devolvido na resposta para casar pedido e resposta; `acao` é obrigatória; `valor` (até 24 caracteres) só vale em `lacre`, `rede` e `remessa`; `segundos` (1 a 3600) é obrigatório em `rede` com `desligada`.
 
 | `acao` | `valor` | O que faz (equivale a) |
 |---|---|---|
@@ -1929,10 +1929,12 @@ Os campos do `status` e do `evento` são os do JSON que o firmware já imprime n
 | `autorizar` | | Registra a autorização de retirada (botão AUTORIZAR por 3 s) |
 | `ciclo_iniciar` (ou `vincular`) | | Inicia o ciclo de remessa (botão CICLO por 3 s sem ciclo ativo) |
 | `ciclo_encerrar` | | Encerra o ciclo (botão CICLO por 3 s com ciclo ativo) |
+| `remessa` | número da NF (até 15 caracteres: letras, dígitos, `-`, `.` ou `/`) | Registra a NF de remessa do ciclo ativo (equivale a `REMESSA x` na Serial) |
+| `nf_retorno` | | Lança a NF de retorno do ciclo ativo, uma vez por ciclo (equivale a `NF` na Serial) |
 | `lacre` | `aberto` ou `fechado` | Simula o lacre aberto ou fechado |
 | `rede` | `ligada` ou `desligada` | Liga ou desliga a rede simulada; `desligada` exige `segundos` e a rede volta sozinha ao fim do prazo |
 
-`lacre`, `rede`, `ligar` e `desligar` só valem no modo com chaves, que é o do protótipo. Com a rede desligada o broker não entrega comandos, por isso o prazo em `segundos` é obrigatório. Com o dispositivo desligado, só `ligar` é aceito.
+`lacre`, `rede`, `ligar` e `desligar` só valem no modo com chaves, que é o do protótipo. Com a rede desligada o broker não entrega comandos, por isso o prazo em `segundos` é obrigatório. Com o dispositivo desligado, só `ligar` é aceito. `remessa` e `nf_retorno` só valem com ciclo ativo, e a NF de retorno é lançada uma vez por ciclo (RN02 e RN11).
 
 **Resposta (`cmd/resposta`).** Cada comando recebido gera exatamente uma resposta, mesmo quando recusado: `{"id":"a1","acao":"lacre","ok":true}` ou `{"id":"a1","acao":"lacre","ok":false,"erro":"lacre_ja_aberto"}`. Em JSON inválido, `id` e `acao` voltam vazios quando não puderam ser lidos. `ok:true` significa que o comando foi aceito e executado; o efeito aparece em seguida em `evento` e `status`.
 
@@ -1948,7 +1950,9 @@ Os campos do `status` e do `evento` são os do JSON que o firmware já imprime n
 | `lacre_ja_aberto` / `lacre_ja_fechado` | O lacre já está no estado pedido |
 | `segundos_invalido` | `rede` `desligada` sem `segundos` ou fora de 1 a 3600 |
 | `ciclo_ativo` | `ciclo_iniciar` com ciclo em andamento |
-| `sem_ciclo_ativo` | `ciclo_encerrar` sem ciclo |
+| `sem_ciclo_ativo` | `ciclo_encerrar`, `remessa` ou `nf_retorno` sem ciclo ativo |
+| `nf_invalida` | `remessa` sem `valor` ou com número fora do formato |
+| `nf_ja_lancada` | `nf_retorno` quando a NF de retorno do ciclo já foi lançada |
 | `encerramento_recusado` | `ciclo_encerrar` recusado (lacre aberto ou sem NF de retorno) |
 
 **Pré-requisitos.** Wi-Fi de **2,4 GHz** (o ESP32 não usa 5 GHz), sem login por navegador e com a porta **8883** liberada; a rede do Inteli provavelmente não serve, e o hotspot do celular costuma servir. Cada placa precisa de `MQTT_CLIENT_ID` e `MQTT_DEVICE_ID` próprios no `secrets.h`, senão duas placas se derrubam no mesmo broker. Os pinos 12, 5 e 15 são pinos de boot: não segurar CICLO nem AUTORIZAR ao ligar.
@@ -1974,15 +1978,16 @@ Condições comuns: firmware `bancada` (montagem alternada), alimentação USB e
 
 | CT | Configuração do ambiente | Ação do usuário | Resposta esperada do sistema |
 |---|---|---|---|
-| CT70 | Aprovado | Wi-Fi e conexão TLS em cerca de 7 s depois do boot; `online` e `status` retidos no Explorer; a fila restaurada (1 evento) é reenviada e a Serial mostra `0 pendentes`; "MQTT ok" no LCD | Print do console do EMQX com o cliente conectado; foto do LCD |
-| CT71 | Aprovado | A violação por comando (`lacre` `aberto`) gera `VIOLACAO_LACRE` no `evento` e o `status` passa a mostrar o lacre violado; o fechamento gera `LACRE_FECHADO`; conferido com e sem ciclo ativo, no LCD e no buzzer (vídeo) | — |
-| CT72 | CT70 aprovado | Desligar o Wi-Fi ou o broker, gerar eventos, restabelecer | O LCD mostra a fila subindo; ao voltar, os eventos chegam ao broker na ordem em que ocorreram e a fila zera (RN09) |
+| CT70 | Broker no ar; dispositivo sem energia | Ligar o protótipo | O LCD mostra "MQTT ok" por 2 s; o broker recebe `online = online` e o `status` retidos |
+| CT71 | CT70 aprovado; lacre fechado | Abrir o lacre (violação) | O evento `VIOLACAO_LACRE` chega em `evento` no mesmo segundo; o `status` retido passa a mostrar o lacre violado; o LCD mostra "VIOLACAO registrada" e o buzzer toca |
+| CT72 | CT70 aprovado; fila zerada | Desligar o Wi-Fi ou o broker, gerar eventos, restabelecer | A tela de conexão do LCD mostra `MQTT: sem sinal` e a fila subindo; ao voltar, os eventos chegam ao broker na ordem em que ocorreram e a fila zera (RN09) |
 | CT73 | CT70 aprovado | Cortar a alimentação do protótipo | Em até 45 s o broker publica `offline` em `online`; ao religar, volta a `online` |
-| CT74 | Aprovado | `avancar` troca para a tela seguinte e `voltar` retorna, com `ok:true` e o `id` devolvido, visíveis no Explorer e no LCD (vídeo) | — |
-| CT75 | Aprovado | `lacre` `aberto` e `fechado` com `ok:true`, com o `evento` e o `status` correspondentes (vídeo) | — |
-| CT76 | Aprovado | `acao_desconhecida`, `lacre_ja_aberto`, `lacre_ja_fechado` e `json_vazio` recusados com `ok:false` e o `erro` esperado, sem mudar o dispositivo; o comando recusado também acende o LCD (vídeo) | — |
+| CT74 | CT70 aprovado; dispositivo ligado | Publicar `{"id":"1","acao":"avancar"}` em `cmd`, e depois `voltar` | `cmd/resposta` devolve `ok:true` com o mesmo `id`; o LCD troca para a tela seguinte e depois volta |
+| CT75 | CT74 aprovado; lacre fechado | Publicar `{"id":"2","acao":"lacre","valor":"aberto"}` e depois `"fechado"` | `ok:true` nas duas; o lacre abre e fecha como pelo botão, com o `evento` e o `status` correspondentes |
+| CT76 | CT74 aprovado | Publicar `{"id":"3","acao":"abrir"}`, depois o mesmo `lacre` aberto duas vezes, e um Publish sem texto | `ok:false` com `acao_desconhecida`, `lacre_ja_aberto` e `json_vazio`; nada muda no dispositivo |
 | CT77 | CT74 aprovado | Publicar `{"id":"4","acao":"rede","valor":"desligada","segundos":60}` | `ok:true`; o dispositivo fica sem rede simulada e os eventos entram na fila; ao fim dos 60 s a rede volta sozinha e a fila é enviada |
-| CT78 | Aprovado | `desligar` e `ligar` com `ok:true` e `avancar` desligado recusado com `dispositivo_desligado`; pelo botão ON/OFF o `evento` também muda, e o tipo observado foi `STATUS_SEMANAL` (vídeo) | — |
+| CT78 | CT74 aprovado | Publicar `desligar` e, em seguida, `avancar` e `ligar` | `desligar` e `ligar` respondem `ok:true`; `avancar` com o dispositivo desligado responde `ok:false` com `dispositivo_desligado` |
+| CT83 | CT74 aprovado; sem ciclo ativo | Publicar `remessa` e `nf_retorno` sem ciclo; iniciar o ciclo (`ciclo_iniciar`); publicar `remessa` com um número válido e um inválido; `nf_retorno` duas vezes; `ciclo_encerrar` | Sem ciclo, `remessa` e `nf_retorno` respondem `sem_ciclo_ativo`; com ciclo, a NF aparece na tela de NF do LCD, o número inválido responde `nf_invalida`, a NF de retorno é aceita uma vez (`nf_ja_lancada` na segunda) e o ciclo encerra |
 
 #### Resultados
 
@@ -1990,15 +1995,16 @@ Estado em 15/11/2026. O CT70, o CT71, o CT74, o CT75, o CT76 e o CT78 foram exec
 
 | CT | Situação | Resultado observado | O que falta |
 |---|---|---|---|
-| CT70 | Aprovado no ensaio | Boot, conexão TLS e `status` em 6 s; `online` e `status` retidos no Explorer; "MQTT ok / TLS" no LCD | Print do console do EMQX com o cliente conectado |
-| CT71 | Aprovado no ensaio | `VIOLACAO_LACRE` no `evento` com o mesmo `uptime_ms` da Serial (146531), com e sem ciclo ativo; `status` republicado no mesmo segundo; LCD "VIOLACAO registrada" e, ao fechar, "Lacre fechado" | Print do `status` com o lacre violado; conferir o buzzer no áudio do vídeo |
-| CT72 | Não executado | — | Executar com o protótipo |
+| CT70 | Aprovado | Wi-Fi e conexão TLS em cerca de 7 s depois do boot; `online` e `status` retidos no Explorer; a fila restaurada (1 evento) é reenviada e a Serial mostra `0 pendentes`; "MQTT ok" no LCD | Print do console do EMQX com o cliente conectado; foto do LCD |
+| CT71 | Aprovado | A violação por comando (`lacre` `aberto`) gera `VIOLACAO_LACRE` no `evento` e o `status` passa a mostrar o lacre violado; o fechamento gera `LACRE_FECHADO`; conferido com e sem ciclo ativo, no LCD e no buzzer (vídeo) | — |
+| CT72 | Parcial | Com o Wi-Fi fora, a fila subiu na Serial e `online` ficou `offline`; ao religar, os eventos foram enviados | O LCD não mostrava a fila na queda real do Wi-Fi (corrigido com a tela de conexão); regravar com a foto da tela |
 | CT73 | Aprovado no ensaio | `offline` cerca de 40 s depois de tirar o USB e `online` ao religar | Print do Explorer com `offline` e `online` e a hora da queda |
-| CT74 | Aprovado no ensaio | `ok:true` com o `id` devolvido; o LCD mudou de tela | Prints do Publish e da resposta; foto do LCD |
-| CT75 | Aprovado no ensaio | `lacre` `aberto` e `fechado` com `ok:true` | Prints do Explorer; o `evento` correspondente |
-| CT76 | Parcial | `acao_desconhecida` observado; `json_vazio` e `lacre_ja_aberto` estão cobertos no teste de host (`scripts/verify-host.sh`) | Executar os três no protótipo, com prints |
+| CT74 | Aprovado | `avancar` troca para a tela seguinte e `voltar` retorna, com `ok:true` e o `id` devolvido, visíveis no Explorer e no LCD (vídeo) | — |
+| CT75 | Aprovado | `lacre` `aberto` e `fechado` com `ok:true`, com o `evento` e o `status` correspondentes (vídeo) | — |
+| CT76 | Aprovado | `acao_desconhecida`, `lacre_ja_aberto`, `lacre_ja_fechado` e `json_vazio` recusados com `ok:false` e o `erro` esperado, sem mudar o dispositivo; o comando recusado também acende o LCD (vídeo) | — |
 | CT77 | Não executado | — | Executar com o protótipo |
-| CT78 | Não executado | — | Executar com o protótipo |
+| CT78 | Aprovado | `desligar` e `ligar` com `ok:true` e `avancar` desligado recusado com `dispositivo_desligado`; pelo botão ON/OFF o `evento` também muda, e o tipo observado foi `STATUS_SEMANAL` (vídeo) | — |
+| CT83 | Não executado | — | Executar com o protótipo |
 
 
 <a name="evidencias-ct70"></a>
@@ -2091,7 +2097,7 @@ Vídeos do ensaio, com o Explorer, o protótipo e o LCD: CT74 [Vídeo](../assets
 
 </details>
 
-**Anomalias encontradas.** (1) *Brownout* em loop no boot do rádio, três vezes no dia, com o 5 V do USB do notebook, o LCD e o GNSS; recolocar o 5 V do GNSS resolveu, e a correção definitiva é uma fonte de 5 V e 2 A ou um capacitor de 470 a 1000 µF perto do ESP32. (2) No demo (1 s = 1 dia), o `STATUS_SEMANAL` sai a cada 7 s e cobre o último `evento` no Explorer; o `status` deixou de ser republicado por eventos periódicos, mas o evento continua saindo. (3) O boot imprimia que o envio ao broker estava pendente; a mensagem foi corrigida. (4) A NF de retorno é aceita sem ciclo ativo, o que ainda precisa de decisão do grupo. (5) O firmware agora registra se a assinatura de `cmd` foi enviada, mas, com o PubSubClient, não sabe se a ACL do broker a aceitou. (6) Em uma das montagens, o GNSS só recebe caracteres quando se mexe nos fios, por mau contato no conector de 4 vias.
+**Anomalias encontradas.** (1) *Brownout* em loop no boot do rádio, três vezes no dia, com o 5 V do USB do notebook, o LCD e o GNSS; recolocar o 5 V do GNSS resolveu, e a correção definitiva é uma fonte de 5 V e 2 A ou um capacitor de 470 a 1000 µF perto do ESP32. (2) No demo (1 s = 1 dia), o `STATUS_SEMANAL` sai a cada 7 s e cobre o último `evento` no Explorer; o `status` deixou de ser republicado por eventos periódicos, mas o evento continua saindo. (3) O boot imprimia que o envio ao broker estava pendente; a mensagem foi corrigida. (4) A NF de retorno era aceita sem ciclo ativo e repetida; agora é recusada sem ciclo e lançada uma vez por ciclo (RN11). (5) O firmware agora registra se a assinatura de `cmd` foi enviada, mas, com o PubSubClient, não sabe se a ACL do broker a aceitou. (6) Em uma das montagens, o GNSS só recebe caracteres quando se mexe nos fios, por mau contato no conector de 4 vias.
 
 #### Organização do firmware
 

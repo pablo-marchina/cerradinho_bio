@@ -2,7 +2,7 @@
 
 **Card:** #128 · **Seção:** 3.4.3 · **Antes:** [`00-preparacao.md`](00-preparacao.md) · **Índice:** [README](README.md)
 
-**Ordem de execução:** 2 de 9 · anterior: [CT70](ct70-conexao-e-status.md) · **próximo: [CT75](ct75-lacre-por-comando.md)**
+**Ordem de execução:** 2 de 10 · anterior: [CT70](ct70-conexao-e-status.md) · **próximo: [CT75](ct75-lacre-por-comando.md)**
 
 ## Objetivo
 

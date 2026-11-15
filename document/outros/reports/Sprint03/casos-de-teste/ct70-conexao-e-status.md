@@ -2,7 +2,7 @@
 
 **Card:** #123 · **Seção:** 3.4.3 · **Antes:** [`00-preparacao.md`](00-preparacao.md) · **Índice:** [README](README.md)
 
-**Ordem de execução:** 1 de 9 · anterior: [`00-preparacao.md`](00-preparacao.md) · **próximo: [CT74](ct74-comandos-de-tela.md)**
+**Ordem de execução:** 1 de 10 · anterior: [`00-preparacao.md`](00-preparacao.md) · **próximo: [CT74](ct74-comandos-de-tela.md)**
 
 ## Objetivo
 

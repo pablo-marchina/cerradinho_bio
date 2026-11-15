@@ -2,7 +2,7 @@
 
 **Card:** #128 · **Seção:** 3.4.3 · **Antes:** [`00-preparacao.md`](00-preparacao.md) · **Índice:** [README](README.md)
 
-**Ordem de execução:** 5 de 9 · anterior: [CT71](ct71-violacao-do-lacre.md) · **próximo: [CT78](ct78-dispositivo-desligado.md)**
+**Ordem de execução:** 5 de 10 · anterior: [CT71](ct71-violacao-do-lacre.md) · **próximo: [CT78](ct78-dispositivo-desligado.md)**
 
 ## Objetivo
 

@@ -2,7 +2,7 @@
 
 **Card:** #128 · **Seção:** 3.4.3 · **Antes:** [`00-preparacao.md`](00-preparacao.md) · **Índice:** [README](README.md)
 
-**Ordem de execução:** 6 de 9 · anterior: [CT76](ct76-comandos-recusados.md) · **próximo: [CT77](ct77-rede-desligada-por-tempo.md)**
+**Ordem de execução:** 6 de 10 · anterior: [CT76](ct76-comandos-recusados.md) · **próximo: [CT83](ct83-nf-por-comando.md)**
 
 ## Objetivo
 
