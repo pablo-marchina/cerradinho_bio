@@ -12,7 +12,7 @@ function addAlert(s:Snapshot,a:Asset,kind:AlertKind){
     if(x.assetId!==a.id||x.kind!==kind)return false;
     if(x.status!=='resolved')return true;
     // Uma nova comunicação inicia outro episódio de silêncio, mesmo com o alerta anterior resolvido.
-    if(kind==='silence')return a.lastContact===null||Date.parse(x.at)>=Date.parse(a.lastContact);
+    if(kind==='silence')return Date.parse(x.at)>=Date.parse(a.lastContact??a.monitoringStartedAt??a.departedAt);
     return !['seal','battery'].includes(kind);
   });
   if(!duplicate)s.alerts.push({id:nextId(s,'AL'),assetId:a.id,kind,at:s.asOf,status:'open',actions:[]});
@@ -26,7 +26,7 @@ export function registerAsset(s:Snapshot,p:Record<string,string>){const id=requi
 export function updateAlert(s:Snapshot,id:string,status:AlertStatus,reason:string){const a=s.alerts.find(x=>x.id===id);if(!a)throw Error('Alerta não encontrado.');const allowed:Record<AlertStatus,AlertStatus[]>={open:['acknowledged'],acknowledged:['in_progress','resolved'],in_progress:['resolved'],resolved:[]};if(!allowed[a.status].includes(status))throw Error('Transição inválida.');required(reason,'Justificativa');advance(s);a.status=status;(a.actions??=[]).push({status,actor:'Operador de demonstração',reason,at:s.asOf});addEvent(s,asset(s,a.assetId),`Tratamento de alerta ${a.kind}: ${status} — ${reason}`,'info');return a;}
 export function startCommand(s:Snapshot,input:CommandInput){const a=asset(s,input.assetId);if(!Object.hasOwn(commandLabels,input.type)||!['normal','refused','timeout','expired'].includes(input.scenario))throw Error('Comando inválido.');advance(s);const c:CommandRecord={...input,id:nextId(s,'CMD'),tag:a.tag,cycleId:cycleId(a),issuedAt:s.asOf,expiresAt:new Date(Date.parse(s.asOf)+60000).toISOString(),status:'created',reason:'Aguardando resposta simulada',steps:[{status:'created',at:s.asOf}]};(s.commands??=[]).push(c);return c;}
 export function step(s:Snapshot,c:CommandRecord,status:CommandStatus,reason=''){advance(s);c.status=status;c.reason=reason||commandStatuses[status];c.steps.push({status,at:s.asOf});return c;}
-function apply(s:Snapshot,c:CommandRecord){const a=asset(s,c.assetId),p=c.payload;if(c.cycleId!==cycleId(a))throw Error('Ciclo mudou após envio.');if(c.type!=='open'&&a.closedAt)throw Error('Não há ciclo ativo.');if(['authorize','close','physical_return'].includes(c.type)&&p.confirm!=='true')throw Error('Confirmação explícita obrigatória.');switch(c.type){case 'open':{if(!a.closedAt)throw Error('Equipamento já possui ciclo aberto.');const tag=required(p.tag,'TAG').toUpperCase(),nf=required(p.nf,'NF de remessa'),supplier=required(p.supplier,'Fornecedor'),owner=required(p.owner,'Responsável');if(s.assets.some(b=>b.id!==a.id&&b.tag===tag&&!b.closedAt))throw Error('TAG já vinculada a ciclo ativo.');if(!validDate(p.departedAt)||!validDate(p.dueAt)||Date.parse(p.departedAt)>Date.parse(s.asOf)||Date.parse(p.dueAt)<Date.parse(p.departedAt))throw Error('Datas de remessa/prazo inválidas.');const limit=Number(p.permanenceLimit);if(!Number.isInteger(limit)||limit<1)throw Error('Limiar deve ser inteiro positivo.');if(hasCycle(a)){archive(s,a);s.alerts=s.alerts.filter(x=>x.assetId!==a.id);}Object.assign(a,{tag,nf,supplier,owner,departedAt:p.departedAt,dueAt:p.dueAt,permanenceLimit:limit,cycleId:nextId(s,'C'),closedAt:null,returnedAt:null,returnNf:null,seal:'intact',authorization:false,authorizationExpiresAt:undefined,position:null,positions:[],gnss:'unknown',battery:null,batteryFault:false,batteryLatched:false,connection:'unknown',connectionReason:'unknown',connectionAt:undefined,lastContact:null,queue:null,queueReportedAt:null,overflow:0,confirmed:0});break;}
+function apply(s:Snapshot,c:CommandRecord){const a=asset(s,c.assetId),p=c.payload;if(c.cycleId!==cycleId(a))throw Error('Ciclo mudou após envio.');if(c.type!=='open'&&a.closedAt)throw Error('Não há ciclo ativo.');if(['authorize','close','physical_return'].includes(c.type)&&p.confirm!=='true')throw Error('Confirmação explícita obrigatória.');switch(c.type){case 'open':{if(!a.closedAt)throw Error('Equipamento já possui ciclo aberto.');const tag=required(p.tag,'TAG').toUpperCase(),nf=required(p.nf,'NF de remessa'),supplier=required(p.supplier,'Fornecedor'),owner=required(p.owner,'Responsável');if(s.assets.some(b=>b.id!==a.id&&b.tag===tag&&!b.closedAt))throw Error('TAG já vinculada a ciclo ativo.');if(!validDate(p.departedAt)||!validDate(p.dueAt)||Date.parse(p.departedAt)>Date.parse(s.asOf)||Date.parse(p.dueAt)<Date.parse(p.departedAt))throw Error('Datas de remessa/prazo inválidas.');const limit=Number(p.permanenceLimit);if(!Number.isInteger(limit)||limit<1)throw Error('Limiar deve ser inteiro positivo.');if(hasCycle(a)){archive(s,a);s.alerts=s.alerts.filter(x=>x.assetId!==a.id);}Object.assign(a,{tag,nf,supplier,owner,departedAt:p.departedAt,dueAt:p.dueAt,permanenceLimit:limit,cycleId:nextId(s,'C'),closedAt:null,returnedAt:null,returnNf:null,seal:'intact',authorization:false,authorizationExpiresAt:undefined,position:null,positions:[],gnss:'unknown',gnssNoFixSince:undefined,gnssNoFixCount:undefined,gnssNoFixReason:undefined,battery:null,batteryFault:false,batteryLatched:false,connection:'unknown',connectionReason:'unknown',connectionAt:undefined,lastContact:null,monitoringStartedAt:s.asOf,queue:null,queueReportedAt:null,overflow:0,confirmed:0});break;}
 case 'remittance':{const nf=required(p.nf,'NF de remessa');if(!validDate(p.departedAt)||Date.parse(p.departedAt)>Date.parse(s.asOf)||Date.parse(p.departedAt)>Date.parse(a.dueAt)||a.returnedAt)throw Error('Data de emissão inválida ou retorno já registrado.');a.nf=nf;a.departedAt=p.departedAt;break;}
 case 'authorize':required(p.reason,'Justificativa');if(a.seal!=='intact'||(a.authorization&&a.authorizationExpiresAt&&Date.parse(a.authorizationExpiresAt)>Date.parse(s.asOf)))throw Error('Lacre não está íntegro ou já existe autorização.');const minutes=Number(p.validityMinutes||DEFAULT_AUTHORIZATION_MINUTES);if(!Number.isInteger(minutes)||minutes<1||minutes>4320)throw Error('Validade de 1 a 4320 minutos.');a.authorization=true;a.authorizationExpiresAt=new Date(Date.parse(s.asOf)+minutes*60000).toISOString();break;
 case 'return_nf':a.returnNf=required(p.nf,'NF de retorno');break;
@@ -39,7 +39,31 @@ export function completeCommand(s:Snapshot,c:CommandRecord){if(c.status!=='publi
 export function simulate(s:Snapshot,id:string,scenario:Scenario){const a=asset(s,id);if(a.closedAt)throw Error('Selecione um ciclo aberto.');advance(s);switch(scenario){case 'violate':case 'open_seal':if(scenario==='open_seal'&&a.authorization&&a.authorizationExpiresAt&&Date.parse(a.authorizationExpiresAt)>Date.parse(s.asOf)){a.seal='authorized';a.authorization=false;addEvent(s,a,'RETIRADA_AUTORIZADA','info');}else{a.seal='violated';a.authorization=false;addEvent(s,a,'VIOLACAO_LACRE','critical');addAlert(s,a,'seal');}break;case 'close_seal':a.seal='reapply';addEvent(s,a,'LACRE_FECHADO — aguarda reaplicação');break;
 case 'battery19':case 'battery21':case 'battery26':{a.battery=Number(scenario.slice(7));a.batteryFault=false;if(a.battery>25)a.batteryLatched=false;if(a.battery<20&&!a.batteryLatched){a.batteryLatched=true;addEvent(s,a,'BATERIA_BAIXA','warning');addAlert(s,a,'battery');}else addEvent(s,a,`Bateria simulada: ${a.battery}%`);break;}
 case 'battery_fault':a.battery=null;a.batteryFault=true;addEvent(s,a,'Falha de leitura da bateria','warning');break;
-case 'no_fix':a.gnss='no_fix';addEvent(s,a,'GNSS_SEM_FIX — última posição preservada','warning');break;case 'fix':a.gnss='fix';a.position={label:'Ponto de teste (simulado)',lat:-21.12,lng:-48.52,at:s.asOf};(a.positions??=[]).push({...a.position});addEvent(s,a,'GNSS_RECUPERADO','success');break;
+case 'no_fix':{
+  if(a.gnss!=='no_fix'){
+    a.gnssNoFixSince=s.asOf;
+    a.gnssNoFixCount=0;
+    a.gnssNoFixReason='fix GNSS indisponível no cenário simulado';
+    addEvent(s,a,`GNSS_SEM_FIX — motivo: ${a.gnssNoFixReason}; última posição preservada`,'warning');
+  }
+  a.gnss='no_fix';
+  a.gnssNoFixCount=(a.gnssNoFixCount??0)+1;
+  break;
+}
+case 'fix':{
+  const recovering=a.gnss==='no_fix';
+  a.gnss='fix';
+  a.position={label:'Ponto de teste (simulado)',lat:-21.12,lng:-48.52,at:s.asOf};
+  (a.positions??=[]).push({...a.position});
+  if(recovering){
+    const seconds=a.gnssNoFixSince?Math.max(0,Math.floor((Date.parse(s.asOf)-Date.parse(a.gnssNoFixSince))/1000)):0;
+    addEvent(s,a,`GNSS_RECUPERADO — motivo: ${a.gnssNoFixReason??'fix GNSS indisponível'}; duração: ${seconds} s; coletas sem fix: ${a.gnssNoFixCount??0}`,'success');
+  }
+  a.gnssNoFixSince=undefined;
+  a.gnssNoFixCount=undefined;
+  a.gnssNoFixReason=undefined;
+  break;
+}
 case 'offline':case 'sleep':a.connection='disconnected';a.connectionReason=scenario==='offline'?'lwt':'sleep';a.connectionAt=s.asOf;addEvent(s,a,scenario==='offline'?'Perda de conexão LWT (simulada)':'Desconexão intencional (simulada)','warning');break;
 case 'overflow':a.queue=8;a.overflow=(a.overflow??0)+3;a.queueReportedAt=s.asOf;addEvent(s,a,'Relato simulado de fila cheia e 3 excedentes','warning');break;
 case 'reconnect':a.connection='connected';a.connectionReason='connected';a.connectionAt=s.asOf;a.lastContact=s.asOf;a.confirmed=(a.confirmed??0)+(a.queue??0);a.queue=0;a.queueReportedAt=s.asOf;addEvent(s,a,'Reconexão e confirmação de aplicação simuladas','success');break;

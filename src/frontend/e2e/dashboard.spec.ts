@@ -4,6 +4,21 @@ test('comando sem resposta não apresenta execução',async({page})=>{await page
 test('GNSS sem fix preserva posição válida',async({page})=>{await page.goto('/dispositivos');await expect(page.getByText('Ponto A (simulado)')).toBeVisible();await page.getByLabel('Estímulo').selectOption('no_fix');await page.getByRole('button',{name:'Aplicar estímulo'}).click();await expect(page.locator('.status').getByText('GNSS sem fix',{exact:true})).toBeVisible();await expect(page.getByText('Ponto A (simulado)')).toBeVisible();});
 test('layout sem overflow global nas sete rotas',async({page})=>{for(const path of ['/','/equipamentos','/alertas','/mapa','/ciclos','/dispositivos','/relatorios']){await page.goto(path);await expect(page.locator('main h1')).toBeVisible();await expect(page.getByText('Modo demonstração.')).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1)).toBeTruthy();}});
 
+test('bateria na lista e gráfico de alertas com dados textuais',async({page},testInfo)=>{
+  await page.goto('/equipamentos');
+  if(testInfo.project.name==='mobile'){
+    await expect(page.locator('.mobile-assets').getByText(/Bateria: (\d+%|Sem leitura|Falha)/).first()).toBeVisible();
+  }else{
+    await expect(page.locator('.table-wrap th').getByText('Bateria')).toBeVisible();
+    await expect(page.locator('.table-wrap td').getByText(/^(\d+%|Sem leitura|Falha)$/).first()).toBeVisible();
+  }
+  await page.goto('/relatorios');
+  const alerts=page.locator('.card').filter({has:page.getByRole('heading',{name:'Alertas por tipo'})});
+  await expect(alerts.locator('svg.recharts-surface')).toBeVisible();
+  await alerts.getByText('Dados do gráfico').click();
+  await expect(alerts.getByText(/Violação de lacre: /).first()).toBeVisible();
+});
+
 
 test('cadastro sem ciclo não aparece entre ciclos encerrados',async({page})=>{
   await page.goto('/equipamentos');

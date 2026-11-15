@@ -8,7 +8,8 @@ Consolidação cumulativa a partir do ZIP v0.1. Os números abaixo representam o
 - Cadastro sem ciclo excluído do filtro de ciclos encerrados.
 - Sete módulos de navegação e detalhe por equipamento; nada depende de servidor de aplicação.
 - Documentação de execução, matriz de cobertura, cenários de demonstração e plano de integração.
-- 33 testes de domínio Node e 5 testes Vitest aprovados em 13/11/2026; build Vite aprovado com aviso de tamanho do bundle. Os 7 roteiros Playwright cobrem desktop e mobile.
+- 37 testes de domínio Node e 5 testes Vitest aprovados em 14/11/2026; build Vite aprovado com aviso de tamanho do bundle. Os 8 roteiros Playwright cobrem desktop e mobile.
+- Revisão do MR !83: silêncio referenciado à abertura do ciclo até o primeiro contato; transições GNSS sem duplicação e com motivo, duração e coletas sem fix; bateria na listagem; gráfico de alertas por tipo com dados textuais; pré-vencimento RN19 desabilitado até aprovação de parâmetro por ciclo.
 - Revisão da identificação de dados fictícios, datas em Brasília, transições de comandos, vínculo e arquivo de ciclos.
 
 ## 0.5 — Qualidade e acessibilidade

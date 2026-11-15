@@ -24,3 +24,17 @@ test('silêncio começa estritamente após dois intervalos, com precisão de mil
     assert.equal(silent(a,new Date(threshold+1).toISOString()),true);
   }
 });
+test('sem primeiro contato, silêncio usa início do acompanhamento sem inventar comunicação',()=>{
+  const a={...find('AT-0055'),lastContact:null,monitoringStartedAt:'2026-11-12T13:00:00.000Z'};
+  const threshold=Date.parse(a.monitoringStartedAt)+2*a.intervalDays*86400000;
+  assert.equal(silent(a,new Date(threshold-1).toISOString()),false);
+  assert.equal(silent(a,new Date(threshold).toISOString()),false);
+  assert.equal(silent(a,new Date(threshold+1).toISOString()),true);
+  assert.equal(a.lastContact,null);
+});
+test('proximidade de sete dias não cria prioridade operacional',()=>{
+  const c=createSnapshot(),a=c.assets.find(x=>x.id==='AT-0055');
+  a.dueAt=new Date(Date.parse(c.asOf)+6*86400000).toISOString();
+  assert.equal(priority(a,c),7);
+  assert.ok(!filterAssets(c,'attention').some(x=>x.id===a.id));
+});

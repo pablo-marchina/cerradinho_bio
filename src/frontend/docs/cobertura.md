@@ -30,12 +30,12 @@
 | DASH-TEL-06 | Simulado | Telemetry, ScenarioPanel, simulator.ts; confirmação de fila/estado é só simulação, sem qualidade GNSS medida. |
 | DASH-TEL-07 | Parcial | Telemetry, ScenarioPanel, simulator.ts; confirmação de fila/estado é só simulação, sem qualidade GNSS medida. |
 | DASH-TEL-08 | Simulado | Telemetry, ScenarioPanel, simulator.ts; confirmação de fila/estado é só simulação, sem qualidade GNSS medida. |
-| DASH-TEL-09 | Parcial | Telemetry, ScenarioPanel, simulator.ts; confirmação de fila/estado é só simulação, sem qualidade GNSS medida. |
+| DASH-TEL-09 | Parcial | Última comunicação e última posição válida são exibidas separadamente; o simulador registra perda/recuperação de fix. RN08 ainda não está validada: faltam HDOP medido e validação da data absoluta produzida pelo GNSS. |
 | DASH-TEL-10 | Simulado | Telemetry, ScenarioPanel, simulator.ts; confirmação de fila/estado é só simulação, sem qualidade GNSS medida. |
 | DASH-TEL-11 | Fora/pendente | Telemetry, ScenarioPanel, simulator.ts; confirmação de fila/estado é só simulação, sem qualidade GNSS medida. |
 | DASH-EVT-01 | Simulado | Alerts, EventTimeline, simulator.ts; sem deduplicação real, escalonamento, regras fiscais especiais ou SLA homologado. |
 | DASH-EVT-02 | Parcial | Alerts, EventTimeline, simulator.ts; sem deduplicação real, escalonamento, regras fiscais especiais ou SLA homologado. |
-| DASH-EVT-03 | Parcial | Alerts, EventTimeline, simulator.ts; sem deduplicação real, escalonamento, regras fiscais especiais ou SLA homologado. |
+| DASH-EVT-03 | Parcial | Alerts, EventTimeline, simulator.ts; pré-vencimento RN19 permanece desabilitado até validação de parâmetro por ciclo. Sem escalonamento, regras fiscais especiais ou SLA homologado. |
 | DASH-EVT-04 | Simulado | Alerts, EventTimeline, simulator.ts; sem deduplicação real, escalonamento, regras fiscais especiais ou SLA homologado. |
 | DASH-EVT-05 | Fora/pendente | Alerts, EventTimeline, simulator.ts; sem deduplicação real, escalonamento, regras fiscais especiais ou SLA homologado. |
 | DASH-EVT-06 | Parcial | Alerts, EventTimeline, simulator.ts; sem deduplicação real, escalonamento, regras fiscais especiais ou SLA homologado. |
@@ -78,3 +78,5 @@
 | DASH-UX-09 | Parcial | CSS, tokens, DataState, testes Node; navegador e validações com usuários/hardware pendentes. |
 
 Permanecem pendentes de execução/homologação: testes de usabilidade CT-U01, CT-F24, métricas RNF, permissões, MQTT e casos com hardware. O arquivo de requisitos original foi preservado para rastreabilidade, não como escopo integral implementado.
+
+O simulador usa a abertura do ciclo como referência inicial para o alerta de silêncio, sem preencher ficticiamente o campo de último contato. A cobertura de RN08 continua **parcial** até existir medição de HDOP e validação do horário absoluto do GNSS. A regra de pré-vencimento RN19 exige um parâmetro aprovado para cada ciclo antes de afetar alertas ou prioridades.

@@ -76,9 +76,9 @@ Stack efetivamente usada: React, Vite, TypeScript, Tailwind, React Router, TanSt
 
 ## Validação e limites
 
-- 33 testes Node de domínio aprovados em 13/11/2026; `docs/testes-node.log` registra a rodada original de 27 testes.
+- 37 testes Node de domínio aprovados em 14/11/2026; `docs/testes-node.log` registra a rodada original de 27 testes.
 - Checagem estrita TypeScript dos módulos de domínio, simulador e fixtures, e transpilação sintática de todos os arquivos TS/TSX aprovadas.
-- Instalação npm, typecheck de toda a aplicação, build Vite e Vitest foram executados em 13/11/2026. O build passou com aviso de bundle JavaScript acima de 500 kB. Acessibilidade e validação com usuários não foram homologadas.
+- Instalação npm, typecheck de toda a aplicação, build Vite e 5 testes Vitest foram executados em 14/11/2026. Os 8 roteiros Playwright passaram em desktop e mobile (16 execuções, incluindo o novo roteiro de bateria e alertas). O build passou com aviso de bundle JavaScript acima de 500 kB. Acessibilidade e validação com usuários não foram homologadas.
 - A v1.0 significa escopo visual/funcional de demonstração consolidado em código; não significa produto de produção ou integração comprovada. API autenticada, persistência, RBAC real, idempotência distribuída, MQTT, emissão fiscal, testes com usuários, hardware e homologação do parceiro permanecem fora do escopo.
 <!-- Nota da preparação original: nenhum original do GitLab havia sido alterado; o pacote foi preparado para aplicação e revisão do grupo. -->
 
