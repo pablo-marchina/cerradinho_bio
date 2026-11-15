@@ -524,7 +524,9 @@ void updateCycle(uint64_t clock) {
 
 // LCD aceso enquanto houve uso nos ultimos LcdTimeoutMs.
 bool displayAwake(uint32_t now) {
-  return now - lastInteractionAt < Config::LcdTimeoutMs;
+  // Diferenca com sinal: um comando MQTT ou uma mensagem dentro do mesmo ciclo do loop marca
+  // lastInteractionAt depois de `now`, e a conta sem sinal daria um valor enorme e apagaria o LCD.
+  return static_cast<int32_t>(now - lastInteractionAt) < static_cast<int32_t>(Config::LcdTimeoutMs);
 }
 
 // Mostra uma mensagem curta no LCD e acende o visor.
@@ -893,6 +895,7 @@ constexpr long NetworkOffMaxSeconds = 3600;
 
 // Executa um comando do dashboard e responde sempre. true = executado.
 [[maybe_unused]] bool handleDashboardCommand(const char *payload, size_t length) {
+  lastInteractionAt = millis();  // qualquer comando, mesmo recusado, acende o LCD como um botao
   char id[DashboardCmd::MaxId + 1] = "";
   char action[DashboardCmd::MaxText + 1] = "";
   char value[DashboardCmd::MaxText + 1] = "";
