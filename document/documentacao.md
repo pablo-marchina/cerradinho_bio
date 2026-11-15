@@ -1864,7 +1864,24 @@ O botão com debounce continua no protótipo: é o AVANÇAR (GPIO25), que troca 
 
 #### Montagem
 
-A montagem é a **alternada**: os mesmos componentes da seção 3.4.2 (ESP32 DevKitC, LCD 16x2 com módulo I2C, módulo GNSS GY-GPS6MV2, buzzer, botões, chave do lacre e potenciômetro da bateria), com os pinos de entrada e saída espaçados para facilitar a fiação na protoboard. A tabela abaixo traz as ligações de cada função, e as demais conexões (alimentação e terra comuns, jumpers fêmea do LCD e do GNSS) seguem a seção 3.4.2. O ambiente do firmware é o `bancada` (alias `bancada-alternada`); a pinagem anterior continua disponível em `bancada-antiga`, para reproduzir os CT46 a CT69.
+Os casos de teste da 3.4.3 rodam em duas montagens da bancada. Elas usam os mesmos componentes da seção 3.4.2 (ESP32 DevKitC, LCD 16x2 com módulo I2C, módulo GNSS GY-GPS6MV2, buzzer, botões e potenciômetro da bateria), alimentados pelo USB, e mudam o conjunto de botões e os pinos:
+
+- **Protótipo de 3 botões** (ambiente `bancada-3botoes`): só os botões ON/OFF, AVANÇAR e VOLTAR. O lacre, a rede, a autorização e o ciclo são simulados pelos comandos MQTT do dashboard (`lacre`, `rede`, `autorizar` e `ciclo_iniciar`). É a montagem dos CT70 a CT83.
+- **Montagem alternada** (ambiente `bancada-alternada`): protótipo completo, com as chaves do lacre e da rede e os botões de autorizar e de ciclo, e com os pinos espaçados para facilitar a fiação na protoboard.
+
+**Protótipo de 3 botões**
+
+| Função | GPIO | Observação |
+|---|---|---|
+| ON/OFF | 19 | liga e desliga logicamente o dispositivo (segurar 3 s) |
+| AVANÇAR | 25 | troca a tela do LCD |
+| VOLTAR | 4 | volta a tela do LCD |
+| Bateria (ADC) | 34 | extremos do potenciômetro em 3V3 e GND |
+| Buzzer | 13 | positivo no GPIO e negativo no GND |
+| LCD I2C (SDA / SCL) | 21 / 22 | VCC no 5 V e GND comum |
+| GNSS | 36 (RX do ESP32) e 17 (TX do ESP32) | TX do módulo no GPIO36 e RX do módulo no GPIO17; alimentação de 5 V |
+
+**Montagem alternada**
 
 | Função | GPIO | Observação |
 |---|---|---|
@@ -1880,80 +1897,200 @@ A montagem é a **alternada**: os mesmos componentes da seção 3.4.2 (ESP32 Dev
 | Bateria (ADC) | 34 | leitura do potenciômetro |
 | Buzzer | 12 | o GPIO12 não pode ser puxado a 3,3 V no boot |
 
-![Montagem alternada do protótipo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/prototipoMontagemAlternada.jpg)
+*Figura 3.4.3-1 — Protótipo de 3 botões montado na protoboard, visto de cima, com o ESP32, o LCD, o GNSS, os botões e o buzzer ligados. Fonte: foto do grupo.*
 
-*Figura 3.4.3-1 — Protótipo físico na montagem alternada, visto de cima, com o ESP32, o LCD, o GNSS, os botões e o buzzer ligados. Fonte: foto do grupo, 12/11/2026.*
+> **IMAGEM A INCLUIR:** `prototipo3Botoes.jpg`, protótipo de 3 botões montado na protoboard, visto de cima.
 
-> **IMAGEM A INCLUIR:** `prototipoMontagemAlternada.jpg`, protótipo físico na montagem alternada, visto de cima, com o ESP32, o LCD, o GNSS, os botões e o buzzer ligados.
+![Diagrama do protótipo de 3 botões no Wokwi](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/diagramaWokwi3Botoes.png)
 
-![Diagrama da montagem alternada no Wokwi](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/diagramaMontagemAlternada.png)
+*Figura 3.4.3-2 — Diagrama do protótipo de 3 botões no Wokwi, com os GPIO da tabela acima (VOLTAR no 4, buzzer no 13 e SCL no 22). O chip do GNSS simulado só existe no Wokwi local e não aparece nesta captura do Wokwi online. Fonte: captura do simulador Wokwi, 15/11/2026.*
 
-*Figura 3.4.3-2 — Diagrama da montagem alternada no Wokwi, com os GPIO da tabela acima. Fonte: captura do simulador Wokwi for VS Code.*
-
-> **IMAGEM A INCLUIR:** `diagramaMontagemAlternada.png`, diagrama da montagem alternada no Wokwi, com os GPIO da tabela acima.
-
-**O que mudou desde a 3.4.2:** o LCD ganhou uma sexta tela, "Conexão" (depois da tela do lacre), com o estado do MQTT (`MQTT: conectado` ou `MQTT: sem sinal`) e a quantidade de eventos na fila; pinagem alternada; LED de violação retirado (ver "Exceções ao enunciado"); Wi-Fi e MQTT ligados pelo `include/secrets.h`; no boot, o dispositivo conecta ao Wi-Fi de 2,4 GHz e depois ao broker. Duas observações de montagem: o USB do notebook pode não sustentar o pico de corrente do rádio com o GNSS ligado (*brownout* em loop; ver Resultados), e o contato do conector de 4 vias do módulo GNSS é frágil.
+**O que mudou desde a 3.4.2:** o LCD ganhou uma sexta tela, "Conexão" (depois da tela do lacre), com o estado do MQTT (`MQTT: conectado` ou `MQTT: sem sinal`) e a quantidade de eventos na fila; montagem de 3 botões e montagem alternada; LED de violação retirado (ver "Exceções ao enunciado"); Wi-Fi e MQTT ligados pelo `include/secrets.h`; no boot, o dispositivo conecta ao Wi-Fi de 2,4 GHz e depois ao broker. Duas observações de montagem: o USB do notebook pode não sustentar o pico de corrente do rádio com o GNSS ligado (*brownout* em loop; ver Resultados), e o contato do conector de 4 vias do módulo GNSS é frágil.
 
 #### Comunicação MQTT
 
 **Plataforma.** O broker é o **EMQX Cloud Serverless**, com TLS na porta 8883, usuário e senha, escolhido pelo grupo porque funciona fora da rede do Inteli, aceita WebSocket seguro (para o dashboard) e foi testado com o ESP32. Para desenvolvimento há um **EMQX 5.8.9 local no Docker** (`docker/emqx`), na porta 1883, sem TLS nem login, que só deve receber dados fictícios. O firmware usa a biblioteca PubSubClient, com a CA pública do EMQX embutida (`include/mqtt_ca_emqx.h`). As credenciais ficam só no `include/secrets.h` de cada pessoa, que o Git ignora; nunca vão para o repositório, para prints ou para a documentação. A cota do plano gratuito do EMQX é limitada, e por isso o `status` não sai a cada heartbeat.
 
-**Tópicos.** O prefixo é `guaratracking/<device_id>/` (protótipo: `prototipo-001`), com QoS 0.
+##### 🧭 Mapa dos tópicos
 
-| Tópico | Sentido | Retido | Conteúdo |
+Todo tópico começa com o prefixo `guaratracking/<device_id>/` (no protótipo, `<device_id>` é o `MQTT_DEVICE_ID` do `secrets.h`; o padrão é `prototipo-001`). Tudo usa **QoS 0**. O dashboard **assina** `status`, `evento`, `online` e `cmd/resposta`, e **publica** em `cmd`. O broker recusa assinar `#` e `$SYS/#`.
+
+| Tópico | Quem publica | Retido | O que vem nele |
 |---|---|---|---|
-| `status` | dispositivo → broker | sim | Estado atual: lacre, bateria, ciclo, NF, dias fora, posição e fila. Sai ao conectar, a cada 60 s e quando um evento muda o estado (no mínimo 1 s entre dois) |
-| `evento` | dispositivo → broker | não | Um JSON por evento (violação do lacre, autorização, ciclo, rede, energia), o mesmo que sai na Serial |
-| `online` | dispositivo → broker | sim | `online` ao conectar; `offline` pelo Last Will, quando o broker perde o dispositivo (keep-alive de 30 s; cerca de 40 a 47 s nos ensaios) |
-| `cmd` | dashboard → dispositivo | não | Comando em JSON |
-| `cmd/resposta` | dispositivo → dashboard | não | Resultado de cada comando |
+| `status` | 📟 dispositivo | ✅ sim | Retrato do estado atual (lacre, bateria, ciclo, NF, fila). Sai ao conectar, a cada 60 s e logo depois de um evento que muda o estado (no mínimo 1 s entre dois) |
+| `evento` | 📟 dispositivo | ❌ não | Um JSON por acontecimento (violação, ciclo, autorização, bateria, GNSS, energia). É o mesmo JSON que sai na Serial |
+| `online` | 📟 dispositivo / broker | ✅ sim | Texto puro: `online` ao conectar e `offline` quando o broker perde o dispositivo (Last Will, cerca de 40 a 47 s depois da queda) |
+| `cmd` | 🖥️ dashboard | ❌ não | O comando a executar, em JSON |
+| `cmd/resposta` | 📟 dispositivo | ❌ não | O resultado de **cada** comando, em JSON |
 
-Exemplo de comando com a resposta:
+> ⚠️ **Retido** quer dizer que o broker guarda a última mensagem e a entrega a quem assinar depois. Por isso o dashboard já abre com o `status` e o `online` mais recentes. O `evento` e a `cmd/resposta` **não** são guardados: quem não estava assinando na hora perde a mensagem.
 
-```text
-cmd           {"id":"a1","acao":"lacre","valor":"aberto"}
-cmd/resposta  {"id":"a1","acao":"lacre","ok":true}
-cmd/resposta  {"id":"a2","acao":"abrir","ok":false,"erro":"acao_desconhecida"}
+##### 📥 Anatomia de um comando (tópico `cmd`)
+
+O comando é um JSON plano (sem objetos dentro de objetos), de até **256 bytes**, sem a barra invertida `\`. A ordem dos campos não importa, e campos que o firmware não conhece são ignorados.
+
+```json
+{"id":"a1","acao":"rede","valor":"desligada","segundos":120}
 ```
 
-Os campos do `status` e do `evento` são os do JSON que o firmware já imprime na Serial (seção 3.4.2), com `device_id` e `type` (por exemplo `VIOLACAO_LACRE`).
+| Campo | Tipo | Obrigatório | Para que serve | Limites e regras |
+|---|---|---|---|---|
+| `id` | texto | recomendado | 🏷️ Etiqueta do pedido. O dispositivo a devolve igual na resposta, para o dashboard saber **qual** comando foi respondido | até 32 caracteres. Use um valor novo a cada envio (um contador ou um sufixo aleatório) |
+| `acao` | texto | **sim** | 🎯 O que fazer. É o nome do comando (lista abaixo) | até 24 caracteres; só os nomes da lista |
+| `valor` | texto | só em `lacre`, `rede` e `remessa` | 🔧 O argumento do comando: `aberto` ou `fechado` (`lacre`), `ligada` ou `desligada` (`rede`) e o número da NF (`remessa`) | até 24 caracteres |
+| `segundos` | número inteiro | só em `rede` com `desligada` | ⏱️ Por quanto tempo a rede simulada fica desligada. Depois disso ela volta sozinha | de 1 a 3600, sem aspas |
 
-**Comandos (`cmd`).** JSON plano de até 256 bytes, sem escapes (`\`): `{"id":"a1","acao":"lacre","valor":"aberto","segundos":30}`. O `id` (até 32 caracteres) é devolvido na resposta para casar pedido e resposta; `acao` é obrigatória; `valor` (até 24 caracteres) só vale em `lacre`, `rede` e `remessa`; `segundos` (1 a 3600) é obrigatório em `rede` com `desligada`.
+##### 📋 Todos os comandos, prontos para copiar
 
-| `acao` | `valor` | O que faz (equivale a) |
-|---|---|---|
-| `avancar` | | Próxima tela do LCD (botão AVANÇAR); acende o visor |
-| `voltar` | | Tela anterior do LCD (botão VOLTAR); acende o visor |
-| `ligar` | | Liga o dispositivo (chave ON/OFF) |
-| `desligar` | | Desliga logicamente; o dispositivo segue ouvindo `cmd` para poder ligar de novo |
-| `autorizar` | | Registra a autorização de retirada (botão AUTORIZAR por 3 s) |
-| `ciclo_iniciar` (ou `vincular`) | | Inicia o ciclo de remessa (botão CICLO por 3 s sem ciclo ativo) |
-| `ciclo_encerrar` | | Encerra o ciclo (botão CICLO por 3 s com ciclo ativo) |
-| `remessa` | número da NF (até 15 caracteres: letras, dígitos, `-`, `.` ou `/`) | Registra a NF de remessa do ciclo ativo (equivale a `REMESSA x` na Serial) |
-| `nf_retorno` | | Lança a NF de retorno do ciclo ativo, uma vez por ciclo (equivale a `NF` na Serial) |
-| `lacre` | `aberto` ou `fechado` | Simula o lacre aberto ou fechado |
-| `rede` | `ligada` ou `desligada` | Liga ou desliga a rede simulada; `desligada` exige `segundos` e a rede volta sozinha ao fim do prazo |
+Os comandos que mexem no lacre, na rede simulada e no desligamento (`lacre`, `rede`, `ligar` e `desligar`) só valem no modo com chaves, que é o do protótipo de 3 botões. Com o dispositivo desligado, **só** `ligar` é aceito.
 
-`lacre`, `rede`, `ligar` e `desligar` só valem no modo com chaves, que é o do protótipo. Com a rede desligada o broker não entrega comandos, por isso o prazo em `segundos` é obrigatório. Com o dispositivo desligado, só `ligar` é aceito. `remessa` e `nf_retorno` só valem com ciclo ativo, e a NF de retorno é lançada uma vez por ciclo (RN02 e RN11).
+**🖥️ Tela e energia**
 
-**Resposta (`cmd/resposta`).** Cada comando recebido gera exatamente uma resposta, mesmo quando recusado: `{"id":"a1","acao":"lacre","ok":true}` ou `{"id":"a1","acao":"lacre","ok":false,"erro":"lacre_ja_aberto"}`. Em JSON inválido, `id` e `acao` voltam vazios quando não puderam ser lidos. `ok:true` significa que o comando foi aceito e executado; o efeito aparece em seguida em `evento` e `status`.
+| Comando (JSON) | O que faz | Efeito que o dashboard enxerga | Erros possíveis |
+|---|---|---|---|
+| `{"id":"1","acao":"avancar"}` | Vai para a tela seguinte do LCD e acende o visor (como o botão AVANÇAR) | só a resposta; nenhum evento | `dispositivo_desligado` |
+| `{"id":"2","acao":"voltar"}` | Volta uma tela do LCD e acende o visor (como o botão VOLTAR) | só a resposta; nenhum evento | `dispositivo_desligado` |
+| `{"id":"3","acao":"desligar"}` | Desliga logicamente: o LCD apaga, mas a placa continua ouvindo o `cmd` | evento `DISPOSITIVO_DESLIGADO` | `somente_modo_botoes` |
+| `{"id":"4","acao":"ligar"}` | Liga de novo o dispositivo | evento `STATUS` | `somente_modo_botoes` |
 
-| `erro` | Quando |
+**🔄 Ciclo, autorização e NF**
+
+| Comando (JSON) | O que faz | Efeito que o dashboard enxerga | Erros possíveis |
+|---|---|---|---|
+| `{"id":"5","acao":"ciclo_iniciar"}` (ou `"acao":"vincular"`) | Abre o ciclo de remessa (como segurar CICLO por 3 s sem ciclo ativo) | evento `CICLO_INICIADO`; `status.ciclo_ativo` vira `true` | `ciclo_ativo` |
+| `{"id":"6","acao":"remessa","valor":"NF-000123"}` | Registra o **número da NF de remessa** do ciclo ativo (RN02). O LCD mostra "NF registrada" | `status.nf` passa a trazer o número | `sem_ciclo_ativo`, `nf_invalida` |
+| `{"id":"7","acao":"nf_retorno"}` | Lança a **NF de retorno**, que libera o encerramento (RN11). Vale **uma vez por ciclo** | evento `NF_RETORNO_LANCADA` | `sem_ciclo_ativo`, `nf_ja_lancada` |
+| `{"id":"8","acao":"autorizar"}` | Registra a autorização de retirada, válida por 3 dias (RN06) | evento `AUTORIZACAO_REGISTRADA` | `dispositivo_desligado` |
+| `{"id":"9","acao":"ciclo_encerrar"}` | Encerra o ciclo. Exige **lacre fechado** e **NF de retorno** lançada | evento `CICLO_ENCERRADO`; `status.ciclo_ativo` vira `false` | `sem_ciclo_ativo`, `encerramento_recusado` (e o evento `ENCERRAMENTO_RECUSADO` com o `motivo`) |
+
+**🔒 Simulações da bancada**
+
+| Comando (JSON) | O que faz | Efeito que o dashboard enxerga | Erros possíveis |
+|---|---|---|---|
+| `{"id":"10","acao":"lacre","valor":"aberto"}` | Simula a **abertura** do lacre | sem autorização vigente: evento `VIOLACAO_LACRE` (crítico), `status.lacre` vira `violado` e o buzzer toca; com autorização: `RETIRADA_AUTORIZADA` | `lacre_ja_aberto`, `valor_invalido`, `somente_modo_botoes` |
+| `{"id":"11","acao":"lacre","valor":"fechado"}` | Simula o **fechamento** do lacre | evento `LACRE_FECHADO` (depois de violação) ou `LACRE_REAPLICADO` (depois de retirada autorizada) | `lacre_ja_fechado`, `valor_invalido`, `somente_modo_botoes` |
+| `{"id":"12","acao":"rede","valor":"desligada","segundos":60}` | Tira a rede simulada por 60 s: os eventos ficam na fila e saem sozinhos quando a rede volta | `status.fila` sobe; no fim do prazo os eventos chegam em ordem | `segundos_invalido`, `valor_invalido`, `somente_modo_botoes` |
+| `{"id":"13","acao":"rede","valor":"ligada"}` | Religa a rede simulada na hora e cancela o prazo | a fila é enviada | `valor_invalido`, `somente_modo_botoes` |
+
+> ⚠️ Com a rede desligada o broker **não entrega** comandos ao dispositivo. Por isso o `segundos` é obrigatório: é ele que faz a rede voltar.
+
+##### 📤 A resposta (tópico `cmd/resposta`)
+
+Cada comando recebido gera **exatamente uma** resposta, mesmo quando é recusado.
+
+```json
+{"id":"10","acao":"lacre","ok":true}
+{"id":"10","acao":"lacre","ok":false,"erro":"lacre_ja_aberto"}
+```
+
+| Campo | Tipo | Quando aparece | Significado |
+|---|---|---|---|
+| `id` | texto | sempre | O mesmo `id` do pedido. Vazio se o JSON era ilegível |
+| `acao` | texto | sempre | A mesma `acao` do pedido. Vazia se não deu para lê-la |
+| `ok` | verdadeiro/falso | sempre | ✅ `true` = o comando foi **aceito e executado**; o efeito aparece depois em `evento` e `status`. ❌ `false` = foi **recusado** e nada mudou |
+| `erro` | texto | só quando `ok` é `false` | O **motivo** da recusa, da tabela abaixo |
+
+| `erro` | O que aconteceu |
 |---|---|
-| `json_vazio` | Payload com 0 bytes |
+| `json_vazio` | O corpo da mensagem tinha 0 bytes |
 | `payload_grande` | Mais de 256 bytes |
-| `acao_ausente` | Sem o campo `acao` ou JSON ilegível |
-| `acao_desconhecida` | `acao` fora da tabela |
+| `acao_ausente` | Não há o campo `acao`, ou o JSON está ilegível |
+| `acao_desconhecida` | O nome da `acao` não está na lista |
 | `dispositivo_desligado` | Qualquer comando, exceto `ligar`, com o dispositivo desligado |
 | `somente_modo_botoes` | `ligar`, `desligar`, `lacre` ou `rede` fora do modo com chaves |
-| `valor_invalido` | `valor` diferente dos aceitos em `lacre` ou `rede` |
+| `valor_invalido` | O `valor` não é um dos aceitos (`aberto`/`fechado`, `ligada`/`desligada`) |
 | `lacre_ja_aberto` / `lacre_ja_fechado` | O lacre já está no estado pedido |
-| `segundos_invalido` | `rede` `desligada` sem `segundos` ou fora de 1 a 3600 |
-| `ciclo_ativo` | `ciclo_iniciar` com ciclo em andamento |
+| `segundos_invalido` | `rede` `desligada` sem `segundos`, ou fora de 1 a 3600 |
+| `ciclo_ativo` | `ciclo_iniciar` com um ciclo em andamento (RN01) |
 | `sem_ciclo_ativo` | `ciclo_encerrar`, `remessa` ou `nf_retorno` sem ciclo ativo |
-| `nf_invalida` | `remessa` sem `valor` ou com número fora do formato |
-| `nf_ja_lancada` | `nf_retorno` quando a NF de retorno do ciclo já foi lançada |
-| `encerramento_recusado` | `ciclo_encerrar` recusado (lacre aberto ou sem NF de retorno) |
+| `nf_invalida` | `remessa` sem `valor`, com mais de 15 caracteres ou com caractere fora de letras, dígitos, `-`, `.` e `/` |
+| `nf_ja_lancada` | `nf_retorno` quando a NF de retorno deste ciclo já foi lançada |
+| `encerramento_recusado` | `ciclo_encerrar` com lacre aberto ou sem NF de retorno |
+
+##### 📊 O `status` (retido)
+
+Um retrato do dispositivo, para o dashboard desenhar o estado atual sem esperar um evento.
+
+```json
+{"device_id":"prototipo-001","lacre":"integro","bateria_pct":68,"ciclo_ativo":false,"nf":"","dias_fora":0,"gnss_fix":false,"fila":0}
+```
+
+| Campo | Tipo | Significado |
+|---|---|---|
+| `device_id` | texto | Qual dispositivo é (o mesmo `<device_id>` do tópico) |
+| `lacre` | texto | 🔒 `integro` ou `violado` |
+| `bateria_pct` | inteiro 0 a 100 | 🔋 Nível da bateria (no protótipo, o potenciômetro) |
+| `ciclo_ativo` | verdadeiro/falso | Há um ciclo de remessa em andamento |
+| `nf` | texto | Número da NF de remessa do ciclo; vazio (`""`) se não foi informada |
+| `dias_fora` | inteiro | Dias fora, contados desde a remessa (no demo, 1 s = 1 dia) |
+| `gnss_fix` | verdadeiro/falso | 🛰️ O GNSS tem posição válida agora |
+| `fila` | inteiro | Quantos eventos estão guardados esperando a conexão (RN09). Como a fila sai **antes** de o `status` ser publicado, quase sempre chega `0` |
+
+##### 📣 Os eventos (tópico `evento`)
+
+Um JSON por acontecimento. Todos começam com os mesmos campos:
+
+```json
+{"device_id":"prototipo-001","type":"VIOLACAO_LACRE","uptime_ms":146531,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":68,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":146,"atraso":false,"permanencia":false,"critico":true}
+```
+
+| Campo | Tipo | Significado |
+|---|---|---|
+| `device_id` | texto | Qual dispositivo gerou o evento |
+| `type` | texto | 🏷️ **O tipo do evento** (tabela abaixo). É por ele que o dashboard decide o que mostrar |
+| `uptime_ms` | inteiro | Milissegundos desde que a placa ligou. Serve para **ordenar** eventos; não é data nem hora real |
+| `clock` | texto | `uptime_only`: o dispositivo ainda não tem data e hora reais |
+| `demo` | verdadeiro/falso | `true` quando o relógio do ciclo está acelerado (1 s = 1 dia) |
+| `seal` | texto | 🔒 `intact` ou `violated` |
+| `battery_sim_pct` | inteiro | 🔋 Bateria no momento |
+| `wifi_connected` | verdadeiro/falso | O Wi-Fi estava conectado |
+| `network_sim_available` | verdadeiro/falso | A rede simulada estava ligada |
+| `ciclo_id` | inteiro | Número do ciclo (1, 2, 3...) |
+| `ciclo_ativo` | verdadeiro/falso | Havia ciclo em andamento |
+| `dias_fora` | inteiro | Dias fora no momento |
+| `dia_ocorrencia` | inteiro | Dia do relógio em que o evento aconteceu |
+| `atraso` | verdadeiro/falso | O ciclo já passou do prazo (RN04) |
+| `permanencia` | verdadeiro/falso | O ciclo passou do limiar de permanência (RN04) |
+| `critico` | verdadeiro/falso | 🚨 `true` nos eventos que pedem aviso imediato (violação do lacre) |
+
+| `type` | Quando acontece | Campos a mais |
+|---|---|---|
+| `VIOLACAO_LACRE` 🚨 | Lacre aberto sem autorização vigente (RN05) | — |
+| `VIOLACAO_LACRE_RESUMO` 🚨 | Violações que não couberam na fila cheia, somadas | `quantidade` e primeira/última ocorrência |
+| `LACRE_FECHADO` | Lacre fechado depois de uma violação | — |
+| `RETIRADA_AUTORIZADA` | Lacre aberto com autorização vigente (RN06) | — |
+| `LACRE_REAPLICADO` | Lacre fechado depois de uma retirada autorizada | — |
+| `AUTORIZACAO_REGISTRADA` | Autorização de retirada registrada | — |
+| `CICLO_INICIADO` | Ciclo aberto | — |
+| `CICLO_ENCERRADO` | Ciclo encerrado | `ciclos_encerrados` |
+| `ENCERRAMENTO_RECUSADO` | Pedido de encerrar recusado | `motivo`: `sem_ciclo_ativo`, `lacre_aberto` ou `nf_retorno_ausente` |
+| `VINCULO_RECUSADO` | Pedido de abrir ciclo com um ciclo ativo | `motivo`: `ciclo_ativo` |
+| `NF_RETORNO_LANCADA` | NF de retorno lançada | — |
+| `ALERTA_ATRASO` | O ciclo passou do prazo (uma vez por ciclo) | — |
+| `ALERTA_PERMANENCIA` | O ciclo passou do limiar de permanência (uma vez por ciclo) | — |
+| `LIMIAR_ALTERADO` | Limiar de permanência alterado | `limiar_dias` |
+| `STATUS_SEMANAL` | Status periódico do ciclo (a cada 7 dias por padrão, RN07) | — |
+| `STATUS` | Dispositivo ligado ou religado | `contexto_restaurado` |
+| `BATERIA_BAIXA` | Bateria abaixo de 20% (RN10) | — |
+| `SENSOR_BATERIA_FALHA` | Leitura zero da bateria: falha do sensor, não bateria vazia | — |
+| `GNSS_SEM_FIX` | Perdeu a posição GNSS (RN22) | `motivo` (`sem_fix`, `sem_dados` ou `sinal_fraco`) e `satelites` |
+| `GNSS_RECUPERADO` | A posição GNSS voltou | — |
+| `DISPOSITIVO_DESLIGADO` | Dispositivo desligado logicamente | — |
+
+##### 🔁 Um exemplo do começo ao fim
+
+```text
+1. 🖥️ dashboard  → cmd           {"id":"10","acao":"lacre","valor":"aberto"}
+2. 📟 dispositivo → cmd/resposta  {"id":"10","acao":"lacre","ok":true}
+3. 📟 dispositivo → evento        {"type":"VIOLACAO_LACRE","critico":true,...}
+4. 📟 dispositivo → status        {"lacre":"violado",...}          (retido)
+```
+
+**Dicas para quem for integrar o dashboard**
+- Assine `status`, `evento`, `online` e `cmd/resposta` **antes** de publicar o primeiro comando, para não perder a resposta.
+- Gere um `id` novo a cada comando e case a resposta pelo `id`. Como o QoS é 0, a mensagem pode se perder; vale um tempo de espera (por exemplo 5 s) antes de tentar de novo.
+- Trate o `status` como o retrato atual e o `evento` como o histórico; o `online` diz se o dispositivo está presente (`offline` chega cerca de 40 a 47 s depois de a energia cair).
+- O dashboard roda no navegador e usa MQTT por WebSocket (`ws://<broker>:8083/mqtt` no broker local de desenvolvimento; a porta do WebSocket seguro do EMQX Cloud ainda não foi testada). Usuário e senha do broker nunca entram no repositório.
 
 **Pré-requisitos.** Wi-Fi de **2,4 GHz** (o ESP32 não usa 5 GHz), sem login por navegador e com a porta **8883** liberada; a rede do Inteli provavelmente não serve, e o hotspot do celular costuma servir. Cada placa precisa de `MQTT_CLIENT_ID` e `MQTT_DEVICE_ID` próprios no `secrets.h`, senão duas placas se derrubam no mesmo broker. Os pinos 12, 5 e 15 são pinos de boot: não segurar CICLO nem AUTORIZAR ao ligar.
 
@@ -2004,7 +2141,7 @@ Estado em 15/11/2026. O CT70, o CT71, o CT74, o CT75, o CT76 e o CT78 foram exec
 | CT76 | Aprovado | `acao_desconhecida`, `lacre_ja_aberto`, `lacre_ja_fechado` e `json_vazio` recusados com `ok:false` e o `erro` esperado, sem mudar o dispositivo; o comando recusado também acende o LCD (vídeo) | — |
 | CT77 | Aprovado | `rede` desligada por tempo com `ok:true`; a fila subiu durante o prazo e, ao fim, os eventos foram enviados na ordem e a fila zerou (vídeo) | — |
 | CT78 | Aprovado | `desligar` e `ligar` com `ok:true` e `avancar` desligado recusado com `dispositivo_desligado`; pelo botão ON/OFF o `evento` também muda, e o tipo observado foi `STATUS_SEMANAL` (vídeo) | — |
-| CT83 | Aprovado | Executado conforme o roteiro: `remessa` e `nf_retorno` recusados sem ciclo (`sem_ciclo_ativo`); com ciclo, NF inválida recusada (`nf_invalida`) e válida exibida no LCD; NF de retorno aceita uma vez (`nf_ja_lancada` na segunda); ciclo encerrado | Vídeo do ensaio |
+| CT83 | Aprovado | Executado conforme o roteiro: `remessa` e `nf_retorno` recusados sem ciclo (`sem_ciclo_ativo`); com ciclo, NF inválida recusada (`nf_invalida`) e válida exibida no LCD; NF de retorno aceita uma vez (`nf_ja_lancada` na segunda); ciclo encerrado (vídeo) | — |
 
 
 <a name="evidencias-ct70"></a>
@@ -2016,8 +2153,6 @@ Vídeo do ensaio, com o LCD ("MQTT ok / TLS") e o Explorer (host mascarado): [V�
 ![CT70: Explorer com online e status](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70ExplorerOnlineStatus3Botoes.png)
 
 *Figura 3.4.3-CT70-2 — `online` e `status` retidos no MQTT Explorer. Fonte: captura do MQTT Explorer, 15/11/2026.*
-
-![CT70: console do EMQX](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70ConsoleEmqx.png)
 
 *Figura 3.4.3-CT70-3 — Console do EMQX com o cliente conectado (host e usuário mascarados). Fonte: captura do console do EMQX Cloud.*
 
@@ -2035,25 +2170,17 @@ Vídeo do ensaio, com o LCD ("MQTT ok / TLS") e o Explorer (host mascarado): [V�
 
 Vídeo do ensaio, com o LCD, o buzzer e o Explorer: [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct71Violacao3Botoes.mp4).
 
-![CT71: LCD com violação](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct71LcdViolacao.png)
-
 *Figura 3.4.3-CT71-1 — LCD com "VIOLACAO registrada". Fonte: quadro do vídeo do ensaio, 12/11/2026.*
 
 > **IMAGEM A INCLUIR:** `ct71LcdViolacao.png`, LCD com "VIOLACAO registrada".
-
-![CT71: evento no Explorer](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct71ExplorerViolacao.png)
 
 *Figura 3.4.3-CT71-2 — `VIOLACAO_LACRE` no tópico `evento`, com o mesmo `uptime_ms` da Serial. Fonte: captura do MQTT Explorer, 12/11/2026.*
 
 > **IMAGEM A INCLUIR:** `ct71ExplorerViolacao.png`, `VIOLACAO_LACRE` no tópico `evento`, com o mesmo `uptime_ms` da Serial.
 
-![CT71: status violado](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct71ExplorerStatusViolado.png)
-
 *Figura 3.4.3-CT71-3 — `status` retido com `"lacre":"violado"`. Fonte: captura do MQTT Explorer.*
 
 > **IMAGEM A INCLUIR:** `ct71ExplorerStatusViolado.png`, `status` retido com `"lacre":"violado"`.
-
-![CT71: LCD com lacre fechado](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct71LcdLacreFechado.png)
 
 *Figura 3.4.3-CT71-4 — LCD com "Lacre fechado / apos violacao". Fonte: quadro do vídeo do ensaio, 12/11/2026.*
 
@@ -2075,13 +2202,9 @@ Vídeo do ensaio, com a Serial, o LCD e o Explorer: [Vídeo](../assets/3-desenvo
 
 Vídeo da queda de energia no protótipo de 3 botões (USB desligado e LCD apagando): [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct73QuedaEnergia3Botoes.mp4).
 
-![CT73: offline no Explorer](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct73ExplorerOffline.png)
-
 *Figura 3.4.3-CT73-1 — `online = offline` no MQTT Explorer depois de tirar o USB, com a hora da queda anotada. Fonte: captura do MQTT Explorer.*
 
 > **IMAGEM A INCLUIR:** `ct73ExplorerOffline.png`, `online = offline` no MQTT Explorer depois de tirar o USB, com a hora da queda anotada.
-
-![CT73: online de volta](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct73ExplorerOnline.png)
 
 *Figura 3.4.3-CT73-2 — `online = online` depois de religar o protótipo. Fonte: captura do MQTT Explorer.*
 
@@ -2091,9 +2214,9 @@ Vídeo da queda de energia no protótipo de 3 botões (USB desligado e LCD apaga
 
 <a name="evidencias-ct74-ct78"></a>
 <details>
-<summary>CT74 a CT78 — Comandos do dashboard: evidências</summary>
+<summary>CT74 a CT78 e CT83 — Comandos do dashboard: evidências</summary>
 
-Vídeos do ensaio, com o Explorer, o protótipo e o LCD: CT74 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct74Comandos3Botoes.mp4), CT75 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct75Lacre3Botoes.mp4), CT76 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct76Recusas3Botoes.mp4), CT77 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct77RedeDesligada3Botoes.mp4) e CT78 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct78Desligado3Botoes.mp4). 
+Vídeos do ensaio, com o Explorer, o protótipo e o LCD: CT74 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct74Comandos3Botoes.mp4), CT75 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct75Lacre3Botoes.mp4), CT76 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct76Recusas3Botoes.mp4), CT77 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct77RedeDesligada3Botoes.mp4), CT78 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct78Desligado3Botoes.mp4) e CT83 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct83Nf3Botoes.mp4). 
 
 </details>
 

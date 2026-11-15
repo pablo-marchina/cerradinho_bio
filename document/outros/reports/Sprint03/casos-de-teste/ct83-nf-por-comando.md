@@ -30,7 +30,7 @@ O dashboard registra a NF de remessa e a NF de retorno pelo `cmd`, com as mesmas
 
 | Marque | Arquivo | O que é |
 |---|---|---|
-| [ ] | `ct83Nf3Botoes.mp4` | vídeo com as respostas no Explorer e a tela de NF do LCD |
+| [x] | `ct83Nf3Botoes.mp4` | vídeo com as respostas no Explorer e a tela de NF do LCD (close-ups do Explorer desfocados para esconder o host) |
 | [ ] | `ct83ExplorerErros.png` | respostas `sem_ciclo_ativo`, `nf_invalida` e `nf_ja_lancada` |
 
 ## Resultado (preencher na execução)
@@ -40,7 +40,7 @@ O dashboard registra a NF de remessa e a NF de retorno pelo `cmd`, com as mesmas
 | Data e hora | |
 | Firmware (ambiente e commit) | |
 | Situação | [ X ] Aprovado  [ ] Reprovado  [ ] Parcial |
-| Observado | Executado pelo Arthur conforme o roteiro. O vídeo ainda não foi registrado: o arquivo enviado era cópia do vídeo do CT73. |
+| Observado | Executado pelo Arthur conforme o roteiro. Vídeo registrado (host do broker desfocado nos close-ups do Explorer). |
 | Problemas | |
 
 ## Depois de executar
