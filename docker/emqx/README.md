@@ -23,6 +23,16 @@ A imagem é `emqx/emqx` com versão fixa (`5.8.9`) e não precisa de licença.
 - No painel (http://localhost:18083) há a lista de clientes e de assinaturas.
 - WebSocket para o dashboard (mqtt.js): `ws://IP-do-notebook:8083/mqtt`.
 
+### Teste automático do caminho do dashboard
+
+Com o contêiner no ar e Node.js 22 ou superior, rode a partir da raiz do repositório:
+
+```powershell
+node scripts/test-emqx-local.cjs
+```
+
+O teste usa tópicos temporários e dados fictícios. Ele verifica os dois sentidos sem depender do ESP32: um dispositivo simulado publica `status` por MQTT TCP e um dashboard simulado recebe por WebSocket; depois o dashboard publica `cmd` por WebSocket e o dispositivo simulado recebe por MQTT TCP. O teste não altera o broker nem deixa mensagens retidas.
+
 ## Vários ESP32 no mesmo broker
 
 Cada ESP32 precisa de um nome de conexão único, senão um derruba o outro: defina `MQTT_CLIENT_ID` (e, se quiser separar os tópicos, `MQTT_DEVICE_ID`) no `include/secrets.h`, como mostra `include/secrets.example.h`. Quem muda o `MQTT_DEVICE_ID` publica em `guaratracking/<nome>/...` e continua visível para quem assina `guaratracking/#`.
