@@ -43,8 +43,8 @@ Ao cortar a alimentação, o broker publica `offline` em `online`; ao religar, v
 |---|---|
 | Data e hora | |
 | Firmware (ambiente e commit) | |
-| Situação | [ ] Aprovado  [ ] Reprovado  [ ] Parcial |
-| Observado | |
+| Situação | [ X ] Aprovado  [ ] Reprovado  [ ] Parcial |
+| Observado | O `offline` chegou ao broker cerca de 34 s depois de tirar o USB (estimado pelo Arthur, sem cronômetro; esperado até 45 s). O vídeo mostra a queda, mas não o `offline` no Explorer. |
 | Problemas | |
 
 ## Depois de executar

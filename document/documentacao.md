@@ -1998,11 +1998,11 @@ Estado em 15/11/2026. O CT70, o CT71, o CT74, o CT75, o CT76 e o CT78 foram exec
 | CT70 | Aprovado | Wi-Fi e conexão TLS em cerca de 7 s depois do boot; `online` e `status` retidos no Explorer; a fila restaurada (1 evento) é reenviada e a Serial mostra `0 pendentes`; "MQTT ok" no LCD | Print do console do EMQX com o cliente conectado; foto do LCD |
 | CT71 | Aprovado | A violação por comando (`lacre` `aberto`) gera `VIOLACAO_LACRE` no `evento` e o `status` passa a mostrar o lacre violado; o fechamento gera `LACRE_FECHADO`; conferido com e sem ciclo ativo, no LCD e no buzzer (vídeo) | — |
 | CT72 | Aprovado | Com o Wi-Fi fora, a fila subiu e a tela de conexão do LCD mostrou o MQTT sem sinal e a fila; ao religar, os eventos foram enviados na ordem e a fila zerou (vídeo) | — |
-| CT73 | Aprovado no ensaio | `offline` cerca de 40 s depois de tirar o USB e `online` ao religar; a queda de energia também foi gravada no protótipo de 3 botões (vídeo) | Print do Explorer com `offline` e `online` e a hora da queda, no protótipo de 3 botões |
+| CT73 | Aprovado | `offline` cerca de 34 s depois de tirar o USB (tempo estimado, sem cronômetro; esperado até 45 s); a queda de energia foi gravada no protótipo de 3 botões (vídeo) | Print do Explorer com `offline` e `online` (o vídeo não o mostra) |
 | CT74 | Aprovado | `avancar` troca para a tela seguinte e `voltar` retorna, com `ok:true` e o `id` devolvido, visíveis no Explorer e no LCD (vídeo) | — |
 | CT75 | Aprovado | `lacre` `aberto` e `fechado` com `ok:true`, com o `evento` e o `status` correspondentes (vídeo) | — |
 | CT76 | Aprovado | `acao_desconhecida`, `lacre_ja_aberto`, `lacre_ja_fechado` e `json_vazio` recusados com `ok:false` e o `erro` esperado, sem mudar o dispositivo; o comando recusado também acende o LCD (vídeo) | — |
-| CT77 | Não executado | — | Executar com o protótipo |
+| CT77 | Aprovado | `rede` desligada por tempo com `ok:true`; a fila subiu durante o prazo e, ao fim, os eventos foram enviados na ordem e a fila zerou (vídeo) | — |
 | CT78 | Aprovado | `desligar` e `ligar` com `ok:true` e `avancar` desligado recusado com `dispositivo_desligado`; pelo botão ON/OFF o `evento` também muda, e o tipo observado foi `STATUS_SEMANAL` (vídeo) | — |
 | CT83 | Não executado | — | Executar com o protótipo |
 
@@ -2097,13 +2097,7 @@ Vídeo da queda de energia no protótipo de 3 botões (USB desligado e LCD apaga
 <details>
 <summary>CT74 a CT78 — Comandos do dashboard: evidências</summary>
 
-Vídeos do ensaio, com o Explorer, o protótipo e o LCD: CT74 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct74Comandos3Botoes.mp4), CT75 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct75Lacre3Botoes.mp4), CT76 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct76Recusas3Botoes.mp4) e CT78 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct78Desligado3Botoes.mp4). O CT77 ainda não foi executado.
-
-![CT77: rede desligada por tempo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct77RedeDesligada.png)
-
-*Figura 3.4.3-CT77-1 — Comando `rede` `desligada` com 60 s, a fila no LCD e o reenvio ao fim do prazo. Fonte: captura do MQTT Explorer e foto do LCD.*
-
-> **IMAGEM A INCLUIR:** `ct77RedeDesligada.png`, comando `rede` `desligada` com 60 s, a fila no LCD e o reenvio ao fim do prazo.
+Vídeos do ensaio, com o Explorer, o protótipo e o LCD: CT74 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct74Comandos3Botoes.mp4), CT75 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct75Lacre3Botoes.mp4), CT76 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct76Recusas3Botoes.mp4), CT77 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct77RedeDesligada3Botoes.mp4) e CT78 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct78Desligado3Botoes.mp4). 
 
 </details>
 
