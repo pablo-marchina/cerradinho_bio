@@ -29,6 +29,7 @@ Ao cortar a alimentação, o broker publica `offline` em `online`; ao religar, v
 
 | Marque | Arquivo | O que é |
 |---|---|---|
+| [x] | `ct73QuedaEnergia3Botoes.mp4` | vídeo da queda de energia (USB desligado e LCD apagando); não mostra o `offline` no Explorer |
 | [ ] | `ct73ExplorerOffline.png` | Explorer com `offline` |
 | [ ] | `ct73ExplorerOnline.png` | Explorer com `online` de volta |
 

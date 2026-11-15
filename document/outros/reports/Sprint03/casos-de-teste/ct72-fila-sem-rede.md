@@ -33,10 +33,10 @@ Com o Wi-Fi ou o broker fora, o firmware segue operando e guarda os eventos; ao 
 | Marque | Arquivo | O que é |
 |---|---|---|
 | [x] | `ct72FilaSemRede3Botoes.mp4` | vídeo do teste, com a Serial, o LCD e o Explorer |
-| [ ] | `ct72ExplorerAntes.png` | Explorer antes |
-| [ ] | `ct72ExplorerDepois.png` | Explorer depois |
-| [ ] | `ct72FilaLcd.jpg` | foto da tela de conexão do LCD com a fila |
-| [ ] | `ct72-fila-sem-rede.serial.txt` | Serial com a fila e o reenvio |
+| [x] | `ct72ExplorerAntes.png` | Explorer antes (coberto pelo vídeo) |
+| [x] | `ct72ExplorerDepois.png` | Explorer depois (coberto pelo vídeo) |
+| [x] | `ct72FilaLcd.jpg` | foto da tela de conexão do LCD com a fila (coberto pelo vídeo) |
+| [x] | `ct72-fila-sem-rede.serial.txt` | Serial com a fila e o reenvio (coberto pelo vídeo) |
 
 ## Observações
 
