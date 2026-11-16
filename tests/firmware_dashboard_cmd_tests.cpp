@@ -57,6 +57,7 @@ int main() {
   assert(!DashboardCmd::textValue(sample, std::strlen(sample), "valor", text, sizeof(text)));    // ausente
   assert(!DashboardCmd::textValue("{\"acao\":\"a\\\"b\"}", 14, "acao", text, sizeof(text)));       // barra invertida
   assert(!DashboardCmd::textValue("{\"acao\":\"nao fecha", 18, "acao", text, sizeof(text)));       // aspas abertas
+  assert(!DashboardCmd::textValue("{\"acao\":x\"y}", 12, "acao", text, sizeof(text)));             // aspas em valor sem aspas
   assert(!DashboardCmd::textValue("{\"acao\":\"muito_muito_muito_longo_demais\"}", 40, "acao", text, 8));
 
   FakeNVS::reset();

@@ -2,7 +2,8 @@
 // Leitura minima do JSON de comando do dashboard (topico cmd), sem biblioteca externa.
 // Aceita objetos planos com texto entre aspas ou numero/booleano sem aspas:
 //   {"id":"a1","acao":"lacre","valor":"aberto","segundos":30}
-// Texto com barra invertida e recusado (o contrato nao usa escapes).
+// Texto com barra invertida e recusado (o contrato nao usa escapes); aspas no meio de um valor
+// sem aspas tambem sao recusadas, porque quebrariam o JSON de cmd/resposta.
 #include <cstddef>
 #include <cstdlib>
 #include <cstring>
@@ -38,7 +39,7 @@ inline bool textValue(const char *json, size_t length, const char *key, char *ou
       if (p >= length) return false;  // aspas nao fechadas
     } else {
       while (p < length && json[p] != ',' && json[p] != '}' && json[p] != ' ' && json[p] != '\r' && json[p] != '\n') {
-        if (n + 1 >= cap) return false;
+        if (json[p] == '"' || n + 1 >= cap) return false;  // aspas no meio quebrariam o JSON da resposta
         out[n++] = json[p++];
       }
     }
