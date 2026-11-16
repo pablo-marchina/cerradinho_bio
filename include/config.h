@@ -32,7 +32,7 @@
 #endif
 
 // Pinagem padrao = montagem alternada da bancada (secao 3.4.2). Todos os pinos podem ser trocados
-// por -D; os ambientes demo e weekly (Wokwi) voltam aos pinos antigos pelo platformio.ini.
+// por -D. O diagrama do Wokwi (demo e weekly) usa esta mesma pinagem.
 #ifndef LCD_SDA_PIN
 #define LCD_SDA_PIN 21
 #endif
@@ -85,7 +85,7 @@ constexpr int GpsRx = GPS_RX_PIN;
 constexpr int GpsTx = 17;
 constexpr int SealPin = 27;
 constexpr int BatteryPin = 34;  // ADC1, usado com Wi-Fi.
-// Prototipo V2: LCD 16x2 I2C (SDA 21, SCL 23 na montagem alternada; 22 no Wokwi).
+// Prototipo V2: LCD 16x2 I2C (SDA 21, SCL 23; 22 no bancada-antiga).
 constexpr int LcdSdaPin = LCD_SDA_PIN;
 constexpr int LcdSclPin = LCD_SCL_PIN;
 constexpr uint8_t LcdAddress = 0x27;

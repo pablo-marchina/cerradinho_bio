@@ -85,7 +85,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1 -Environ
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify.ps1
 ```
 
-Com o PlatformIO instalado globalmente, as compilações equivalem a `pio run -e demo`, `pio run -e weekly` e `pio run -e bancada`. Na placa física com botões, usar `bancada` (pinagem padrão: montagem alternada; os ambientes `demo` e `weekly` do Wokwi e o `bancada-antiga` seguem nos pinos antigos); montagem e gravação estão na [seção 3.4.2](document/documentacao.md#prototipo-fisico-offline). As ferramentas locais são instaladas em `.tools/`. Em Linux/macOS, com `g++` e Python, `bash scripts/verify-host.sh` executa os testes das regras e da classe `ScreenController` (telas do LCD), e `bash scripts/check-firmware-syntax.sh` compila o `main.cpp` com dublês do Arduino. São testes em computador e não substituem a compilação para ESP32 nem a simulação no Wokwi.
+Com o PlatformIO instalado globalmente, as compilações equivalem a `pio run -e demo`, `pio run -e weekly` e `pio run -e bancada`. Na placa física com botões, usar `bancada` (pinagem padrão: montagem alternada, a mesma do Wokwi; só o `bancada-antiga` segue nos pinos antigos, usados nos CT46 a CT69); montagem e gravação estão na [seção 3.4.2](document/documentacao.md#prototipo-fisico-offline). As ferramentas locais são instaladas em `.tools/`. Em Linux/macOS, com `g++` e Python, `bash scripts/verify-host.sh` executa os testes das regras e da classe `ScreenController` (telas do LCD), e `bash scripts/check-firmware-syntax.sh` compila o `main.cpp` com dublês do Arduino. São testes em computador e não substituem a compilação para ESP32 nem a simulação no Wokwi.
 
 ### Simulação no Wokwi
 

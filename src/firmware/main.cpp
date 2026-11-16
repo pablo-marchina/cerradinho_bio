@@ -18,6 +18,7 @@
 #include "sim_clock.h"
 #include "screen_controller.h"
 #include "seal_debounce.h"
+#include "dashboard_cmd.h"
 #if MQTT_ENABLED
 #include <PubSubClient.h>
 #if MQTT_TLS
@@ -111,6 +112,7 @@ Button previousButton{Config::PreviousButtonPin, false, false, 0, 0, false};
 Button networkButton{Config::NetworkSwitchPin, false, false, 0, 0, false};
 Button powerButton{Config::PowerSwitchPin, false, false, 0, 0, false};
 bool networkOn = true, powerOn = true;
+uint32_t networkRestoreAt = 0;  // comando `rede` desligada por tempo limitado: religa neste millis(); 0 = sem prazo
 bool sealButtonRaw = true, sealButtonStable = true;  // nivel do botao do lacre; HIGH = solto
 LiquidCrystal_I2C lcd(Config::LcdAddress, ScreenController::Columns, 2);
 ScreenController screens;  // telas do LCD (classe propria, usada no setup e no loop)
@@ -522,7 +524,9 @@ void updateCycle(uint64_t clock) {
 
 // LCD aceso enquanto houve uso nos ultimos LcdTimeoutMs.
 bool displayAwake(uint32_t now) {
-  return now - lastInteractionAt < Config::LcdTimeoutMs;
+  // Diferenca com sinal: um comando MQTT ou uma mensagem dentro do mesmo ciclo do loop marca
+  // lastInteractionAt depois de `now`, e a conta sem sinal daria um valor enorme e apagaria o LCD.
+  return static_cast<int32_t>(now - lastInteractionAt) < static_cast<int32_t>(Config::LcdTimeoutMs);
 }
 
 // Mostra uma mensagem curta no LCD e acende o visor.
@@ -569,18 +573,23 @@ void requestLink(uint64_t clock) {
 
 // Chave de sinal (on/off do SIM): reenvia a fila na volta e mostra o resultado no LCD.
 void updateNetwork() {
-  const bool available = simulatedNetworkAvailable();
+  // Com MQTT, a rede so existe com o Wi-Fi e o broker conectados (networkOnline); a queda real
+  // mostra "Sem sinal" no LCD como a chave simulada (#124).
+  const bool available = networkOnline();
   if (available == networkWasAvailable) return;
   networkWasAvailable = available;
+  static bool announced = false;  // a 1a conexao depois do boot e silenciosa: o "MQTT ok" ja a anuncia
   char bottom[ScreenController::Columns + 1];
   if (available) {
     // Com MQTT o broker ainda reconecta aqui: a fila sai depois, em updateMqtt.
     const unsigned before = pending.count + (pending.overflowCount > 0 ? 1u : 0u);
     flushPending();
+    if (!announced) return;
     const unsigned sent = before - pending.count - (pending.overflowCount > 0 ? 1u : 0u);
     snprintf(bottom, sizeof(bottom), "enviados: %u", sent);
     showMessage("Sinal ok", bottom);
   } else {
+    announced = true;
     snprintf(bottom, sizeof(bottom), "na fila: %u", pending.count);
     showMessage("Sem sinal", bottom);
   }
@@ -618,6 +627,18 @@ bool holdCompleted(Button &button, uint32_t now, const char *name) {
   return true;
 }
 
+// Registra a autorizacao de retirada (botao AUTORIZAR por 3 s ou comando `autorizar` do dashboard).
+void registerAuthorization(uint64_t clock) {
+  sealAuthorize(&seal, clock);
+  contextDirty = true;
+  String extra = ",\"janela_dias\":";
+  extra += Config::AuthorizationWindowDays;
+  publishEvent("AUTORIZACAO_REGISTRADA", false, extra);
+  char bottom[ScreenController::Columns + 1];
+  snprintf(bottom, sizeof(bottom), "vale %lu dias", (unsigned long)Config::AuthorizationWindowDays);
+  showMessage("Autorizacao ok", bottom);
+}
+
 // Navegacao do LCD e acoes de 3 s (autorizacao e ciclo).
 void readButtons(uint32_t now, uint64_t clock) {
   // Com o LCD apagado, o primeiro toque em avancar/voltar so acende o visor.
@@ -625,16 +646,7 @@ void readButtons(uint32_t now, uint64_t clock) {
   if (Config::SwitchButtons && updateButton(networkButton, now)) networkOn = !networkOn;
   if (updateButton(nextButton, now) && awake) screens.next();
   if (updateButton(previousButton, now) && awake) screens.previous();
-  if (holdCompleted(authorizeButton, now, "BTN_AUTORIZAR")) {
-    sealAuthorize(&seal, clock);
-    contextDirty = true;
-    String extra = ",\"janela_dias\":";
-    extra += Config::AuthorizationWindowDays;
-    publishEvent("AUTORIZACAO_REGISTRADA", false, extra);
-    char bottom[ScreenController::Columns + 1];
-    snprintf(bottom, sizeof(bottom), "vale %lu dias", (unsigned long)Config::AuthorizationWindowDays);
-    showMessage("Autorizacao ok", bottom);
-  }
+  if (holdCompleted(authorizeButton, now, "BTN_AUTORIZAR")) registerAuthorization(clock);
   // Segurar 3 s inicia o ciclo quando nao ha ciclo ativo e encerra quando ha.
   if (holdCompleted(cycleButton, now, "BTN_CICLO")) {
     if (cycleActive) requestClose();
@@ -674,6 +686,27 @@ bool validInvoice(const String &text) {
 // Comandos locais do Monitor Serial: VINCULAR tenta um novo vinculo (RF003/RF004; RN01),
 // NF lanca a NF de retorno, REMESSA x representa a NF da remessa e LIMIAR n ajusta RN03.
 // VINCULAR e entrada de bancada; nao representa autenticacao nem concorrencia na plataforma.
+// NF de retorno (RN11): so com ciclo ativo e uma vez por ciclo. nullptr = aceita; senao, o motivo.
+const char *registerReturnInvoice() {
+  if (!cycleActive) return "sem_ciclo_ativo";
+  if (returnInvoiceIssued) return "nf_ja_lancada";
+  returnInvoiceIssued = true;
+  contextDirty = true;
+  publishEvent("NF_RETORNO_LANCADA");
+  return nullptr;
+}
+
+// NF de remessa (RN02): so com ciclo ativo e no formato aceito. nullptr = aceita; senao, o motivo.
+const char *registerShipmentInvoice(const String &invoice) {
+  if (!cycleActive) return "sem_ciclo_ativo";
+  if (!validInvoice(invoice)) return "nf_invalida";
+  snprintf(shipmentInvoice, sizeof(shipmentInvoice), "%s", invoice.c_str());
+  contextDirty = true;
+  Serial.printf("[comando] NF da remessa registrada: %s\r\n", shipmentInvoice);
+  showMessage("NF registrada", shipmentInvoice);
+  return nullptr;
+}
+
 void readCommands() {
   while (Serial.available()) {
     const char c = Serial.read();
@@ -684,22 +717,16 @@ void readCommands() {
       // Entrada explicita, mesmo com ciclo ativo. BTN_CICLO permanece reservado ao encerramento.
       requestLink(clockMs());
     } else if (serialLine == "NF") {
-      returnInvoiceIssued = true;
-      contextDirty = true;
-      publishEvent("NF_RETORNO_LANCADA");
+      if (const char *error = registerReturnInvoice()) Serial.printf("[comando] NF de retorno recusada: %s\r\n", error);
     } else if (serialLine.startsWith("REMESSA ")) {
       String invoice = serialLine.substring(8);
       invoice.trim();
-      if (!cycleActive) {
+      const char *error = registerShipmentInvoice(invoice);
+      if (error && !cycleActive) {
         Serial.println("[comando] sem ciclo ativo; inicie o ciclo antes da REMESSA");
-      } else if (!validInvoice(invoice)) {
+      } else if (error) {
         Serial.printf("[comando] NF invalida; use ate %u letras, digitos, '-', '.' ou '/'\r\n",
                       Config::InvoiceMaxLength);
-      } else {
-        snprintf(shipmentInvoice, sizeof(shipmentInvoice), "%s", invoice.c_str());
-        contextDirty = true;
-        Serial.printf("[comando] NF da remessa registrada: %s\r\n", shipmentInvoice);
-        showMessage("NF registrada", shipmentInvoice);
       }
     } else if (serialLine.startsWith("LIMIAR ")) {
       const long days = serialLine.substring(7).toInt();
@@ -863,7 +890,8 @@ void updateDisplay(uint32_t now, uint64_t clock) {
     const StatusView view{shipmentInvoice, cycleActive, cycle.daysOut,
                           cycle.expectedReturnDays, haveLatest || havePrevious, haveLatest,
                           (uint32_t)((now - latestAt) / 1000UL), batteryPct, battery.lowSent,
-                          battery.failureSent, sealView(clock), stableSeal};
+                          battery.failureSent, sealView(clock), stableSeal,
+                          networkOnline(), static_cast<uint32_t>(pending.count)};
     screens.render(view, now, top, bottom);
   }
   if (strcmp(top, shownTop) != 0) {
@@ -878,6 +906,113 @@ void updateDisplay(uint32_t now, uint64_t clock) {
   }
 }
 
+// ---- Comandos do dashboard (topico cmd) ----
+// Contrato: document/outros/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/protocolo-mqtt-dashboard.md.
+// Cada comando e um JSON {"id":"...","acao":"...","valor":"...","segundos":N} e recebe uma resposta
+// {"id","acao","ok"[,"erro"]} em cmd/resposta. As acoes repetem o que os botoes fazem na placa.
+void publishCmdResponse(const char *id, const char *action, bool ok, const char *error);
+
+constexpr long NetworkOffMaxSeconds = 3600;
+
+// Executa um comando do dashboard e responde sempre. true = executado.
+[[maybe_unused]] bool handleDashboardCommand(const char *payload, size_t length) {
+  lastInteractionAt = millis();  // qualquer comando, mesmo recusado, acende o LCD como um botao
+  char id[DashboardCmd::MaxId + 1] = "";
+  char action[DashboardCmd::MaxText + 1] = "";
+  char value[DashboardCmd::MaxText + 1] = "";
+  const auto fail = [&](const char *error) {
+    publishCmdResponse(id, action, false, error);
+    return false;
+  };
+  if (length == 0) return fail("json_vazio");
+  if (length > DashboardCmd::MaxPayload) return fail("payload_grande");
+  DashboardCmd::textValue(payload, length, "id", id, sizeof(id));
+  if (!DashboardCmd::textValue(payload, length, "acao", action, sizeof(action))) return fail("acao_ausente");
+  DashboardCmd::textValue(payload, length, "valor", value, sizeof(value));
+  const uint32_t now = millis();
+  const uint64_t clock = clockMs();
+  const auto is = [&](const char *name) { return std::strcmp(action, name) == 0; };
+  const bool known = is("avancar") || is("voltar") || is("ligar") || is("desligar") || is("autorizar") ||
+                     is("ciclo_iniciar") || is("vincular") || is("ciclo_encerrar") || is("lacre") || is("rede") ||
+                     is("remessa") || is("nf_retorno");
+  if (!known) return fail("acao_desconhecida");
+  if (!poweredOn && !is("ligar")) return fail("dispositivo_desligado");
+
+  if (is("avancar") || is("voltar")) {
+    lastInteractionAt = now;  // acende o LCD, como qualquer botao
+    if (is("avancar")) screens.next();
+    else screens.previous();
+  } else if (is("ligar") || is("desligar")) {
+    if (!Config::SwitchButtons) return fail("somente_modo_botoes");
+    powerOn = is("ligar");  // loop() registra DISPOSITIVO_DESLIGADO e o retorno
+  } else if (is("autorizar")) {
+    registerAuthorization(clock);
+  } else if (is("ciclo_iniciar") || is("vincular")) {
+    if (cycleActive) return fail("ciclo_ativo");
+    requestLink(clock);
+  } else if (is("ciclo_encerrar")) {
+    const bool wasActive = cycleActive;
+    requestClose();  // recusa sozinho: sem ciclo, lacre aberto ou sem NF de retorno
+    if (!wasActive) return fail("sem_ciclo_ativo");
+    if (cycleActive) return fail("encerramento_recusado");
+  } else if (is("lacre")) {
+    if (!Config::SwitchButtons) return fail("somente_modo_botoes");
+    const bool toOpen = std::strcmp(value, "aberto") == 0;
+    if (!toOpen && std::strcmp(value, "fechado") != 0) return fail("valor_invalido");
+    if (toOpen == stableSeal) return fail(toOpen ? "lacre_ja_aberto" : "lacre_ja_fechado");
+    sealTransition(toOpen, now, now, clock);
+  } else if (is("remessa")) {
+    String invoice = value;
+    invoice.trim();
+    invoice.toUpperCase();  // como na Serial, que converte a linha toda
+    if (const char *error = registerShipmentInvoice(invoice)) return fail(error);
+  } else if (is("nf_retorno")) {
+    if (const char *error = registerReturnInvoice()) return fail(error);
+  } else if (is("rede")) {
+    if (!Config::SwitchButtons) return fail("somente_modo_botoes");
+    if (std::strcmp(value, "ligada") == 0) {
+      networkOn = true;
+      networkRestoreAt = 0;
+    } else if (std::strcmp(value, "desligada") == 0) {
+      // Sem a rede o broker nao entrega mais comandos: o prazo religa sozinho.
+      long seconds = 0;
+      if (!DashboardCmd::intValue(payload, length, "segundos", 1, NetworkOffMaxSeconds, &seconds)) {
+        return fail("segundos_invalido");
+      }
+      networkOn = false;
+      networkRestoreAt = now + static_cast<uint32_t>(seconds) * 1000UL;
+      if (networkRestoreAt == 0) networkRestoreAt = 1;
+    } else {
+      return fail("valor_invalido");
+    }
+  }
+  publishCmdResponse(id, action, true, nullptr);
+  return true;
+}
+
+// Resposta no Serial e, com MQTT, no topico cmd/resposta (QoS 0, nao retida).
+String cmdResponseJson(const char *id, const char *action, bool ok, const char *error) {
+  String json = "{\"id\":\"";
+  json += id;
+  json += "\",\"acao\":\"";
+  json += action;
+  json += "\",\"ok\":";
+  json += ok ? "true" : "false";
+  if (error) {
+    json += ",\"erro\":\"";
+    json += error;
+    json += "\"";
+  }
+  json += "}";
+  return json;
+}
+
+#if !MQTT_ENABLED
+void publishCmdResponse(const char *id, const char *action, bool ok, const char *error) {
+  Serial.println(String("[cmd] resposta ") + cmdResponseJson(id, action, ok, error));
+}
+#endif
+
 #if MQTT_ENABLED
 // Walking skeleton MQTT (card #122): conecta ao broker (padrao: HiveMQ no Docker, porta 1883,
 // sem TLS e sem login; TLS com usuario/senha para HiveMQ Cloud por MQTT_TLS 1), publica `status`
@@ -885,6 +1020,7 @@ void updateDisplay(uint32_t now, uint64_t clock) {
 constexpr const char *TopicStatus = MQTT_TOPIC_PREFIX "status";
 constexpr const char *TopicOnline = MQTT_TOPIC_PREFIX "online";
 constexpr const char *TopicCmd = MQTT_TOPIC_PREFIX "cmd";
+constexpr const char *TopicCmdResposta = MQTT_TOPIC_PREFIX "cmd/resposta";
 constexpr const char *TopicEvento = MQTT_TOPIC_PREFIX "evento";
 constexpr uint32_t MqttRetryMs = 10000;
 constexpr uint32_t MqttStatusMs = 60000;
@@ -898,19 +1034,28 @@ PubSubClient mqtt(mqttNet);
 uint32_t lastMqttTry = 0, lastMqttStatus = 0;
 bool mqttWasConnected = false, mqttConfigured = false;
 
-// Por enquanto so registra o comando recebido no Serial; a execucao vem nas proximas fatias.
+// Comando do dashboard: registra no Serial e executa (handleDashboardCommand responde em cmd/resposta).
 void onMqttMessage(char *topic, uint8_t *payload, unsigned int length) {
   // O payload do PubSubClient nao termina em nulo: o texto e copiado com o tamanho exato.
   if (length == 0) {
     Serial.printf("[mqtt] cmd vazio em %s (0 bytes)\r\n", topic);
+    handleDashboardCommand("", 0);
     return;
   }
   String text;
   text.concat(reinterpret_cast<const char *>(payload), length);
   Serial.printf("[mqtt] cmd recebido em %s (%u bytes): %s\r\n", topic, length, text.c_str());
+  handleDashboardCommand(text.c_str(), text.length());
 }
 
 bool mqttConnected() { return mqtt.connected(); }
+
+// Resposta ao comando: Serial e, com broker conectado, cmd/resposta (QoS 0, nao retida).
+void publishCmdResponse(const char *id, const char *action, bool ok, const char *error) {
+  const String json = cmdResponseJson(id, action, ok, error);
+  Serial.println(String("[cmd] resposta ") + json);
+  if (mqtt.connected()) mqtt.publish(TopicCmdResposta, json.c_str(), false);
+}
 
 // Publica o evento (QoS 0, nao retido); false = desconectado ou falha, e quem chama enfileira.
 // beginPublish/write/endPublish enviam em partes, entao o JSON pode passar do buffer de 512 bytes.
@@ -970,7 +1115,12 @@ void updateMqtt(uint32_t now) {
     mqtt.setCallback(onMqttMessage);
   }
   if (WiFi.status() != WL_CONNECTED || !simulatedNetworkAvailable()) {
-    if (mqtt.connected()) mqtt.disconnect();
+    if (mqtt.connected()) {
+      // disconnect() e uma desconexao limpa e nao dispara o Last Will; sem isto o `online`
+      // retido fica `online` enquanto a rede simulada esta desligada. Publica `offline` antes.
+      mqtt.publish(TopicOnline, "offline", true);
+      mqtt.disconnect();
+    }
     mqttWasConnected = false;
     return;
   }
@@ -1061,7 +1211,7 @@ void setup() {
   gnssInit(&gnssHealth);
   restorePending();
   batteryInit(&battery, Config::BatteryLowPct, Config::BatteryRecoverPct);
-  networkWasAvailable = simulatedNetworkAvailable();
+  networkWasAvailable = networkOnline();  // com MQTT, falso ate o broker conectar
   poweredOn = powerSwitchOn();
   StoredContext context{};
   const bool restored = restoreContext(context);
@@ -1101,7 +1251,11 @@ void setup() {
   updateDisplay(millis(), clockMs());
   Serial.println("[boot] aguardando GPS; heartbeat aparece a cada 2 s");
   if (!cycleActive) Serial.println("[ciclo] sem ciclo ativo; segure CICLO por 3 s para iniciar e use REMESSA x para a NF");
-  Serial.println("[transporte] JSON na serial + fila local; envio HTTP/MQTT pendente");
+#if MQTT_ENABLED
+  Serial.println("[transporte] JSON na serial + fila local; envio ao broker MQTT");
+#else
+  Serial.println("[transporte] JSON na serial + fila local; MQTT desligado");
+#endif
   Serial.printf("[ciclo] 1 dia = %lu s; status a cada %lu dias; prazo %lu; limiar %lu\r\n",
                 Config::DayMs / 1000UL, (unsigned long)Config::StatusIntervalDays,
                 (unsigned long)Config::ExpectedReturnDays,
@@ -1124,6 +1278,11 @@ void loop() {
   const uint32_t now = millis();
   // O relogio do ciclo segue no desligamento logico da chave ON/OFF.
   const uint64_t clock = simClockUpdate(&simClock, now);
+  // Comando `rede` desligada: a rede simulada volta sozinha no fim do prazo.
+  if (networkRestoreAt != 0 && static_cast<int32_t>(now - networkRestoreAt) >= 0) {
+    networkOn = true;
+    networkRestoreAt = 0;
+  }
   // Chave ON/OFF: desligar registra o evento e suspende o dispositivo.
   if (Config::SwitchButtons && holdCompleted(powerButton, now, "BTN_ENERGIA")) powerOn = !powerOn;
   const bool on = powerSwitchOn();
@@ -1139,7 +1298,12 @@ void loop() {
   }
   updateDisplay(now, clock);
   updateBuzzer(now);
-  if (!poweredOn) return;
+  if (!poweredOn) {
+#if MQTT_ENABLED
+    updateMqtt(now);  // desligado ainda escuta o `cmd`, para o dashboard poder ligar de novo
+#endif
+    return;
+  }
   readSeal(now, clock);  // antes de I/O potencialmente bloqueante
   readGps();
   readButtons(now, clock);

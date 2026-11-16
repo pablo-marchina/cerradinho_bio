@@ -13,7 +13,7 @@ TARGET.mkdir(parents=True, exist_ok=True)
 # implementacao simplificada (sketch de diagnostico) como se fosse integrada.
 shutil.copy2(ROOT / 'src/firmware/main.cpp', TARGET / 'sketch.ino')
 for source in (ROOT / 'include').glob('*.h'):
-    if source.name.endswith('.local.h'):
+    if source.name.endswith('.local.h') or source.name == 'secrets.h':
         continue
     shutil.copy2(source, TARGET / source.name)
 for name in ('diagram.json',):
