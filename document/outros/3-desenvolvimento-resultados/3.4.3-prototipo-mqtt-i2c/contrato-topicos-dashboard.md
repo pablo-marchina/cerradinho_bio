@@ -1,7 +1,7 @@
 # Contrato MQTT entre dispositivo e dashboard — versão 1
 
 - **Issue de origem:** #127 — Contrato de tópicos com o dashboard, parte 1
-- **Data da versão:** 13/11/2026
+- **Data da versão:** 16/11/2026
 - **Situação:** proposta pronta para validação pelo responsável do dashboard
 - **Responsável pelo dashboard:** @pablo.marchina
 - **Confirmação do dashboard:** PENDENTE
@@ -198,7 +198,15 @@ Tipos já existentes no firmware incluem `VIOLACAO_LACRE`, `RETIRADA_AUTORIZADA`
 }
 ```
 
-O broker não conhece a hora em que o firmware montou o Last Will. Por isso, o backend registra `received_at` quando recebe `offline`; não deve preencher `reported_at` retroativamente. O dashboard mostra a presença atual a partir de `state` e a idade da última comunicação a partir do recebimento mais recente de `online`, `status` ou `evento`.
+O broker não conhece a hora em que o firmware montou o Last Will. Por isso, o backend registra `received_at` quando recebe `offline`; não deve preencher `reported_at` retroativamente. O dashboard mostra a presença atual a partir de `state`.
+
+A idade da última comunicação não pode tratar uma entrega retida como uma comunicação nova do dispositivo. Ao receber `status` ou `online` com o indicador MQTT `retain = true`, inclusive depois de o backend ou dashboard se reconectar e refazer a assinatura, o consumidor aplica estas regras:
+
+- preserva o instante de última comunicação já armazenado, sem substituí-lo pelo novo `received_at`;
+- se ainda não houver instante armazenado, usa `reported_at` somente quando ele não for `null` e vier de relógio absoluto confiável; caso contrário, registra o instante como desconhecido e o dashboard mostra “idade desconhecida”;
+- só uma publicação entregue como não retida atualiza a última comunicação com seu `received_at`.
+
+Assim, a mensagem retida continua útil para reconstruir o último estado e a presença conhecida, mas não comprova atividade nova do dispositivo.
 
 A implementação da #122 ainda publica as strings simples `online` e `offline`. A troca pelos objetos JSON acima é uma alteração necessária para cumprir o exemplo por tópico e deve ser feita junto da implementação do contrato.
 
@@ -208,7 +216,9 @@ A implementação da #122 ainda publica as strings simples `online` e `offline`.
 - **Resposta:** `guaratracking/{device_id}/cmd/resposta`
 - **Retidos:** não
 
-Todo pedido contém `command_id` único, instante do pedido e validade. O dispositivo publica exatamente uma resposta final por `command_id`: `aceito`, `recusado` ou `erro`. Repetições com o mesmo `command_id` não podem executar a ação novamente; devem devolver a resposta já conhecida ou recusar como duplicada.
+Todo pedido contém `command_id` único, instante do pedido e validade. O dispositivo publica exatamente uma resposta final por `command_id`: `aceito`, `recusado` ou `erro`. O resultado final deve ser preservado para que toda repetição do mesmo `command_id`, inclusive após reconexão, devolva novamente a resposta original, com o mesmo `status`, `motivo`, `responded_at` e `estado`, sem executar nem validar a ação outra vez. A repetição nunca recebe uma nova recusa por duplicidade. Se o mesmo `command_id` reaparecer com conteúdo diferente, a resposta original ainda é republicada e a inconsistência deve ser registrada para auditoria.
+
+Os comandos que alteram um ciclo já existente (`REMESSA`, `NF_RETORNO`, `AUTORIZAR` e `ENCERRAR`) também contêm `ciclo_id` no pedido. Antes de executar, o dispositivo compara esse valor com o ciclo ativo: se não forem iguais, responde `recusado` com `motivo = ciclo_divergente` e não altera estado algum. Isso impede que um pedido produzido por uma tela desatualizada seja aplicado ao ciclo seguinte e atende ao RNF06.3. `VINCULAR` não recebe `ciclo_id`, pois cria um novo ciclo em vez de alterar um ciclo já selecionado.
 
 ### 8.1. Abrir ciclo — `VINCULAR`
 
@@ -256,6 +266,7 @@ Pedido:
   "command_id": "cmd-20261113-002",
   "device_id": "prototipo-001",
   "cmd": "REMESSA",
+  "ciclo_id": 13,
   "requested_at": "2026-11-13T14:32:00Z",
   "expires_at": "2026-11-13T14:33:00Z",
   "params": {
@@ -276,12 +287,13 @@ Resposta:
   "responded_at": "2026-11-13T14:32:01Z",
   "motivo": null,
   "estado": {
+    "ciclo_id": 13,
     "nf": "NF-000123"
   }
 }
 ```
 
-Recusas previstas: `sem_ciclo_ativo` e `nf_invalida`. A referência aceita até 15 caracteres entre letras, números, hífen, ponto e barra, conforme a regra já testada no firmware.
+Recusas previstas: `sem_ciclo_ativo`, `ciclo_divergente` e `nf_invalida`. A referência aceita até 15 caracteres entre letras, números, hífen, ponto e barra, conforme a regra já testada no firmware.
 
 ### 8.3. Registrar NF de retorno — `NF_RETORNO`
 
@@ -293,6 +305,7 @@ Pedido:
   "command_id": "cmd-20261113-003",
   "device_id": "prototipo-001",
   "cmd": "NF_RETORNO",
+  "ciclo_id": 13,
   "requested_at": "2026-11-13T14:33:00Z",
   "expires_at": "2026-11-13T14:34:00Z",
   "params": {
@@ -313,12 +326,13 @@ Resposta:
   "responded_at": "2026-11-13T14:33:01Z",
   "motivo": null,
   "estado": {
+    "ciclo_id": 13,
     "nf_retorno_registrada": true
   }
 }
 ```
 
-Recusas previstas: `sem_ciclo_ativo` e `nf_invalida`. O firmware atual registra apenas a presença da NF de retorno; armazenar sua referência ainda precisa ser confirmado na implementação.
+Recusas previstas: `sem_ciclo_ativo`, `ciclo_divergente` e `nf_invalida`. O firmware atual registra apenas a presença da NF de retorno; armazenar sua referência ainda precisa ser confirmado na implementação.
 
 ### 8.4. Autorizar retirada — `AUTORIZAR`
 
@@ -330,6 +344,7 @@ Pedido:
   "command_id": "cmd-20261113-004",
   "device_id": "prototipo-001",
   "cmd": "AUTORIZAR",
+  "ciclo_id": 13,
   "requested_at": "2026-11-13T14:34:00Z",
   "expires_at": "2026-11-13T14:35:00Z",
   "params": {}
@@ -348,12 +363,13 @@ Resposta:
   "responded_at": "2026-11-13T14:34:01Z",
   "motivo": null,
   "estado": {
+    "ciclo_id": 13,
     "janela_dias": 3
   }
 }
 ```
 
-A janela usa a configuração do firmware, atualmente 3 dias. Alterá-la pelo dashboard não faz parte desta versão.
+Recusas previstas: `sem_ciclo_ativo` e `ciclo_divergente`. A janela usa a configuração do firmware, atualmente 3 dias. Alterá-la pelo dashboard não faz parte desta versão.
 
 ### 8.5. Encerrar ciclo — `ENCERRAR`
 
@@ -365,6 +381,7 @@ Pedido:
   "command_id": "cmd-20261113-005",
   "device_id": "prototipo-001",
   "cmd": "ENCERRAR",
+  "ciclo_id": 13,
   "requested_at": "2026-11-13T14:35:00Z",
   "expires_at": "2026-11-13T14:36:00Z",
   "params": {}
@@ -383,12 +400,13 @@ Resposta de recusa:
   "responded_at": "2026-11-13T14:35:01Z",
   "motivo": "nf_retorno_ausente",
   "estado": {
+    "ciclo_id": 13,
     "ciclo_ativo": true
   }
 }
 ```
 
-Recusas previstas: `sem_ciclo_ativo`, `lacre_aberto` e `nf_retorno_ausente`.
+Recusas previstas: `sem_ciclo_ativo`, `ciclo_divergente`, `lacre_aberto` e `nf_retorno_ausente`.
 
 ### Estados da interface de comandos
 
@@ -412,7 +430,7 @@ Reconhecer ou resolver um alerta não é comando MQTT nesta versão. Essa ação
 | Bateria | `status.bateria_pct`; eventos `BATERIA_BAIXA` e `SENSOR_BATERIA_FALHA` | Limiares de apresentação e histórico |
 | Ciclo e NF | `status.ciclo_ativo`, `ciclo_id`, `nf` e `dias_fora` | Equipamento, fornecedor, prazo acordado, retorno físico e situação fiscal |
 | Posição com idade | `status.posicao` e `captured_at` | Idade calculada; mapa; aviso de posição ausente ou antiga |
-| Online e fila | `online.state`; `status.fila` | Última comunicação e idade calculadas a partir dos recebimentos |
+| Online e fila | `online.state`; `status.fila` | Última comunicação calculada apenas com publicação não retida; entrega retida preserva o instante conhecido ou produz idade desconhecida |
 | Formulário de comandos | Publicação em `cmd` e retorno em `cmd/resposta` | Permissão do usuário, confirmação da ação, timeout e auditoria |
 | Indicadores da visão geral | Mensagens dos dispositivos | Contagens e agregações produzidas pelo backend |
 
@@ -422,7 +440,7 @@ Reconhecer ou resolver um alerta não é comando MQTT nesta versão. Essa ação
 |---|---|---|
 | `status` | Publicado e retido com campos resumidos | Acrescentar schema, tempo, ciclo, posição e detalhamento da fila sem ultrapassar o buffer |
 | `online` | Strings `online` e `offline` retidas | Trocar por JSON; manter Last Will retido |
-| `cmd` | Assinado, mas apenas registrado na Serial | Validar JSON, validade, duplicação e executar comandos permitidos |
+| `cmd` | Assinado, mas apenas registrado na Serial | Validar JSON, validade e `ciclo_id`; preservar e republicar o resultado original de `command_id` repetido; executar comandos permitidos |
 | `evento` | Eventos ainda saem na Serial/fila local | Publicar no tópico, preservando ordem e identidade |
 | `cmd/resposta` | Não implementado | Publicar uma resposta final correlacionada por `command_id` |
 | Dashboard | Mock visual estático | Consumir WebSocket e confirmar os campos deste contrato |
