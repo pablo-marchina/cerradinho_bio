@@ -34,7 +34,7 @@ Comandos inválidos recebem `ok:false` com o `erro` certo e não mudam o disposi
 
 ## Observações
 
-- Os códigos completos estão no protocolo (13 erros). Estes cinco cobrem os mais prováveis na banca.
+- Os códigos completos estão no protocolo (15 erros). Estes cinco cobrem os mais prováveis na banca.
 
 ## Resultado (preencher na execução)
 
