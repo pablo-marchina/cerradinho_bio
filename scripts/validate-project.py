@@ -127,20 +127,34 @@ for switch, message in (('seal', 'Lacre violado'), ('sw_rede', 'Rede indisponive
     others = [p for p in list(net) if find(p) == terminal and not re.match(r'bb\d:', p)]
     assert others == [f'{switch}:3'], f'{message} deve ficar aberto'
 config = (root / 'include/config.h').read_text(encoding='utf-8')
+# Pinos do diagrama do Wokwi (ambientes demo e weekly). O padrao do config.h e a montagem alternada.
 pins = [('GpsRx', 16), ('GpsTx', 17), ('SealPin', 27), ('BatteryPin', 34),
         ('LcdSdaPin', 21), ('LcdSclPin', 22), ('NextButtonPin', 25), ('PreviousButtonPin', 26),
-        ('BuzzerPin', 23), ('ViolationLedPin', 13),
+        ('BuzzerPin', 23),
         ('AuthorizeButtonPin', 33), ('CycleButtonPin', 14), ('NetworkSwitchPin', 18),
         ('PowerSwitchPin', 19)]
 assert len({pin for _, pin in pins}) == len(pins), 'GPIO compartilhado entre funcoes'
-for name, pin in pins:
-    assert re.search(rf'\b{name}\s*=\s*{pin}\s*;', config), f'Pino divergente: {name}'
+ALTERNATE = {'GpsRx': 36, 'LcdSclPin': 23, 'PreviousButtonPin': 32, 'BuzzerPin': 12,
+             'AuthorizeButtonPin': 15, 'CycleButtonPin': 5, 'NetworkSwitchPin': 16}
+defaults = [(name, ALTERNATE.get(name, pin)) for name, pin in pins]
+assert len({pin for _, pin in defaults}) == len(defaults), 'GPIO compartilhado na montagem alternada'
+def pin_source(name):
+    """Valor do pino no config.h: numero direto ou macro sobrescrivivel por -D com padrao no #define."""
+    value = re.search(rf'\b{name}\s*=\s*(\w+)\s*;', config)[1]
+    if value.isdigit():
+        return None, int(value)
+    return value, int(re.search(rf'#define\s+{value}\s+(\d+)\b', config)[1])
+macros = {}
+for name, pin in defaults:
+    macro, default = pin_source(name)
+    assert default == pin, f'Pino divergente no padrao do config.h: {name}'
+    macros[name] = macro
 for name, value in [('GpsBaud', 9600), ('ConsoleBaud', 115200), ('HeartbeatMs', 2000),
                     ('LongPressMs', 3000), ('LcdAddress', '0x27')]:
     assert re.search(rf'\b{name}\s*=\s*{value}\s*;', config), f'Configuracao divergente: {name}'
 source = (root / 'src/firmware/main.cpp').read_text(encoding='utf-8')
 assert 'pinMode(Config::SealPin, INPUT_PULLUP)' in source
-assert 'pinMode(Config::ViolationLedPin, OUTPUT)' in source
+assert 'ViolationLedPin' not in source, 'O LED saiu na Sprint 3'
 for name in ('AuthorizeButtonPin', 'CycleButtonPin', 'NetworkSwitchPin', 'PowerSwitchPin',
              'NextButtonPin', 'PreviousButtonPin'):
     assert f'pinMode(Config::{name}, INPUT_PULLUP)' in source
@@ -155,6 +169,16 @@ assert 'espressif32' in pio['env']['platform'] and 'TinyGPSPlus' in pio['env']['
 assert 'LiquidCrystal_I2C' in pio['env']['lib_deps']
 assert '-DDEMO_MODE=1' in pio['env:demo']['build_flags']
 assert '-DDEMO_MODE=0' in pio['env:weekly']['build_flags']
+# Wokwi (demo e weekly): os -D do [pinos_wokwi] devolvem a pinagem antiga do diagrama.
+wokwi_flags = pio['pinos_wokwi']['build_flags'].replace('\n', ' ')
+flags = dict(re.findall(r'-D(\w+)=(\d+)', wokwi_flags))
+assert set(flags) <= set(macros.values()), 'Flag de pino desconhecida'
+assert {name: int(flags.get(macros[name], pin)) for name, pin in defaults} == dict(pins), \
+    'demo e weekly precisam manter a pinagem do diagrama do Wokwi'
+for environment in ('demo', 'weekly'):
+    assert '${pinos_wokwi.build_flags}' in pio[f'env:{environment}']['build_flags']
+for environment in ('bancada', 'bancada-alternada'):  # pinagem padrao, sem -D de pino
+    assert not set(re.findall(r'-D(\w+)=', pio[f'env:{environment}']['build_flags'])) - {'DEMO_MODE', 'SWITCH_BUTTONS'}
 wasm = root / 'chips/gps.chip.wasm'
 assert wasm.read_bytes()[:8] == b'\x00asm\x01\x00\x00\x00', 'GPS nao compilado para WebAssembly'
 for environment, filename in [('demo', 'wokwi.toml'), ('weekly', 'wokwi.weekly.toml')]:

@@ -229,18 +229,25 @@ Corpo opcional explicando o porquê da mudança, não o como.
 - Preserve ESP32 DevKit v1, GPS/GNSS customizado, chave para lacre e potenciômetro
   para bateria simulada. Não acrescente acelerômetro. IR físico e modem continuam
   pendentes de definição. Desde o protótipo V2 (cards #65 e #67), os LEDs de status
-  deram lugar a um LCD 16x2 I2C, dois botões de navegação e um buzzer; só o LED vermelho
-  de violação continua (card #87).
+  deram lugar a um LCD 16x2 I2C, dois botões de navegação e um buzzer. O LED vermelho de
+  violação (card #87) saiu na Sprint 3, com dispensa do professor justificada na seção 3.4.3.
 - O circuito principal e os arquivos `wokwi*.toml` ficam em `src/firmware/prototipo_wokwi/`.
   Mantenha `src/firmware/main.cpp`, `include/config.h` e o `diagram.json` dessa pasta coerentes:
-  GPS RX2/TX2 nos GPIO16/17, lacre no GPIO27 com pull-up e bateria no GPIO34/ADC1.
+  GPS RX2/TX2 nos GPIO16/17 (no Wokwi), lacre no GPIO27 com pull-up e bateria no GPIO34/ADC1.
   UART0 e heartbeat são diagnóstico independente de GPS e internet.
-- LCD I2C (0x27) usa SDA/SCL nos GPIO21/22; botões avançar/voltar usam GPIO25/26;
-  buzzer usa GPIO23; o LED vermelho de violação (exigido pela rubrica do Art. 5) usa GPIO13
-  com resistor de 220 Ω; botões de autorização e ciclo usam GPIO33/14 e exigem 3 s
-  pressionados; chave de rede simulada (on/off do SIM) usa GPIO18 e chave ON/OFF
-  usa GPIO19. GPIO32 fica livre para a instrumentação dos ensaios complementares.
-  Preserve a separação entre rede simulada e Wi-Fi real.
+- A pinagem padrão do `include/config.h` é a da **montagem alternada da bancada**: LCD I2C
+  (0x27) em SDA/SCL nos GPIO21/23; botões avançar/voltar nos GPIO25/32; buzzer no GPIO12;
+  botões de autorização e ciclo nos GPIO15/5, que exigem 3 s pressionados; chave de rede
+  (on/off do SIM) no GPIO16; GPS RX no GPIO36 (TX no 17); chave ON/OFF no GPIO19. Os GPIO12,
+  5 e 15 são pinos de boot: não segure ciclo nem autorização ao ligar e nada pode puxar o
+  GPIO12 para 3,3 V. Os ambientes `demo` e `weekly` (Wokwi) seguem na pinagem antiga do
+  `diagram.json` por meio do bloco `[pinos_wokwi]` do `platformio.ini`: LCD nos GPIO21/22,
+  avançar/voltar 25/26, buzzer 23, autorização e ciclo 33/14, rede simulada no GPIO18 e GPS RX
+  no 16. O ambiente `bancada-alternada` é apelido do `bancada`, e o `bancada-antiga` é a
+  bancada na pinagem antiga, usada nos CT46 a CT69 da seção 3.4.2. Todos os pinos são
+  sobrescrevíveis por `-D`. Para reproduzir o CT65 (`tests/bancada-ct65`), compile com os
+  flags de pino antigos (bloco `[pinos_wokwi]`): com a pinagem padrão, o GPIO32 usado como
+  pino de pulso passou a ser o VOLTAR. Preserve a separação entre rede simulada e Wi-Fi real.
 - Compare posições válidas consecutivas. O primeiro ponto cria referência; falta
   de fix não vira coordenada zero nem apaga a referência. Preserve as chaves NVS
   e a fila local, sem afirmar envio ao servidor antes de transporte e confirmação.

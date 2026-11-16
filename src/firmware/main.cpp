@@ -93,7 +93,6 @@ char shipmentInvoice[Config::InvoiceMaxLength + 1] = "";  // NF da remessa (coma
 bool alarmActive = false;   // buzzer da violacao, limitado a BuzzerAlarmMs
 uint32_t alarmStartedAt = 0;
 bool buzzerOn = false;
-bool ledOn = false;
 GnssState gnssHealth;
 uint32_t lastGpsCharsAt = 0;  // ultimo byte NMEA recebido, para separar sem dados de sem fix
 
@@ -396,13 +395,48 @@ void printPending() {
 #if MQTT_ENABLED
 // Todo evento muda o estado: marca o `status` retido para republicar em updateMqtt().
 bool mqttStatusDirty = false;
+// Definidas junto do cliente MQTT, mais abaixo.
+bool mqttConnected();
+bool publishMqttEvent(const char *json);
 #endif
 
-// Com rede, o JSON sai no Serial (representa a mensagem MQTT). Sem rede, vai para a
+#if MQTT_ENABLED
+// Eventos periodicos nao mudam o estado do dispositivo e nao republicam o `status` retido: no
+// demo o STATUS_SEMANAL sai a cada ~7 s e gastaria a cota do broker. Os demais eventos (violacao
+// do lacre, bateria, ciclo, GNSS, autorizacao, limiar etc.) mudam o estado e o republicam.
+bool eventChangesStatus(const char *type) {
+  static const char *const periodicTypes[] = {"STATUS", "STATUS_SEMANAL"};
+  for (const char *periodic : periodicTypes) {
+    if (strcmp(type, periodic) == 0) return false;
+  }
+  return true;
+}
+#endif
+
+// Com MQTT, so ha rede com o broker conectado; sem MQTT, vale a chave de sinal.
+bool networkOnline() {
+#if MQTT_ENABLED
+  return simulatedNetworkAvailable() && mqttConnected();
+#else
+  return simulatedNetworkAvailable();
+#endif
+}
+
+// Envia um JSON: Serial (log) e, com MQTT, o topico `evento`. false = nao saiu, fica na fila.
+bool sendRecord(const char *json) {
+  Serial.println(json);
+#if MQTT_ENABLED
+  return publishMqttEvent(json);
+#else
+  return true;
+#endif
+}
+
+// Com rede, o JSON sai no Serial e no MQTT. Sem rede (ou se a publicacao falhar), vai para a
 // fila e sai na reconexao, na ordem e com o dia em que ocorreu (RF010; RN09).
 void publishEvent(const char *type, bool critical = false, const String &extra = "") {
 #if MQTT_ENABLED
-  mqttStatusDirty = true;
+  if (eventChangesStatus(type)) mqttStatusDirty = true;
 #endif
   String record = baseRecord(type);
   record += ",\"ciclo_id\":"; record += cycle.cycleId;
@@ -414,10 +448,7 @@ void publishEvent(const char *type, bool critical = false, const String &extra =
   record += ",\"critico\":"; record += critical ? "true" : "false";
   record += extra;
   record += "}";
-  if (simulatedNetworkAvailable()) {
-    Serial.println(record);
-    return;
-  }
+  if (networkOnline() && sendRecord(record.c_str())) return;
   const int result = queuePush(&pending, record.c_str(), critical, clockMs());
   if (result == QUEUE_SUMMARIZED) {
     Serial.printf("[FILA] FILA_CHEIA: so ha violacoes; %s somado ao resumo (%lu no resumo)\r\n",
@@ -441,15 +472,16 @@ void publishEvent(const char *type, bool critical = false, const String &extra =
 }
 
 // Rede de volta: reenvia a fila na ordem e depois o resumo das violacoes excedentes.
+// Com MQTT, so esvazia com o broker conectado (updateMqtt chama de novo ao conectar).
 void flushPending() {
-  if (!hasPending()) return;
+  if (!hasPending() || !networkOnline()) return;
   Serial.printf("[FILA] rede disponivel; reenviando %u evento(s) na ordem\r\n", pending.count);
   while (pending.count > 0) {
-    Serial.println(pending.text[0]);
+    if (!sendRecord(pending.text[0])) break;  // so sai da fila o que foi publicado
     queueRemove(&pending, 0);
   }
   // As violacoes do resumo ocorreram depois das guardadas na fila: saem por ultimo.
-  if (pending.overflowCount > 0) {
+  if (pending.count == 0 && pending.overflowCount > 0) {
     String extra = ",\"quantidade\":";
     extra += pending.overflowCount;
     extra += ",\"dia_primeira\":"; extra += simulatedDay(pending.overflowFirstMs);
@@ -542,8 +574,10 @@ void updateNetwork() {
   networkWasAvailable = available;
   char bottom[ScreenController::Columns + 1];
   if (available) {
-    const unsigned sent = pending.count + (pending.overflowCount > 0 ? 1u : 0u);
+    // Com MQTT o broker ainda reconecta aqui: a fila sai depois, em updateMqtt.
+    const unsigned before = pending.count + (pending.overflowCount > 0 ? 1u : 0u);
     flushPending();
+    const unsigned sent = before - pending.count - (pending.overflowCount > 0 ? 1u : 0u);
     snprintf(bottom, sizeof(bottom), "enviados: %u", sent);
     showMessage("Sinal ok", bottom);
   } else {
@@ -760,14 +794,6 @@ void updateBuzzer(uint32_t now) {
   ledcWrite(Config::BuzzerChannel, on ? 128 : 0);  // 50% de 8 bits: onda quadrada
 }
 
-// LED vermelho: pulso curto a cada segundo enquanto o lacre segue violado.
-void updateLed(uint32_t now) {
-  const bool on = poweredOn && seal.violated && now % Config::LedBlinkPeriodMs < Config::LedBlinkOnMs;
-  if (on == ledOn) return;
-  ledOn = on;
-  digitalWrite(Config::ViolationLedPin, on ? HIGH : LOW);
-}
-
 // Ao fim de cada coleta: registra o inicio e o fim de cada falha do GNSS, uma vez cada.
 void updateGnssHealth(bool valid, uint32_t now, uint64_t clock) {
   const bool receiving = now - lastGpsCharsAt < Config::GpsNoDataMs;
@@ -859,6 +885,7 @@ void updateDisplay(uint32_t now, uint64_t clock) {
 constexpr const char *TopicStatus = MQTT_TOPIC_PREFIX "status";
 constexpr const char *TopicOnline = MQTT_TOPIC_PREFIX "online";
 constexpr const char *TopicCmd = MQTT_TOPIC_PREFIX "cmd";
+constexpr const char *TopicEvento = MQTT_TOPIC_PREFIX "evento";
 constexpr uint32_t MqttRetryMs = 10000;
 constexpr uint32_t MqttStatusMs = 60000;
 constexpr uint32_t MqttStatusMinMs = 1000;  // intervalo minimo entre dois `status` por evento
@@ -873,7 +900,28 @@ bool mqttWasConnected = false, mqttConfigured = false;
 
 // Por enquanto so registra o comando recebido no Serial; a execucao vem nas proximas fatias.
 void onMqttMessage(char *topic, uint8_t *payload, unsigned int length) {
-  Serial.printf("[mqtt] cmd recebido em %s: %.*s\r\n", topic, (int)length, (const char *)payload);
+  // O payload do PubSubClient nao termina em nulo: o texto e copiado com o tamanho exato.
+  if (length == 0) {
+    Serial.printf("[mqtt] cmd vazio em %s (0 bytes)\r\n", topic);
+    return;
+  }
+  String text;
+  text.concat(reinterpret_cast<const char *>(payload), length);
+  Serial.printf("[mqtt] cmd recebido em %s (%u bytes): %s\r\n", topic, length, text.c_str());
+}
+
+bool mqttConnected() { return mqtt.connected(); }
+
+// Publica o evento (QoS 0, nao retido); false = desconectado ou falha, e quem chama enfileira.
+// beginPublish/write/endPublish enviam em partes, entao o JSON pode passar do buffer de 512 bytes.
+bool publishMqttEvent(const char *json) {
+  if (!mqtt.connected()) return false;
+  const size_t length = strlen(json);
+  bool sent = mqtt.beginPublish(TopicEvento, length, false);
+  if (sent) sent = mqtt.write(reinterpret_cast<const uint8_t *>(json), length) == length;
+  if (sent) sent = mqtt.endPublish();
+  if (!sent) Serial.println("[mqtt] evento nao publicado");
+  return sent;
 }
 
 // Estado resumido do dispositivo (retido): lacre, bateria, ciclo, NF, dias fora, GNSS e fila.
@@ -956,7 +1004,10 @@ void updateMqtt(uint32_t now) {
   mqttWasConnected = true;
   Serial.printf("[mqtt] conectado a %s:%d\r\n", MQTT_HOST, (int)MQTT_PORT);
   mqtt.publish(TopicOnline, "online", true);
-  mqtt.subscribe(TopicCmd);
+  // O PubSubClient nao le o SUBACK: false = nao saiu; true = foi enviada, sem saber se a ACL aceitou.
+  const bool cmdSubscribed = mqtt.subscribe(TopicCmd);
+  Serial.printf("[mqtt] assinatura de cmd %s\r\n", cmdSubscribed ? "enviada ao broker" : "nao enviada");
+  flushPending();  // eventos guardados sem broker saem antes do `status`, que entao mostra a fila
   lastMqttStatus = now;
   mqttStatusDirty = false;
   publishMqttStatus();
@@ -985,8 +1036,6 @@ void setup() {
   ledcSetup(Config::BuzzerChannel, Config::BuzzerFrequencyHz, 8);
   ledcAttachPin(Config::BuzzerPin, Config::BuzzerChannel);
   ledcWrite(Config::BuzzerChannel, 0);
-  pinMode(Config::ViolationLedPin, OUTPUT);
-  digitalWrite(Config::ViolationLedPin, LOW);
   initLcd();
   pinMode(Config::BatteryPin, INPUT);
   analogReadResolution(12);
@@ -1070,7 +1119,7 @@ void setup() {
   }
 }
 
-// Uma volta: relogio, chave ON/OFF, LCD, buzzer, LED, entradas, ciclo, NVS, Wi-Fi e coleta de posicao.
+// Uma volta: relogio, chave ON/OFF, LCD, buzzer, entradas, ciclo, NVS, Wi-Fi e coleta de posicao.
 void loop() {
   const uint32_t now = millis();
   // O relogio do ciclo segue no desligamento logico da chave ON/OFF.
@@ -1090,7 +1139,6 @@ void loop() {
   }
   updateDisplay(now, clock);
   updateBuzzer(now);
-  updateLed(now);
   if (!poweredOn) return;
   readSeal(now, clock);  // antes de I/O potencialmente bloqueante
   readGps();

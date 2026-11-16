@@ -1,4 +1,4 @@
-param([ValidateSet('demo', 'weekly', 'bancada')][string]$Environment = 'demo')
+param([ValidateSet('demo', 'weekly', 'bancada', 'bancada-alternada', 'bancada-antiga')][string]$Environment = 'demo')
 . (Join-Path $PSScriptRoot 'common.ps1')
 
 $previousSdk = $env:WASI_SDK_PATH
@@ -6,7 +6,7 @@ Push-Location $ProjectRoot
 try {
     $pio = Get-PlatformIOExecutable
     # A placa fisica usa o NEO-6M real e dispensa o chip customizado do simulador.
-    if ($Environment -ne 'bancada') {
+    if ($Environment -notlike 'bancada*') {
         $wokwi = Join-Path $ToolsDir 'wokwi-cli.exe'
         if (!(Test-Path -LiteralPath $wokwi)) { throw 'Execute scripts/setup.ps1 primeiro.' }
         $env:WASI_SDK_PATH = Join-Path $ToolsDir 'wasi-sdk'

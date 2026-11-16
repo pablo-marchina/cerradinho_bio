@@ -16,7 +16,7 @@ Este contrato define os cinco canais MQTT usados entre o dispositivo GuaráTrack
 - `cmd`;
 - `cmd/resposta`.
 
-O contrato descreve o formato alvo da integração. Na implementação disponível após a issue #122, o firmware já publica `status` e `online` e assina `cmd`; `evento`, `cmd/resposta` e a execução dos comandos ainda dependem das issues bloqueadas pela #127. O dashboard visual atual também é uma demonstração estática, sem backend ou MQTT.
+O contrato descreve o formato alvo da integração. Na implementação integrada até a issue #123, o firmware já publica `status`, `online` e `evento` e assina `cmd`; `cmd/resposta` e a execução dos comandos ainda dependem das issues bloqueadas pela #127. O dashboard visual atual também é uma demonstração estática, sem backend ou MQTT.
 
 O ESP32 não é a fonte de nome do equipamento, fornecedor, responsável, prazo comercial, situação fiscal ou tratamento administrativo de alertas. Esses dados pertencem ao backend. O dispositivo informa somente seu estado físico, contexto local, posição, fila e resultado dos comandos que executa.
 
@@ -436,12 +436,12 @@ Reconhecer ou resolver um alerta não é comando MQTT nesta versão. Essa ação
 
 ## 10. Compatibilidade e implementação pendente
 
-| Item | Situação após #122 | Necessário para cumprir este contrato |
+| Item | Situação integrada até #123 | Necessário para cumprir este contrato |
 |---|---|---|
 | `status` | Publicado e retido com campos resumidos | Acrescentar schema, tempo, ciclo, posição e detalhamento da fila sem ultrapassar o buffer |
 | `online` | Strings `online` e `offline` retidas | Trocar por JSON; manter Last Will retido |
 | `cmd` | Assinado, mas apenas registrado na Serial | Validar JSON, validade e `ciclo_id`; preservar e republicar o resultado original de `command_id` repetido; executar comandos permitidos |
-| `evento` | Eventos ainda saem na Serial/fila local | Publicar no tópico, preservando ordem e identidade |
+| `evento` | Publicado no tópico; falhas ficam na fila local e são reenviadas na ordem | Adequar o payload ao schema, incluindo identidade e tempos previstos neste contrato |
 | `cmd/resposta` | Não implementado | Publicar uma resposta final correlacionada por `command_id` |
 | Dashboard | Mock visual estático | Consumir WebSocket e confirmar os campos deste contrato |
 

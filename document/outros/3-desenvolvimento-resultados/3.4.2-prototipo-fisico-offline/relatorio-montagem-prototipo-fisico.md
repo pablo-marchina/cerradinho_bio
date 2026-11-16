@@ -26,22 +26,26 @@ Este relatório descreve como o protótipo físico offline foi montado, quais pr
 
 Os pinos abaixo são os usados pelo firmware. Botões ligam o pino ao GND e usam o pull-up interno do ESP32, então não precisam de resistor externo.
 
-| Componente | Sinal | GPIO |
-|---|---|---|
-| LCD | SDA | 21 |
-| LCD | SCL | 22 |
-| Botão AVANÇAR | Entrada | 25 |
-| Botão VOLTAR | Entrada | 26 |
-| Botão CICLO | Entrada | 14 |
-| Botão AUTORIZAR | Entrada | 33 |
-| Botão LACRE | Entrada | 27 |
-| Botão REDE | Entrada | 18 |
-| Botão ON/OFF | Entrada | 19 |
-| Potenciômetro | Pino do meio | 34 |
-| Buzzer | Positivo | 23 |
-| LED, pelo resistor de 220 Ω | Anodo | 13 |
-| GNSS | TX do módulo | 16 |
-| GNSS | RX do módulo (opcional) | 17 |
+A **montagem alternada** é a pinagem padrão do firmware desde a Sprint 3 (ambiente `bancada`, também chamado `bancada-alternada`; seção 5). A coluna **Montagem dos CTs** é a pinagem antiga, usada nos casos de teste da seção 3.4.2 (CT46 a CT69), que continuam valendo para ela e podem ser reproduzidos com o ambiente `bancada-antiga`. A montagem alternada troca sete pinos (em negrito) e não tem o LED: ele foi retirado da placa e do firmware, e a violação aparece no LCD e no buzzer (seção 3.4.3 da documentação).
+
+| Componente | Sinal | Montagem dos CTs (pinagem antiga) | Montagem alternada (padrão) |
+|---|---|---|---|
+| LCD | SDA | 21 | 21 |
+| LCD | SCL | 22 | **23** |
+| Botão AVANÇAR | Entrada | 25 | 25 |
+| Botão VOLTAR | Entrada | 26 | **32** |
+| Botão CICLO | Entrada | 14 | **5** |
+| Botão AUTORIZAR | Entrada | 33 | **15** |
+| Botão LACRE | Entrada | 27 | 27 |
+| Botão REDE | Entrada | 18 | **16** |
+| Botão ON/OFF | Entrada | 19 | 19 |
+| Potenciômetro | Pino do meio | 34 | 34 |
+| Buzzer | Positivo | 23 | **12** |
+| LED, pelo resistor de 220 Ω | Anodo | 13 | — (retirado) |
+| GNSS | TX do módulo | 16 | **36 (VP)** |
+| GNSS | RX do módulo (opcional) | 17 | 17 |
+
+Nenhum botão pode ir para os GPIO34 a 39: esses pinos só leem e não têm pull-up interno, então o botão nunca mudaria de nível. O firmware recusa essa configuração na compilação.
 
 ## 3. Alimentação
 
@@ -87,6 +91,10 @@ pio device monitor -b 115200
 No PowerShell, também é possível compilar com `scripts/build.ps1 -Environment bancada`. Essa opção usa o GNSS real e dispensa a compilação do chip customizado do Wokwi.
 
 Com a placa ligada, a Serial a 115200 baud mostra a linha `[vivo]` a cada 2 s.
+
+A montagem alternada é a padrão: `bancada` e `bancada-alternada` (apelido) usam os pinos novos. Os ambientes `demo` e `weekly` (Wokwi) e o `bancada-antiga` continuam nos pinos antigos, então o simulador e os CTs já executados não mudam; para reproduzir os CTs da 3.4.2, troque `bancada` por `bancada-antiga` nos comandos acima.
+
+**Pinos de boot da montagem alternada.** O GPIO5 (CICLO), o GPIO12 (buzzer) e o GPIO15 (AUTORIZAR) influenciam a partida do ESP32. Não segure CICLO nem AUTORIZAR ao ligar a placa, e nada pode puxar o GPIO12 para 3,3 V: com ele em nível alto no boot, o ESP32 escolhe 1,8 V para a memória flash e não parte.
 
 ## 6. Conferência da montagem
 
