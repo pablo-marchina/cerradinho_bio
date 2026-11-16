@@ -36,17 +36,17 @@ O comando `rede` tira a rede simulada por N segundos; os eventos ficam na fila e
 
 ## Observações
 
-- `NF` pela Serial é aceito sem ciclo ativo (anomalia conhecida do #141); aqui ele só serve para gerar eventos.
+- O `NF` da Serial só vale com ciclo ativo e uma vez por ciclo (RN11); a anomalia do #141 (NF aceita sem ciclo) foi corrigida. Para encher a fila sem depender de ciclo, use o `LIMIAR n`, que publica `LIMIAR_ALTERADO` a cada uso.
 
 ## Resultado (preencher na execução)
 
 | Campo | Valor |
 |---|---|
 | Data e hora | 18:20 - 18:25 |
-| Firmware (ambiente e commit) | |
+| Firmware (ambiente e commit) | `bancada-3botoes` · `bc4cc00` |
 | Situação | [ X ] Aprovado  [ ] Reprovado  [ ] Parcial |
 | Observado | Tudo certo, conforme o planejado |
-| Problemas | |
+| Problemas | Só o vídeo (`ct77RedeDesligada3Botoes.mp4`) foi salvo no repositório; faltam `ct77RedeDesligada.png`, `ct77FilaLcd.jpg` e `ct77-rede-desligada.serial.txt`. |
 
 ## Depois de executar
 
