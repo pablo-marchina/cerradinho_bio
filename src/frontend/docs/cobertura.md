@@ -79,4 +79,4 @@
 
 Permanecem pendentes de execução/homologação: testes de usabilidade CT-U01, CT-F24, métricas RNF, permissões, MQTT e casos com hardware. O arquivo de requisitos original foi preservado para rastreabilidade, não como escopo integral implementado.
 
-O simulador usa a abertura do ciclo como referência inicial para o alerta de silêncio, sem preencher ficticiamente o campo de último contato. A cobertura de RN08 continua **parcial** até existir medição de HDOP e validação do horário absoluto do GNSS. A regra de pré-vencimento RN19 exige um parâmetro aprovado para cada ciclo antes de afetar alertas ou prioridades.
+O simulador usa a abertura do ciclo como referência inicial para o alerta de silêncio, sem preencher ficticiamente o campo de último contato. Mensagens de telemetria recebidas atualizam o último contato; a passagem do tempo e a perda de conexão não o atualizam. A cobertura de RN08 continua **parcial** até existir medição de HDOP e validação do horário absoluto do GNSS. A regra de pré-vencimento RN19 exige um parâmetro aprovado para cada ciclo antes de afetar alertas ou prioridades.

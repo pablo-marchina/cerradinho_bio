@@ -73,6 +73,37 @@ test('silêncio resolvido só rearma depois de nova comunicação',()=>{
   assert.deepEqual(alerts().map(a=>a.status),['resolved','open']);
 });
 
+test('telemetria recebida atualiza último contato e rearma silêncio resolvido',()=>{
+  const s=createSnapshot(),id='AT-0055',a=s.assets.find(x=>x.id===id);
+  const alerts=()=>s.alerts.filter(x=>x.assetId===id&&x.kind==='silence');
+  simulate(s,id,'reconnect');
+  simulate(s,id,'advance_14');
+  assert.equal(alerts().length,1);
+  updateAlert(s,alerts()[0].id,'acknowledged','Ciente');
+  updateAlert(s,alerts()[0].id,'resolved','Tratado');
+  const before=a.lastContact;
+  simulate(s,id,'fix');
+  assert.equal(a.lastContact,s.asOf);
+  assert.notEqual(a.lastContact,before);
+  simulate(s,id,'advance_14');
+  assert.deepEqual(alerts().map(x=>x.status),['resolved','open']);
+});
+
+test('coletas GNSS e bateria recebidas atualizam contato, sem contato fictício no avanço do relógio',()=>{
+  const s=createSnapshot(),id='AT-0055',a=s.assets.find(x=>x.id===id);
+  for(const scenario of ['no_fix','battery19','battery_fault','overflow']){
+    const before=a.lastContact;
+    simulate(s,id,scenario);
+    assert.equal(a.lastContact,s.asOf,scenario);
+    assert.notEqual(a.lastContact,before,scenario);
+  }
+  const lastContact=a.lastContact;
+  simulate(s,id,'advance_day');
+  assert.equal(a.lastContact,lastContact);
+  simulate(s,id,'offline');
+  assert.equal(a.lastContact,lastContact);
+});
+
 test('reconexão não duplica alerta de silêncio ainda aberto',()=>{
   const s=createSnapshot(),id='AT-0055';
   simulate(s,id,'advance_14');
