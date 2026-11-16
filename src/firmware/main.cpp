@@ -1115,7 +1115,12 @@ void updateMqtt(uint32_t now) {
     mqtt.setCallback(onMqttMessage);
   }
   if (WiFi.status() != WL_CONNECTED || !simulatedNetworkAvailable()) {
-    if (mqtt.connected()) mqtt.disconnect();
+    if (mqtt.connected()) {
+      // disconnect() e uma desconexao limpa e nao dispara o Last Will; sem isto o `online`
+      // retido fica `online` enquanto a rede simulada esta desligada. Publica `offline` antes.
+      mqtt.publish(TopicOnline, "offline", true);
+      mqtt.disconnect();
+    }
     mqttWasConnected = false;
     return;
   }
