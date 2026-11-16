@@ -1868,7 +1868,11 @@ O botão com debounce continua no protótipo: é o AVANÇAR (GPIO25), que troca 
 
 #### Comunicação MQTT
 
-<!-- Broker, tópicos (status, evento, online, cmd, cmd/resposta) e exemplos de JSON. -->
+O broker adotado é o EMQX. Para desenvolvimento, a versão 5.8.9 roda no Docker com MQTT TCP na porta 1883, WebSocket no caminho `ws://IP-do-notebook:8083/mqtt` e painel na porta 18083. O caminho local foi exercitado nos dois sentidos: um dispositivo simulado publicou `status` por MQTT TCP e um cliente que representa o dashboard recebeu por WebSocket; depois, o dashboard simulado publicou `cmd` por WebSocket e o cliente MQTT TCP recebeu o mesmo JSON. Esse ensaio comprova o transporte local, mas não substitui os CTs do protótipo físico, o teste do Firewall entre equipamentos nem a validação do WSS no broker online.
+
+O [contrato MQTT entre dispositivo e dashboard](outros/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/contrato-topicos-dashboard.md) define os tópicos `status`, `evento`, `online`, `cmd` e `cmd/resposta`, com exemplos JSON, retenção, origem dos dados, comandos e correspondência com as telas. Ele também distingue o que vem do ESP32 do que pertence ao backend, como fornecedor, prazo comercial, situação fiscal, tratamento de alertas e agregações da visão geral.
+
+Após as issues #122 e #123, o firmware publica `status`, `online` e `evento` e assina `cmd`. A execução de comandos, a correlação por `command_id` e o tópico `cmd/resposta` permanecem como implementação posterior; portanto, os exemplos dessas partes do contrato não são apresentados como funcionalidades já concluídas. A confirmação formal do responsável pelo dashboard também permanece pendente até a revisão da versão 1.
 
 #### Dashboard
 
