@@ -72,6 +72,7 @@ Em caso de JSON inválido, `id` e `acao` voltam vazios quando não puderam ser l
 | `erro` | Quando |
 |---|---|
 | `json_vazio` | Payload com 0 bytes |
+| `json_invalido` | Objeto incompleto, sintaxe inválida, conteúdo depois do `}` ou estrutura fora do contrato plano |
 | `payload_grande` | Mais de 256 bytes |
 | `acao_ausente` | Sem o campo `acao` ou JSON ilegível |
 | `acao_desconhecida` | `acao` fora da tabela |
@@ -95,6 +96,22 @@ acumulado do dispositivo (`sim_clock.h`). Esse relógio sobrevive ao reinício q
 
 Quando `ciclo_encerrar` é recusado com um ciclo ativo, `motivo` distingue `lacre_aberto` de
 `nf_retorno_ausente`. Sem ciclo ativo, o próprio `erro` é `sem_ciclo_ativo`.
+
+### Falha ao publicar a resposta
+
+O firmware valida o objeto JSON inteiro antes de executar a ação. Uma mensagem incompleta, como
+`{"acao":"ciclo_encerrar"`, responde `json_invalido` e não muda o ciclo.
+
+Se `mqtt.publish()` falhar depois da execução, o JSON completo de `cmd/resposta` é preservado na
+NVS e reenviado com o mesmo `id` quando o MQTT estiver disponível. Enquanto essa resposta estiver
+pendente, outro comando recebido não é executado; depois do reenvio, o dashboard repete o novo `id`.
+O dashboard deve correlacionar e deduplicar respostas pelo `id`, pois uma falha ao limpar a NVS
+depois do envio pode causar uma repetição após reinício.
+
+O transporte continua em QoS 0: um retorno `true` de `mqtt.publish()` confirma somente que o
+cliente aceitou o envio, não que o dashboard processou a mensagem. Se o `id` não receber resposta
+dentro do prazo da interface, o dashboard deve consultar `status`/`evento` antes de decidir se pode
+repetir uma ação que altera estado.
 
 ## 4. Exemplos
 

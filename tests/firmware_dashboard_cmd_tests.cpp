@@ -51,6 +51,13 @@ int main() {
   char text[32];
   long number = 0;
   const char *sample = "{ \"id\" : \"a1\", \"acao\":\"rede\",\"segundos\": 30 , \"ok\":true}";
+  assert(DashboardCmd::validObject(sample, std::strlen(sample)));
+  const char *missingBrace = "{\"acao\":\"ciclo_encerrar\"";
+  const char *trailingGarbage = "{\"acao\":\"voltar\"} lixo";
+  const char *trailingComma = "{\"acao\":\"voltar\",}";
+  assert(!DashboardCmd::validObject(missingBrace, std::strlen(missingBrace)));
+  assert(!DashboardCmd::validObject(trailingGarbage, std::strlen(trailingGarbage)));
+  assert(!DashboardCmd::validObject(trailingComma, std::strlen(trailingComma)));
   assert(DashboardCmd::textValue(sample, std::strlen(sample), "id", text, sizeof(text)) && std::strcmp(text, "a1") == 0);
   assert(DashboardCmd::textValue(sample, std::strlen(sample), "acao", text, sizeof(text)) && std::strcmp(text, "rede") == 0);
   assert(DashboardCmd::intValue(sample, std::strlen(sample), "segundos", 1, 3600, &number) && number == 30);
@@ -66,8 +73,21 @@ int main() {
   run(1000);
   assert(poweredOn && simulatedNetworkAvailable() && !stableSeal && !cycleActive);
 
+  // ---- falha de cmd/resposta: preserva o mesmo id na NVS para reenvio ----
+  const String failedResponse = "{\"id\":\"falhou-1\",\"acao\":\"autorizar\",\"ok\":true}";
+  recordCmdResponseDelivery(failedResponse, false);
+  assert(std::strcmp(pendingCmdResponse.c_str(), failedResponse.c_str()) == 0);
+  assert(FakeNVS::bytes.count(PendingCmdResponseKey) == 1);
+  pendingCmdResponse = "";  // simula a RAM perdida em um reinicio
+  restorePendingCmdResponse();
+  assert(std::strcmp(pendingCmdResponse.c_str(), failedResponse.c_str()) == 0);
+  clearPendingCmdResponse();
+  assert(pendingCmdResponse.length() == 0 && FakeNVS::bytes.count(PendingCmdResponseKey) == 0);
+
   // ---- erros de formato ----
   expectError("", "json_vazio");
+  expectError("{\"acao\":\"ciclo_encerrar\"", "json_invalido");
+  assert(!cycleActive && !contains(Serial.output, "ENCERRAMENTO_RECUSADO"));
   expectError("{\"id\":\"x\"}", "acao_ausente");
   expectError("{\"id\":\"x\",\"acao\":\"dancar\"}", "acao_desconhecida");
   const std::string big(300, 'a');
@@ -84,6 +104,8 @@ int main() {
   expectOk("{\"id\":\"c1\",\"acao\":\"ciclo_iniciar\"}", "c1", "ciclo_iniciar");
   assert(cycleActive);
   assert(contains(Serial.output, "\"type\":\"CICLO_INICIADO\""));
+  expectError("{\"acao\":\"ciclo_encerrar\"", "json_invalido");
+  assert(cycleActive && !contains(Serial.output, "ENCERRAMENTO_RECUSADO"));
   expectError("{\"id\":\"c2\",\"acao\":\"ciclo_iniciar\"}", "ciclo_ativo");
   expectError("{\"id\":\"c3\",\"acao\":\"ciclo_encerrar\"}", "encerramento_recusado");  // sem NF de retorno
   run(5);

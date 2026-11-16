@@ -19,6 +19,8 @@ mkdir -p build
 ./build/firmware_buttons_host
 "$CXX" -std=c++17 -O2 -Wall -Wextra -Werror -Iinclude -Itests/firmware_stubs tests/firmware_dashboard_cmd_tests.cpp -o build/firmware_dashboard_cmd_host
 ./build/firmware_dashboard_cmd_host
+"$CXX" -std=c++17 -O2 -Wall -Wextra -Werror -Itests/mqtt_stubs -Iinclude -Itests/firmware_stubs tests/firmware_mqtt_response_tests.cpp -o build/firmware_mqtt_response_host
+./build/firmware_mqtt_response_host
 # Issue #113: exercitar entrada serial VINCULAR por loop/readCommands em demo e weekly.
 for mode in 1 0; do
   "$CXX" -std=c++17 -O2 -Wall -Wextra -Werror -DDEMO_MODE="$mode" \
