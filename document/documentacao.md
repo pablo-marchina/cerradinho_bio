@@ -1988,7 +1988,7 @@ o mesmo JSON fica salvo para reenvio; por isso o dashboard correlaciona e dedupl
 |---|---|---|---|
 | `id` | texto | sempre | O mesmo `id` do pedido. Vazio se o JSON era ilegível |
 | `acao` | texto | sempre | A mesma `acao` do pedido. Vazia se não deu para lê-la |
-| `ok` | verdadeiro/falso | sempre | ✅ `true` = o comando foi **aceito e executado**; o efeito aparece depois em `evento` e `status`. ❌ `false` = foi **recusado** e nada mudou |
+| `ok` | verdadeiro/falso | sempre | ✅ `true` = o comando foi **aceito, executado e, quando altera o contexto, persistido**; o efeito aparece depois em `evento` e `status`. ❌ `false` = não há sucesso confirmado; consulte `erro`, `status` e `evento` |
 | `erro` | texto | só quando `ok` é `false` | O **motivo** da recusa, da tabela abaixo |
 | `motivo` | texto | encerramento recusado com ciclo ativo | Distingue `lacre_aberto` de `nf_retorno_ausente` |
 | `janela_dias` | inteiro | autorização aceita | Duração da autorização segundo a RN06 |
@@ -1997,7 +1997,7 @@ o mesmo JSON fica salvo para reenvio; por isso o dashboard correlaciona e dedupl
 | `erro` | O que aconteceu |
 |---|---|
 | `json_vazio` | O corpo da mensagem tinha 0 bytes |
-| `json_invalido` | O objeto está incompleto, tem sintaxe inválida, conteúdo depois do `}` ou estrutura fora do contrato plano |
+| `json_invalido` | O objeto está incompleto, tem sintaxe inválida, chave repetida, conteúdo depois do `}` ou estrutura fora do contrato plano |
 | `payload_grande` | Mais de 256 bytes |
 | `acao_ausente` | Não há o campo `acao`, ou o JSON está ilegível |
 | `acao_desconhecida` | O nome da `acao` não está na lista |
@@ -2011,12 +2011,16 @@ o mesmo JSON fica salvo para reenvio; por isso o dashboard correlaciona e dedupl
 | `nf_invalida` | `remessa` sem `valor`, com mais de 15 caracteres ou com caractere fora de letras, dígitos, `-`, `.` e `/` |
 | `nf_ja_lancada` | `nf_retorno` quando a NF de retorno deste ciclo já foi lançada |
 | `encerramento_recusado` | `ciclo_encerrar` com lacre aberto ou sem NF de retorno |
+| `persistencia_falhou` | A mudança não pôde ser confirmada na NVS; nenhuma resposta de sucesso é produzida |
+| `resposta_anterior_pendente` | A ação nova não foi executada porque o reenvio de uma resposta anterior ainda falhou |
 
-O JSON inteiro é validado antes da execução. Se `mqtt.publish()` falhar depois de uma ação, a
-resposta completa é preservada na NVS e reenviada com o mesmo `id` quando o MQTT voltar. Enquanto
-ela estiver pendente, outro comando não é executado e deve ser repetido depois do reenvio. Como
-`cmd/resposta` usa QoS 0, o dashboard mantém timeout e consulta `status`/`evento` antes de repetir
-uma ação que altera estado.
+O JSON inteiro é validado antes da execução, inclusive contra chaves repetidas. Para uma ação que
+muda ciclo, NF, lacre ou autorização, o novo contexto é salvo antes de qualquer `ok:true` ser
+publicado ou guardado para reenvio. Se `mqtt.publish()` falhar, a resposta completa entra em uma
+fila na NVS e conserva o mesmo `id`. Ao chegar outro comando, um reenvio bem-sucedido permite
+processá-lo na mesma chamada; se o reenvio falhar, a ação nova não roda e sua resposta
+`resposta_anterior_pendente` também fica enfileirada. Como `cmd/resposta` usa QoS 0, o dashboard
+mantém timeout e consulta `status`/`evento` antes de repetir uma ação que altera estado.
 
 ##### O `status` (retido)
 
@@ -2136,7 +2140,7 @@ Condições comuns: firmware `bancada` (montagem alternada), alimentação USB e
 | CT77 | CT74 aprovado | Publicar `{"id":"4","acao":"rede","valor":"desligada","segundos":60}` | `ok:true`; o dispositivo fica sem rede simulada e os eventos entram na fila; ao fim dos 60 s a rede volta sozinha e a fila é enviada |
 | CT78 | CT74 aprovado | Publicar `desligar` e, em seguida, `avancar` e `ligar` | `desligar` e `ligar` respondem `ok:true`; `avancar` com o dispositivo desligado responde `ok:false` com `dispositivo_desligado` |
 | CT83 | CT74 aprovado; sem ciclo ativo | Publicar `remessa` e `nf_retorno` sem ciclo; iniciar o ciclo (`ciclo_iniciar`); publicar `remessa` com um número válido e um inválido; `nf_retorno` duas vezes; `ciclo_encerrar` | Sem ciclo, `remessa` e `nf_retorno` respondem `sem_ciclo_ativo`; com ciclo, a NF aparece na tela de NF do LCD, o número inválido responde `nf_invalida`, a NF de retorno é aceita uma vez (`nf_ja_lancada` na segunda) e o ciclo encerra |
-| CT84 | CT74 aprovado; lacre fechado; sem ciclo ativo | Enviar JSON incompleto; iniciar o ciclo; tentar encerrar sem NF; lançar a NF de retorno; tentar encerrar com o lacre aberto; fechar o lacre e encerrar; repetir parte do fluxo combinando comando e botão físico | JSON incompleto responde `json_invalido` sem alterar o ciclo; as recusas informam `nf_retorno_ausente` e `lacre_aberto`; o sucesso gera `CICLO_ENCERRADO` e “Ciclo encerrado” no LCD; o botão de 3 s continua funcionando |
+| CT84 | CT74 aprovado; lacre fechado; sem ciclo ativo | Enviar JSON incompleto e outro com duas chaves `acao`; iniciar o ciclo; tentar encerrar sem NF; lançar a NF de retorno; tentar encerrar com o lacre aberto; fechar o lacre e encerrar; repetir parte do fluxo combinando comando e botão físico | Os dois JSON inválidos respondem `json_invalido` sem alterar o ciclo; as recusas informam `nf_retorno_ausente` e `lacre_aberto`; o sucesso gera `CICLO_ENCERRADO` e “Ciclo encerrado” no LCD; o botão de 3 s continua funcionando |
 | CT85 | CT74 aprovado; lacre fechado | Publicar `autorizar`; abrir e fechar o lacre dentro da janela; autorizar novamente, aguardar a janela expirar e abrir o lacre | A resposta informa `janela_dias` e `valida_ate_ms`; dentro da janela ocorre `RETIRADA_AUTORIZADA` sem buzzer; após o vencimento ocorre `VIOLACAO_LACRE` com buzzer |
 
 #### Resultados

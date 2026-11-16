@@ -72,7 +72,7 @@ Em caso de JSON inválido, `id` e `acao` voltam vazios quando não puderam ser l
 | `erro` | Quando |
 |---|---|
 | `json_vazio` | Payload com 0 bytes |
-| `json_invalido` | Objeto incompleto, sintaxe inválida, conteúdo depois do `}` ou estrutura fora do contrato plano |
+| `json_invalido` | Objeto incompleto, sintaxe inválida, chave repetida, conteúdo depois do `}` ou estrutura fora do contrato plano |
 | `payload_grande` | Mais de 256 bytes |
 | `acao_ausente` | Sem o campo `acao` ou JSON ilegível |
 | `acao_desconhecida` | `acao` fora da tabela |
@@ -86,6 +86,8 @@ Em caso de JSON inválido, `id` e `acao` voltam vazios quando não puderam ser l
 | `nf_invalida` | `remessa` sem `valor` ou com número fora do formato |
 | `nf_ja_lancada` | `nf_retorno` quando a NF de retorno do ciclo já foi lançada |
 | `encerramento_recusado` | `ciclo_encerrar` recusado (lacre aberto ou sem NF de retorno) |
+| `persistencia_falhou` | A mudança não pôde ser confirmada na NVS; nenhuma resposta de sucesso é produzida |
+| `resposta_anterior_pendente` | O comando novo não foi executado porque o reenvio de uma resposta anterior ainda falhou |
 
 Uma resposta `ok:true` significa que o comando foi aceito e executado; o efeito aparece em seguida em `evento` e `status`.
 
@@ -100,11 +102,19 @@ Quando `ciclo_encerrar` é recusado com um ciclo ativo, `motivo` distingue `lacr
 ### Falha ao publicar a resposta
 
 O firmware valida o objeto JSON inteiro antes de executar a ação. Uma mensagem incompleta, como
-`{"acao":"ciclo_encerrar"`, responde `json_invalido` e não muda o ciclo.
+`{"acao":"ciclo_encerrar"`, ou ambígua, como
+`{"acao":"autorizar","acao":"ciclo_encerrar"}`, responde `json_invalido` e não muda o ciclo.
 
-Se `mqtt.publish()` falhar depois da execução, o JSON completo de `cmd/resposta` é preservado na
-NVS e reenviado com o mesmo `id` quando o MQTT estiver disponível. Enquanto essa resposta estiver
-pendente, outro comando recebido não é executado; depois do reenvio, o dashboard repete o novo `id`.
+Antes de publicar ou guardar uma resposta `ok:true` para uma ação que muda ciclo, NF, lacre ou
+autorização, o firmware salva o novo contexto na NVS. Se a gravação falhar, responde
+`persistencia_falhou`; portanto, um reinício não pode restaurar o estado antigo e depois reenviar
+sucesso para a mudança perdida.
+
+Se `mqtt.publish()` falhar depois da execução, o JSON completo de `cmd/resposta` é preservado em
+uma fila na NVS e reenviado com o mesmo `id` quando o MQTT estiver disponível. Se o reenvio passar
+ao chegar outro comando, o novo comando continua sendo processado na mesma chamada. Se o reenvio
+falhar novamente, a nova ação não é executada e uma resposta `resposta_anterior_pendente`, com o
+novo `id`, entra na fila para entrega posterior.
 O dashboard deve correlacionar e deduplicar respostas pelo `id`, pois uma falha ao limpar a NVS
 depois do envio pode causar uma repetição após reinício.
 

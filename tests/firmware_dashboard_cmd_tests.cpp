@@ -55,9 +55,11 @@ int main() {
   const char *missingBrace = "{\"acao\":\"ciclo_encerrar\"";
   const char *trailingGarbage = "{\"acao\":\"voltar\"} lixo";
   const char *trailingComma = "{\"acao\":\"voltar\",}";
+  const char *duplicateAction = "{\"acao\":\"autorizar\",\"acao\":\"ciclo_encerrar\"}";
   assert(!DashboardCmd::validObject(missingBrace, std::strlen(missingBrace)));
   assert(!DashboardCmd::validObject(trailingGarbage, std::strlen(trailingGarbage)));
   assert(!DashboardCmd::validObject(trailingComma, std::strlen(trailingComma)));
+  assert(!DashboardCmd::validObject(duplicateAction, std::strlen(duplicateAction)));
   assert(DashboardCmd::textValue(sample, std::strlen(sample), "id", text, sizeof(text)) && std::strcmp(text, "a1") == 0);
   assert(DashboardCmd::textValue(sample, std::strlen(sample), "acao", text, sizeof(text)) && std::strcmp(text, "rede") == 0);
   assert(DashboardCmd::intValue(sample, std::strlen(sample), "segundos", 1, 3600, &number) && number == 30);
@@ -73,21 +75,25 @@ int main() {
   run(1000);
   assert(poweredOn && simulatedNetworkAvailable() && !stableSeal && !cycleActive);
 
-  // ---- falha de cmd/resposta: preserva o mesmo id na NVS para reenvio ----
+  // ---- fila de cmd/resposta: preserva os ids na NVS para reenvio ----
   const String failedResponse = "{\"id\":\"falhou-1\",\"acao\":\"autorizar\",\"ok\":true}";
   recordCmdResponseDelivery(failedResponse, false);
-  assert(std::strcmp(pendingCmdResponse.c_str(), failedResponse.c_str()) == 0);
-  assert(FakeNVS::bytes.count(PendingCmdResponseKey) == 1);
-  pendingCmdResponse = "";  // simula a RAM perdida em um reinicio
-  restorePendingCmdResponse();
-  assert(std::strcmp(pendingCmdResponse.c_str(), failedResponse.c_str()) == 0);
-  clearPendingCmdResponse();
-  assert(pendingCmdResponse.length() == 0 && FakeNVS::bytes.count(PendingCmdResponseKey) == 0);
+  assert(pendingCmdResponses.count == 1);
+  assert(std::strcmp(pendingCmdResponses.text[0], failedResponse.c_str()) == 0);
+  assert(FakeNVS::bytes.count(CmdResponseMetaKey) == 1 && FakeNVS::bytes.count("cr0") == 1);
+  pendingCmdResponses = {};  // simula a RAM perdida em um reinicio
+  restorePendingCmdResponses();
+  assert(pendingCmdResponses.count == 1);
+  assert(std::strcmp(pendingCmdResponses.text[0], failedResponse.c_str()) == 0);
+  removeFirstPendingCmdResponse();
+  assert(pendingCmdResponses.count == 0 && FakeNVS::bytes.count("cr0") == 0);
 
   // ---- erros de formato ----
   expectError("", "json_vazio");
   expectError("{\"acao\":\"ciclo_encerrar\"", "json_invalido");
   assert(!cycleActive && !contains(Serial.output, "ENCERRAMENTO_RECUSADO"));
+  expectError("{\"acao\":\"autorizar\",\"acao\":\"ciclo_encerrar\"}", "json_invalido");
+  assert(!cycleActive && !seal.authorized);
   expectError("{\"id\":\"x\"}", "acao_ausente");
   expectError("{\"id\":\"x\",\"acao\":\"dancar\"}", "acao_desconhecida");
   const std::string big(300, 'a');

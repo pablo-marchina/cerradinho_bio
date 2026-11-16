@@ -1,4 +1,4 @@
-// Falha de cmd/resposta: a acao executada deve conservar o mesmo id para reenvio.
+// Falha de cmd/resposta: estado duravel, fila ordenada e resposta explicita ao comando novo.
 #include <cassert>
 #include <cstdio>
 #include <cstdint>
@@ -43,31 +43,60 @@ int main() {
   const char *authorize = "{\"id\":\"resp-1\",\"acao\":\"autorizar\"}";
   assert(handleDashboardCommand(authorize, std::strlen(authorize)));
   assert(seal.authorized);
-  assert(contains(pendingCmdResponse.c_str(), "\"id\":\"resp-1\""));
-  assert(FakeNVS::bytes.count(PendingCmdResponseKey) == 1);
+  assert(pendingCmdResponses.count == 1);
+  assert(contains(pendingCmdResponses.text[0], "\"id\":\"resp-1\""));
+  StoredContext restored{};
+  assert(restoreContext(restored) && restored.seal.authorized);
   assert(contains(Serial.output, "resposta nao publicada"));
 
-  // Enquanto o reenvio falha, um novo comando recebido nao pode alterar o ciclo.
+  // Simula a perda da RAM: o reboot restaura primeiro o estado novo e a resposta de sucesso.
+  seal = {};
+  cycleActive = false;
+  pendingCmdResponses = {};
+  assert(restoreContext(restored));
+  seal = restored.seal;
+  cycle = restored.cycle;
+  cycleActive = restored.cycleActive;
+  returnInvoiceIssued = restored.returnInvoiceIssued;
+  stableSeal = restored.sealOpen;
+  restorePendingCmdResponses();
+  assert(seal.authorized && pendingCmdResponses.count == 1);
+  assert(contains(pendingCmdResponses.text[0], "\"id\":\"resp-1\""));
+
+  // Enquanto o reenvio falha, a acao nova nao roda e recebe uma recusa recuperavel com seu id.
   mqtt.failNextPublish = true;
   char topic[] = "guaratracking/prototipo-001/cmd";
   char next[] = "{\"id\":\"resp-2\",\"acao\":\"ciclo_iniciar\"}";
   onMqttMessage(topic, reinterpret_cast<uint8_t *>(next), std::strlen(next));
   assert(!cycleActive);
-  assert(contains(pendingCmdResponse.c_str(), "\"id\":\"resp-1\""));
+  assert(pendingCmdResponses.count == 2);
+  assert(contains(pendingCmdResponses.text[0], "\"id\":\"resp-1\""));
+  assert(contains(pendingCmdResponses.text[1], "\"id\":\"resp-2\""));
+  assert(contains(pendingCmdResponses.text[1], "\"erro\":\"resposta_anterior_pendente\""));
 
-  // Mesmo quando o reenvio passa, o comando recebido nessa chamada nao e executado.
-  onMqttMessage(topic, reinterpret_cast<uint8_t *>(next), std::strlen(next));
-  assert(pendingCmdResponse.length() == 0);
-  assert(FakeNVS::bytes.count(PendingCmdResponseKey) == 0);
-  assert(!mqtt.published.empty() && contains(mqtt.published.back(), "\"id\":\"resp-1\""));
-  assert(!cycleActive);
+  assert(resendPendingCmdResponses());
+  assert(pendingCmdResponses.count == 0);
+  assert(mqtt.published.size() >= 2);
+  assert(contains(mqtt.published[mqtt.published.size() - 2], "\"id\":\"resp-1\""));
+  assert(contains(mqtt.published.back(), "\"id\":\"resp-2\""));
 
-  // O dashboard repete o novo id somente depois de receber a resposta anterior.
+  // Se o reenvio anterior passa no callback, o comando que chegou na mesma chamada e processado.
+  assert(enqueueCmdResponse("{\"id\":\"antiga\",\"acao\":\"autorizar\",\"ok\":true}"));
   onMqttMessage(topic, reinterpret_cast<uint8_t *>(next), std::strlen(next));
   assert(cycleActive);
+  assert(pendingCmdResponses.count == 0);
   assert(!mqtt.published.empty() && contains(mqtt.published.back(), "\"id\":\"resp-2\""));
 
-  std::puts("PASS: cmd/resposta falha, persiste o id, bloqueia novo comando e reenvia");
+  // Falha ao salvar a mudanca nunca produz sucesso recuperavel nem atualiza o contexto duravel.
+  FakeNVS::failNextWrite = true;
+  const char *invoice = "{\"id\":\"resp-3\",\"acao\":\"nf_retorno\"}";
+  assert(!handleDashboardCommand(invoice, std::strlen(invoice)));
+  assert(returnInvoiceIssued);
+  assert(restoreContext(restored) && !restored.returnInvoiceIssued);
+  assert(!mqtt.published.empty() && contains(mqtt.published.back(), "\"id\":\"resp-3\""));
+  assert(contains(mqtt.published.back(), "\"erro\":\"persistencia_falhou\""));
+
+  std::puts("PASS: cmd/resposta preserva estado, fila ids e trata comando concorrente");
   return 0;
 }
 

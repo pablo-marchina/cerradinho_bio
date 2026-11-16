@@ -58,7 +58,13 @@ int wakeReferencePct = -100;  // bateria no ultimo despertar do LCD; -100 = sem 
 bool poweredOn = true;
 bool networkWasAvailable = true;
 String serialLine;
-String pendingCmdResponse;  // ultima resposta MQTT nao confirmada, preservada na NVS
+constexpr uint8_t CmdResponseCapacity = 4;
+constexpr size_t CmdResponseTextMax = 320;
+struct CmdResponseOutbox {
+  char text[CmdResponseCapacity][CmdResponseTextMax];
+  uint8_t count;
+};
+CmdResponseOutbox pendingCmdResponses{};  // respostas MQTT nao confirmadas, preservadas na NVS
 bool contextDirty = false;  // ciclo/lacre mudou e precisa ir para a NVS
 bool pendingDirty = false;
 bool contextRetryPending = false, pendingRetryPending = false;
@@ -381,38 +387,71 @@ void restorePending() {
   pending.overflowLastMs = meta.overflowLastMs;
 }
 
-// Uma resposta de comando pode falhar depois de a acao ja ter sido executada. Preservar o JSON
-// completo mantem o mesmo `id` para reenvio; enquanto ele estiver pendente, nenhum novo comando
-// MQTT e executado, evitando dois resultados sem confirmacao no mesmo dispositivo.
-constexpr const char *PendingCmdResponseKey = "cmdresp";
-bool storePendingCmdResponse(const String &json) {
-  pendingCmdResponse = json;
-  if (!storageReady || storage.putString(PendingCmdResponseKey, json) != json.length()) {
-    Serial.println("[cmd] ALERTA: resposta pendente somente em RAM; falha ao gravar NVS");
+// Uma resposta pode falhar depois de a acao ser executada. A fila preserva os JSON completos e
+// seus `id` na ordem; o estado da acao e salvo antes de uma resposta de sucesso entrar aqui.
+constexpr const char *CmdResponseMetaKey = "crmeta";
+struct StoredCmdResponseMeta { uint8_t count; };
+
+bool savePendingCmdResponses() {
+  if (!storageReady) return false;
+  bool complete = true;
+  for (uint8_t i = 0; i < CmdResponseCapacity; ++i) {
+    const String key = "cr" + String(i);
+    if (i < pendingCmdResponses.count) {
+      const size_t length = std::strlen(pendingCmdResponses.text[i]);
+      if (storage.putString(key.c_str(), pendingCmdResponses.text[i]) != length) complete = false;
+    } else if (storage.isKey(key.c_str()) && !storage.remove(key.c_str())) {
+      complete = false;
+    }
+  }
+  const StoredCmdResponseMeta meta{pendingCmdResponses.count};
+  if (complete) complete = storage.putBytes(CmdResponseMetaKey, &meta, sizeof(meta)) == sizeof(meta);
+  if (!complete) Serial.println("[cmd] ALERTA: fila de respostas somente em RAM; falha ao gravar NVS");
+  return complete;
+}
+
+bool enqueueCmdResponse(const String &json) {
+  if (json.length() >= CmdResponseTextMax || pendingCmdResponses.count == CmdResponseCapacity) {
+    Serial.println("[cmd] ALERTA: fila de respostas cheia; resultado nao persistido");
     return false;
   }
+  std::strncpy(pendingCmdResponses.text[pendingCmdResponses.count], json.c_str(), CmdResponseTextMax - 1);
+  pendingCmdResponses.text[pendingCmdResponses.count][CmdResponseTextMax - 1] = '\0';
+  ++pendingCmdResponses.count;
+  savePendingCmdResponses();
   return true;
 }
 
-void restorePendingCmdResponse() {
-  if (!storageReady || !storage.isKey(PendingCmdResponseKey)) return;
-  pendingCmdResponse = storage.getString(PendingCmdResponseKey, "");
-  if (pendingCmdResponse.length() > 0) {
-    Serial.println("[cmd] resposta pendente restaurada; reenvio aguardando MQTT");
+void restorePendingCmdResponses() {
+  StoredCmdResponseMeta meta{};
+  if (!storageReady || !storage.isKey(CmdResponseMetaKey) ||
+      storage.getBytesLength(CmdResponseMetaKey) != sizeof(meta) ||
+      storage.getBytes(CmdResponseMetaKey, &meta, sizeof(meta)) != sizeof(meta) ||
+      meta.count > CmdResponseCapacity) return;
+  for (uint8_t i = 0; i < meta.count; ++i) {
+    const String value = storage.getString(("cr" + String(i)).c_str(), "");
+    if (value.length() == 0 || value.length() >= CmdResponseTextMax) break;
+    std::strncpy(pendingCmdResponses.text[pendingCmdResponses.count], value.c_str(), CmdResponseTextMax - 1);
+    pendingCmdResponses.text[pendingCmdResponses.count][CmdResponseTextMax - 1] = '\0';
+    ++pendingCmdResponses.count;
+  }
+  if (pendingCmdResponses.count > 0) {
+    Serial.printf("[cmd] %u resposta(s) pendente(s) restaurada(s)\r\n", pendingCmdResponses.count);
   }
 }
 
-[[maybe_unused]] void clearPendingCmdResponse() {
-  pendingCmdResponse = "";
-  if (storageReady && storage.isKey(PendingCmdResponseKey) &&
-      !storage.remove(PendingCmdResponseKey)) {
-    Serial.println("[cmd] ALERTA: resposta entregue, mas falhou ao limpar NVS; pode haver duplicata no reinicio");
+[[maybe_unused]] void removeFirstPendingCmdResponse() {
+  if (pendingCmdResponses.count == 0) return;
+  for (uint8_t i = 0; i + 1 < pendingCmdResponses.count; ++i) {
+    std::memcpy(pendingCmdResponses.text[i], pendingCmdResponses.text[i + 1], CmdResponseTextMax);
   }
+  --pendingCmdResponses.count;
+  savePendingCmdResponses();
 }
 
 [[maybe_unused]] void recordCmdResponseDelivery(const String &json, bool sent) {
   if (sent) return;
-  storePendingCmdResponse(json);
+  enqueueCmdResponse(json);
   Serial.println("[cmd] resposta nao publicada; guardada para reenvio com o mesmo id");
 }
 
@@ -1040,6 +1079,9 @@ constexpr long NetworkOffMaxSeconds = 3600;
       return fail("valor_invalido");
     }
   }
+  // Uma resposta recuperavel de sucesso so pode existir depois que o estado que ela confirma
+  // estiver duravel. Assim, um reinicio nunca restaura o estado antigo e reenvia `ok:true`.
+  if (contextDirty && !saveContext()) return fail("persistencia_falhou");
   publishCmdResponse(id, action, true, nullptr,
                      responseExtra.length() > 0 ? responseExtra.c_str() : nullptr);
   return true;
@@ -1092,25 +1134,36 @@ PubSubClient mqtt(mqttNet);
 uint32_t lastMqttTry = 0, lastMqttStatus = 0;
 bool mqttWasConnected = false, mqttConfigured = false;
 
-// Reenvia a resposta exatamente como foi produzida, inclusive `id`, `acao`, resultado e extras.
-bool resendPendingCmdResponse() {
-  if (pendingCmdResponse.length() == 0) return true;
-  if (!mqtt.connected() || !mqtt.publish(TopicCmdResposta, pendingCmdResponse.c_str(), false)) {
-    Serial.println("[cmd] reenvio de resposta ainda pendente");
-    return false;
+// Reenvia as respostas exatamente como foram produzidas, inclusive `id`, `acao`, resultado e
+// extras. A remocao so ocorre depois de cada publicacao aceita pelo cliente MQTT.
+bool resendPendingCmdResponses() {
+  while (pendingCmdResponses.count > 0) {
+    if (!mqtt.connected() ||
+        !mqtt.publish(TopicCmdResposta, pendingCmdResponses.text[0], false)) {
+      Serial.println("[cmd] reenvio de resposta ainda pendente");
+      return false;
+    }
+    Serial.println("[cmd] resposta pendente reenviada");
+    removeFirstPendingCmdResponse();
   }
-  Serial.println("[cmd] resposta pendente reenviada");
-  clearPendingCmdResponse();
   return true;
 }
 
 // Comando do dashboard: registra no Serial e executa (handleDashboardCommand responde em cmd/resposta).
 void onMqttMessage(char *topic, uint8_t *payload, unsigned int length) {
-  if (pendingCmdResponse.length() > 0) {
-    const bool resent = resendPendingCmdResponse();
-    Serial.println(resent
-      ? "[cmd] novo comando nao executado: resposta anterior reenviada; dashboard deve repetir o novo id"
-      : "[cmd] novo comando nao executado: resposta anterior ainda pendente");
+  if (pendingCmdResponses.count > 0 && !resendPendingCmdResponses()) {
+    // A acao nova nao e executada sem espaco para confirmar resultados. Sua recusa fica na mesma
+    // fila, com o id recebido, para o dashboard identifica-la quando a conexao voltar.
+    char id[DashboardCmd::MaxId + 1] = "";
+    char action[DashboardCmd::MaxText + 1] = "";
+    const char *text = reinterpret_cast<const char *>(payload);
+    if (DashboardCmd::validObject(text, length)) {
+      DashboardCmd::textValue(text, length, "id", id, sizeof(id));
+      DashboardCmd::textValue(text, length, "acao", action, sizeof(action));
+    }
+    const String refusal = cmdResponseJson(id, action, false, "resposta_anterior_pendente", nullptr);
+    enqueueCmdResponse(refusal);
+    Serial.println("[cmd] novo comando recusado: resposta anterior ainda pendente");
     return;
   }
   // O payload do PubSubClient nao termina em nulo: o texto e copiado com o tamanho exato.
@@ -1199,7 +1252,7 @@ void updateMqtt(uint32_t now) {
     return;
   }
   if (mqtt.connected()) {
-    resendPendingCmdResponse();
+    resendPendingCmdResponses();
     mqtt.loop();
     // Refresco a cada MqttStatusMs, ou antes se um evento mudou o estado (com intervalo minimo).
     const uint32_t sinceStatus = now - lastMqttStatus;
@@ -1232,7 +1285,7 @@ void updateMqtt(uint32_t now) {
   // O PubSubClient nao le o SUBACK: false = nao saiu; true = foi enviada, sem saber se a ACL aceitou.
   const bool cmdSubscribed = mqtt.subscribe(TopicCmd);
   Serial.printf("[mqtt] assinatura de cmd %s\r\n", cmdSubscribed ? "enviada ao broker" : "nao enviada");
-  resendPendingCmdResponse();  // resultado anterior sai antes de aceitar o proximo comando
+  resendPendingCmdResponses();  // resultados anteriores saem antes de aceitar o proximo comando
   flushPending();  // eventos guardados sem broker saem antes do `status`, que entao mostra a fila
   lastMqttStatus = now;
   mqttStatusDirty = false;
@@ -1268,7 +1321,7 @@ void setup() {
   batteryPct = simulatedBatteryPercent();
   Serial2.begin(Config::GpsBaud, SERIAL_8N1, Config::GpsRx, Config::GpsTx);
   storageReady = storage.begin("tracker", false);
-  restorePendingCmdResponse();
+  restorePendingCmdResponses();
   double point[2] = {};
   if (storageReady && storage.isKey("previous") &&
       storage.getBytesLength("previous") == sizeof(point) &&

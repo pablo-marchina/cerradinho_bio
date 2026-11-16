@@ -26,6 +26,10 @@ inline void skipWhitespace(const char *json, size_t length, size_t &position) {
 // Rejeitar escapes e estruturas aninhadas mantem o parser pequeno e coerente com o protocolo.
 inline bool validObject(const char *json, size_t length) {
   if (!json || length == 0) return false;
+  struct KeyRange { size_t start; size_t length; };
+  constexpr size_t MaxKeys = 16;
+  KeyRange keys[MaxKeys] = {};
+  size_t keyCount = 0;
   size_t p = 0;
   const auto quoted = [&]() {
     if (p >= length || json[p] != '"') return false;
@@ -81,7 +85,17 @@ inline bool validObject(const char *json, size_t length) {
     return p == length;
   }
   while (p < length) {
+    const size_t keyStart = p + 1;
     if (!quoted()) return false;
+    const size_t keyLength = p - keyStart - 1;
+    if (keyCount == MaxKeys) return false;
+    for (size_t i = 0; i < keyCount; ++i) {
+      if (keys[i].length == keyLength &&
+          std::strncmp(json + keys[i].start, json + keyStart, keyLength) == 0) {
+        return false;
+      }
+    }
+    keys[keyCount++] = {keyStart, keyLength};
     skipWhitespace(json, length, p);
     if (p >= length || json[p++] != ':') return false;
     skipWhitespace(json, length, p);
