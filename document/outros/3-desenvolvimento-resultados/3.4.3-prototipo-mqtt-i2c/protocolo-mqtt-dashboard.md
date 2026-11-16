@@ -39,7 +39,7 @@ JSON plano, até 256 bytes, sem escapes (`\`) nos textos:
 | `voltar` | | Tela anterior do LCD (botão VOLTAR); acende o visor |
 | `ligar` | | Liga o dispositivo (chave ON/OFF) |
 | `desligar` | | Desliga logicamente; o dispositivo segue ouvindo o `cmd` para poder ligar de novo |
-| `autorizar` | | Registra a autorização de retirada (botão AUTORIZAR por 3 s) |
+| `autorizar` | | Registra a autorização de retirada (botão AUTORIZAR por 3 s); a resposta informa a janela e o instante de validade no relógio do dispositivo |
 | `ciclo_iniciar` (ou `vincular`) | | Inicia o ciclo de remessa (botão CICLO por 3 s sem ciclo ativo) |
 | `ciclo_encerrar` | | Encerra o ciclo (botão CICLO por 3 s com ciclo ativo) |
 | `remessa` | número da NF (até 15 caracteres: letras, dígitos, `-`, `.` ou `/`) | Registra a NF de remessa do ciclo ativo (equivale a `REMESSA x` na Serial) |
@@ -61,6 +61,8 @@ Cada comando recebido gera exatamente uma resposta, mesmo quando recusado:
 ```json
 {"id":"a1","acao":"lacre","ok":true}
 {"id":"a1","acao":"lacre","ok":false,"erro":"lacre_ja_aberto"}
+{"id":"a2","acao":"autorizar","ok":true,"janela_dias":3,"valida_ate_ms":123456}
+{"id":"a3","acao":"ciclo_encerrar","ok":false,"erro":"encerramento_recusado","motivo":"lacre_aberto"}
 ```
 
 Em caso de JSON inválido, `id` e `acao` voltam vazios quando não puderam ser lidos.
@@ -86,6 +88,14 @@ Em caso de JSON inválido, `id` e `acao` voltam vazios quando não puderam ser l
 
 Uma resposta `ok:true` significa que o comando foi aceito e executado; o efeito aparece em seguida em `evento` e `status`.
 
+Em `autorizar`, `janela_dias` informa a duração da RN06 e `valida_ate_ms` usa o relógio
+acumulado do dispositivo (`sim_clock.h`). Esse relógio sobrevive ao reinício quando o contexto
+é salvo, mas não é uma data UTC: no ambiente `demo`, um dia equivale a um segundo; no ambiente
+`weekly`, equivale a 24 horas. O dashboard não deve apresentar esse valor como data civil.
+
+Quando `ciclo_encerrar` é recusado com um ciclo ativo, `motivo` distingue `lacre_aberto` de
+`nf_retorno_ausente`. Sem ciclo ativo, o próprio `erro` é `sem_ciclo_ativo`.
+
 ## 4. Exemplos
 
 ```text
@@ -97,6 +107,9 @@ cmd/resposta  {"id":"2","acao":"rede","ok":true}
 
 cmd           {"id":"3","acao":"abrir"}
 cmd/resposta  {"id":"3","acao":"abrir","ok":false,"erro":"acao_desconhecida"}
+
+cmd           {"id":"4","acao":"autorizar"}
+cmd/resposta  {"id":"4","acao":"autorizar","ok":true,"janela_dias":3,"valida_ate_ms":123456}
 ```
 
 ## 5. Fora do protocolo

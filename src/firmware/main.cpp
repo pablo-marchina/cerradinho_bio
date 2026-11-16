@@ -909,8 +909,10 @@ void updateDisplay(uint32_t now, uint64_t clock) {
 // ---- Comandos do dashboard (topico cmd) ----
 // Contrato: document/outros/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/protocolo-mqtt-dashboard.md.
 // Cada comando e um JSON {"id":"...","acao":"...","valor":"...","segundos":N} e recebe uma resposta
-// {"id","acao","ok"[,"erro"]} em cmd/resposta. As acoes repetem o que os botoes fazem na placa.
-void publishCmdResponse(const char *id, const char *action, bool ok, const char *error);
+// {"id","acao","ok"[,"erro"][, campos da acao]} em cmd/resposta. As acoes repetem
+// o que os botoes fazem na placa.
+void publishCmdResponse(const char *id, const char *action, bool ok, const char *error,
+                        const char *extra);
 
 constexpr long NetworkOffMaxSeconds = 3600;
 
@@ -920,8 +922,9 @@ constexpr long NetworkOffMaxSeconds = 3600;
   char id[DashboardCmd::MaxId + 1] = "";
   char action[DashboardCmd::MaxText + 1] = "";
   char value[DashboardCmd::MaxText + 1] = "";
+  String responseExtra;
   const auto fail = [&](const char *error) {
-    publishCmdResponse(id, action, false, error);
+    publishCmdResponse(id, action, false, error, nullptr);
     return false;
   };
   if (length == 0) return fail("json_vazio");
@@ -947,14 +950,28 @@ constexpr long NetworkOffMaxSeconds = 3600;
     powerOn = is("ligar");  // loop() registra DISPOSITIVO_DESLIGADO e o retorno
   } else if (is("autorizar")) {
     registerAuthorization(clock);
+    responseExtra = ",\"janela_dias\":";
+    responseExtra += Config::AuthorizationWindowDays;
+    responseExtra += ",\"valida_ate_ms\":";
+    responseExtra += String((unsigned long long)(seal.authorizedAtMs + seal.windowMs));
   } else if (is("ciclo_iniciar") || is("vincular")) {
     if (cycleActive) return fail("ciclo_ativo");
     requestLink(clock);
   } else if (is("ciclo_encerrar")) {
     const bool wasActive = cycleActive;
+    const char *refusalReason = !wasActive ? "sem_ciclo_ativo"
+                                : stableSeal ? "lacre_aberto"
+                                : !returnInvoiceIssued ? "nf_retorno_ausente"
+                                : nullptr;
     requestClose();  // recusa sozinho: sem ciclo, lacre aberto ou sem NF de retorno
     if (!wasActive) return fail("sem_ciclo_ativo");
-    if (cycleActive) return fail("encerramento_recusado");
+    if (cycleActive) {
+      responseExtra = ",\"motivo\":\"";
+      responseExtra += refusalReason;
+      responseExtra += "\"";
+      publishCmdResponse(id, action, false, "encerramento_recusado", responseExtra.c_str());
+      return false;
+    }
   } else if (is("lacre")) {
     if (!Config::SwitchButtons) return fail("somente_modo_botoes");
     const bool toOpen = std::strcmp(value, "aberto") == 0;
@@ -986,12 +1003,14 @@ constexpr long NetworkOffMaxSeconds = 3600;
       return fail("valor_invalido");
     }
   }
-  publishCmdResponse(id, action, true, nullptr);
+  publishCmdResponse(id, action, true, nullptr,
+                     responseExtra.length() > 0 ? responseExtra.c_str() : nullptr);
   return true;
 }
 
 // Resposta no Serial e, com MQTT, no topico cmd/resposta (QoS 0, nao retida).
-String cmdResponseJson(const char *id, const char *action, bool ok, const char *error) {
+String cmdResponseJson(const char *id, const char *action, bool ok, const char *error,
+                       const char *extra) {
   String json = "{\"id\":\"";
   json += id;
   json += "\",\"acao\":\"";
@@ -1003,13 +1022,15 @@ String cmdResponseJson(const char *id, const char *action, bool ok, const char *
     json += error;
     json += "\"";
   }
+  if (extra) json += extra;
   json += "}";
   return json;
 }
 
 #if !MQTT_ENABLED
-void publishCmdResponse(const char *id, const char *action, bool ok, const char *error) {
-  Serial.println(String("[cmd] resposta ") + cmdResponseJson(id, action, ok, error));
+void publishCmdResponse(const char *id, const char *action, bool ok, const char *error,
+                        const char *extra) {
+  Serial.println(String("[cmd] resposta ") + cmdResponseJson(id, action, ok, error, extra));
 }
 #endif
 
@@ -1051,8 +1072,9 @@ void onMqttMessage(char *topic, uint8_t *payload, unsigned int length) {
 bool mqttConnected() { return mqtt.connected(); }
 
 // Resposta ao comando: Serial e, com broker conectado, cmd/resposta (QoS 0, nao retida).
-void publishCmdResponse(const char *id, const char *action, bool ok, const char *error) {
-  const String json = cmdResponseJson(id, action, ok, error);
+void publishCmdResponse(const char *id, const char *action, bool ok, const char *error,
+                        const char *extra) {
+  const String json = cmdResponseJson(id, action, ok, error, extra);
   Serial.println(String("[cmd] resposta ") + json);
   if (mqtt.connected()) mqtt.publish(TopicCmdResposta, json.c_str(), false);
 }

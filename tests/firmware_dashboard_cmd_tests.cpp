@@ -28,6 +28,7 @@ void interrupts() {}
 void attachInterrupt(int, void (*)(), int) {}
 int digitalPinToInterrupt(int p) { return p; }
 static void run(uint32_t ms) { for (uint32_t i = 0; i < ms; i += 5) { fakeMs += 5; loop(); } }
+static void hold(int pin, uint32_t ms) { fakePins[pin] = LOW; run(ms); fakePins[pin] = HIGH; run(150); }
 static bool contains(const std::string &text, const char *part) { return text.find(part) != std::string::npos; }
 // Envia o JSON ao tratador e devolve o que o dispositivo imprimiu como resposta.
 static std::string cmd(const char *json) {
@@ -37,12 +38,12 @@ static std::string cmd(const char *json) {
 }
 static void expectOk(const char *json, const char *id, const char *action) {
   const std::string out = cmd(json);
-  const std::string want = std::string("\"id\":\"") + id + "\",\"acao\":\"" + action + "\",\"ok\":true}";
+  const std::string want = std::string("\"id\":\"") + id + "\",\"acao\":\"" + action + "\",\"ok\":true";
   assert(contains(out, want.c_str()));
 }
 static void expectError(const char *json, const char *error) {
   const std::string out = cmd(json);
-  const std::string want = std::string("\"ok\":false,\"erro\":\"") + error + "\"}";
+  const std::string want = std::string("\"ok\":false,\"erro\":\"") + error + "\"";
   assert(contains(out, want.c_str()));
 }
 int main() {
@@ -85,7 +86,9 @@ int main() {
   assert(contains(Serial.output, "\"type\":\"CICLO_INICIADO\""));
   expectError("{\"id\":\"c2\",\"acao\":\"ciclo_iniciar\"}", "ciclo_ativo");
   expectError("{\"id\":\"c3\",\"acao\":\"ciclo_encerrar\"}", "encerramento_recusado");  // sem NF de retorno
-  assert(cycleActive);
+  run(5);
+  assert(cycleActive && contains(Serial.output, "\"motivo\":\"nf_retorno_ausente\""));
+  assert(std::strcmp(shownTop, "Nao encerrado") == 0 && std::strcmp(shownBottom, "falta NF retorno") == 0);
 
   // ---- lacre simulado ----
   expectOk("{\"id\":\"l1\",\"acao\":\"lacre\",\"valor\":\"aberto\"}", "l1", "lacre");
@@ -98,11 +101,30 @@ int main() {
   expectError("{\"acao\":\"lacre\",\"valor\":\"fechado\"}", "lacre_ja_fechado");
 
   // ---- autorizacao e retirada autorizada ----
-  expectOk("{\"id\":\"a1\",\"acao\":\"autorizar\"}", "a1", "autorizar");
-  assert(contains(Serial.output, "\"type\":\"AUTORIZACAO_REGISTRADA\""));
-  expectOk("{\"acao\":\"lacre\",\"valor\":\"aberto\"}", "", "lacre");
+  const std::string authorization = cmd("{\"id\":\"a1\",\"acao\":\"autorizar\"}");
+  const uint64_t validUntil = seal.authorizedAtMs + seal.windowMs;
+  const std::string expectedValidity = std::string("\"janela_dias\":3,\"valida_ate_ms\":") +
+                                       std::to_string(validUntil);
+  assert(contains(authorization, "\"id\":\"a1\",\"acao\":\"autorizar\",\"ok\":true"));
+  assert(contains(authorization, "\"type\":\"AUTORIZACAO_REGISTRADA\""));
+  assert(contains(authorization, expectedValidity.c_str()));
+  hold(Config::SealPin, 120);  // abertura fisica dentro da janela autorizada
+  assert(stableSeal && seal.removalInProgress && !seal.violated);
   assert(contains(Serial.output, "\"type\":\"RETIRADA_AUTORIZADA\""));
-  expectOk("{\"acao\":\"lacre\",\"valor\":\"fechado\"}", "", "lacre");
+  assert(!alarmActive && !buzzerOn && std::strcmp(shownTop, "Retirada") == 0);
+  hold(Config::SealPin, 120);
+  assert(!stableSeal && !seal.removalInProgress);
+
+  // A mesma autorizacao, depois de tres dias, nao impede a violacao nem o buzzer.
+  expectOk("{\"id\":\"a2\",\"acao\":\"autorizar\"}", "a2", "autorizar");
+  run(static_cast<uint32_t>(seal.windowMs + 5));
+  Serial.output.clear();
+  hold(Config::SealPin, 120);
+  assert(stableSeal && seal.violated && !seal.removalInProgress);
+  assert(contains(Serial.output, "\"type\":\"VIOLACAO_LACRE\""));
+  assert(alarmActive && buzzerOn && std::strcmp(shownTop, "VIOLACAO") == 0);
+  hold(Config::SealPin, 120);
+  assert(!stableSeal && !seal.violated);
 
   // ---- rede simulada: o prazo religa sozinho ----
   expectError("{\"acao\":\"rede\",\"valor\":\"desligada\"}", "segundos_invalido");
@@ -140,16 +162,32 @@ int main() {
   run(50);
   assert(!contains(Serial.output, "NF_RETORNO_LANCADA"));  // recusada: nao repete o evento
 
-  // ---- encerramento com NF de retorno ----
+  // ---- RF016 pelo dashboard: mesmo com NF, lacre aberto impede o encerramento ----
+  expectOk("{\"acao\":\"lacre\",\"valor\":\"aberto\"}", "", "lacre");
+  expectError("{\"id\":\"c-lacre\",\"acao\":\"ciclo_encerrar\"}", "encerramento_recusado");
+  run(5);
+  assert(cycleActive && contains(Serial.output, "\"motivo\":\"lacre_aberto\""));
+  assert(std::strcmp(shownTop, "Nao encerrado") == 0 && std::strcmp(shownBottom, "lacre aberto") == 0);
+  expectOk("{\"acao\":\"lacre\",\"valor\":\"fechado\"}", "", "lacre");
+
+  // ---- encerramento com NF de retorno e lacre fechado ----
   expectOk("{\"id\":\"c4\",\"acao\":\"ciclo_encerrar\"}", "c4", "ciclo_encerrar");
-  assert(!cycleActive);
+  run(5);
+  assert(!cycleActive && contains(Serial.output, "\"type\":\"CICLO_ENCERRADO\""));
+  assert(std::strcmp(shownTop, "Ciclo encerrado") == 0);
   expectError("{\"acao\":\"ciclo_encerrar\"}", "sem_ciclo_ativo");
+  assert(contains(Serial.output, "\"motivo\":\"sem_ciclo_ativo\""));
   expectError("{\"acao\":\"nf_retorno\"}", "sem_ciclo_ativo");  // sem ciclo nao ha NF
   expectError("{\"acao\":\"remessa\",\"valor\":\"NF-1\"}", "sem_ciclo_ativo");
 
-  // ---- "vincular" e alias de ciclo_iniciar ----
+  // ---- comandos e pressoes longas continuam usando o mesmo ciclo ----
   expectOk("{\"id\":\"v1\",\"acao\":\"vincular\"}", "v1", "vincular");
   assert(cycleActive);
+  expectOk("{\"acao\":\"nf_retorno\"}", "", "nf_retorno");
+  hold(Config::CycleButtonPin, Config::LongPressMs + 200);
+  assert(!cycleActive && contains(Serial.output, "\"type\":\"CICLO_ENCERRADO\""));
+  hold(Config::CycleButtonPin, Config::LongPressMs + 200);
+  assert(cycleActive && contains(Serial.output, "\"type\":\"CICLO_INICIADO\""));
   std::puts("PASS: comandos do dashboard (cmd) e leitor de JSON");
   return 0;
 }
