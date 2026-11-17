@@ -1,20 +1,68 @@
-# Contrato provisório e próxima integração
+# Integração MQTT do dashboard
 
-A interface depende de `services/api.ts`, `services/types.ts` e `useSnapshot.ts`. A API HTTP abaixo existe **apenas como interceptação MSW dentro do browser**, não como serviço em rede. Não é um contrato MQTT acordado com o firmware.
+O frontend mantém duas fontes de dados explicitamente separadas:
 
-| Método e rota | Entrada | Resultado |
-|---|---|---|
-| GET `/api/demo/snapshot` | — | Snapshot (asOf, assets, alerts, events, commands, archived) |
-| POST `/api/demo/assets` | id, name, tag, description | ativo cadastrado, sem ciclo |
-| POST `/api/demo/commands` | assetId, type, payload, scenario | HTTP 202 e registro correlacionado; consultar snapshot até terminal |
-| PATCH `/api/demo/alerts/:id` | status, reason | alerta atualizado com ação registrada |
-| POST `/api/demo/scenario` | id, scenario | estado sintético após estímulo |
-| POST `/api/demo/reset` | — | ok; restaura cenário |
+- `demo`: API HTTP interceptada pelo MSW, com dados sintéticos e operações locais;
+- `mqtt`: conexão WebSocket com o broker, telemetria recebida nos tópicos do dispositivo e comandos publicados para o firmware.
 
-Falhas de validação retornam mensagem e status 409 no simulador. `created`, `published`, `received`, `executed`, `refused`, `timeout`, `expired` são fases fictícias, não confirmação do broker. A autorização e o encerramento têm confirmação explícita e TTL. O histórico associa eventos à TAG e ao ciclo. O relógio simulado avança nas operações, não no hardware. A autorização de retirada usa por padrão 4320 minutos (3 dias), parâmetro de teste da RN06 ainda pendente de homologação. A reaplicação requer o estímulo de fechamento do lacre antes do comando; o encerramento continua exigindo retorno físico, NF de retorno e lacre íntegro.
+O modo é selecionado por `VITE_DATA_SOURCE`. O arquivo `.env.mqtt.example` contém a configuração local sem credenciais.
 
-Para integrar: 1. acordar DTOs e mapeamento com firmware (campos de origem/tempo, qualidade GNSS, fila, ciclo, estados); 2. substituir o cliente HTTP pelo backend autenticado; 3. retirar a inicialização MSW do ambiente real; 4. processar e persistir eventos antes de ACK de aplicação, deduplicar e respeitar expiração de comandos; 5. substituir polling por mecanismo apropriado se necessário; 6. validar permissões, horários, latências, UX, falhas de rede e ensaios físicos. O modo demo deve continuar isolado dos dados reais. Nenhum segredo deve estar no bundle web.
+## Fluxo MQTT
 
-## Evidências para 3.4.3
+Para o dispositivo configurado em `VITE_MQTT_DEVICE_ID`, o dashboard:
 
-Capturar telas após instalar e executar: visão geral, violação, posição preservada sem fix, fila após perda de conexão, retorno fiscal pendente, resposta executada/recusada/timeout. Legendar como **interface de demonstração com dados fictícios**. Quando MQTT real existir, repetir com ESP32, broker e logs reais; registrar estímulo, resultado observado, horário e evidência. As imagens do frontend simulado não comprovam pub/sub, LWT ou hardware.
+| Operação | Tópico |
+|---|---|
+| Assina estado retido | `guaratracking/{device_id}/status` |
+| Assina ocorrências | `guaratracking/{device_id}/evento` |
+| Assina presença retida | `guaratracking/{device_id}/online` |
+| Publica comando identificado | `guaratracking/{device_id}/cmd` |
+| Assina o resultado correlacionado | `guaratracking/{device_id}/cmd/resposta` |
+
+O adaptador aceita o formato compacto implementado pelo firmware e o formato expandido previsto no contrato. Em particular:
+
+- `online` e `offline` podem chegar como texto simples ou objeto JSON;
+- o adaptador está preparado para posição em `status.posicao` ou nos eventos `location_sample` e `location_unavailable`, mas o firmware atual ainda registra essas amostras somente na Serial/NVS e não as publica no MQTT;
+- bateria pode usar `bateria_pct`, `battery_pct` ou `battery_sim_pct`;
+- lacre aceita os valores em português publicados no status e os valores em inglês dos eventos;
+- uma entrega retida não é contabilizada como contato novo do dispositivo;
+- `cmd/resposta` é correlacionado por `id` e uma resposta repetida não cria outro comando.
+
+## Comandos expostos
+
+O formulário MQTT apresenta somente ações implementadas no firmware:
+
+| Ação da interface | JSON publicado |
+|---|---|
+| Abrir ciclo | `{"id":"...","acao":"ciclo_iniciar"}` |
+| Registrar NF de remessa | `{"id":"...","acao":"remessa","valor":"NF-000123"}` |
+| Autorizar retirada | `{"id":"...","acao":"autorizar"}` |
+| Registrar NF de retorno | `{"id":"...","acao":"nf_retorno"}` |
+| Encerrar ciclo | `{"id":"...","acao":"ciclo_encerrar"}` |
+
+O estado visual só muda para **Executado pelo simulador** ou **Executado pelo ESP32**, conforme `VITE_MQTT_SOURCE`, quando chega `cmd/resposta` com o mesmo `id` e resultado positivo. Recusa mostra o código retornado. Após 10 segundos sem resposta, o dashboard mostra **Sem resposta** e orienta consultar status e eventos antes de repetir uma ação que altere estado.
+
+## Simulador e hardware
+
+`npm run simulate:mqtt` executa um cliente MQTT TCP com os mesmos tópicos e o formato compacto do firmware. Ele publica status, violação e uma posição periódica no formato proposto, além de responder aos comandos. A posição é uma antecipação explícita da integração ainda ausente no firmware, não uma reprodução de comportamento já comprovado. O simulador usa apenas dados fictícios e serve para desenvolver a interface sem a placa.
+
+O teste `e2e/mqtt.spec.ts` comprova navegador → WebSocket → broker → simulador → broker → navegador. Execute-o com EMQX e simulador ativos:
+
+```powershell
+$env:MQTT_E2E='1'
+$env:VITE_DATA_SOURCE='mqtt'
+$env:VITE_MQTT_URL='ws://127.0.0.1:8083/mqtt'
+$env:VITE_MQTT_DEVICE_ID='prototipo-001'
+$env:VITE_MQTT_SOURCE='simulator'
+npx playwright test e2e/mqtt.spec.ts --project=desktop
+```
+
+Esse ensaio não comprova o ESP32 físico. A rodada física deve encerrar o simulador, conectar a placa ao mesmo broker, repetir os cenários e registrar as evidências. Até essa rodada, as telas devem ser identificadas como integração com dispositivo simulado.
+
+## Limites
+
+- O estado MQTT permanece apenas na memória do navegador; recarregar a página perde eventos e respostas não retidos.
+- Cadastro, fornecedor, responsável, prazo, tratamento persistente de alertas e histórico entre sessões dependem de backend.
+- Usuário e senha em variáveis `VITE_*` ficam visíveis no bundle. O modo atual é destinado ao broker local de demonstração sem credenciais; um broker externo exige backend ou credencial temporária de privilégio mínimo.
+- O dashboard preserva a última coordenada recebida, mas não inventa horário absoluto quando o firmware publica apenas `uptime_ms`.
+- O modo MQTT não transforma dados do simulador em evidência de hardware.
