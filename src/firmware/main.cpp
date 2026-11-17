@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <cstddef>
 #include <cstring>
 #include <driver/gpio.h>
 #include <esp_system.h>
@@ -58,13 +59,17 @@ int wakeReferencePct = -100;  // bateria no ultimo despertar do LCD; -100 = sem 
 bool poweredOn = true;
 bool networkWasAvailable = true;
 String serialLine;
-constexpr uint8_t CmdResponseCapacity = 4;
+constexpr uint8_t CmdResponseRegularCapacity = 4;
+constexpr uint8_t CmdResponseCapacity = CmdResponseRegularCapacity + 1;  // ultima vaga: saturacao
 constexpr size_t CmdResponseTextMax = 320;
 struct CmdResponseOutbox {
   char text[CmdResponseCapacity][CmdResponseTextMax];
   uint8_t count;
 };
 CmdResponseOutbox pendingCmdResponses{};  // respostas MQTT nao confirmadas, preservadas na NVS
+uint32_t cmdResponseGeneration = 0;
+int8_t cmdResponseSlot = -1;
+bool cmdResponsePersistencePending = false;
 bool contextDirty = false;  // ciclo/lacre mudou e precisa ir para a NVS
 bool pendingDirty = false;
 bool contextRetryPending = false, pendingRetryPending = false;
@@ -387,72 +392,165 @@ void restorePending() {
   pending.overflowLastMs = meta.overflowLastMs;
 }
 
-// Uma resposta pode falhar depois de a acao ser executada. A fila preserva os JSON completos e
-// seus `id` na ordem; o estado da acao e salvo antes de uma resposta de sucesso entrar aqui.
+// Uma resposta pode falhar depois de a acao ser executada. Dois snapshots copy-on-write preservam
+// a fila: uma escrita parcial atinge somente o slot inativo, e o ultimo snapshot valido continua
+// recuperavel. A quinta vaga e reservada para recusar o comando que encontra as quatro vagas
+// regulares ocupadas.
 constexpr const char *CmdResponseMetaKey = "crmeta";
 struct StoredCmdResponseMeta { uint8_t count; };
+constexpr const char *CmdResponseSnapshotKeys[2] = {"crs0", "crs1"};
+constexpr uint32_t CmdResponseSnapshotMagic = 0x43525350UL;  // CRSP
+constexpr uint16_t CmdResponseSnapshotVersion = 1;
+struct StoredCmdResponseSnapshot {
+  uint32_t magic;
+  uint16_t version;
+  uint16_t reserved;
+  uint32_t generation;
+  uint8_t count;
+  uint8_t alignment[3];
+  char text[CmdResponseCapacity][CmdResponseTextMax];
+  uint32_t checksum;
+};
 
-bool savePendingCmdResponses() {
-  if (!storageReady) return false;
-  bool complete = true;
-  for (uint8_t i = 0; i < CmdResponseCapacity; ++i) {
-    const String key = "cr" + String(i);
-    if (i < pendingCmdResponses.count) {
-      const size_t length = std::strlen(pendingCmdResponses.text[i]);
-      if (storage.putString(key.c_str(), pendingCmdResponses.text[i]) != length) complete = false;
-    } else if (storage.isKey(key.c_str()) && !storage.remove(key.c_str())) {
-      complete = false;
-    }
+uint32_t cmdResponseChecksum(const StoredCmdResponseSnapshot &snapshot) {
+  const uint8_t *bytes = reinterpret_cast<const uint8_t *>(&snapshot);
+  uint32_t hash = 2166136261UL;
+  for (size_t i = 0; i < offsetof(StoredCmdResponseSnapshot, checksum); ++i) {
+    hash ^= bytes[i];
+    hash *= 16777619UL;
   }
-  const StoredCmdResponseMeta meta{pendingCmdResponses.count};
-  if (complete) complete = storage.putBytes(CmdResponseMetaKey, &meta, sizeof(meta)) == sizeof(meta);
-  if (!complete) Serial.println("[cmd] ALERTA: fila de respostas somente em RAM; falha ao gravar NVS");
-  return complete;
+  return hash;
 }
 
-bool enqueueCmdResponse(const String &json) {
-  if (json.length() >= CmdResponseTextMax || pendingCmdResponses.count == CmdResponseCapacity) {
+bool validCmdResponseSnapshot(const StoredCmdResponseSnapshot &snapshot) {
+  if (snapshot.magic != CmdResponseSnapshotMagic ||
+      snapshot.version != CmdResponseSnapshotVersion ||
+      snapshot.count > CmdResponseCapacity ||
+      snapshot.checksum != cmdResponseChecksum(snapshot)) return false;
+  for (uint8_t i = 0; i < snapshot.count; ++i) {
+    if (snapshot.text[i][0] == '\0' ||
+        std::memchr(snapshot.text[i], '\0', CmdResponseTextMax) == nullptr) return false;
+  }
+  return true;
+}
+
+bool loadCmdResponseSnapshot(uint8_t slot, StoredCmdResponseSnapshot &snapshot) {
+  const char *key = CmdResponseSnapshotKeys[slot];
+  return storageReady && storage.isKey(key) &&
+         storage.getBytesLength(key) == sizeof(snapshot) &&
+         storage.getBytes(key, &snapshot, sizeof(snapshot)) == sizeof(snapshot) &&
+         validCmdResponseSnapshot(snapshot);
+}
+
+bool newerCmdResponseGeneration(uint32_t left, uint32_t right) {
+  return static_cast<int32_t>(left - right) > 0;
+}
+
+bool persistCmdResponseOutbox(const CmdResponseOutbox &next) {
+  if (!storageReady) return false;
+  StoredCmdResponseSnapshot snapshot{};
+  snapshot.magic = CmdResponseSnapshotMagic;
+  snapshot.version = CmdResponseSnapshotVersion;
+  snapshot.generation = cmdResponseGeneration + 1;
+  snapshot.count = next.count;
+  std::memcpy(snapshot.text, next.text, sizeof(snapshot.text));
+  snapshot.checksum = cmdResponseChecksum(snapshot);
+  const uint8_t target = cmdResponseSlot == 0 ? 1 : 0;
+  const char *key = CmdResponseSnapshotKeys[target];
+  if (storage.putBytes(key, &snapshot, sizeof(snapshot)) != sizeof(snapshot)) return false;
+  const uint32_t expectedGeneration = snapshot.generation;
+  snapshot = {};
+  if (!loadCmdResponseSnapshot(target, snapshot) ||
+      snapshot.generation != expectedGeneration) return false;
+  pendingCmdResponses = next;
+  cmdResponseGeneration = expectedGeneration;
+  cmdResponseSlot = static_cast<int8_t>(target);
+  cmdResponsePersistencePending = false;
+  return true;
+}
+
+bool enqueueCmdResponse(const String &json, bool useReservedSlot = false) {
+  const uint8_t limit = useReservedSlot ? CmdResponseCapacity : CmdResponseRegularCapacity;
+  if (json.length() >= CmdResponseTextMax || pendingCmdResponses.count >= limit) {
     Serial.println("[cmd] ALERTA: fila de respostas cheia; resultado nao persistido");
     return false;
   }
-  std::strncpy(pendingCmdResponses.text[pendingCmdResponses.count], json.c_str(), CmdResponseTextMax - 1);
-  pendingCmdResponses.text[pendingCmdResponses.count][CmdResponseTextMax - 1] = '\0';
-  ++pendingCmdResponses.count;
-  savePendingCmdResponses();
+  CmdResponseOutbox next = pendingCmdResponses;
+  std::strncpy(next.text[next.count], json.c_str(), CmdResponseTextMax - 1);
+  next.text[next.count][CmdResponseTextMax - 1] = '\0';
+  ++next.count;
+  if (!persistCmdResponseOutbox(next)) {
+    // Preserva em RAM e tenta tornar duravel antes de qualquer reenvio.
+    pendingCmdResponses = next;
+    cmdResponsePersistencePending = true;
+    Serial.println("[cmd] ALERTA: fila atualizada somente em RAM; persistencia pendente");
+  }
   return true;
 }
 
 void restorePendingCmdResponses() {
-  StoredCmdResponseMeta meta{};
-  if (!storageReady || !storage.isKey(CmdResponseMetaKey) ||
-      storage.getBytesLength(CmdResponseMetaKey) != sizeof(meta) ||
-      storage.getBytes(CmdResponseMetaKey, &meta, sizeof(meta)) != sizeof(meta) ||
-      meta.count > CmdResponseCapacity) return;
-  for (uint8_t i = 0; i < meta.count; ++i) {
-    const String value = storage.getString(("cr" + String(i)).c_str(), "");
-    if (value.length() == 0 || value.length() >= CmdResponseTextMax) break;
-    std::strncpy(pendingCmdResponses.text[pendingCmdResponses.count], value.c_str(), CmdResponseTextMax - 1);
-    pendingCmdResponses.text[pendingCmdResponses.count][CmdResponseTextMax - 1] = '\0';
-    ++pendingCmdResponses.count;
+  pendingCmdResponses = {};
+  cmdResponseGeneration = 0;
+  cmdResponseSlot = -1;
+  cmdResponsePersistencePending = false;
+  StoredCmdResponseSnapshot snapshots[2]{};
+  const bool valid0 = loadCmdResponseSnapshot(0, snapshots[0]);
+  const bool valid1 = loadCmdResponseSnapshot(1, snapshots[1]);
+  if (valid0 || valid1) {
+    const uint8_t selected = valid1 && (!valid0 ||
+      newerCmdResponseGeneration(snapshots[1].generation, snapshots[0].generation)) ? 1 : 0;
+    pendingCmdResponses.count = snapshots[selected].count;
+    std::memcpy(pendingCmdResponses.text, snapshots[selected].text,
+                sizeof(pendingCmdResponses.text));
+    cmdResponseGeneration = snapshots[selected].generation;
+    cmdResponseSlot = static_cast<int8_t>(selected);
+  } else {
+    // Migracao do formato usado no commit 189bbc4 (crmeta + cr0..cr3).
+    StoredCmdResponseMeta meta{};
+    if (storageReady && storage.isKey(CmdResponseMetaKey) &&
+        storage.getBytesLength(CmdResponseMetaKey) == sizeof(meta) &&
+        storage.getBytes(CmdResponseMetaKey, &meta, sizeof(meta)) == sizeof(meta) &&
+        meta.count <= CmdResponseRegularCapacity) {
+      for (uint8_t i = 0; i < meta.count; ++i) {
+        const String value = storage.getString(("cr" + String(i)).c_str(), "");
+        if (value.length() == 0 || value.length() >= CmdResponseTextMax) break;
+        std::strncpy(pendingCmdResponses.text[pendingCmdResponses.count], value.c_str(),
+                     CmdResponseTextMax - 1);
+        pendingCmdResponses.text[pendingCmdResponses.count][CmdResponseTextMax - 1] = '\0';
+        ++pendingCmdResponses.count;
+      }
+      if (pendingCmdResponses.count > 0 && !persistCmdResponseOutbox(pendingCmdResponses)) {
+        cmdResponsePersistencePending = true;
+      }
+    }
   }
   if (pendingCmdResponses.count > 0) {
     Serial.printf("[cmd] %u resposta(s) pendente(s) restaurada(s)\r\n", pendingCmdResponses.count);
   }
 }
 
-[[maybe_unused]] void removeFirstPendingCmdResponse() {
-  if (pendingCmdResponses.count == 0) return;
-  for (uint8_t i = 0; i + 1 < pendingCmdResponses.count; ++i) {
-    std::memcpy(pendingCmdResponses.text[i], pendingCmdResponses.text[i + 1], CmdResponseTextMax);
+[[maybe_unused]] bool removeFirstPendingCmdResponse() {
+  if (pendingCmdResponses.count == 0) return true;
+  CmdResponseOutbox next = pendingCmdResponses;
+  for (uint8_t i = 0; i + 1 < next.count; ++i) {
+    std::memcpy(next.text[i], next.text[i + 1], CmdResponseTextMax);
   }
-  --pendingCmdResponses.count;
-  savePendingCmdResponses();
+  --next.count;
+  std::memset(next.text[next.count], 0, CmdResponseTextMax);
+  if (!persistCmdResponseOutbox(next)) {
+    Serial.println("[cmd] ALERTA: resposta enviada, mas remocao nao persistiu; sera reenviada");
+    return false;
+  }
+  return true;
 }
 
 [[maybe_unused]] void recordCmdResponseDelivery(const String &json, bool sent) {
   if (sent) return;
-  enqueueCmdResponse(json);
-  Serial.println("[cmd] resposta nao publicada; guardada para reenvio com o mesmo id");
+  if (enqueueCmdResponse(json)) {
+    Serial.println("[cmd] resposta nao publicada; guardada para reenvio com o mesmo id");
+  } else {
+    Serial.println("[cmd] ERRO: resposta nao publicada e sem vaga regular na fila");
+  }
 }
 
 // Ha eventos ou resumo de violacoes esperando a rede.
@@ -998,6 +1096,7 @@ constexpr long NetworkOffMaxSeconds = 3600;
   char action[DashboardCmd::MaxText + 1] = "";
   char value[DashboardCmd::MaxText + 1] = "";
   String responseExtra;
+  bool requiresContextPersistence = false;
   const auto fail = [&](const char *error) {
     publishCmdResponse(id, action, false, error, nullptr);
     return false;
@@ -1026,6 +1125,7 @@ constexpr long NetworkOffMaxSeconds = 3600;
     powerOn = is("ligar");  // loop() registra DISPOSITIVO_DESLIGADO e o retorno
   } else if (is("autorizar")) {
     registerAuthorization(clock);
+    requiresContextPersistence = true;
     responseExtra = ",\"janela_dias\":";
     responseExtra += Config::AuthorizationWindowDays;
     responseExtra += ",\"valida_ate_ms\":";
@@ -1033,6 +1133,7 @@ constexpr long NetworkOffMaxSeconds = 3600;
   } else if (is("ciclo_iniciar") || is("vincular")) {
     if (cycleActive) return fail("ciclo_ativo");
     requestLink(clock);
+    requiresContextPersistence = true;
   } else if (is("ciclo_encerrar")) {
     const bool wasActive = cycleActive;
     const char *refusalReason = !wasActive ? "sem_ciclo_ativo"
@@ -1048,19 +1149,23 @@ constexpr long NetworkOffMaxSeconds = 3600;
       publishCmdResponse(id, action, false, "encerramento_recusado", responseExtra.c_str());
       return false;
     }
+    requiresContextPersistence = true;
   } else if (is("lacre")) {
     if (!Config::SwitchButtons) return fail("somente_modo_botoes");
     const bool toOpen = std::strcmp(value, "aberto") == 0;
     if (!toOpen && std::strcmp(value, "fechado") != 0) return fail("valor_invalido");
     if (toOpen == stableSeal) return fail(toOpen ? "lacre_ja_aberto" : "lacre_ja_fechado");
     sealTransition(toOpen, now, now, clock);
+    requiresContextPersistence = true;
   } else if (is("remessa")) {
     String invoice = value;
     invoice.trim();
     invoice.toUpperCase();  // como na Serial, que converte a linha toda
     if (const char *error = registerShipmentInvoice(invoice)) return fail(error);
+    requiresContextPersistence = true;
   } else if (is("nf_retorno")) {
     if (const char *error = registerReturnInvoice()) return fail(error);
+    requiresContextPersistence = true;
   } else if (is("rede")) {
     if (!Config::SwitchButtons) return fail("somente_modo_botoes");
     if (std::strcmp(value, "ligada") == 0) {
@@ -1079,9 +1184,13 @@ constexpr long NetworkOffMaxSeconds = 3600;
       return fail("valor_invalido");
     }
   }
-  // Uma resposta recuperavel de sucesso so pode existir depois que o estado que ela confirma
-  // estiver duravel. Assim, um reinicio nunca restaura o estado antigo e reenvia `ok:true`.
-  if (contextDirty && !saveContext()) return fail("persistencia_falhou");
+  // A acao ja ocorreu em RAM e pode ter emitido eventos. Se a NVS falhar, o resultado nao e uma
+  // recusa: fica explicitamente pendente e o loop continua tentando salvar o mesmo estado.
+  if (requiresContextPersistence && contextDirty && !saveContext()) {
+    responseExtra += ",\"pendente\":true";
+    publishCmdResponse(id, action, false, "persistencia_pendente", responseExtra.c_str());
+    return false;
+  }
   publishCmdResponse(id, action, true, nullptr,
                      responseExtra.length() > 0 ? responseExtra.c_str() : nullptr);
   return true;
@@ -1137,6 +1246,10 @@ bool mqttWasConnected = false, mqttConfigured = false;
 // Reenvia as respostas exatamente como foram produzidas, inclusive `id`, `acao`, resultado e
 // extras. A remocao so ocorre depois de cada publicacao aceita pelo cliente MQTT.
 bool resendPendingCmdResponses() {
+  if (cmdResponsePersistencePending && !persistCmdResponseOutbox(pendingCmdResponses)) {
+    Serial.println("[cmd] reenvio suspenso ate a fila ficar duravel");
+    return false;
+  }
   while (pendingCmdResponses.count > 0) {
     if (!mqtt.connected() ||
         !mqtt.publish(TopicCmdResposta, pendingCmdResponses.text[0], false)) {
@@ -1144,37 +1257,48 @@ bool resendPendingCmdResponses() {
       return false;
     }
     Serial.println("[cmd] resposta pendente reenviada");
-    removeFirstPendingCmdResponse();
+    if (!removeFirstPendingCmdResponse()) return false;
   }
   return true;
 }
 
 // Comando do dashboard: registra no Serial e executa (handleDashboardCommand responde em cmd/resposta).
 void onMqttMessage(char *topic, uint8_t *payload, unsigned int length) {
+  // O PubSubClient reutiliza seu buffer interno para receber e publicar. Copiar topico e payload
+  // antes de qualquer reenvio impede que mqtt.publish() sobrescreva o comando em processamento.
+  const String receivedTopic(topic ? topic : "");
+  String text;
+  if (length > 0 && payload) text.concat(reinterpret_cast<const char *>(payload), length);
+
   if (pendingCmdResponses.count > 0 && !resendPendingCmdResponses()) {
     // A acao nova nao e executada sem espaco para confirmar resultados. Sua recusa fica na mesma
-    // fila, com o id recebido, para o dashboard identifica-la quando a conexao voltar.
+    // fila, com o id recebido, para o dashboard identifica-la quando a conexao voltar. Se as
+    // quatro vagas regulares estiverem cheias, a vaga reservada registra a saturacao e a leitura
+    // de novos comandos permanece suspensa ate a fila escoar.
     char id[DashboardCmd::MaxId + 1] = "";
     char action[DashboardCmd::MaxText + 1] = "";
-    const char *text = reinterpret_cast<const char *>(payload);
-    if (DashboardCmd::validObject(text, length)) {
-      DashboardCmd::textValue(text, length, "id", id, sizeof(id));
-      DashboardCmd::textValue(text, length, "acao", action, sizeof(action));
+    if (DashboardCmd::validObject(text.c_str(), text.length())) {
+      DashboardCmd::textValue(text.c_str(), text.length(), "id", id, sizeof(id));
+      DashboardCmd::textValue(text.c_str(), text.length(), "acao", action, sizeof(action));
     }
-    const String refusal = cmdResponseJson(id, action, false, "resposta_anterior_pendente", nullptr);
-    enqueueCmdResponse(refusal);
-    Serial.println("[cmd] novo comando recusado: resposta anterior ainda pendente");
+    const bool saturated = pendingCmdResponses.count >= CmdResponseRegularCapacity;
+    const char *error = saturated ? "fila_respostas_cheia" : "resposta_anterior_pendente";
+    const String refusal = cmdResponseJson(id, action, false, error, nullptr);
+    const bool queued = enqueueCmdResponse(refusal, saturated);
+    Serial.println(queued
+      ? (saturated ? "[cmd] novo comando recusado: fila saturada" :
+                     "[cmd] novo comando recusado: resposta anterior ainda pendente")
+      : "[cmd] ERRO: invariante da vaga reservada violada; comando sem resposta duravel");
     return;
   }
-  // O payload do PubSubClient nao termina em nulo: o texto e copiado com o tamanho exato.
+
   if (length == 0) {
-    Serial.printf("[mqtt] cmd vazio em %s (0 bytes)\r\n", topic);
+    Serial.printf("[mqtt] cmd vazio em %s (0 bytes)\r\n", receivedTopic.c_str());
     handleDashboardCommand("", 0);
     return;
   }
-  String text;
-  text.concat(reinterpret_cast<const char *>(payload), length);
-  Serial.printf("[mqtt] cmd recebido em %s (%u bytes): %s\r\n", topic, length, text.c_str());
+  Serial.printf("[mqtt] cmd recebido em %s (%u bytes): %s\r\n",
+                receivedTopic.c_str(), length, text.c_str());
   handleDashboardCommand(text.c_str(), text.length());
 }
 
@@ -1252,7 +1376,9 @@ void updateMqtt(uint32_t now) {
     return;
   }
   if (mqtt.connected()) {
-    resendPendingCmdResponses();
+    // Nao ler outro PUBLISH enquanto uma resposta anterior nao estiver duravel e reenviada.
+    // A vaga reservada cobre o unico comando que ja estava no callback quando ocorreu saturacao.
+    if (!resendPendingCmdResponses()) return;
     mqtt.loop();
     // Refresco a cada MqttStatusMs, ou antes se um evento mudou o estado (com intervalo minimo).
     const uint32_t sinceStatus = now - lastMqttStatus;

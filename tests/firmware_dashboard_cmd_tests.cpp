@@ -80,13 +80,35 @@ int main() {
   recordCmdResponseDelivery(failedResponse, false);
   assert(pendingCmdResponses.count == 1);
   assert(std::strcmp(pendingCmdResponses.text[0], failedResponse.c_str()) == 0);
-  assert(FakeNVS::bytes.count(CmdResponseMetaKey) == 1 && FakeNVS::bytes.count("cr0") == 1);
+  assert(FakeNVS::bytes.count(CmdResponseSnapshotKeys[0]) +
+         FakeNVS::bytes.count(CmdResponseSnapshotKeys[1]) == 1);
   pendingCmdResponses = {};  // simula a RAM perdida em um reinicio
+  cmdResponseGeneration = 0;
+  cmdResponseSlot = -1;
   restorePendingCmdResponses();
   assert(pendingCmdResponses.count == 1);
   assert(std::strcmp(pendingCmdResponses.text[0], failedResponse.c_str()) == 0);
-  removeFirstPendingCmdResponse();
-  assert(pendingCmdResponses.count == 0 && FakeNVS::bytes.count("cr0") == 0);
+  assert(removeFirstPendingCmdResponse());
+  pendingCmdResponses = {};
+  cmdResponseGeneration = 0;
+  cmdResponseSlot = -1;
+  restorePendingCmdResponses();
+  assert(pendingCmdResponses.count == 0);
+
+  // O firmware novo migra uma resposta deixada pelo formato do commit 189bbc4.
+  FakeNVS::bytes.erase(CmdResponseSnapshotKeys[0]);
+  FakeNVS::bytes.erase(CmdResponseSnapshotKeys[1]);
+  const StoredCmdResponseMeta legacyMeta{1};
+  const String legacyResponse = "{\"id\":\"legado\",\"acao\":\"autorizar\",\"ok\":true}";
+  assert(storage.putBytes(CmdResponseMetaKey, &legacyMeta, sizeof(legacyMeta)) == sizeof(legacyMeta));
+  assert(storage.putString("cr0", legacyResponse) == legacyResponse.length());
+  pendingCmdResponses = {};
+  cmdResponseGeneration = 0;
+  cmdResponseSlot = -1;
+  restorePendingCmdResponses();
+  assert(pendingCmdResponses.count == 1);
+  assert(contains(pendingCmdResponses.text[0], "\"id\":\"legado\""));
+  assert(removeFirstPendingCmdResponse());
 
   // ---- erros de formato ----
   expectError("", "json_vazio");

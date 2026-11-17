@@ -86,8 +86,9 @@ Em caso de JSON inválido, `id` e `acao` voltam vazios quando não puderam ser l
 | `nf_invalida` | `remessa` sem `valor` ou com número fora do formato |
 | `nf_ja_lancada` | `nf_retorno` quando a NF de retorno do ciclo já foi lançada |
 | `encerramento_recusado` | `ciclo_encerrar` recusado (lacre aberto ou sem NF de retorno) |
-| `persistencia_falhou` | A mudança não pôde ser confirmada na NVS; nenhuma resposta de sucesso é produzida |
+| `persistencia_pendente` | A ação ocorreu em RAM, mas a NVS falhou; `pendente:true` informa que o firmware continuará tentando salvar. Não repetir o comando |
 | `resposta_anterior_pendente` | O comando novo não foi executado porque o reenvio de uma resposta anterior ainda falhou |
+| `fila_respostas_cheia` | As quatro vagas regulares estavam ocupadas; a ação nova não foi executada e sua recusa usou a vaga reservada |
 
 Uma resposta `ok:true` significa que o comando foi aceito e executado; o efeito aparece em seguida em `evento` e `status`.
 
@@ -106,15 +107,25 @@ O firmware valida o objeto JSON inteiro antes de executar a ação. Uma mensagem
 `{"acao":"autorizar","acao":"ciclo_encerrar"}`, responde `json_invalido` e não muda o ciclo.
 
 Antes de publicar ou guardar uma resposta `ok:true` para uma ação que muda ciclo, NF, lacre ou
-autorização, o firmware salva o novo contexto na NVS. Se a gravação falhar, responde
-`persistencia_falhou`; portanto, um reinício não pode restaurar o estado antigo e depois reenviar
-sucesso para a mudança perdida.
+autorização, o firmware salva o novo contexto na NVS. Se a gravação falhar depois que a ação já
+alterou a RAM ou emitiu eventos, a resposta é `persistencia_pendente`, com `pendente:true`: não é
+uma recusa e o dashboard não deve repetir o comando. O `loop` continua tentando salvar; até isso
+ocorrer, `status` e `evento` representam o efeito em RAM, mas um reinício ainda pode restaurar o
+estado durável anterior.
 
 Se `mqtt.publish()` falhar depois da execução, o JSON completo de `cmd/resposta` é preservado em
 uma fila na NVS e reenviado com o mesmo `id` quando o MQTT estiver disponível. Se o reenvio passar
 ao chegar outro comando, o novo comando continua sendo processado na mesma chamada. Se o reenvio
 falhar novamente, a nova ação não é executada e uma resposta `resposta_anterior_pendente`, com o
 novo `id`, entra na fila para entrega posterior.
+
+A outbox usa dois snapshots completos com geração e checksum. Cada mudança é escrita no slot
+inativo e verificada antes de substituir o estado em RAM; durante a remoção, uma falha parcial
+preserva o snapshot anterior e pode repetir a resposta já enviada, mas não apaga as respostas
+posteriores que já estavam duráveis. Existem
+quatro vagas regulares e uma quinta reservada: se as quatro estiverem ocupadas, o comando que já
+chegou recebe `fila_respostas_cheia`, não é executado e a leitura de novos comandos fica suspensa
+até o escoamento da fila.
 O dashboard deve correlacionar e deduplicar respostas pelo `id`, pois uma falha ao limpar a NVS
 depois do envio pode causar uma repetição após reinício.
 

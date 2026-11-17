@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <string>
 #include <vector>
 #include "WiFi.h"
@@ -12,6 +13,10 @@ class PubSubClient {
   explicit PubSubClient(WiFiClient &) {}
   bool connectedState = true;
   bool failNextPublish = false;
+  bool overwriteSharedBufferOnPublish = false;
+  uint8_t *sharedBufferPayload = nullptr;
+  size_t sharedBufferLength = 0;
+  int loopCalls = 0;
   std::vector<std::string> published;
   Callback callback = nullptr;
 
@@ -21,7 +26,7 @@ class PubSubClient {
   void setCallback(Callback value) { callback = value; }
   bool connected() const { return connectedState; }
   void disconnect() { connectedState = false; }
-  bool loop() { return true; }
+  bool loop() { ++loopCalls; return true; }
   int state() const { return connectedState ? 0 : -1; }
   bool connect(const char *, const char *, const char *, const char *, uint8_t, bool, const char *) {
     connectedState = true;
@@ -29,6 +34,9 @@ class PubSubClient {
   }
   bool subscribe(const char *) { return true; }
   bool publish(const char *topic, const char *payload, bool) {
+    if (overwriteSharedBufferOnPublish && sharedBufferPayload) {
+      std::memset(sharedBufferPayload, 'X', sharedBufferLength);
+    }
     if (failNextPublish) {
       failNextPublish = false;
       return false;

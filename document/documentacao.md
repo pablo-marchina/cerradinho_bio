@@ -1989,7 +1989,8 @@ o mesmo JSON fica salvo para reenvio; por isso o dashboard correlaciona e dedupl
 | `id` | texto | sempre | O mesmo `id` do pedido. Vazio se o JSON era ilegível |
 | `acao` | texto | sempre | A mesma `acao` do pedido. Vazia se não deu para lê-la |
 | `ok` | verdadeiro/falso | sempre | ✅ `true` = o comando foi **aceito, executado e, quando altera o contexto, persistido**; o efeito aparece depois em `evento` e `status`. ❌ `false` = não há sucesso confirmado; consulte `erro`, `status` e `evento` |
-| `erro` | texto | só quando `ok` é `false` | O **motivo** da recusa, da tabela abaixo |
+| `erro` | texto | só quando `ok` é `false` | O motivo da recusa ou a indicação de persistência pendente, conforme a tabela abaixo |
+| `pendente` | verdadeiro | quando a NVS falha após a ação | A ação ocorreu em RAM e o firmware continuará tentando salvar; não repetir o comando |
 | `motivo` | texto | encerramento recusado com ciclo ativo | Distingue `lacre_aberto` de `nf_retorno_ausente` |
 | `janela_dias` | inteiro | autorização aceita | Duração da autorização segundo a RN06 |
 | `valida_ate_ms` | inteiro | autorização aceita | Limite no relógio acumulado do dispositivo; não é uma data UTC |
@@ -2011,16 +2012,22 @@ o mesmo JSON fica salvo para reenvio; por isso o dashboard correlaciona e dedupl
 | `nf_invalida` | `remessa` sem `valor`, com mais de 15 caracteres ou com caractere fora de letras, dígitos, `-`, `.` e `/` |
 | `nf_ja_lancada` | `nf_retorno` quando a NF de retorno deste ciclo já foi lançada |
 | `encerramento_recusado` | `ciclo_encerrar` com lacre aberto ou sem NF de retorno |
-| `persistencia_falhou` | A mudança não pôde ser confirmada na NVS; nenhuma resposta de sucesso é produzida |
+| `persistencia_pendente` | A ação ocorreu em RAM, mas a NVS falhou; vem com `pendente:true` e não deve ser repetida |
 | `resposta_anterior_pendente` | A ação nova não foi executada porque o reenvio de uma resposta anterior ainda falhou |
+| `fila_respostas_cheia` | As quatro vagas regulares estavam ocupadas; a ação nova não foi executada e sua recusa usou a vaga reservada |
 
 O JSON inteiro é validado antes da execução, inclusive contra chaves repetidas. Para uma ação que
 muda ciclo, NF, lacre ou autorização, o novo contexto é salvo antes de qualquer `ok:true` ser
-publicado ou guardado para reenvio. Se `mqtt.publish()` falhar, a resposta completa entra em uma
-fila na NVS e conserva o mesmo `id`. Ao chegar outro comando, um reenvio bem-sucedido permite
-processá-lo na mesma chamada; se o reenvio falhar, a ação nova não roda e sua resposta
-`resposta_anterior_pendente` também fica enfileirada. Como `cmd/resposta` usa QoS 0, o dashboard
-mantém timeout e consulta `status`/`evento` antes de repetir uma ação que altera estado.
+publicado ou guardado para reenvio. Se a NVS falhar depois de a ação alterar a RAM ou emitir
+eventos, a resposta é `persistencia_pendente`, com `pendente:true`; o `loop` continua tentando
+salvar e o dashboard não repete o comando. Se `mqtt.publish()` falhar, a resposta completa entra
+em uma outbox copy-on-write com dois snapshots, geração e checksum. Durante a remoção, uma falha
+parcial conserva o último snapshot válido, podendo repetir a resposta enviada, mas sem apagar as
+respostas posteriores que já estavam duráveis. Há quatro vagas
+regulares e uma reservada para `fila_respostas_cheia`; enquanto houver pendências, o firmware
+prioriza o reenvio e suspende a leitura de outro comando. Como `cmd/resposta` usa QoS 0, o
+dashboard mantém timeout, deduplica pelo `id` e consulta `status`/`evento` antes de repetir uma
+ação que altera estado.
 
 ##### O `status` (retido)
 
