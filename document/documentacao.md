@@ -2178,9 +2178,15 @@ Assim, o dimensionamento seleciona **R1 = 68 kΩ, R2 = 47 kΩ e C = 2200 µF**, 
 
 O circuito foi montado em protoboard com os componentes definidos na seção 6.1.2: R1 = 68 kΩ e R2 = 47 kΩ ligados em paralelo, formando R_eq, em série com um capacitor eletrolítico de 2200 µF / 10 V (105 °C). A alimentação vem do pino 5V de uma ESP32 conectada ao computador por USB, e o GND da placa fecha o circuito. O terminal negativo do capacitor, marcado pela faixa no corpo do componente, fica ligado ao GND. A carga começa quando o jumper de alimentação é encaixado no pino 5V. Para descarregar o capacitor antes de cada ensaio, o mesmo jumper é passado para o GND, e o capacitor se descarrega pelos próprios resistores.
 
-A tensão no capacitor (Vc) foi medida com um multímetro digital Minipa ET-1002 ligado em paralelo com ele. Os resistores também foram medidos fora do circuito e deram R1 = 67,3 kΩ e R2 = 47,1 kΩ. A Figura 6.1-2 mostra o circuito montado.
+A tensão no capacitor (Vc) foi medida com um multímetro digital Minipa ET-1002 ligado em paralelo com ele. Os resistores também foram medidos fora do circuito e deram R1 = 67,3 kΩ e R2 = 47,1 kΩ. As Figuras 6.1-2 e 6.1-3 mostram o circuito montado, visto de cima e em detalhe.
 
-<!-- FOTO DO CIRCUITO: entra quando o Guilherme enviar a versão em alta resolução -->
+![Circuito RC montado na protoboard, visto de cima: ESP32 alimentada por USB, resistores R1 e R2 em paralelo e capacitor de 2200 µF](../assets/6-anexos/6.1-circuito-rc/montagemVistaSuperior.png)
+
+*Figura 6.1-2 — Circuito RC montado na protoboard, visto de cima. Fonte: foto do grupo, 2026.*
+
+![Detalhe do capacitor eletrolítico de 2200 µF / 10 V e dos resistores R1 e R2 em paralelo na protoboard](../assets/6-anexos/6.1-circuito-rc/montagemDetalhe.png)
+
+*Figura 6.1-3 — Detalhe do capacitor de 2200 µF e dos resistores R1 e R2 em paralelo. Fonte: foto do grupo, 2026.*
 
 #### 6.1.4. Coleta de Dados
 
