@@ -1,0 +1,66 @@
+%%{init: {"theme":"base","htmlLabels":false,"flowchart":{"htmlLabels":false,"curve":"linear","nodeSpacing":28,"rankSpacing":40,"padding":18,"wrappingWidth":320,"subGraphTitleMargin":{"top":12,"bottom":24}},"themeCSS":"text, .label, .nodeLabel, .edgeLabel { font-family: Arial, sans-serif !important; }","themeVariables":{"fontFamily":"Arial, sans-serif","fontSize":"17px","primaryColor":"#edf5ee","primaryTextColor":"#183d2b","primaryBorderColor":"#39734d","lineColor":"#526477","edgeLabelBackground":"#ffffff","clusterBkg":"#f8faf9","clusterBorder":"#bccbbf","background":"#ffffff"}}}%%
+flowchart TB
+    accTitle: GuaráTracking — arquitetura do protótipo da sprint 3
+    accDescr: Entradas e saídas com fio ligadas ao ESP32; memória NVS e diagnóstico local existentes. Integração prevista por Wi-Fi e MQTT com broker, processamento, armazenamento e dashboard. Setas rotuladas indicam telemetria e comandos. Blocos verdes têm implementação local, blocos âmbar tracejados estão planejados e blocos cinza são apoios ou simulações de bancada. Suporte aos requisitos é descrito em cada camada e na matriz da seção 3.3.5.
+
+    subgraph DISPOSITIVO["01 · DISPOSITIVO / BANCADA"]
+        direction LR
+        GPS["GPS NEO-6M + antena<br/>Latitude/longitude, data/hora e fix<br/>NMEA · 9.600 bit/s · RF005/031"]
+        LACRE["Lacre representado por botão<br/>Aberto/fechado · GPIO27<br/>Debounce 60 ms · RF006/007"]
+        BATERIA["Potenciômetro 10 kΩ<br/>0–3,3 V → bateria simulada 0–100%<br/>ADC1 / GPIO34 · 12 bits · RF019/027"]
+        BOTOES["Controles locais / pull-up<br/>Navegação 25/26 · ciclo 14 · autorizar 33<br/>Rede simulada 18 · ON/OFF lógico 19"]
+        ESP["ESP32 · firmware Arduino<br/>Valida posição, processa lacre e ciclo<br/>GNSS: boot + 30 s demo / 7 dias weekly<br/>Status: 7 dias do ciclo · lacre por evento<br/>RNF01/02/07 · RF003–007/011/016"]
+        NVS["Memória flash / NVS<br/>Contexto do ciclo + referência de posição<br/>8 eventos de negócio + resumo de violações<br/>16 registros de diagnóstico · RNF05"]
+        LCD["LCD 16×2 · I2C 0x27<br/>NF, prazo, idade da posição, bateria e lacre<br/>Apaga após 15 s · RF034/035 · RNF04"]
+        ALARME["Saídas informacionais<br/>LED vermelho GPIO13 + 220 Ω: pulso 1 Hz<br/>Buzzer GPIO23: alarme por até 30 s<br/>RF032 · sem acionamento mecânico"]
+        USB["Alimentação de bancada via USB<br/>5 V: placa, LCD e breakout GPS<br/>3,3 V: potenciômetro · GND comum"]
+        SERIAL["Monitor Serial / USB<br/>JSON e diagnóstico · 115.200 bit/s<br/>Não confirma entrega ao servidor"]
+        GPS -->|"Com fio · TX → RX16<br/>RX ← TX17 opcional"| ESP
+        LACRE -->|"Com fio · entrada digital"| ESP
+        BATERIA -->|"Com fio · leitura a cada 200 ms"| ESP
+        BOTOES -->|"Com fio · entradas digitais"| ESP
+        USB -->|"Alimenta conjunto e referência comum"| ESP
+        ESP <-->|"Acesso interno · Preferences"| NVS
+        ESP -->|"Com fio · SDA21 / SCL22 · 50 kHz"| LCD
+        ESP -->|"Com fio · GPIO13 / PWM23"| ALARME
+        ESP -->|"Com fio · UART0 / USB"| SERIAL
+    end
+
+    subgraph REDE["02 · REDE DE TESTE"]
+        direction TB
+        WIFI["Ponto de acesso Wi-Fi de teste<br/>Sem fio · acesso à rede IP<br/>Wi-Fi presente no código<br/>RF008 · integração online planejada"]
+    end
+
+    subgraph PLATAFORMA["03 · PLATAFORMA PLANEJADA"]
+        direction TB
+        BROKER["Broker MQTT<br/>Distribui publicações por tópico<br/>Status/eventos e comandos por dispositivo<br/>RF009/020 · TLS previsto / RNF06"]
+        SERVICO["Processamento / serviço de aplicação<br/>Valida mensagens e vínculos de ciclo<br/>Prepara consultas e encaminha comandos<br/>Autenticação e permissões previstas"]
+        BANCO["Armazenamento da plataforma<br/>Ciclos, posição, eventos e histórico<br/>RF017 · RNF05 · a implementar"]
+        PAINEL["Dashboard / interface do usuário<br/>Última posição + idade, prazo, bateria, lacre<br/>Mapa, alertas e histórico · RF015/021–023<br/>RNF04/06 · acesso autenticado previsto"]
+        EVOLUCAO["Evolução além da integração básica<br/>API autenticada → BI · RF024 / RNF03<br/>Notificações e regras fiscais/escalonamento<br/>Transporte substituível · RNF08"]
+        BROKER -.->|"MQTT · serviço assina telemetria JSON"| SERVICO
+        SERVICO -.->|"MQTT · publica comandos autorizados"| BROKER
+        SERVICO <-.->|"Leitura / gravação · interface a definir"| BANCO
+        SERVICO <-.->|"HTTPS previsto · dados / ações autenticadas"| PAINEL
+        SERVICO -.->|"Consultas e alertas · interfaces futuras"| EVOLUCAO
+    end
+
+    DISPOSITIVO <-.->|"ESP32 ↔ ponto de acesso: Wi-Fi sem fio<br/>MQTT/TLS previsto sobre TCP/IP · telemetria / comandos"| REDE
+    REDE <-.->|"Ponto de acesso ↔ broker: rede IP<br/>MQTT/TLS previsto · telemetria / comandos"| PLATAFORMA
+
+    subgraph LEGENDA["LEGENDA"]
+        direction LR
+        EXISTENTE["Verde / borda contínua<br/>Implementação local existente"]
+        PLANEJADO["Âmbar / borda tracejada<br/>Integração ou função planejada"]
+        BANCADA["Cinza / borda contínua<br/>Apoio ou simulação de bancada"]
+        EXISTENTE ~~~ PLANEJADO ~~~ BANCADA
+    end
+
+    PLATAFORMA ~~~ LEGENDA
+
+    classDef existente fill:#edf5ee,color:#183d2b,stroke:#39734d,stroke-width:1.6px
+    classDef planejado fill:#fff7e6,color:#65480e,stroke:#ae7f26,stroke-width:1.6px,stroke-dasharray:6 4
+    classDef bancada fill:#f0f3f7,color:#33465b,stroke:#8594a7,stroke-width:1.3px
+    class GPS,ESP,NVS,LCD,ALARME,EXISTENTE existente
+    class WIFI,BROKER,SERVICO,BANCO,PAINEL,EVOLUCAO,PLANEJADO planejado
+    class LACRE,BATERIA,BOTOES,USB,SERIAL,BANCADA bancada
