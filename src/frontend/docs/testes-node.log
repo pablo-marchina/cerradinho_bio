@@ -1,0 +1,180 @@
+
+> guaratracking-frontend@1.0.0 test:domain
+> node --experimental-strip-types --test tests/*.node.test.mjs
+
+TAP version 13
+# (node:1668) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Amostra contém seis ativos distintos e cinco em manutenção
+ok 1 - Amostra contém seis ativos distintos e cinco em manutenção
+  ---
+  duration_ms: 1.88374
+  type: 'test'
+  ...
+# Subtest: Violação tem prioridade operacional
+ok 2 - Violação tem prioridade operacional
+  ---
+  duration_ms: 0.420883
+  type: 'test'
+  ...
+# Subtest: Atraso e permanência são independentes
+ok 3 - Atraso e permanência são independentes
+  ---
+  duration_ms: 0.457197
+  type: 'test'
+  ...
+# Subtest: Limiar de permanência inclui o dia 150
+ok 4 - Limiar de permanência inclui o dia 150
+  ---
+  duration_ms: 0.321496
+  type: 'test'
+  ...
+# Subtest: Desconexão não equivale a silêncio semanal
+ok 5 - Desconexão não equivale a silêncio semanal
+  ---
+  duration_ms: 0.432521
+  type: 'test'
+  ...
+# Subtest: Retorno físico não encerra ciclo e congela dias fora
+ok 6 - Retorno físico não encerra ciclo e congela dias fora
+  ---
+  duration_ms: 0.233215
+  type: 'test'
+  ...
+# Subtest: Busca por TAG e NF e fornecedor
+ok 7 - Busca por TAG e NF e fornecedor
+  ---
+  duration_ms: 0.417639
+  type: 'test'
+  ...
+# Subtest: Idade da posição é independente de última comunicação
+ok 8 - Idade da posição é independente de última comunicação
+  ---
+  duration_ms: 3.684539
+  type: 'test'
+  ...
+# Subtest: Resolver ocorrência não muda lacre físico nem evento histórico
+ok 9 - Resolver ocorrência não muda lacre físico nem evento histórico
+  ---
+  duration_ms: 0.723041
+  type: 'test'
+  ...
+# (node:1669) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: comando correlacionado apresenta cadeia de estados e confirmação
+ok 10 - comando correlacionado apresenta cadeia de estados e confirmação
+  ---
+  duration_ms: 7.731383
+  type: 'test'
+  ...
+# Subtest: timeout, expiração e recusa não alteram lacre nem ciclo
+ok 11 - timeout, expiração e recusa não alteram lacre nem ciclo
+  ---
+  duration_ms: 1.175601
+  type: 'test'
+  ...
+# Subtest: confirmação obrigatória no simulador
+ok 12 - confirmação obrigatória no simulador
+  ---
+  duration_ms: 0.253385
+  type: 'test'
+  ...
+# Subtest: abertura autorizada não dispara violação
+ok 13 - abertura autorizada não dispara violação
+  ---
+  duration_ms: 0.424489
+  type: 'test'
+  ...
+# Subtest: autorização expirada não permite retirada
+ok 14 - autorização expirada não permite retirada
+  ---
+  duration_ms: 0.664204
+  type: 'test'
+  ...
+# Subtest: histerese bateria 19→21→26→19
+ok 15 - histerese bateria 19→21→26→19
+  ---
+  duration_ms: 0.508984
+  type: 'test'
+  ...
+# Subtest: falha de leitura não vira zero
+ok 16 - falha de leitura não vira zero
+  ---
+  duration_ms: 0.272324
+  type: 'test'
+  ...
+# Subtest: sem fix preserva última posição; recuperação registra nova
+ok 17 - sem fix preserva última posição; recuperação registra nova
+  ---
+  duration_ms: 0.304502
+  type: 'test'
+  ...
+# Subtest: LWT e desconexão intencional diferentes; fila reportada e reconciliação
+ok 18 - LWT e desconexão intencional diferentes; fila reportada e reconciliação
+  ---
+  duration_ms: 0.612507
+  type: 'test'
+  ...
+# Subtest: cadastro duplicado e TAG ocupada são recusados
+ok 19 - cadastro duplicado e TAG ocupada são recusados
+  ---
+  duration_ms: 0.942286
+  type: 'test'
+  ...
+# Subtest: duas aberturas concorrentes preservam vínculo único
+ok 20 - duas aberturas concorrentes preservam vínculo único
+  ---
+  duration_ms: 0.621962
+  type: 'test'
+  ...
+# Subtest: TAG ativa não pode ser reaproveitada por outro ativo
+ok 21 - TAG ativa não pode ser reaproveitada por outro ativo
+  ---
+  duration_ms: 0.367074
+  type: 'test'
+  ...
+# Subtest: retorno físico e NF separados; fechamento exige lacre íntegro
+ok 22 - retorno físico e NF separados; fechamento exige lacre íntegro
+  ---
+  duration_ms: 0.612908
+  type: 'test'
+  ...
+# Subtest: histórico e posição isolados ao reutilizar TAG em novo ciclo
+ok 23 - histórico e posição isolados ao reutilizar TAG em novo ciclo
+  ---
+  duration_ms: 0.787477
+  type: 'test'
+  ...
+# Subtest: tratamento de alerta mantém trilha e estado físico
+ok 24 - tratamento de alerta mantém trilha e estado físico
+  ---
+  duration_ms: 0.442135
+  type: 'test'
+  ...
+# Subtest: evento atrasado mantém horário de ocorrência anterior ao recebimento
+ok 25 - evento atrasado mantém horário de ocorrência anterior ao recebimento
+  ---
+  duration_ms: 0.273115
+  type: 'test'
+  ...
+# Subtest: avanço de relógio gera permanência e silêncio sem duplicar ocorrência aberta
+ok 26 - avanço de relógio gera permanência e silêncio sem duplicar ocorrência aberta
+  ---
+  duration_ms: 9.780067
+  type: 'test'
+  ...
+# Subtest: TAG desconectada não confirma autorização no fluxo normal
+ok 27 - TAG desconectada não confirma autorização no fluxo normal
+  ---
+  duration_ms: 0.366853
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 256.298197

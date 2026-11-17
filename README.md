@@ -55,7 +55,7 @@ Dentre os arquivos e pastas presentes na raiz do projeto, definem-se:
 
 - <b>skills</b>: instruções para agentes de IA usadas pelo grupo.
 
-- <b>src</b>: código-fonte. `firmware/` contém o firmware do ESP32 (`main.cpp`) e `firmware/prototipo_wokwi/` contém o circuito do Wokwi (`diagram.json`, `wokwi.toml`) e um sketch de teste de ligações (`sketch.ino`).
+- <b>src</b>: código-fonte. `firmware/` contém o firmware do ESP32 (`main.cpp`) e `firmware/prototipo_wokwi/` contém o circuito do Wokwi (`diagram.json`, `wokwi.toml`) e um sketch de teste de ligações (`sketch.ino`). `frontend/` contém o painel web em React, Vite e TypeScript, com dados simulados.
 
 - <b>tests</b>: testes das regras e dos indicadores executados em computador, dublês das bibliotecas do Arduino e cenários do Wokwi.
 
