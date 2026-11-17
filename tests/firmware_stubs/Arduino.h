@@ -24,6 +24,7 @@ class String {
   String(T v):value_(std::to_string(v)){}
   String(double v, int precision): value_(std::to_string(v)) { (void)precision; }
   const char* c_str() const {return value_.c_str();}
+  bool concat(const char* p,size_t n){if(!p)return false;value_.append(p,n);return true;}
   void reserve(size_t n){value_.reserve(n);}
   size_t length() const {return value_.size();}
   String substring(unsigned start) const {return String(value_.substr(start));}

@@ -125,7 +125,7 @@ constexpr uint32_t StatusIntervalDays = 7;
 constexpr uint32_t ExpectedReturnDays = 5;     // PENDENTE DE VALIDACAO
 constexpr uint32_t StayThresholdDays = 150;    // CT04 roda com 10 e com 150
 // Lacre, autorizacao, fila, botoes e bateria (CT05-CT16). Valores de teste.
-constexpr uint32_t AuthorizationWindowDays = 3;  // PENDENTE DE VALIDACAO
+constexpr uint32_t AuthorizationWindowDays = 3;  // RN06: retirada autorizada por tres dias.
 constexpr uint32_t ButtonDebounceMs = 50;
 constexpr uint32_t LongPressMs = 3000;           // ciclo e autorizacao (V2)
 constexpr uint32_t MessageMs = 2000;             // mensagem do LCD apos um botao
