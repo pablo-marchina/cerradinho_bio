@@ -1,8 +1,8 @@
-import {LayoutDashboard,Package,Bell,MapPin,FileText,RadioTower,ChartNoAxesCombined,X} from 'lucide-react';
+import {Workflow,PlusCircle,Receipt,Truck,LayoutDashboard,Package,Bell,MapPin,FileText,RadioTower,ChartNoAxesCombined,X} from 'lucide-react';
 import {NavLink} from 'react-router-dom';
 import {isMqttMode,isPhysicalEsp32} from '@/services/runtime';
 
-const groups=[{title:'ACOMPANHAMENTO',items:[{to:'/',label:'Visão geral',icon:LayoutDashboard},{to:'/equipamentos',label:'Equipamentos',icon:Package},{to:'/alertas',label:'Alertas',icon:Bell},{to:'/mapa',label:'Mapa',icon:MapPin}]},{title:'OPERAÇÃO',items:[{to:'/ciclos',label:'Ciclos e retornos',icon:FileText},{to:'/dispositivos',label:'Dispositivos',icon:RadioTower},{to:'/relatorios',label:'Relatórios',icon:ChartNoAxesCombined}]}];
+const groups=[{title:'PROCESSO',items:[{to:'/',label:'Painel do PCM',icon:Workflow},{to:'/ativos/novo',label:'Novo envio',icon:PlusCircle},{to:'/fiscal',label:'Fiscal',icon:Receipt},{to:'/logistica',label:'Logística',icon:Truck}]},{title:'TAG E DISPOSITIVOS',items:[{to:'/telemetria',label:'Visão da TAG',icon:LayoutDashboard},{to:'/equipamentos',label:'Equipamentos',icon:Package},{to:'/alertas',label:'Alertas',icon:Bell},{to:'/mapa',label:'Mapa',icon:MapPin},{to:'/ciclos',label:'Ciclos e retornos',icon:FileText},{to:'/dispositivos',label:'Dispositivos',icon:RadioTower},{to:'/relatorios',label:'Relatórios',icon:ChartNoAxesCombined}]}];
 
 export function Sidebar({open,onClose}:{open:boolean;onClose:()=>void}){
   const environment=isMqttMode?(isPhysicalEsp32?'MQTT · ESP32 físico':'MQTT · simulador'):'Ambiente de demonstração';

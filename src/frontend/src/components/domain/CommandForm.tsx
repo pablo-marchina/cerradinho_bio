@@ -1,3 +1,4 @@
+import type React from 'react';
 import {useState} from 'react';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {useForm} from 'react-hook-form';
@@ -47,10 +48,10 @@ export function CommandForm({asset:a,snapshot:s}:{asset:Asset;snapshot:Snapshot}
     <form className="gt-form" onSubmit={submit}>
       <label>Ação<select value={type} onChange={event=>{setType(event.target.value as CommandType);f.setValue('confirm',false);setError('');}}>{available.map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
       {!isMqttMode&&<label>Resposta de teste<select value={scenario} onChange={event=>setScenario(event.target.value as CommandInput['scenario'])}><option value="normal">Fluxo normal</option><option value="refused">Forçar recusa</option><option value="timeout">Simular ausência de resposta</option><option value="expired">Simular expiração</option></select></label>}
-      {isMqttMode&&isRemit&&<label>Número anonimizado da NF<input required maxLength={15} {...f.register('nf')} placeholder="NF-000123"/></label>}
-      {!isMqttMode&&(isOpen||isRemit||isReturn)&&<label>Número fictício da NF<input required {...f.register('nf')} placeholder="DEMO-0001"/></label>}
+      {isMqttMode&&isRemit&&<label>Número anonimizado da NF<input required maxLength={15} {...f.register('nf',{setValueAs:(v:string)=>String(v??'').toUpperCase().trim(),onChange:(e:React.ChangeEvent<HTMLInputElement>)=>{e.target.value=e.target.value.toUpperCase();}})} autoCapitalize="characters" style={{textTransform:'uppercase'}} placeholder="NF-000123"/></label>}
+      {!isMqttMode&&(isOpen||isRemit||isReturn)&&<label>Número fictício da NF<input required {...f.register('nf',{setValueAs:(v:string)=>String(v??'').toUpperCase().trim(),onChange:(e:React.ChangeEvent<HTMLInputElement>)=>{e.target.value=e.target.value.toUpperCase();}})} autoCapitalize="characters" style={{textTransform:'uppercase'}} placeholder="DEMO-0001"/></label>}
       {!isMqttMode&&(isOpen||isRemit)&&<label>Emissão da NF<input type="date" required {...f.register('departedAt')}/></label>}
-      {!isMqttMode&&isOpen&&<><label>TAG<input required {...f.register('tag')}/></label><label>Fornecedor fictício<input required {...f.register('supplier')}/></label><label>Responsável fictício<input required {...f.register('owner')}/></label><label>Prazo previsto<input type="date" required {...f.register('dueAt')}/></label><label>Limiar de permanência (dias)<input type="number" min="1" required {...f.register('permanenceLimit')}/></label></>}
+      {!isMqttMode&&isOpen&&<><label>TAG<input required {...f.register('tag',{onChange:(e:React.ChangeEvent<HTMLInputElement>)=>{e.target.value=e.target.value.toUpperCase();}})}/></label><label>Fornecedor fictício<input required {...f.register('supplier')}/></label><label>Responsável fictício<input required {...f.register('owner')}/></label><label>Prazo previsto<input type="date" required {...f.register('dueAt')}/></label><label>Limiar de permanência (dias)<input type="number" min="1" required {...f.register('permanenceLimit')}/></label></>}
       {!isMqttMode&&type==='authorize'&&<label>Validade simulada (min)<input type="number" min="1" max="4320" required {...f.register('validityMinutes')}/></label>}
       {needsReason&&<label className="full">Justificativa<textarea required {...f.register('reason')}/></label>}
       {needsConfirm&&<label className="check-field full"><input type="checkbox" {...f.register('confirm')}/> Confirmo {commandLabels[type].toLowerCase()} em {a.tag} / {cycleId(a)}.</label>}
