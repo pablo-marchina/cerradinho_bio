@@ -1,3 +1,4 @@
+import { CleanDesk } from '@/portfolio/Guara';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Bar, BarChart, CartesianGrid, Legend, Line, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell } from 'recharts';
@@ -196,7 +197,7 @@ function LogisticsDesk() {
   return (
     <section className="pp-section" aria-labelledby="mesa-log">
       <div className="pp-head row-between"><h2 id="mesa-log">Na sua mesa <span className="muted mono">({mine.length})</span></h2><span className="muted small">Coletas pedidas e ativos em trânsito</span></div>
-      {!mine.length && <p className="muted empty">Nada com você agora.</p>}
+      {!mine.length && <CleanDesk who="logistica" text="Nenhuma coleta ou transporte esperando por você." />}
       <ul className="desk-list">
         {mine.map(a => (
           <li key={a.id}>

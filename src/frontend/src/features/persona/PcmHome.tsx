@@ -1,3 +1,4 @@
+import { CleanDesk } from '@/portfolio/Guara';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, X, ArrowRight, CalendarDays, Map as MapIcon, Siren, CalendarX, Hourglass, PhoneCall, BellRing, WifiOff, type LucideIcon } from 'lucide-react';
@@ -91,6 +92,7 @@ export function PcmHome() {
             <Link to="/onde-estao" className="btn btn-secondary"><MapIcon size={18} /> Onde estão</Link>
           </div>
         </div>
+        {!mine.length && <CleanDesk who="pcm" />}
         <ol className="desk">
           {mine.slice(0, 8).map(a => (
             <li key={a.id}>

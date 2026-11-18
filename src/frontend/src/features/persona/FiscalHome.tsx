@@ -1,3 +1,4 @@
+import { CleanDesk } from '@/portfolio/Guara';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Factory, CalendarClock, Landmark, Search, CircleCheck, CircleAlert, ChevronDown } from 'lucide-react';
@@ -53,7 +54,7 @@ export function FiscalHome() {
       </div>
 
       <section className="pp-panel" role="tabpanel" aria-label={tab === 'emitir' ? 'NF de remessa a emitir' : 'Voltaram sem NF de retorno'}>
-        {!list.length && <p className="muted empty">Nada pendente nesta fila.</p>}
+        {!list.length && (toIssue.length + noReturn.length === 0 ? <CleanDesk who="fiscal" /> : <p className="muted empty">Nada pendente nesta fila. A outra aba ainda tem itens.</p>)}
         <ul className="fiscal-list">
           {list.map(a => {
             const s = supplierOf(a, suppliers);
