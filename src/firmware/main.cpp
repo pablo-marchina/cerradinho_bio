@@ -848,7 +848,15 @@ void readBattery(uint32_t now) {
   const int raw = analogRead(Config::BatteryPin);
   const int percent = simulatedBatteryPercent();
   // Histerese de 1 ponto so no visor: a regra usa a media, para o alerta nao atrasar (RN10).
+#if MQTT_ENABLED
+  const int previousBatteryPct = batteryPct;
+#endif
   if (abs(percent - batteryPct) >= 2 || percent == 0 || percent == 100) batteryPct = percent;
+#if MQTT_ENABLED
+  // O dashboard recebe o novo valor logo apos o potenciometro mudar. A histerese acima e o
+  // intervalo minimo do MQTT evitam publicar cada pequena oscilacao natural do ADC.
+  if (batteryPct != previousBatteryPct) mqttStatusDirty = true;
+#endif
   // Variacao da bateria acende o LCD na tela de bateria. Compara com o ultimo valor que contou
   // como uso (nao com a leitura anterior), com folga de 3 pontos contra o ruido do ADC.
   if (abs(batteryPct - wakeReferencePct) >= 3) {
