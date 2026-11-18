@@ -1332,7 +1332,7 @@ void publishMqttStatus() {
   json = "{\"device_id\":\"";
   json += Config::DeviceId;
   json += "\",\"lacre\":\"";
-  json += stableSeal ? "violado" : "integro";
+  json += sealStatus;
   json += "\",\"bateria_pct\":";
   json += batteryPct;
   json += ",\"ciclo_ativo\":";
@@ -1347,6 +1347,15 @@ void publishMqttStatus() {
   json += pending.count;
   json += "}";
   const bool sent = mqtt.publish(TopicStatus, json.c_str(), true);
+  // Estado logico do lacre (mesma fonte do LCD), nao o nivel fisico stableSeal: uma retirada
+  // autorizada nao e violacao, e uma violacao com o lacre fechado continua violada ate o
+  // tratamento. Mapeia para o contrato: integro, violado ou indeterminado (autorizacao vigente).
+  const char *sealStatus;
+  switch (sealView(clockMs())) {
+    case SealView::Violated: sealStatus = "violado"; break;
+    case SealView::Authorized: sealStatus = "indeterminado"; break;
+    default: sealStatus = "integro"; break;
+  }
   Serial.printf("[mqtt] status %s (%u bytes)\r\n", sent ? "publicado" : "falhou", (unsigned)json.length());
 }
 
