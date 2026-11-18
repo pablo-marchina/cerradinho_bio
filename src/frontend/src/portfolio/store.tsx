@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, useState, type ReactNode } from 'react';
 import { createPortfolio, PLANT } from './seed';
 import { cfopFor, supplierOf } from './logic';
-import type { HistoryEntry, Invoice, Persona, PortfolioAsset, PortfolioState } from './types';
+import type { HistoryEntry, Invoice, Persona, PortfolioAsset, PortfolioState, Supplier } from './types';
 
 type Action =
   | { type: 'create'; asset: PortfolioAsset; requestNf: boolean }
@@ -13,6 +13,7 @@ type Action =
   | { type: 'follow_up'; id: string; note: string }
   | { type: 'return_nf'; id: string; invoice: Invoice }
   | { type: 'share'; id: string; names: string[] }
+  | { type: 'add_supplier'; supplier: Supplier }
   | { type: 'read_notices'; to: Persona }
   | { type: 'reset' };
 
@@ -29,6 +30,7 @@ function notice(state: PortfolioState, to: Persona, a: PortfolioAsset, text: str
 
 function reducer(state: PortfolioState, action: Action): PortfolioState {
   if (action.type === 'reset') return createPortfolio();
+  if (action.type === 'add_supplier') return { ...state, suppliers: [...state.suppliers, action.supplier] };
   if (action.type === 'read_notices') return { ...state, notices: state.notices.map(n => (n.to === action.to ? { ...n, read: true } : n)) };
   if (action.type === 'create') {
     let next: PortfolioState = {

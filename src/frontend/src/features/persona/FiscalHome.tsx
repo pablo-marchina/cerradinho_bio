@@ -32,10 +32,10 @@ export function FiscalHome() {
       </header>
 
       <section className="figs" aria-label="Pendências fiscais">
-        <Figure label="NFs de remessa a emitir" value={toIssue.length} tone="warn" />
-        <Figure label="Voltaram sem NF de retorno" value={noReturn.length} tone="alert" />
-        <Figure label="Prazo legal em até 30 dias" value={legal.filter(x => x.r <= 30).length} tone="alert" />
-        <Figure label="ICMS suspenso (estimado)" value={moneyShort(icms)}  />
+        <Figure icon={FileText} label="NFs de remessa a emitir" value={toIssue.length} tone="warn" />
+        <Figure icon={Factory} label="Voltaram sem NF de retorno" value={noReturn.length} tone="alert" />
+        <Figure icon={CalendarClock} label="Prazo legal em até 30 dias" value={legal.filter(x => x.r <= 30).length} tone="alert" />
+        <Figure icon={Landmark} label="ICMS suspenso (estimado)" value={moneyShort(icms)}  />
       </section>
 
       <div className="split">

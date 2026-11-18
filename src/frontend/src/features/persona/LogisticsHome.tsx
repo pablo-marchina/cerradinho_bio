@@ -62,11 +62,11 @@ export function LogisticsHome() {
       </header>
 
       <section className="figs" aria-label="Indicadores">
-        <Figure label="Ativos fora da usina" value={open.filter(isOutside).length} />
-        <Figure label="Reparo médio" value={`${avgRepair} d`} />
-        <Figure label="Devolvidos no prazo" value={`${onTime}%`} tone={onTime < 70 ? 'warn' : 'ok'} />
-        <Figure label="ICMS suspenso" value={moneyShort(icms)} />
-        <Figure label="Passagens paradas" value={stuck.length} tone={stuck.length ? 'warn' : 'ok'} />
+        <Figure icon={Truck} label="Ativos fora da usina" value={open.filter(isOutside).length} />
+        <Figure icon={Timer} label="Reparo médio" value={`${avgRepair} d`} />
+        <Figure icon={Target} label="Devolvidos no prazo" value={`${onTime}%`} tone={onTime < 70 ? 'warn' : 'ok'} />
+        <Figure icon={Landmark} label="ICMS suspenso" value={moneyShort(icms)} />
+        <Figure icon={Hourglass} label="Passagens paradas" value={stuck.length} tone={stuck.length ? 'warn' : 'ok'} />
       </section>
 
       <LogisticsDesk />

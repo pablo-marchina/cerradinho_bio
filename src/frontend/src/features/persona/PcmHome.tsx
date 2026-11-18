@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, X, ArrowRight } from 'lucide-react';
+import { Plus, X, ArrowRight, Siren, CalendarX, Hourglass, PhoneCall, BellRing, WifiOff, type LucideIcon } from 'lucide-react';
 import { usePortfolio } from '@/portfolio/store';
 import { MapView } from '@/portfolio/MapView';
 import { DeadlineCalendar } from '@/portfolio/Calendar';
@@ -37,13 +37,13 @@ export function PcmHome() {
   const [q, setQ] = useState('');
   const count = (fn: (a: PortfolioAsset) => boolean) => open.filter(fn).length;
 
-  const figures: { flag: Flag; value: number; tone: 'alert' | 'warn' | 'ok' | 'none' }[] = [
-    { flag: 'critico', value: count(a => isCritical(a, now, suppliers)), tone: 'alert' },
-    { flag: 'atrasado', value: count(a => isOverdue(a, now)), tone: 'alert' },
-    { flag: 'urgente', value: count(a => isUrgent(a, now, suppliers)), tone: 'warn' },
-    { flag: 'ligar', value: count(a => needsCall(a, now)), tone: 'warn' },
-    { flag: 'notificado', value: count(a => isOutside(a) && isNotified(a, now)), tone: 'ok' },
-    { flag: 'sem_sinal', value: count(a => isNoSignal(a, now)), tone: 'none' },
+  const figures: { flag: Flag; value: number; tone: 'alert' | 'warn' | 'ok' | 'none'; icon: LucideIcon }[] = [
+    { flag: 'critico', value: count(a => isCritical(a, now, suppliers)), tone: 'alert', icon: Siren },
+    { flag: 'atrasado', value: count(a => isOverdue(a, now)), tone: 'alert', icon: CalendarX },
+    { flag: 'urgente', value: count(a => isUrgent(a, now, suppliers)), tone: 'warn', icon: Hourglass },
+    { flag: 'ligar', value: count(a => needsCall(a, now)), tone: 'warn', icon: PhoneCall },
+    { flag: 'notificado', value: count(a => isOutside(a) && isNotified(a, now)), tone: 'ok', icon: BellRing },
+    { flag: 'sem_sinal', value: count(a => isNoSignal(a, now)), tone: 'none', icon: WifiOff },
   ];
 
   const picked = useMemo(() => {
@@ -81,7 +81,7 @@ export function PcmHome() {
         <ProcessRail counts={stageCounts(open)} active={pick?.kind === 'stage' ? pick.stage : null} onPick={s => setPick(s ? { kind: 'stage', stage: s } : null)} hide={['encerrado']} />
         <div className="figs" role="group" aria-label="Situação dos ativos">
           {figures.map(f => (
-            <Figure key={f.flag} value={f.value} label={flagTitle[f.flag]!} tone={f.tone} active={pick?.kind === 'flag' && pick.flag === f.flag} onClick={() => setPick(pick?.kind === 'flag' && pick.flag === f.flag ? null : { kind: 'flag', flag: f.flag })} />
+            <Figure key={f.flag} icon={f.icon} value={f.value} label={flagTitle[f.flag]!} tone={f.tone} active={pick?.kind === 'flag' && pick.flag === f.flag} onClick={() => setPick(pick?.kind === 'flag' && pick.flag === f.flag ? null : { kind: 'flag', flag: f.flag })} />
           ))}
         </div>
         {pick && <PickPanel pick={pick} assets={picked} onClose={() => setPick(null)} />}

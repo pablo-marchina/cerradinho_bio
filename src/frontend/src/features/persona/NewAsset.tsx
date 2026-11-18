@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Camera, Check, Tag, Search, Plus, Repeat } from 'lucide-react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, Camera, Check, Tag, Search, Plus, Repeat, Package, TriangleAlert, Building2, Handshake, Send, PanelLeft, PanelTop } from 'lucide-react';
 import { usePortfolio } from '@/portfolio/store';
 import { legalLimitDays, money, supplierStats, dateBr } from '@/portfolio/logic';
 import { AssetThumb, Avatar } from '@/portfolio/ui';
@@ -26,6 +26,11 @@ function resize(file: File): Promise<string> {
 }
 
 const AREAS = ['Extração', 'Caldeira', 'Destilaria', 'Utilidades', 'Fábrica de açúcar', 'Logística interna'];
+const STEP_ICONS = [Package, Camera, TriangleAlert, Building2, Handshake, Tag, Send];
+
+/** Centro aproximado de cada UF, para pôr a oficina nova no mapa até ter o endereço exato. */
+const UF_CENTER: Record<string, [number, number]> = { GO: [-16.0, -49.6], MG: [-18.5, -44.5], SP: [-22.2, -48.7], MT: [-13.0, -56.0], MS: [-20.5, -54.6], DF: [-15.8, -47.9], PR: [-24.6, -51.6], BA: [-12.5, -41.7], TO: [-10.2, -48.3] };
+
 const STEPS = [
   { id: 'origem', title: 'Qual ativo vai sair?', short: 'Ativo' },
   { id: 'foto', title: 'Tire uma foto do ativo', short: 'Foto' },
@@ -52,26 +57,44 @@ export function NewAsset() {
   const [q, setQ] = useState('');
   const [notify, setNotify] = useState<string[]>([]);
   const [error, setError] = useState('');
+  const [visited, setVisited] = useState(0);
+  const [stamp, setStamp] = useState<number | null>(null);
+  const [params, setParams] = useSearchParams();
+  const top = params.get('passos') === 'topo';
+  const [newSup, setNewSup] = useState<null | { name: string; city: string; uf: string; contact: string; email: string; phone: string }>(null);
   const set = <K extends keyof typeof f>(k: K, v: (typeof f)[K]) => setF(x => ({ ...x, [k]: v }));
   const supplier = state.suppliers.find(s => s.id === f.supplierId) ?? null;
   const stats = useMemo(() => supplierStats(state), [state]);
   const promised = f.days ? new Date(Date.now() + (Number(f.days) + 2) * 86400000).toISOString() : null;
   const closedAssets = state.assets.filter(a => a.stage === 'encerrado' && [a.name, a.id, a.om].some(v => v.toLowerCase().includes(q.toLowerCase())));
 
-  const validate = () => {
-    const s = STEPS[step].id;
+  const errorFor = (i: number) => {
+    const s = STEPS[i].id;
     if (s === 'origem' && (!mode || (mode === 'existente' && !f.sourceId) || (mode === 'novo' && (!f.name.trim() || !f.om.trim())))) return mode === 'existente' ? 'Escolha o ativo na lista.' : 'Informe o nome do ativo e a OM do SAP.';
+    if (s === 'foto' && !f.photo) return 'Sem foto. Dá para seguir e adicionar depois.';
     if (s === 'defeito' && (!f.problem.trim() || !f.criticality)) return 'Descreva o defeito e escolha a criticidade.';
     if (s === 'oficina' && !f.supplierId) return 'Escolha a oficina.';
     if (s === 'combinado' && (!(Number(f.quote) > 0) || !(Number(f.days) > 0))) return 'Informe o valor e o prazo de reparo combinados.';
     if (s === 'tag' && (!f.tag || !f.seal)) return 'Escolha a TAG e confirme o lacre.';
     return '';
   };
+  const optional = (i: number) => STEPS[i].id === 'foto';
+  /** done = preenchido; missing = já passou e falta dado; now = sendo preenchido; todo = ainda não chegou. */
+  const stateOf = (i: number) => (i === step ? 'now' : i > visited ? 'todo' : errorFor(i) ? 'missing' : 'done');
+  const goTo = (i: number) => { if (i <= visited) { setError(''); setStep(i); } };
   const next = () => {
-    const e = validate();
-    setError(e);
-    if (!e) setStep(Math.min(step + 1, STEPS.length - 1));
+    const e = errorFor(step);
+    if (e && !optional(step)) return setError(e);
+    setError('');
+    if (!e) setStamp(step);
+    window.setTimeout(() => {
+      setStamp(null);
+      const n = Math.min(step + 1, STEPS.length - 1);
+      setStep(n);
+      setVisited(v => Math.max(v, n));
+    }, e ? 0 : 700);
   };
+  const doneCount = STEPS.filter((_, i) => i < STEPS.length - 1 && i <= visited && !errorFor(i)).length;
   const back = () => { setError(''); setStep(Math.max(0, step - 1)); };
 
   const finish = (requestNf: boolean) => {
@@ -96,17 +119,30 @@ export function NewAsset() {
   const s = STEPS[step];
   return (
     <div className="pp wizard">
-      <Link to="/" className="back"><ArrowLeft size={18} /> Painel</Link>
-      <div className="wz">
+      <div className="row-between">
+        <Link to="/" className="back"><ArrowLeft size={18} /> Painel</Link>
+        <div className="seg-tabs" role="group" aria-label="Onde mostrar os passos">
+          <button type="button" className={!top ? 'on' : ''} onClick={() => setParams({})}><PanelLeft size={16} /> Passos ao lado</button>
+          <button type="button" className={top ? 'on' : ''} onClick={() => setParams({ passos: 'topo' })}><PanelTop size={16} /> Passos em cima</button>
+        </div>
+      </div>
+      <div className="wz-progress" aria-label={`${doneCount} de ${STEPS.length - 1} passos preenchidos`}><span style={{ width: `${(doneCount / (STEPS.length - 1)) * 100}%` }} /></div>
+      <div className={`wz ${top ? 'top' : ''}`}>
         <aside className="wz-steps" aria-label="Passos do envio">
           <p className="eyebrow">Novo envio</p>
           <ol>
-            {STEPS.map((x, i) => (
-              <li key={x.id} className={i < step ? 'done' : i === step ? 'now' : ''}>
-                <span className="wz-dot">{i < step ? <Check size={16} /> : i + 1}</span>
-                <span>{x.short}</span>
-              </li>
-            ))}
+            {STEPS.map((x, i) => {
+              const st = stateOf(i);
+              const Icon = STEP_ICONS[i];
+              return (
+                <li key={x.id} className={`ws ${st} ${stamp === i ? 'stamping' : ''}`}>
+                  <button type="button" onClick={() => goTo(i)} disabled={i > visited} aria-current={st === 'now' ? 'step' : undefined}>
+                    <span className="wz-dot">{st === 'done' ? <Check size={18} strokeWidth={3} /> : st === 'missing' ? <TriangleAlert size={16} /> : <Icon size={17} />}</span>
+                    <span className="ws-text"><span>{x.short}</span><small>{st === 'done' ? 'Preenchido' : st === 'missing' ? 'Falta dado' : st === 'now' ? 'Preenchendo' : ''}</small></span>
+                  </button>
+                </li>
+              );
+            })}
           </ol>
           <div className="wz-after">
             <p className="eyebrow">Depois do envio</p>
@@ -116,7 +152,8 @@ export function NewAsset() {
           </div>
         </aside>
 
-        <section className="wz-main" aria-labelledby="wz-title">
+        <section className="wz-main" aria-labelledby="wz-title" key={step}>
+          {stamp !== null && <div className="stamp" aria-hidden="true"><span><Check size={28} strokeWidth={3} /> Preenchido</span></div>}
           <p className="muted">Passo {step + 1} de {STEPS.length}</p>
           <h1 id="wz-title">{s.title}</h1>
 
@@ -187,7 +224,40 @@ export function NewAsset() {
 
           {s.id === 'oficina' && (
             <div className="wz-body">
-              <p className="lead">Compare o histórico de cada oficina antes de escolher.</p>
+              <div className="row-between">
+                <p className="lead">Compare o histórico de cada oficina antes de escolher.</p>
+                {!newSup && <button type="button" className="btn btn-secondary" onClick={() => setNewSup({ name: '', city: '', uf: 'GO', contact: '', email: '', phone: '' })}><Plus size={16} /> Cadastrar nova oficina</button>}
+              </div>
+              {newSup && (
+                <form
+                  className="new-sup"
+                  onSubmit={e => {
+                    e.preventDefault();
+                    if (!newSup.name.trim() || !newSup.city.trim()) return setError('Informe pelo menos o nome e a cidade da oficina.');
+                    const [lat, lng] = UF_CENTER[newSup.uf] ?? UF_CENTER.GO;
+                    const id = `SUP-${Date.now().toString(36)}`;
+                    dispatch({ type: 'add_supplier', supplier: { id, ...newSup, name: newSup.name.trim(), city: newSup.city.trim(), lat, lng } });
+                    set('supplierId', id);
+                    setNewSup(null);
+                    setError('');
+                  }}
+                >
+                  <h3><Building2 size={20} /> Nova oficina</h3>
+                  <div className="form-grid">
+                    <label>Nome<input className="input" autoFocus value={newSup.name} onChange={e => setNewSup({ ...newSup, name: e.target.value })} placeholder="Ex.: Oficina São José" /></label>
+                    <label>Cidade<input className="input" value={newSup.city} onChange={e => setNewSup({ ...newSup, city: e.target.value })} /></label>
+                    <label>UF<select className="input" value={newSup.uf} onChange={e => setNewSup({ ...newSup, uf: e.target.value })}>{Object.keys(UF_CENTER).map(u => <option key={u}>{u}</option>)}</select></label>
+                    <label>Contato<input className="input" value={newSup.contact} onChange={e => setNewSup({ ...newSup, contact: e.target.value })} /></label>
+                    <label>E-mail<input className="input" type="email" value={newSup.email} onChange={e => setNewSup({ ...newSup, email: e.target.value })} /></label>
+                    <label>Telefone<input className="input" inputMode="tel" value={newSup.phone} onChange={e => setNewSup({ ...newSup, phone: e.target.value })} /></label>
+                  </div>
+                  <p className="muted">Prazo fiscal: {newSup.uf === 'GO' ? '270 dias (dentro de GO)' : '360 dias (fora de GO)'}. No mapa, a oficina fica no centro da UF até ter o endereço.</p>
+                  <div className="row-gap">
+                    <button type="submit" className="btn btn-primary">Salvar e escolher esta oficina</button>
+                    <button type="button" className="btn btn-ghost" onClick={() => setNewSup(null)}>Cancelar</button>
+                  </div>
+                </form>
+              )}
               <ul className="supplier-pick">
                 {state.suppliers.map(x => {
                   const st = stats.find(y => y.supplier.id === x.id);
@@ -258,7 +328,7 @@ export function NewAsset() {
           {error && <p role="alert" className="form-error">{error}</p>}
           <div className="wz-nav">
             {step > 0 && <button type="button" className="btn btn-secondary btn-lg" onClick={back}><ArrowLeft size={18} /> Voltar</button>}
-            {s.id !== 'revisar' && <button type="button" className="btn btn-primary btn-lg" onClick={next}>{s.id === 'foto' && !f.photo ? 'Pular' : 'Continuar'} <ArrowRight size={18} /></button>}
+            {s.id !== 'revisar' && <button type="button" className="btn btn-primary btn-lg" onClick={next}>{s.id === 'foto' && !f.photo ? 'Pular por agora' : 'Continuar'} <ArrowRight size={18} /></button>}
             {s.id === 'revisar' && (
               <>
                 <button type="button" className="btn btn-primary btn-lg" onClick={() => finish(true)}>Enviar para a Clarice emitir a NF</button>

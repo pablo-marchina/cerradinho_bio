@@ -91,10 +91,13 @@ export function ProcessRail({ counts, active, onPick, hide = [] }: { counts: Rec
 }
 
 /** Número grande com rótulo, sem caixa: usado nas faixas de situação. */
-export function Figure({ value, label, tone = 'none', active, onClick }: { value: number | string; label: string; tone?: Tone; active?: boolean; onClick?: () => void }) {
+export function Figure({ value, label, tone = 'none', active, onClick, icon: Icon }: { value: number | string; label: string; tone?: Tone; active?: boolean; onClick?: () => void; icon?: LucideIcon }) {
   const inner = (
     <>
-      <span className={`fig-value mono t-${tone}`}>{value}</span>
+      <span className="fig-top">
+        {Icon && <span className={`fig-icon i-${tone}`}><Icon size={22} strokeWidth={2.2} aria-hidden="true" /></span>}
+        <span className={`fig-value mono t-${tone}`}>{value}</span>
+      </span>
       <span className="fig-label">{label}</span>
     </>
   );
