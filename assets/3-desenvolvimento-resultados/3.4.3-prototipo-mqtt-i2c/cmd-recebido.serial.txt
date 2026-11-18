@@ -1,0 +1,53 @@
+18:16:20 [vivo] tempo=35 s gps_chars=5206 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:22 [vivo] tempo=37 s gps_chars=5549 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:24 [vivo] tempo=39 s gps_chars=5566 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:26 [vivo] tempo=41 s gps_chars=5967 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:28 [vivo] tempo=43 s gps_chars=6311 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:30 [vivo] tempo=45 s gps_chars=6655 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:32 [vivo] tempo=47 s gps_chars=6999 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:34 [vivo] tempo=49 s gps_chars=7343 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:36 [gps] sem fix recente; referencia anterior preservada
+18:16:36 {"device_id":"prototipo-001-luiz","type":"location_unavailable","uptime_ms":51436,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"fix_valid":false,"latitude":null,"longitude":null,"moved":null}
+18:16:36 [registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+18:16:36 [vivo] tempo=51 s gps_chars=7687 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:38 [vivo] tempo=53 s gps_chars=8031 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:40 [vivo] tempo=55 s gps_chars=8375 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:42 [vivo] tempo=57 s gps_chars=8719 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:44 [vivo] tempo=59 s gps_chars=9063 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:46 [vivo] tempo=61 s gps_chars=9407 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:48 [vivo] tempo=63 s gps_chars=9751 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:50 [vivo] tempo=65 s gps_chars=10095 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:52 [vivo] tempo=67 s gps_chars=10439 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:54 [vivo] tempo=69 s gps_chars=10783 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:56 [mqtt] status publicado (138 bytes)
+18:16:56 [vivo] tempo=71 s gps_chars=11127 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:16:58 [vivo] tempo=73 s gps_chars=11471 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:00 [vivo] tempo=75 s gps_chars=11815 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:02 [vivo] tempo=77 s gps_chars=12159 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:04 [vivo] tempo=79 s gps_chars=12503 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:06 [vivo] tempo=81 s gps_chars=12847 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:08 [vivo] tempo=83 s gps_chars=13191 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:10 [vivo] tempo=85 s gps_chars=13535 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:12 [vivo] tempo=87 s gps_chars=13879 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:12 [mqtt] cmd recebido em guaratracking/prototipo-001-luiz/cmd:
+18:17:14 [vivo] tempo=89 s gps_chars=14223 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:16 [gps] sem fix recente; referencia anterior preservada
+18:17:16 {"device_id":"prototipo-001-luiz","type":"location_unavailable","uptime_ms":91436,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"fix_valid":false,"latitude":null,"longitude":null,"moved":null}
+18:17:16 [registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+18:17:16 [vivo] tempo=91 s gps_chars=14567 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:18 [mqtt] cmd recebido em guaratracking/prototipo-001-luiz/cmd:
+18:17:18 [vivo] tempo=93 s gps_chars=14911 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:20 [vivo] tempo=95 s gps_chars=15255 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:22 [vivo] tempo=97 s gps_chars=15599 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:24 [vivo] tempo=99 s gps_chars=15943 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:26 [vivo] tempo=101 s gps_chars=16287 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:28 [vivo] tempo=103 s gps_chars=16631 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:30 [vivo] tempo=105 s gps_chars=16975 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:32 [vivo] tempo=107 s gps_chars=17319 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:34 [vivo] tempo=109 s gps_chars=17663 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:36 [vivo] tempo=111 s gps_chars=18007 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:38 [vivo] tempo=113 s gps_chars=18351 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:40 [vivo] tempo=115 s gps_chars=18695 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:42 [vivo] tempo=117 s gps_chars=19039 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:44 [vivo] tempo=119 s gps_chars=19383 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0
+18:17:46 [vivo] tempo=121 s gps_chars=19727 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=1 dias_fora=0 fila=0

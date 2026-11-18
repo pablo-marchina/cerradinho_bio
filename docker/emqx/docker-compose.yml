@@ -1,0 +1,18 @@
+# Broker MQTT local do prototipo: EMQX open source no Docker, sem licenca.
+# Mesmo software do EMQX Cloud (broker online escolhido), com versao fixa.
+# Uso: `docker compose up -d` nesta pasta.
+# Portas: 1883 = MQTT (ESP32), 8083 = WebSocket (dashboard, caminho /mqtt),
+# 18083 = painel de administracao (http://localhost:18083).
+# Local, sem TLS e sem usuario: use apenas com dados ficticios, em rede confiavel.
+services:
+  emqx:
+    image: emqx/emqx:5.8.9
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "8083:8083"
+      - "18083:18083"
+    volumes:
+      - emqx-data:/opt/emqx/data
+volumes:
+  emqx-data:

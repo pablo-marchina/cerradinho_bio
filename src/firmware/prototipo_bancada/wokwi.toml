@@ -1,0 +1,10 @@
+# Bancada fisica no Wokwi: so botoes (LACRE, REDE e ON/OFF tambem) e pinagem alternada.
+# Compile antes: pio run -e bancada. O diagrama do Wokwi com chaves fica em ../prototipo_wokwi.
+[wokwi]
+version = 1
+firmware = "../../../.pio/build/bancada/firmware.bin"
+elf = "../../../.pio/build/bancada/firmware.elf"
+
+[[chip]]
+name = "gps"
+binary = "../../../chips/gps.chip.wasm"

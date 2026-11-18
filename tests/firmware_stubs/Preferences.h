@@ -9,7 +9,9 @@
 namespace FakeNVS {
 inline std::map<std::string, std::vector<uint8_t>> bytes;
 inline bool failNextWrite = false;
-inline void reset(){ bytes.clear(); failNextWrite = false; }
+inline size_t partialNextWrite = 0;
+inline bool corruptNextWrite = false;
+inline void reset(){ bytes.clear(); failNextWrite = false; partialNextWrite = 0; corruptNextWrite = false; }
 }
 #endif
 class Preferences {
@@ -18,9 +20,19 @@ class Preferences {
  bool begin(const char*,bool){return true;}
  bool isKey(const char* key) const {return FakeNVS::bytes.count(key)!=0;}
  size_t putBytes(const char* key,const void* data,size_t size){
-  if(FakeNVS::failNextWrite){ FakeNVS::failNextWrite=false; return 0; }
   const auto* ptr=static_cast<const uint8_t*>(data);
+  if(FakeNVS::failNextWrite){
+   FakeNVS::failNextWrite=false;
+   const size_t written=std::min(FakeNVS::partialNextWrite,size);
+   FakeNVS::partialNextWrite=0;
+   if(written>0)FakeNVS::bytes[key]=std::vector<uint8_t>(ptr,ptr+written);
+   return written;
+  }
   FakeNVS::bytes[key]=std::vector<uint8_t>(ptr,ptr+size);
+  if(FakeNVS::corruptNextWrite && size>0){
+   FakeNVS::corruptNextWrite=false;
+   FakeNVS::bytes[key][size/2]^=0x5a;
+  }
   return size;
  }
  size_t getBytes(const char* key,void* dest,size_t size) const {

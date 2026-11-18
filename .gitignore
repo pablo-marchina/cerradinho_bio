@@ -53,6 +53,7 @@ chips/*.wasm
 *.vcd
 /debug.log
 include/config.local.h
+include/secrets.h
 .env
 .env.*
 !.env.example

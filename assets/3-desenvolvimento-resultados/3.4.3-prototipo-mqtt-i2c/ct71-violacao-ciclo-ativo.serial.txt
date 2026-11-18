@@ -1,0 +1,144 @@
+19:03:01 [vivo] tempo=232 s gps_chars=35604 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=614 fila=0
+19:03:02 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":233438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":616,"dia_ocorrencia":1252,"atraso":true,"permanencia":true,"critico":false}
+19:03:02 [mqtt] status publicado (139 bytes)
+19:03:03 [vivo] tempo=234 s gps_chars=35948 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=616 fila=0
+19:03:05 [vivo] tempo=236 s gps_chars=36292 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=618 fila=0
+19:03:07 [vivo] tempo=238 s gps_chars=36636 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=620 fila=0
+19:03:09 [vivo] tempo=240 s gps_chars=36980 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=622 fila=0
+19:03:09 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":240438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":623,"dia_ocorrencia":1259,"atraso":true,"permanencia":true,"critico":false}
+19:03:09 [mqtt] status publicado (139 bytes)
+19:03:12 [vivo] tempo=243 s gps_chars=37496 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=1 avancar=0 voltar=0 tela=3 dias_fora=625 fila=0
+19:03:13 {"device_id":"prototipo-001-luiz","type":"ENCERRAMENTO_RECUSADO","uptime_ms":245083,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":627,"dia_ocorrencia":1264,"atraso":true,"permanencia":true,"critico":false,"motivo":"nf_retorno_ausente"}
+19:03:13 [mqtt] status publicado (139 bytes)
+19:03:14 [vivo] tempo=245 s gps_chars=37840 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=1 avancar=0 voltar=0 tela=3 dias_fora=627 fila=0
+19:03:15 [botao] BTN_CICLO solto antes de 3 s; nada registrado
+19:03:16 [vivo] tempo=247 s gps_chars=38184 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=629 fila=0
+19:03:16 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":247438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":630,"dia_ocorrencia":1266,"atraso":true,"permanencia":true,"critico":false}
+19:03:16 [mqtt] status publicado (139 bytes)
+19:03:18 [vivo] tempo=249 s gps_chars=38528 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=1 avancar=0 voltar=0 tela=3 dias_fora=631 fila=0
+19:03:20 [vivo] tempo=251 s gps_chars=38872 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=1 avancar=0 voltar=0 tela=3 dias_fora=633 fila=0
+19:03:20 {"device_id":"prototipo-001-luiz","type":"ENCERRAMENTO_RECUSADO","uptime_ms":251435,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":633,"dia_ocorrencia":1270,"atraso":true,"permanencia":true,"critico":false,"motivo":"nf_retorno_ausente"}
+19:03:20 [mqtt] status publicado (139 bytes)
+19:03:20 [gps] sem fix recente; referencia anterior preservada
+19:03:20 {"device_id":"prototipo-001-luiz","type":"location_unavailable","uptime_ms":251568,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":99,"wifi_connected":true,"network_sim_available":true,"fix_valid":false,"latitude":null,"longitude":null,"moved":null}
+19:03:20 [registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+19:03:22 [vivo] tempo=253 s gps_chars=39216 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=635 fila=0
+19:03:23 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":254439,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":637,"dia_ocorrencia":1273,"atraso":true,"permanencia":true,"critico":false}
+19:03:23 [mqtt] status publicado (139 bytes)
+19:03:24 [vivo] tempo=255 s gps_chars=39560 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=637 fila=0
+19:03:25 {"device_id":"prototipo-001-luiz","type":"seal_changed","uptime_ms":256931,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":256924}
+19:03:25 [registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+19:03:25 {"device_id":"prototipo-001-luiz","type":"VIOLACAO_LACRE","uptime_ms":256972,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":639,"dia_ocorrencia":1275,"atraso":true,"permanencia":true,"critico":true}
+19:03:25 [mqtt] status publicado (139 bytes)
+19:03:26 [vivo] tempo=257 s gps_chars=39904 fix=ausente lacre=violado bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=639 fila=0
+19:03:28 [vivo] tempo=259 s gps_chars=40248 fix=ausente lacre=violado bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=641 fila=0
+19:03:30 [vivo] tempo=261 s gps_chars=40592 fix=ausente lacre=violado bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=643 fila=0
+19:03:30 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":261438,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":644,"dia_ocorrencia":1280,"atraso":true,"permanencia":true,"critico":false}
+19:03:30 [mqtt] status publicado (139 bytes)
+19:03:32 [vivo] tempo=263 s gps_chars=40936 fix=ausente lacre=violado bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=645 fila=0
+19:03:34 [vivo] tempo=265 s gps_chars=41280 fix=ausente lacre=violado bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=647 fila=0
+19:03:36 [vivo] tempo=267 s gps_chars=41624 fix=ausente lacre=violado bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=649 fila=0
+19:03:37 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":268438,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":651,"dia_ocorrencia":1287,"atraso":true,"permanencia":true,"critico":false}
+19:03:37 [mqtt] status publicado (139 bytes)
+19:03:38 [vivo] tempo=269 s gps_chars=41968 fix=ausente lacre=violado bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=651 fila=0
+19:03:40 [vivo] tempo=271 s gps_chars=42312 fix=ausente lacre=violado bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=653 fila=0
+19:03:42 [vivo] tempo=273 s gps_chars=42656 fix=ausente lacre=violado bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=655 fila=0
+19:03:44 [vivo] tempo=275 s gps_chars=43000 fix=ausente lacre=violado bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=657 fila=0
+19:03:44 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":275438,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":658,"dia_ocorrencia":1294,"atraso":true,"permanencia":true,"critico":false}
+19:03:44 [mqtt] status publicado (139 bytes)
+19:03:44 {"device_id":"prototipo-001-luiz","type":"seal_changed","uptime_ms":275903,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":275897}
+19:03:44 [registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+19:03:44 {"device_id":"prototipo-001-luiz","type":"LACRE_FECHADO","uptime_ms":275944,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":658,"dia_ocorrencia":1294,"atraso":true,"permanencia":true,"critico":false}
+19:03:46 [mqtt] status publicado (139 bytes)
+19:03:46 [vivo] tempo=277 s gps_chars=43344 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=659 fila=0
+19:03:48 [vivo] tempo=279 s gps_chars=43688 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=661 fila=0
+19:03:50 [vivo] tempo=281 s gps_chars=44032 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=663 fila=0
+19:03:51 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":282439,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":665,"dia_ocorrencia":1301,"atraso":true,"permanencia":true,"critico":false}
+19:03:51 [mqtt] status publicado (139 bytes)
+19:03:52 [vivo] tempo=283 s gps_chars=44376 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=665 fila=0
+19:03:54 [vivo] tempo=285 s gps_chars=44720 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=667 fila=0
+19:03:56 [vivo] tempo=287 s gps_chars=45064 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=669 fila=0
+19:03:58 [vivo] tempo=289 s gps_chars=45408 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=671 fila=0
+19:03:58 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":289438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":672,"dia_ocorrencia":1308,"atraso":true,"permanencia":true,"critico":false}
+19:03:58 [mqtt] status publicado (139 bytes)
+19:04:00 [vivo] tempo=291 s gps_chars=45752 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=673 fila=0
+19:04:00 [gps] sem fix recente; referencia anterior preservada
+19:04:00 {"device_id":"prototipo-001-luiz","type":"location_unavailable","uptime_ms":291468,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"fix_valid":false,"latitude":null,"longitude":null,"moved":null}
+19:04:00 [registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+19:04:02 [vivo] tempo=293 s gps_chars=46096 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=675 fila=0
+19:04:04 [vivo] tempo=295 s gps_chars=46440 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=677 fila=0
+19:04:05 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":296438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":679,"dia_ocorrencia":1315,"atraso":true,"permanencia":true,"critico":false}
+19:04:05 [mqtt] status publicado (139 bytes)
+19:04:06 [vivo] tempo=297 s gps_chars=46784 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=679 fila=0
+19:04:08 [vivo] tempo=299 s gps_chars=47128 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=681 fila=0
+19:04:10 [vivo] tempo=301 s gps_chars=47472 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=683 fila=0
+19:04:12 [vivo] tempo=303 s gps_chars=47816 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=685 fila=0
+19:04:12 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":303438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":686,"dia_ocorrencia":1322,"atraso":true,"permanencia":true,"critico":false}
+19:04:12 [mqtt] status publicado (139 bytes)
+19:04:14 [vivo] tempo=305 s gps_chars=48160 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=687 fila=0
+19:04:16 [vivo] tempo=307 s gps_chars=48504 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=689 fila=0
+19:04:18 [vivo] tempo=309 s gps_chars=48848 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=691 fila=0
+19:04:19 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":310438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":693,"dia_ocorrencia":1329,"atraso":true,"permanencia":true,"critico":false}
+19:04:19 [mqtt] status publicado (139 bytes)
+19:04:20 [vivo] tempo=311 s gps_chars=49192 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=693 fila=0
+19:04:22 [vivo] tempo=313 s gps_chars=49536 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=695 fila=0
+19:04:24 [vivo] tempo=315 s gps_chars=49880 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=697 fila=0
+19:04:26 [vivo] tempo=317 s gps_chars=50224 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=699 fila=0
+19:04:26 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":317438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":700,"dia_ocorrencia":1336,"atraso":true,"permanencia":true,"critico":false}
+19:04:26 [mqtt] status publicado (139 bytes)
+19:04:28 [vivo] tempo=319 s gps_chars=50568 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=701 fila=0
+19:04:30 [vivo] tempo=321 s gps_chars=50912 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=703 fila=0
+19:04:32 [vivo] tempo=323 s gps_chars=51256 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=705 fila=0
+19:04:33 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":324438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":707,"dia_ocorrencia":1343,"atraso":true,"permanencia":true,"critico":false}
+19:04:33 [mqtt] status publicado (139 bytes)
+19:04:34 [vivo] tempo=325 s gps_chars=51600 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=707 fila=0
+19:04:36 [vivo] tempo=327 s gps_chars=51944 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=709 fila=0
+19:04:38 [vivo] tempo=329 s gps_chars=52288 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=711 fila=0
+19:04:40 [vivo] tempo=331 s gps_chars=52632 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=713 fila=0
+19:04:40 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":331438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":714,"dia_ocorrencia":1350,"atraso":true,"permanencia":true,"critico":false}
+19:04:40 [mqtt] status publicado (139 bytes)
+19:04:40 [gps] sem fix recente; referencia anterior preservada
+19:04:40 {"device_id":"prototipo-001-luiz","type":"location_unavailable","uptime_ms":331478,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":99,"wifi_connected":true,"network_sim_available":true,"fix_valid":false,"latitude":null,"longitude":null,"moved":null}
+19:04:40 [registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+19:04:42 [vivo] tempo=333 s gps_chars=52976 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=715 fila=0
+19:04:44 [vivo] tempo=335 s gps_chars=53320 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=717 fila=0
+19:04:46 [vivo] tempo=337 s gps_chars=53664 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=719 fila=0
+19:04:47 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":338438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":721,"dia_ocorrencia":1357,"atraso":true,"permanencia":true,"critico":false}
+19:04:47 [mqtt] status publicado (139 bytes)
+19:04:48 [vivo] tempo=339 s gps_chars=54008 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=721 fila=0
+19:04:50 [vivo] tempo=341 s gps_chars=54352 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=723 fila=0
+19:04:52 [vivo] tempo=343 s gps_chars=54696 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=725 fila=0
+19:04:54 [vivo] tempo=345 s gps_chars=55040 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=727 fila=0
+19:04:54 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":345438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":728,"dia_ocorrencia":1364,"atraso":true,"permanencia":true,"critico":false}
+19:04:54 [mqtt] status publicado (139 bytes)
+19:04:56 [vivo] tempo=347 s gps_chars=55384 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=729 fila=0
+19:04:58 [vivo] tempo=349 s gps_chars=55728 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=731 fila=0
+19:05:00 [vivo] tempo=351 s gps_chars=56072 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=733 fila=0
+19:05:01 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":352438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":735,"dia_ocorrencia":1371,"atraso":true,"permanencia":true,"critico":false}
+19:05:01 [mqtt] status publicado (139 bytes)
+19:05:02 [vivo] tempo=353 s gps_chars=56416 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=735 fila=0
+19:05:04 [vivo] tempo=355 s gps_chars=56760 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=737 fila=0
+19:05:06 [vivo] tempo=357 s gps_chars=57104 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=739 fila=0
+19:05:08 [vivo] tempo=359 s gps_chars=57448 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=741 fila=0
+19:05:08 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":359438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":742,"dia_ocorrencia":1378,"atraso":true,"permanencia":true,"critico":false}
+19:05:08 [mqtt] status publicado (139 bytes)
+19:05:10 [vivo] tempo=361 s gps_chars=57792 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=743 fila=0
+19:05:12 [vivo] tempo=363 s gps_chars=58136 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=745 fila=0
+19:05:14 [vivo] tempo=365 s gps_chars=58480 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=747 fila=0
+19:05:15 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":366438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":749,"dia_ocorrencia":1385,"atraso":true,"permanencia":true,"critico":false}
+19:05:15 [mqtt] status publicado (139 bytes)
+19:05:16 [vivo] tempo=367 s gps_chars=58824 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=749 fila=0
+19:05:18 [vivo] tempo=369 s gps_chars=59168 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=751 fila=0
+19:05:20 [vivo] tempo=371 s gps_chars=59512 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=753 fila=0
+19:05:20 [gps] sem fix recente; referencia anterior preservada
+19:05:20 {"device_id":"prototipo-001-luiz","type":"location_unavailable","uptime_ms":371475,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"fix_valid":false,"latitude":null,"longitude":null,"moved":null}
+19:05:20 [registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+19:05:22 [vivo] tempo=373 s gps_chars=59856 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=755 fila=0
+19:05:22 {"device_id":"prototipo-001-luiz","type":"STATUS_SEMANAL","uptime_ms":373438,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":756,"dia_ocorrencia":1392,"atraso":true,"permanencia":true,"critico":false}
+19:05:22 [mqtt] status publicado (139 bytes)
+19:05:24 [vivo] tempo=375 s gps_chars=60200 fix=ausente lacre=integro bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=757 fila=0
+19:05:24 {"device_id":"prototipo-001-luiz","type":"seal_changed","uptime_ms":375978,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"authorized_removal":false,"debounce_confirmed_at_ms":375972}
+19:05:24 [registro] limite de 16 registros de diagnostico; antigos preservados, novo apenas na serial
+19:05:24 {"device_id":"prototipo-001-luiz","type":"VIOLACAO_LACRE","uptime_ms":376019,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":758,"dia_ocorrencia":1395,"atraso":true,"permanencia":true,"critico":true}
+19:05:24 [mqtt] status publicado (139 bytes)
+19:05:26 [vivo] tempo=377 s gps_chars=60544 fix=ausente lacre=violado bateria_sim=100% wifi=on rede_sim=on autorizar=0 ciclo=0 avancar=0 voltar=0 tela=3 dias_fora=759 fila=0
