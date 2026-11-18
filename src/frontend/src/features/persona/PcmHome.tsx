@@ -1,7 +1,7 @@
 import { CleanDesk } from '@/portfolio/Guara';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, X, ArrowRight, CalendarDays, Map as MapIcon, Siren, CalendarX, Hourglass, PhoneCall, BellRing, WifiOff, type LucideIcon } from 'lucide-react';
+import { Plus, X, ArrowRight, ChevronRight, Workflow, Inbox, CalendarDays, Map as MapIcon, Siren, CalendarX, Hourglass, PhoneCall, BellRing, WifiOff, type LucideIcon } from 'lucide-react';
 import { usePortfolio } from '@/portfolio/store';
 import { MapView } from '@/portfolio/MapView';
 import { DeadlineCalendar } from '@/portfolio/Calendar';
@@ -67,25 +67,53 @@ export function PcmHome() {
         <Link className="btn btn-primary btn-lg" to="/ativos/novo"><Plus size={20} /> Novo envio</Link>
       </header>
 
-      <section className="pp-section" aria-labelledby="proc">
-        <div className="pp-head">
-          <h2 id="proc">Onde está cada ativo no processo</h2>
-          <p className="muted">Clique numa etapa para ver os ativos que estão nela e com quem estão.</p>
+      <section className="block" aria-labelledby="sit">
+        <div className="block-head">
+          <span className="block-icon"><Siren size={24} /></span>
+          <div>
+            <h2 id="sit">Situação dos ativos</h2>
+            <p>Clique num quadro para ver quais ativos estão nessa situação.</p>
+          </div>
         </div>
-        <ProcessRail counts={stageCounts(open)} active={pick?.kind === 'stage' ? pick.stage : null} onPick={s => setPick(s ? { kind: 'stage', stage: s } : null)} hide={['encerrado']} />
-        <div className="figs" role="group" aria-label="Situação dos ativos">
-          {figures.map(f => (
-            <Figure key={f.flag} icon={f.icon} value={f.value} label={flagTitle[f.flag]!} tone={f.tone} active={pick?.kind === 'flag' && pick.flag === f.flag} onClick={() => setPick(pick?.kind === 'flag' && pick.flag === f.flag ? null : { kind: 'flag', flag: f.flag })} />
-          ))}
+        <div className="sit-grid" role="group" aria-label="Situação dos ativos">
+          {figures.map(f => {
+            const on = pick?.kind === 'flag' && pick.flag === f.flag;
+            const Icon = f.icon;
+            return (
+              <button key={f.flag} type="button" className={`sit ${on ? 'on' : ''} tone-${f.tone}`} aria-pressed={on} onClick={() => setPick(on ? null : { kind: 'flag', flag: f.flag })}>
+                <span className="sit-top">
+                  <span className={`fig-icon i-${f.tone}`}><Icon size={22} strokeWidth={2.2} aria-hidden="true" /></span>
+                  <span className={`sit-value mono t-${f.tone}`}>{f.value}</span>
+                </span>
+                <span className="sit-label">{flagTitle[f.flag]}</span>
+                <span className="sit-cta">{on ? 'Fechar lista' : 'Ver ativos'} <ChevronRight size={18} /></span>
+              </button>
+            );
+          })}
         </div>
-        {pick && <PickPanel pick={pick} assets={picked} onClose={() => setPick(null)} />}
+        {pick?.kind === 'flag' && <PickPanel pick={pick} assets={picked} onClose={() => setPick(null)} />}
       </section>
 
-      <section className="pp-section" aria-labelledby="mesa">
-        <div className="pp-head row-between">
+      <section className="block" aria-labelledby="proc">
+        <div className="block-head">
+          <span className="block-icon"><Workflow size={24} /></span>
           <div>
-            <h2 id="mesa">Na sua mesa <span className="muted mono">{mine.length}</span></h2>
-            <p className="muted">Ativos parados com você, do mais urgente.</p>
+            <h2 id="proc">Etapas do processo</h2>
+            <p>Quantos ativos estão em cada etapa e com quem. Clique numa etapa para ver a lista.</p>
+          </div>
+        </div>
+        <ProcessRail counts={stageCounts(open)} active={pick?.kind === 'stage' ? pick.stage : null} onPick={s => setPick(s ? { kind: 'stage', stage: s } : null)} hide={['encerrado']} />
+        {pick?.kind === 'stage' && <PickPanel pick={pick} assets={picked} onClose={() => setPick(null)} />}
+      </section>
+
+      <section className="block" aria-labelledby="mesa">
+        <div className="block-head row-between">
+          <div className="row-gap nowrap">
+            <span className="block-icon"><Inbox size={24} /></span>
+            <div>
+              <h2 id="mesa">Na sua mesa <span className="muted mono">{mine.length}</span></h2>
+              <p>Ativos parados com você, do mais urgente. Clique para abrir a ficha.</p>
+            </div>
           </div>
           <div className="row-gap">
             <Link to="/prazos" className="btn btn-secondary"><CalendarDays size={18} /> Calendário de prazos</Link>

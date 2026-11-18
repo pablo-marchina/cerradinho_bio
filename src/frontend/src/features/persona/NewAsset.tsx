@@ -1,11 +1,29 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Camera, Check, Tag, Search, Plus, Repeat, Package, TriangleAlert, Building2, Handshake, Send } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Camera, Check, Tag, Search, Plus, Repeat, Package, TriangleAlert, Building2, Handshake, Send, RotateCcw, RotateCw } from 'lucide-react';
 import { usePortfolio } from '@/portfolio/store';
 import { legalLimitDays, money, supplierStats, dateBr } from '@/portfolio/logic';
 import { AssetThumb, Avatar } from '@/portfolio/ui';
 import type { Criticality, PortfolioAsset } from '@/portfolio/types';
 import { CONTACTS } from '@/portfolio/ShareDialog';
+
+/** Gira a foto 90 graus (sentido horário ou anti-horário). */
+function rotate(dataUrl: string, dir: 1 | -1): Promise<string> {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = img.height;
+      c.height = img.width;
+      const g = c.getContext('2d')!;
+      g.translate(c.width / 2, c.height / 2);
+      g.rotate((dir * Math.PI) / 2);
+      g.drawImage(img, -img.width / 2, -img.height / 2);
+      resolve(c.toDataURL('image/jpeg', 0.85));
+    };
+    img.src = dataUrl;
+  });
+}
 
 /** Reduz a foto para no máximo 480 px, para caber no armazenamento local. */
 function resize(file: File): Promise<string> {
@@ -196,7 +214,13 @@ export function NewAsset() {
                 {f.photo ? <img src={f.photo} alt="Foto do ativo" /> : <><Camera size={40} /><b>Tirar ou escolher foto</b><span className="muted">JPG ou PNG</span></>}
                 <input type="file" accept="image/*" capture="environment" onChange={async e => { const file = e.target.files?.[0]; if (file) set('photo', await resize(file)); }} />
               </label>
-              {f.photo && <button type="button" className="btn btn-ghost" onClick={() => set('photo', null)}>Trocar foto</button>}
+              {f.photo && (
+                <div className="row-gap">
+                  <button type="button" className="btn btn-secondary" onClick={async () => set('photo', await rotate(f.photo!, -1))}><RotateCcw size={18} /> Girar para a esquerda</button>
+                  <button type="button" className="btn btn-secondary" onClick={async () => set('photo', await rotate(f.photo!, 1))}><RotateCw size={18} /> Girar para a direita</button>
+                  <button type="button" className="btn btn-ghost" onClick={() => set('photo', null)}>Trocar foto</button>
+                </div>
+              )}
               <p className="muted">Pode pular este passo e adicionar a foto depois.</p>
             </div>
           )}
