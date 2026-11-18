@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Camera, Check, Tag, Search, Plus, Repeat, Package, TriangleAlert, Building2, Handshake, Send, PanelLeft, PanelTop } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, Camera, Check, Tag, Search, Plus, Repeat, Package, TriangleAlert, Building2, Handshake, Send } from 'lucide-react';
 import { usePortfolio } from '@/portfolio/store';
 import { legalLimitDays, money, supplierStats, dateBr } from '@/portfolio/logic';
 import { AssetThumb, Avatar } from '@/portfolio/ui';
@@ -59,8 +59,6 @@ export function NewAsset() {
   const [error, setError] = useState('');
   const [visited, setVisited] = useState(0);
   const [stamp, setStamp] = useState<number | null>(null);
-  const [params, setParams] = useSearchParams();
-  const top = params.get('passos') === 'topo';
   const [newSup, setNewSup] = useState<null | { name: string; city: string; uf: string; contact: string; email: string; phone: string }>(null);
   const set = <K extends keyof typeof f>(k: K, v: (typeof f)[K]) => setF(x => ({ ...x, [k]: v }));
   const supplier = state.suppliers.find(s => s.id === f.supplierId) ?? null;
@@ -121,13 +119,9 @@ export function NewAsset() {
     <div className="pp wizard">
       <div className="row-between">
         <Link to="/" className="back"><ArrowLeft size={18} /> Painel</Link>
-        <div className="seg-tabs" role="group" aria-label="Onde mostrar os passos">
-          <button type="button" className={!top ? 'on' : ''} onClick={() => setParams({})}><PanelLeft size={16} /> Passos ao lado</button>
-          <button type="button" className={top ? 'on' : ''} onClick={() => setParams({ passos: 'topo' })}><PanelTop size={16} /> Passos em cima</button>
-        </div>
       </div>
       <div className="wz-progress" aria-label={`${doneCount} de ${STEPS.length - 1} passos preenchidos`}><span style={{ width: `${(doneCount / (STEPS.length - 1)) * 100}%` }} /></div>
-      <div className={`wz ${top ? 'top' : ''}`}>
+      <div className="wz top">
         <aside className="wz-steps" aria-label="Passos do envio">
           <p className="eyebrow">Novo envio</p>
           <ol>
@@ -137,7 +131,7 @@ export function NewAsset() {
               return (
                 <li key={x.id} className={`ws ${st} ${stamp === i ? 'stamping' : ''}`}>
                   <button type="button" onClick={() => goTo(i)} disabled={i > visited} aria-current={st === 'now' ? 'step' : undefined}>
-                    <span className="wz-dot">{st === 'done' ? <Check size={18} strokeWidth={3} /> : st === 'missing' ? <TriangleAlert size={16} /> : <Icon size={17} />}</span>
+                    <span className="wz-dot">{st === 'done' ? <Check size={28} strokeWidth={3} /> : st === 'missing' ? <TriangleAlert size={26} /> : <Icon size={26} />}</span>
                     <span className="ws-text"><span>{x.short}</span><small>{st === 'done' ? 'Preenchido' : st === 'missing' ? 'Falta dado' : st === 'now' ? 'Preenchendo' : ''}</small></span>
                   </button>
                 </li>

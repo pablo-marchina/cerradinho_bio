@@ -426,3 +426,13 @@ textarea.input { resize: vertical; font-family: inherit; }
   .wz.top .ws-text { display: none; }
   .ws-text small { display: none; }
 }
+
+/* Ajustes da revisão: ícones maiores na trajetória e números menores na situação */
+.wz.top .ws .wz-dot { width: 60px; height: 60px; border-width: 2.5px; }
+.wz.top .wz-steps ol::before { top: 38px; }
+.wz.top .ws-text span { font-size: 17px; }
+.stop-dot { width: 68px; height: 68px; }
+.stop::before { top: 64px; }
+.fig-value { font-size: 28px; }
+.fig-icon { width: 36px; height: 36px; }
+.fig { padding: 16px 18px; gap: 6px; }

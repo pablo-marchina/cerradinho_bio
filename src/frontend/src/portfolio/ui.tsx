@@ -159,7 +159,7 @@ export function Journey({ stage, dates, here }: { stage: Stage; dates?: (string 
         return (
           <li key={s.id} className={`stop ${st}`} aria-current={st === 'now' ? 'step' : undefined}>
             <span className="stop-flag">{st === 'now' ? here ?? 'Agora' : ''}</span>
-            <span className="stop-dot"><Icon size={20} aria-hidden="true" /></span>
+            <span className="stop-dot"><Icon size={28} aria-hidden="true" /></span>
             <span className="stop-label">{s.label}</span>
             <span className="stop-who">{s.who === 'sistema' ? 'Sistema' : personaName[s.who]}</span>
             <span className="stop-date mono">{st === 'done' && dates?.[i] ? dateBr(dates[i]) : ''}</span>
