@@ -49,10 +49,19 @@ export function Avatar({ p, size = 'md' }: { p: Persona; size?: 'sm' | 'md' }) {
   return <span className={`avatar-p ${size}`} aria-hidden="true">{personaName[p][0]}</span>;
 }
 
-export function PersonaSwitcher() {
-  const { persona: stored, setPersona, state } = usePortfolio();
+/** Pessoa da tela atual: a rota decide; nas telas comuns, vale a última escolhida. */
+export function useCurrentPersona(): Persona {
+  const { persona } = usePortfolio();
   const path = useLocation().pathname;
-  const persona: Persona = path === '/' ? 'pcm' : path.startsWith('/fiscal') ? 'fiscal' : path.startsWith('/logistica') ? 'logistica' : stored;
+  if (path.startsWith('/fiscal')) return 'fiscal';
+  if (path.startsWith('/logistica')) return 'logistica';
+  if (path === '/' || path === '/prazos' || path === '/onde-estao' || path === '/ativos/novo') return 'pcm';
+  return persona;
+}
+
+export function PersonaSwitcher() {
+  const { setPersona, state } = usePortfolio();
+  const persona = useCurrentPersona();
   const items: Persona[] = ['pcm', 'fiscal', 'logistica'];
   return (
     <nav className="persona-switch" aria-label="Visão por pessoa">

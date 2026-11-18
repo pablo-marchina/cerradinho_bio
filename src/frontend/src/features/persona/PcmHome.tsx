@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, X, ArrowRight, Siren, CalendarX, Hourglass, PhoneCall, BellRing, WifiOff, type LucideIcon } from 'lucide-react';
+import { Plus, X, ArrowRight, CalendarDays, Map as MapIcon, Siren, CalendarX, Hourglass, PhoneCall, BellRing, WifiOff, type LucideIcon } from 'lucide-react';
 import { usePortfolio } from '@/portfolio/store';
 import { MapView } from '@/portfolio/MapView';
 import { DeadlineCalendar } from '@/portfolio/Calendar';
@@ -34,7 +34,6 @@ export function PcmHome() {
   const { now, suppliers } = state;
   const open = useMemo(() => state.assets.filter(isOpen), [state.assets]);
   const [pick, setPick] = useState<Pick>(null);
-  const [q, setQ] = useState('');
   const count = (fn: (a: PortfolioAsset) => boolean) => open.filter(fn).length;
 
   const figures: { flag: Flag; value: number; tone: 'alert' | 'warn' | 'ok' | 'none'; icon: LucideIcon }[] = [
@@ -52,12 +51,6 @@ export function PcmHome() {
     return sortByAttention(xs, now, suppliers);
   }, [pick, open, now, suppliers]);
 
-  const list = useMemo(() => {
-    const t = q.trim().toLowerCase();
-    const xs = t ? open.filter(a => [a.name, a.id, a.tag ?? '', a.om, a.remittance?.number ?? '', supplierOf(a, suppliers)?.name ?? ''].some(v => v.toLowerCase().includes(t))) : open;
-    return sortByAttention(xs, now, suppliers);
-  }, [open, q, now, suppliers]);
-  const [limit, setLimit] = useState(10);
   const mine = sortByAttention(open.filter(a => ownerOf(a) === 'pcm'), now, suppliers);
 
   return (
@@ -87,63 +80,74 @@ export function PcmHome() {
         {pick && <PickPanel pick={pick} assets={picked} onClose={() => setPick(null)} />}
       </section>
 
-      <div className="pp-cols">
-        <section className="pp-section" aria-labelledby="mapa">
-          <div className="pp-head">
-            <h2 id="mapa">Onde estão agora</h2>
-            <p className="muted">Usina em Chapadão do Céu (GO), oficinas e ativos na estrada. Clique numa oficina para ver os detalhes.</p>
-          </div>
-          <MapView assets={open} />
-          <p className="map-legend">
-            <span><i className="lg-plant" /> Usina</span>
-            <span><i className="lg-sup" /> Oficina, com nº em reparo</span>
-            <span><i className="lg-truck" /> Ativo na estrada</span>
-            <span><i className="lg-alert" /> Com alerta</span>
-          </p>
-        </section>
-
-        <section className="pp-section" aria-labelledby="mesa">
-          <div className="pp-head">
+      <section className="pp-section" aria-labelledby="mesa">
+        <div className="pp-head row-between">
+          <div>
             <h2 id="mesa">Na sua mesa <span className="muted mono">{mine.length}</span></h2>
             <p className="muted">Ativos parados com você, do mais urgente.</p>
           </div>
-          <ol className="desk">
-            {mine.slice(0, 7).map(a => (
-              <li key={a.id}>
-                <Link to={`/ativos/${a.id}`}>
-                  <AssetThumb asset={a} size={44} />
-                  <span className="grow">
-                    <b>{a.name}</b>
-                    <span className="muted mono">{a.id} · {supplierOf(a, suppliers)?.name ?? 'oficina a definir'}</span>
-                    <StatusText asset={a} />
-                  </span>
-                  <span className="desk-next">{nextAction(a, now).label} <ArrowRight size={16} /></span>
-                </Link>
-              </li>
-            ))}
-          </ol>
-        </section>
-      </div>
-
-      <section className="pp-section" aria-labelledby="cal">
-        <div className="pp-head">
-          <h2 id="cal">Calendário de prazos</h2>
-          <p className="muted">Datas prometidas pelas oficinas e limites fiscais da suspensão do ICMS.</p>
-        </div>
-        <DeadlineCalendar />
-      </section>
-
-      <section className="pp-section" aria-labelledby="todos">
-        <div className="pp-head row-between">
-          <h2 id="todos">Todos os ativos <span className="muted mono">{list.length}</span></h2>
           <div className="row-gap">
-            <input className="input" value={q} onChange={e => setQ(e.target.value)} placeholder="Buscar ativo, TAG, OM, NF ou oficina" aria-label="Buscar ativo" />
-            <Link to="/ativos" className="btn btn-secondary">Ver trajetórias</Link>
+            <Link to="/prazos" className="btn btn-secondary"><CalendarDays size={18} /> Calendário de prazos</Link>
+            <Link to="/onde-estao" className="btn btn-secondary"><MapIcon size={18} /> Onde estão</Link>
           </div>
         </div>
-        <AssetRows assets={list.slice(0, limit)} />
-        {list.length > limit && <button type="button" className="btn btn-secondary more" onClick={() => setLimit(limit + 20)}>Mostrar mais {Math.min(20, list.length - limit)}</button>}
+        <ol className="desk">
+          {mine.slice(0, 8).map(a => (
+            <li key={a.id}>
+              <Link to={`/ativos/${a.id}`}>
+                <AssetThumb asset={a} size={44} />
+                <span className="grow">
+                  <b>{a.name}</b>
+                  <span className="muted mono">{a.id} · {supplierOf(a, suppliers)?.name ?? 'oficina a definir'}</span>
+                </span>
+                <StatusText asset={a} />
+                <span className="desk-next">{nextAction(a, now).label} <ArrowRight size={16} /></span>
+              </Link>
+            </li>
+          ))}
+        </ol>
+        {mine.length > 8 && <Link to="/ativos" className="btn btn-secondary more">Ver os outros {mine.length - 8} na aba Trajetórias</Link>}
       </section>
+    </div>
+  );
+}
+
+/** Onde estão: mapa da região da usina, oficinas e ativos na estrada. */
+export function PcmMapa() {
+  const { state } = usePortfolio();
+  const open = state.assets.filter(isOpen);
+  return (
+    <div className="pp">
+      <header className="pp-hero">
+        <div>
+          <p className="eyebrow">Onde estão</p>
+          <h1>Mapa dos ativos fora da usina</h1>
+          <p className="lead muted">Usina em Chapadão do Céu (GO), oficinas com quantos ativos estão em reparo e ativos na estrada. Clique numa oficina ou num caminhão.</p>
+        </div>
+      </header>
+      <MapView assets={open} height={560} />
+      <p className="map-legend">
+        <span><i className="lg-plant" /> Usina</span>
+        <span><i className="lg-sup" /> Oficina, com nº em reparo</span>
+        <span><i className="lg-truck" /> Ativo na estrada</span>
+        <span><i className="lg-alert" /> Com alerta</span>
+      </p>
+    </div>
+  );
+}
+
+/** Calendário de prazos do PCM. */
+export function PcmPrazos() {
+  return (
+    <div className="pp">
+      <header className="pp-hero">
+        <div>
+          <p className="eyebrow">Calendário de prazos</p>
+          <h1>O que vence e quando</h1>
+          <p className="lead muted">Datas prometidas pelas oficinas e limites fiscais da suspensão do ICMS. Clique num dia para ver os ativos.</p>
+        </div>
+      </header>
+      <DeadlineCalendar />
     </div>
   );
 }

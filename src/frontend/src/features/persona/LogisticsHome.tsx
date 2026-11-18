@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Bar, BarChart, CartesianGrid, Legend, Line, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell } from 'recharts';
 import { PlayCircle, Truck, Timer, Target, Landmark, Hourglass, Download } from 'lucide-react';
 import { usePortfolio } from '@/portfolio/store';
-import { AssetThumb, Avatar, StageLabel, ProcessRail, Figure } from '@/portfolio/ui';
-import { handoffStuckDays, ownerOf, personaName, sortByAttention, icmsAtRisk, isOpen, isOutside, moneyShort, personaLabel, STAGES, stageCounts, stageDwell, stageIndex, supplierOf, supplierStats } from '@/portfolio/logic';
+import { AssetThumb, Avatar, StageLabel, Figure } from '@/portfolio/ui';
+import { handoffStuckDays, ownerOf, personaName, sortByAttention, icmsAtRisk, isOpen, isOutside, moneyShort, personaLabel, STAGES, stageDwell, stageIndex, supplierOf, supplierStats } from '@/portfolio/logic';
 import type { PortfolioState } from '@/portfolio/types';
 
 const C = { guara: '#c8232c', pequi: '#d89b2b', folha: '#3f7d4e', pedra: '#6b6460', areia: '#d6d1cc' };
@@ -36,7 +37,7 @@ function csv(state: PortfolioState) {
   URL.revokeObjectURL(url);
 }
 
-export function LogisticsHome() {
+function useLogistics() {
   const { state } = usePortfolio();
   const open = state.assets.filter(isOpen);
   const stats = supplierStats(state).sort((a, b) => (b.avgRepairDays ?? 0) - (a.avgRepairDays ?? 0));
@@ -47,37 +48,28 @@ export function LogisticsHome() {
   const worst = [...dwell].sort((a, b) => b.avg * Math.max(1, b.now) - a.avg * Math.max(1, a.now))[0];
   const stuck = open.map(a => ({ a, d: handoffStuckDays(a, state.now) })).filter(x => x.d > 2).sort((x, y) => y.d - x.d);
   const icms = open.reduce((s, a) => s + icmsAtRisk(a), 0);
+  return { state, open, stats, finished, onTime, avgRepair, dwell, worst, stuck, icms };
+}
 
+/** Gargalos: onde o processo trava e quem precisa ser cobrado. */
+export function LogisticsHome() {
+  const { open, dwell, worst, stuck } = useLogistics();
+  const [all, setAll] = useState(false);
   return (
     <div className="pp">
       <header className="pp-hero">
         <div>
-          <p className="eyebrow">Visão da Logística · Izidio</p>
+          <p className="eyebrow">Gargalos do processo</p>
           <h1>Onde o processo está travando</h1>
-          <p className="muted">
-            O maior gargalo agora é <b>{worst.label.toLowerCase()}</b>: {worst.now} ativos parados ali, com média de {worst.avg} dias na etapa.
-          </p>
+          <p className="lead muted">O maior gargalo agora é <b>{worst.label.toLowerCase()}</b>: {worst.now} ativos parados ali, com média de {String(worst.avg).replace('.', ',')} dias na etapa.</p>
         </div>
-        <button type="button" className="btn btn-secondary" onClick={() => csv(state)}><Download size={16} /> Exportar ciclos (CSV para o BI)</button>
       </header>
-
       <section className="figs" aria-label="Indicadores">
+        <Figure icon={Hourglass} label="Passagens paradas entre áreas" value={stuck.length} tone={stuck.length ? 'warn' : 'ok'} />
+        <Figure icon={Timer} label="Média na etapa mais lenta" value={`${String(worst.avg).replace('.', ',')} d`} tone="alert" />
         <Figure icon={Truck} label="Ativos fora da usina" value={open.filter(isOutside).length} />
-        <Figure icon={Timer} label="Reparo médio" value={`${avgRepair} d`} />
-        <Figure icon={Target} label="Devolvidos no prazo" value={`${onTime}%`} tone={onTime < 70 ? 'warn' : 'ok'} />
-        <Figure icon={Landmark} label="ICMS suspenso" value={moneyShort(icms)} />
-        <Figure icon={Hourglass} label="Passagens paradas" value={stuck.length} tone={stuck.length ? 'warn' : 'ok'} />
       </section>
-
-      <LogisticsDesk />
-
-      <section className="pp-section">
-        <div className="pp-head row-between"><h2>Esteira do processo</h2></div>
-        <ProcessRail counts={stageCounts(open)} hide={['encerrado']} />
-      </section>
-
-      <div className="split">
-        <section className="pp-section" aria-labelledby="dwell">
+      <section className="pp-section" aria-labelledby="dwell">
           <div className="pp-head row-between"><h2 id="dwell">Tempo médio em cada etapa</h2><span className="muted small">Barras em dias; vermelho é o maior gargalo</span></div>
           <div className="chart">
             <ResponsiveContainer width="100%" height={260}>
@@ -93,25 +85,46 @@ export function LogisticsHome() {
             </ResponsiveContainer>
           </div>
         </section>
+      <section className="pp-section" aria-labelledby="stuck">
+        <div className="pp-head row-between"><h2 id="stuck">Passagens paradas entre áreas</h2><span className="muted small">Quem precisa ser cobrado</span></div>
+        {!stuck.length && <p className="muted empty">Nenhuma passagem parada.</p>}
+        <ul className="stuck-list">
+          {(all ? stuck : stuck.slice(0, 6)).map(({ a, d }) => {
+            const who = ownerOf(a) ?? 'pcm';
+            return (
+              <li key={a.id}>
+                <Link to={`/ativos/${a.id}`}>
+                  <Avatar p={who} />
+                  <span className="grow"><b>{a.name}</b><span className="small muted mono"> {a.id}</span><br /><span className="small">{STAGES[stageIndex(a.stage)].label} há {d} dias · cobrar {personaName[who]} ({personaLabel[who]})</span></span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+        {stuck.length > 6 && <button type="button" className="btn btn-secondary more" onClick={() => setAll(!all)}>{all ? 'Mostrar menos' : `Ver as outras ${stuck.length - 6}`}</button>}
+      </section>
+    </div>
+  );
+}
 
-        <section className="pp-section" aria-labelledby="fluxo">
-          <div className="pp-head row-between"><h2 id="fluxo">Saídas e retornos por mês</h2></div>
-          <div className="chart">
-            <ResponsiveContainer width="100%" height={260}>
-              <ComposedChart data={monthly(state)}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="mes" />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="saidas" name="Saídas" fill={C.pequi} radius={[6, 6, 0, 0]} />
-                <Line dataKey="retornos" name="Retornos" stroke={C.folha} strokeWidth={3} dot />
-              </ComposedChart>
-            </ResponsiveContainer>
-          </div>
-        </section>
-      </div>
-
+/** Oficinas: desempenho de cada fornecedor e volume ao longo dos meses. */
+export function LogisticsOficinas() {
+  const { state, stats, finished, onTime, avgRepair, icms } = useLogistics();
+  return (
+    <div className="pp">
+      <header className="pp-hero">
+        <div>
+          <p className="eyebrow">Oficinas</p>
+          <h1>Desempenho das oficinas</h1>
+          <p className="lead muted">Base para renovar ou trocar de fornecedor e para o relatório à diretoria.</p>
+        </div>
+        <button type="button" className="btn btn-secondary btn-lg" onClick={() => csv(state)}><Download size={18} /> Exportar ciclos (CSV para o BI)</button>
+      </header>
+      <section className="figs" aria-label="Indicadores">
+        <Figure icon={Timer} label="Reparo médio" value={`${avgRepair} d`} />
+        <Figure icon={Target} label={`Devolvidos no prazo (${finished} ciclos)`} value={`${onTime}%`} tone={onTime < 70 ? 'warn' : 'ok'} />
+        <Figure icon={Landmark} label="ICMS suspenso (estimado)" value={moneyShort(icms)} />
+      </section>
       <section className="pp-section" aria-labelledby="ofic">
         <div className="pp-head row-between"><h2 id="ofic">Desempenho das oficinas</h2><span className="muted small">Base para renovar ou trocar de fornecedor</span></div>
         <div className="rows-wrap">
@@ -139,24 +152,38 @@ export function LogisticsHome() {
           </table>
         </div>
       </section>
+      <section className="pp-section" aria-labelledby="fluxo">
+          <div className="pp-head row-between"><h2 id="fluxo">Saídas e retornos por mês</h2></div>
+          <div className="chart">
+            <ResponsiveContainer width="100%" height={260}>
+              <ComposedChart data={monthly(state)}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="mes" />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="saidas" name="Saídas" fill={C.pequi} radius={[6, 6, 0, 0]} />
+                <Line dataKey="retornos" name="Retornos" stroke={C.folha} strokeWidth={3} dot />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+        </section>
+    </div>
+  );
+}
 
-      <section className="pp-section" aria-labelledby="stuck">
-        <div className="pp-head row-between"><h2 id="stuck">Passagens paradas entre áreas</h2><span className="muted small">Quem precisa ser cobrado</span></div>
-        {!stuck.length && <p className="muted empty">Nenhuma passagem parada.</p>}
-        <ul className="stuck-list">
-          {stuck.map(({ a, d }) => {
-            const who = ownerOf(a) ?? 'pcm';
-            return (
-              <li key={a.id}>
-                <Link to={`/ativos/${a.id}`}>
-                  <Avatar p={who} />
-                  <span className="grow"><b>{a.name}</b><span className="small muted mono"> {a.id}</span><br /><span className="small">{STAGES[stageIndex(a.stage)].label} há {d} dias · cobrar {personaName[who]} ({personaLabel[who]})</span></span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
+/** Transporte: coletas pedidas pelo PCM e ativos na estrada. */
+export function LogisticsTransporte() {
+  return (
+    <div className="pp">
+      <header className="pp-hero">
+        <div>
+          <p className="eyebrow">Transporte</p>
+          <h1>Coletas e ativos na estrada</h1>
+          <p className="lead muted">O que o PCM pediu para coletar e o que está indo ou voltando das oficinas.</p>
+        </div>
+      </header>
+      <LogisticsDesk />
     </div>
   );
 }
@@ -171,9 +198,9 @@ function LogisticsDesk() {
       <div className="pp-head row-between"><h2 id="mesa-log">Na sua mesa <span className="muted mono">({mine.length})</span></h2><span className="muted small">Coletas pedidas e ativos em trânsito</span></div>
       {!mine.length && <p className="muted empty">Nada com você agora.</p>}
       <ul className="desk-list">
-        {mine.slice(0, 8).map(a => (
+        {mine.map(a => (
           <li key={a.id}>
-            <AssetThumb asset={a} size={36} />
+            <AssetThumb asset={a} size={44} />
             <Link to={`/ativos/${a.id}`} className="grow"><b>{a.name}</b><span className="small muted mono">{a.id} · {supplierOf(a, state.suppliers)?.city ?? ''}</span></Link>
             <StageLabel stage={a.stage} />
             <button type="button" className="btn btn-secondary" onClick={() => dispatch({ type: 'advance', id: a.id })}><PlayCircle size={16} /> {label[a.stage]}</button>
