@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Camera, Tag, Building2, ClipboardCheck, Check } from 'lucide-react';
 import { usePortfolio } from '@/portfolio/store';
 import { legalLimitDays, money } from '@/portfolio/logic';
+import { Journey } from '@/portfolio/ui';
 import type { Criticality, PortfolioAsset } from '@/portfolio/types';
 
 const steps = [
@@ -74,7 +75,8 @@ export function NewAsset() {
     <div className="persona-page narrow">
       <Link to="/" className="back"><ArrowLeft size={16} /> Painel</Link>
       <h1>Novo envio para manutenção</h1>
-      <p className="muted">Cadastre o ativo, vincule a TAG e combine com a oficina. No fim, o pedido de NF vai para o Fiscal.</p>
+      <p className="muted">Todo ativo segue a mesma trajetória. Cada parada tem um dono, e o ativo aparece na mesa dessa pessoa até ela resolver. Você está montando a primeira parada.</p>
+      <Journey stage="planejamento" here="Você está aqui" />
       <ol className="wizard-steps">
         {steps.map((s, i) => (
           <li key={s.label} className={i < step ? 'done' : i === step ? 'now' : ''}>
@@ -126,6 +128,12 @@ export function NewAsset() {
             <label>Orçamento (R$)<input className="input mono" inputMode="numeric" value={f.quote} onChange={e => set('quote', e.target.value.replace(/\D/g, ''))} /></label>
             <label>Prazo de reparo combinado (dias)<input className="input mono" inputMode="numeric" value={f.days} onChange={e => set('days', e.target.value.replace(/\D/g, ''))} /></label>
             {supplier && <p className="small muted span-2">Contato: {supplier.contact} · {supplier.email} · {supplier.phone}. Prazo legal da remessa: {legalLimitDays(supplier)} dias ({supplier.uf === 'GO' ? 'dentro de GO' : 'fora de GO'}).</p>}
+          </div>
+        )}
+        {step === 3 && (
+          <div className="handoff">
+            <span className="persona-dot p-fiscal">C</span>
+            <p>Ao confirmar, o ativo sai da sua mesa e vai para a da <b>Clarice (Fiscal)</b> emitir a NF de remessa. Quando a NF sair, ele volta para você acionar a logística.</p>
           </div>
         )}
         {step === 3 && (

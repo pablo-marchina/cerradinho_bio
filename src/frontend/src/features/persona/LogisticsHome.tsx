@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Bar, BarChart, CartesianGrid, Legend, Line, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell } from 'recharts';
-import { Truck, Timer, Target, Landmark, Hourglass, Download } from 'lucide-react';
+import { PlayCircle, Truck, Timer, Target, Landmark, Hourglass, Download } from 'lucide-react';
 import { usePortfolio } from '@/portfolio/store';
-import { StageTrack, Tile } from '@/portfolio/ui';
-import { handoffStuckDays, icmsAtRisk, isOpen, isOutside, moneyShort, personaLabel, STAGES, stageCounts, stageDwell, stageIndex, supplierOf, supplierStats } from '@/portfolio/logic';
+import { AssetThumb, StagePill, StageTrack, Tile } from '@/portfolio/ui';
+import { handoffStuckDays, ownerOf, personaName, sortByAttention, icmsAtRisk, isOpen, isOutside, moneyShort, personaLabel, STAGES, stageCounts, stageDwell, stageIndex, supplierOf, supplierStats } from '@/portfolio/logic';
 import type { PortfolioState } from '@/portfolio/types';
 
 const C = { guara: '#c8232c', pequi: '#d89b2b', folha: '#3f7d4e', pedra: '#6b6460', areia: '#d6d1cc' };
@@ -68,6 +68,8 @@ export function LogisticsHome() {
         <Tile icon={Landmark} label="ICMS suspenso" value={moneyShort(icms)} hint="Estimativa de 12%" />
         <Tile icon={Hourglass} label="Passagens paradas" value={stuck.length} tone={stuck.length ? 'warning' : 'success'} hint="Entre áreas há mais de 2 dias" />
       </section>
+
+      <LogisticsDesk />
 
       <section className="card section-card">
         <div className="section-head"><h2>Esteira do processo</h2></div>
@@ -143,12 +145,12 @@ export function LogisticsHome() {
         {!stuck.length && <p className="muted empty">Nenhuma passagem parada.</p>}
         <ul className="stuck-list">
           {stuck.map(({ a, d }) => {
-            const who = STAGES[stageIndex(a.stage)].who;
+            const who = ownerOf(a) ?? 'pcm';
             return (
               <li key={a.id}>
                 <Link to={`/ativos/${a.id}`}>
-                  <span className={`persona-dot p-${who === 'sistema' ? 'logistica' : who}`}>{who === 'sistema' ? 'L' : personaLabel[who][0]}</span>
-                  <span className="grow"><b>{a.name}</b><span className="small muted mono"> {a.id}</span><br /><span className="small">{STAGES[stageIndex(a.stage)].label} há {d} dias · cobrar {who === 'sistema' ? 'transportadora' : personaLabel[who]}</span></span>
+                  <span className={`persona-dot p-${who}`}>{personaName[who][0]}</span>
+                  <span className="grow"><b>{a.name}</b><span className="small muted mono"> {a.id}</span><br /><span className="small">{STAGES[stageIndex(a.stage)].label} há {d} dias · cobrar {personaName[who]} ({personaLabel[who]})</span></span>
                 </Link>
               </li>
             );
@@ -156,5 +158,28 @@ export function LogisticsHome() {
         </ul>
       </section>
     </div>
+  );
+}
+
+/** Mesa da Logística: coletas pedidas pelo PCM e ativos em trânsito. */
+function LogisticsDesk() {
+  const { state, dispatch } = usePortfolio();
+  const mine = sortByAttention(state.assets.filter(a => ownerOf(a) === 'logistica'), state.now, state.suppliers);
+  const label = { aguardando_coleta: 'Simular coleta', ida: 'Simular chegada na oficina', retorno: 'Simular chegada na usina' } as Record<string, string>;
+  return (
+    <section className="card section-card" aria-labelledby="mesa-log">
+      <div className="section-head"><h2 id="mesa-log">Na sua mesa <span className="muted mono">({mine.length})</span></h2><span className="muted small">Coletas pedidas e ativos em trânsito</span></div>
+      {!mine.length && <p className="muted empty">Nada com você agora.</p>}
+      <ul className="desk-list">
+        {mine.slice(0, 8).map(a => (
+          <li key={a.id}>
+            <AssetThumb asset={a} size={36} />
+            <Link to={`/ativos/${a.id}`} className="grow"><b>{a.name}</b><span className="small muted mono">{a.id} · {supplierOf(a, state.suppliers)?.city ?? ''}</span></Link>
+            <StagePill stage={a.stage} />
+            <button type="button" className="btn btn-secondary" onClick={() => dispatch({ type: 'advance', id: a.id })}><PlayCircle size={16} /> {label[a.stage]}</button>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

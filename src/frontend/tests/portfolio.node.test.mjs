@@ -64,3 +64,15 @@ test('Próxima ação segue o dono de cada etapa', () => {
   assert.equal(nextAction(by('na_usina'), NOW).key, 'return_nf');
   assert.equal(nextAction(by('oficina'), NOW).persona, 'pcm');
 });
+
+test('Cada etapa coloca o ativo na mesa de uma pessoa', async () => {
+  const { ownerOf, deskCount } = await import('../src/portfolio/logic.ts');
+  const by = st => s.assets.find(a => a.stage === st);
+  assert.equal(ownerOf(by('planejamento')), 'pcm');
+  assert.equal(ownerOf(by('aguardando_nf')), 'fiscal');
+  assert.equal(ownerOf(by('ida')), 'logistica');
+  assert.equal(ownerOf(by('na_usina')), 'fiscal');
+  assert.equal(ownerOf(by('encerrado')), null);
+  const open = s.assets.filter(isOpen).length;
+  assert.equal(deskCount(s.assets, 'pcm') + deskCount(s.assets, 'fiscal') + deskCount(s.assets, 'logistica'), open);
+});

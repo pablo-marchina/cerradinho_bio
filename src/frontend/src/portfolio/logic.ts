@@ -5,10 +5,10 @@ const DAY = 86400000;
 export const STAGES: { id: Stage; label: string; short: string; who: Persona | 'sistema'; hint: string }[] = [
   { id: 'planejamento', label: 'Planejamento', short: 'Planejar', who: 'pcm', hint: 'PCM cota oficina, preço e prazo' },
   { id: 'aguardando_nf', label: 'Aguardando NF', short: 'NF', who: 'fiscal', hint: 'Fiscal emite a NF de remessa' },
-  { id: 'aguardando_coleta', label: 'Aguardando coleta', short: 'Coleta', who: 'pcm', hint: 'PCM aciona a logística' },
-  { id: 'ida', label: 'Indo para a oficina', short: 'Ida', who: 'sistema', hint: 'Transportadora a caminho' },
+  { id: 'aguardando_coleta', label: 'Aguardando coleta', short: 'Coleta', who: 'pcm', hint: 'PCM aciona a logística, que faz a coleta' },
+  { id: 'ida', label: 'Indo para a oficina', short: 'Ida', who: 'logistica', hint: 'Transportadora a caminho' },
   { id: 'oficina', label: 'Em reparo', short: 'Oficina', who: 'pcm', hint: 'PCM acompanha e cobra' },
-  { id: 'retorno', label: 'Voltando', short: 'Volta', who: 'sistema', hint: 'A caminho da usina' },
+  { id: 'retorno', label: 'Voltando', short: 'Volta', who: 'logistica', hint: 'A caminho da usina' },
   { id: 'na_usina', label: 'Na usina sem baixa', short: 'Baixa', who: 'fiscal', hint: 'Fiscal lança a NF de retorno' },
   { id: 'encerrado', label: 'Encerrado', short: 'Fim', who: 'sistema', hint: 'Ciclo fechado e TAG liberada' },
 ];
@@ -119,7 +119,28 @@ export function sortByAttention(assets: PortfolioAsset[], now: string, suppliers
   return [...assets].sort((x, y) => attentionScore(y, now, suppliers) - attentionScore(x, now, suppliers));
 }
 
-export type NextAction = { persona: Persona; label: string; key: 'plan' | 'request_nf' | 'issue_nf' | 'pickup' | 'follow_up' | 'confirm_arrival' | 'return_nf' | 'none' };
+export type NextAction = { persona: Persona; label: string; key: 'plan' | 'request_nf' | 'issue_nf' | 'pickup' | 'dispatch' | 'track' | 'follow_up' | 'confirm_arrival' | 'return_nf' | 'none' };
+
+/** Com quem o ativo está agora: a etapa define a mesa onde ele aparece. */
+export function ownerOf(a: PortfolioAsset): Persona | null {
+  switch (a.stage) {
+    case 'planejamento':
+    case 'oficina':
+      return 'pcm';
+    case 'aguardando_nf':
+    case 'na_usina':
+      return 'fiscal';
+    case 'aguardando_coleta':
+      return a.pickupRequestedAt ? 'logistica' : 'pcm';
+    case 'ida':
+    case 'retorno':
+      return 'logistica';
+    default:
+      return null;
+  }
+}
+
+export const deskCount = (assets: PortfolioAsset[], p: Persona) => assets.filter(a => ownerOf(a) === p).length;
 
 export function nextAction(a: PortfolioAsset, now: string): NextAction {
   switch (a.stage) {
@@ -130,12 +151,13 @@ export function nextAction(a: PortfolioAsset, now: string): NextAction {
     case 'aguardando_nf':
       return { persona: 'fiscal', label: 'Emitir NF de remessa', key: 'issue_nf' };
     case 'aguardando_coleta':
-      return { persona: 'pcm', label: a.pickupRequestedAt ? 'Coleta solicitada' : 'Acionar logística', key: a.pickupRequestedAt ? 'none' : 'pickup' };
+      return a.pickupRequestedAt ? { persona: 'logistica', label: 'Coletar e despachar', key: 'dispatch' } : { persona: 'pcm', label: 'Acionar logística', key: 'pickup' };
     case 'ida':
+      return { persona: 'logistica', label: 'Acompanhar transporte até a oficina', key: 'track' };
     case 'oficina':
       return needsCall(a, now) ? { persona: 'pcm', label: 'Cobrar a oficina', key: 'follow_up' } : { persona: 'pcm', label: 'Registrar contato', key: 'follow_up' };
     case 'retorno':
-      return { persona: 'pcm', label: 'Confirmar chegada', key: 'confirm_arrival' };
+      return { persona: 'logistica', label: 'Confirmar chegada na usina', key: 'confirm_arrival' };
     case 'na_usina':
       return { persona: 'fiscal', label: 'Lançar NF de retorno', key: 'return_nf' };
     default:

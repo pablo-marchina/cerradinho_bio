@@ -4,7 +4,7 @@ import { Siren, Clock, Hourglass, WifiOff, Phone, BellRing, Wrench, Truck, Undo2
 import { usePortfolio } from '@/portfolio/store';
 import { AssetThumb, DueBar, FlagChips, NextActionTag, RegionMap, StagePill, StageTrack, Tile } from '@/portfolio/ui';
 import {
-  flagsOf, isCritical, isNoSignal, isNotified, isOpen, isOutside, isOverdue, isUrgent, needsCall, sortByAttention, stageCounts, supplierOf, type Flag,
+  flagsOf, isCritical, isNoSignal, isNotified, isOpen, isOutside, isOverdue, isUrgent, needsCall, ownerOf, sortByAttention, stageCounts, supplierOf, type Flag,
 } from '@/portfolio/logic';
 import type { PortfolioAsset, Stage } from '@/portfolio/types';
 
@@ -112,11 +112,11 @@ export function PcmHome() {
 
         <section className="card section-card" aria-labelledby="fila">
           <div className="section-head">
-            <h2 id="fila">Fila de ação</h2>
-            <span className="muted small">Ordenada pelo que pede atenção primeiro</span>
+            <h2 id="fila">Na sua mesa <span className="muted mono">({open.filter(a => ownerOf(a) === 'pcm').length})</span></h2>
+            <span className="muted small">Ativos parados com você, do mais urgente</span>
           </div>
           <ol className="queue">
-            {sortByAttention(open, now, suppliers)
+            {sortByAttention(open.filter(a => ownerOf(a) === 'pcm'), now, suppliers)
               .slice(0, 6)
               .map(a => (
                 <li key={a.id}>

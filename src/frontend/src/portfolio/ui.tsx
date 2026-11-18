@@ -4,7 +4,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PLANT } from './seed';
-import { STAGES, dueRemaining, flagLabel, flagsOf, isOverdue, nextAction, personaLabel, stageIndex, type Flag } from './logic';
+import { STAGES, dateBr, deskCount, dueRemaining, flagLabel, flagsOf, isOverdue, nextAction, ownerOf, personaLabel, personaName, stageIndex, type Flag } from './logic';
 import { usePortfolio } from './store';
 import type { Persona, PortfolioAsset, Stage, Supplier } from './types';
 
@@ -34,7 +34,7 @@ export const flagTone: Record<Flag, string> = {
 };
 
 export function PersonaSwitcher() {
-  const { persona, setPersona } = usePortfolio();
+  const { persona, setPersona, state } = usePortfolio();
   const items: { id: Persona; name: string; role: string }[] = [
     { id: 'pcm', name: 'Geraldo', role: 'PCM' },
     { id: 'fiscal', name: 'Clarice', role: 'Fiscal' },
@@ -50,7 +50,10 @@ export function PersonaSwitcher() {
           className={`persona-pill ${persona === p.id ? 'on' : ''}`}
           aria-pressed={persona === p.id}
         >
-          <span className={`persona-dot p-${p.id}`}>{p.name[0]}</span>
+          <span className={`persona-dot p-${p.id}`}>
+            {p.name[0]}
+            <i className="desk-badge" aria-label={`${deskCount(state.assets, p.id)} ativos na mesa`}>{deskCount(state.assets, p.id)}</i>
+          </span>
           <span>
             <b>{p.role}</b>
             <small>{p.name}</small>
@@ -78,7 +81,7 @@ export function StageTrack({ counts, active, onPick, hide = [] }: { counts: Reco
               </span>
               <span className="stage-count mono">{c}</span>
               <span className="stage-label">{s.label}</span>
-              <span className={`stage-who who-${s.who}`}>{s.who === 'sistema' ? 'TAG/Logística' : personaLabel[s.who]}</span>
+              <span className={`stage-who who-${s.who}`}>{s.who === 'sistema' ? 'Sistema' : personaLabel[s.who]}</span>
             </button>
             {i < stages.length - 1 && <span className="stage-arrow" aria-hidden="true" />}
           </li>
@@ -210,5 +213,42 @@ export function RegionMap({ assets, suppliers, onPick, height = 300 }: { assets:
         <text y={28} textAnchor="middle" className="map-label">Usina</text>
       </g>
     </svg>
+  );
+}
+
+/** Com quem está: avatar e nome da pessoa dona da etapa atual. */
+export function DeskOwner({ asset }: { asset: PortfolioAsset }) {
+  const p = ownerOf(asset);
+  if (!p) return <span className="desk-owner done">Ciclo encerrado</span>;
+  return (
+    <span className="desk-owner">
+      <span className={`persona-dot p-${p}`}>{personaName[p][0]}</span>
+      <span>Está com <b>{personaName[p]}</b> · {personaLabel[p]}</span>
+    </span>
+  );
+}
+
+/** Trajetória do ativo: todas as paradas, quem cuida de cada uma e onde ele está agora. */
+export function Journey({ stage, dates, here }: { stage: Stage; dates?: (string | null)[]; here?: string }) {
+  const idx = stageIndex(stage);
+  return (
+    <ol className="journey card" aria-label="Trajetória do ativo">
+      {STAGES.map((s, i) => {
+        const Icon = stageIcon[s.id];
+        const st = i < idx ? 'done' : i === idx ? 'now' : 'todo';
+        const who = s.who === 'sistema' ? null : s.who;
+        return (
+          <li key={s.id} className={`stop ${st}`} aria-current={st === 'now' ? 'step' : undefined}>
+            {st === 'now' && <span className="you-are-here">{here ?? 'Agora'}</span>}
+            <span className="stop-dot"><Icon size={18} aria-hidden="true" /></span>
+            <span className="stop-label">{s.label}</span>
+            {who ? (
+              <span className="stop-who"><span className={`persona-dot mini p-${who}`}>{personaName[who][0]}</span>{personaName[who]}</span>
+            ) : <span className="stop-who muted">Sistema</span>}
+            <span className="small muted">{st === 'done' && dates?.[i] ? dateBr(dates[i]) : s.hint}</span>
+          </li>
+        );
+      })}
+    </ol>
   );
 }

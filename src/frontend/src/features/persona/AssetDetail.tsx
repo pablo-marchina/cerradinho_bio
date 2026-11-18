@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Mail, Phone, MapPin, BatteryMedium, ShieldCheck, ShieldAlert, Radio, Building2, Receipt, CalendarClock, PlayCircle } from 'lucide-react';
 import { usePortfolio } from '@/portfolio/store';
-import { AssetThumb, DueBar, FlagChips, StagePill, stageIcon } from '@/portfolio/ui';
+import { AssetThumb, DeskOwner, DueBar, FlagChips, Journey, StagePill } from '@/portfolio/ui';
 import {
-  STAGES, ago, criticalityLabel, dateBr, daysSinceNf, dueRemaining, icmsAtRisk, legalLimitDays, legalRemaining, money, nextAction, personaLabel, stageIndex, supplierOf,
+  ago, criticalityLabel, dateBr, daysSinceNf, dueRemaining, icmsAtRisk, legalLimitDays, legalRemaining, money, nextAction, personaLabel, personaName, supplierOf,
 } from '@/portfolio/logic';
 import { NfForm } from './NfForm';
 import type { PortfolioAsset } from '@/portfolio/types';
@@ -38,10 +38,11 @@ export function AssetDetail() {
           <p className="muted mono">{a.id} · {a.om} · {a.tag ?? 'sem TAG'} · {a.area}</p>
           <p className="small">{a.problem}</p>
           <FlagChips asset={a} />
+          <DeskOwner asset={a} />
         </div>
       </header>
 
-      <Stepper asset={a} />
+      <Journey stage={a.stage} dates={[a.createdAt, a.nfRequestedAt, a.remittance?.issuedAt ?? null, a.departedAt, a.arrivedSupplierAt, a.returnStartedAt, a.arrivedPlantAt, a.closedAt]} here={a.stage === 'encerrado' ? 'Fim' : `Com ${personaName[nextAction(a, state.now).persona]}`} />
 
       <NextActionCard asset={a} />
 
@@ -135,26 +136,6 @@ function mailto(a: PortfolioAsset, email: string, now: string) {
   return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
-function Stepper({ asset }: { asset: PortfolioAsset }) {
-  const idx = stageIndex(asset.stage);
-  const dates: (string | null)[] = [asset.createdAt, asset.nfRequestedAt, asset.remittance?.issuedAt ?? null, asset.departedAt, asset.arrivedSupplierAt, asset.returnStartedAt, asset.arrivedPlantAt, asset.closedAt];
-  return (
-    <ol className="stepper card" aria-label="Etapas do processo">
-      {STAGES.map((s, i) => {
-        const Icon = stageIcon[s.id];
-        const state = i < idx ? 'done' : i === idx ? 'now' : 'todo';
-        return (
-          <li key={s.id} className={`step ${state}`} aria-current={state === 'now' ? 'step' : undefined}>
-            <span className="step-dot"><Icon size={16} aria-hidden="true" /></span>
-            <span className="step-label">{s.label}</span>
-            <span className="small muted">{state === 'todo' ? (s.who === 'sistema' ? 'TAG/Logística' : personaLabel[s.who]) : dateBr(dates[i])}</span>
-          </li>
-        );
-      })}
-    </ol>
-  );
-}
-
 function NextActionCard({ asset }: { asset: PortfolioAsset }) {
   const { state, dispatch } = usePortfolio();
   const n = nextAction(asset, state.now);
@@ -205,11 +186,24 @@ function NextActionCard({ asset }: { asset: PortfolioAsset }) {
 
       {n.key === 'issue_nf' && <NfForm asset={asset} kind="remessa" />}
 
-      {(n.key === 'pickup' || asset.stage === 'aguardando_coleta') && (
+      {n.key === 'pickup' && (
         <div className="row-gap">
-          {!asset.pickupRequestedAt && <button className="btn btn-primary" type="button" onClick={() => dispatch({ type: 'pickup', id: asset.id })}>Acionar logística para a coleta</button>}
-          <button className="btn btn-secondary" type="button" onClick={() => dispatch({ type: 'advance', id: asset.id })}><PlayCircle size={16} /> Simular coleta (TAG sai da usina)</button>
-          <span className="small muted">O prazo começa a contar com a NF; a TAG registra a saída.</span>
+          <button className="btn btn-primary" type="button" onClick={() => dispatch({ type: 'pickup', id: asset.id })}>Acionar logística para a coleta</button>
+          <span className="small muted">O ativo passa para a mesa do Izidio (Logística), com a NF e o endereço da oficina.</span>
+        </div>
+      )}
+
+      {n.key === 'dispatch' && (
+        <div className="row-gap">
+          <button className="btn btn-primary" type="button" onClick={() => dispatch({ type: 'advance', id: asset.id })}><PlayCircle size={16} /> Simular coleta (TAG sai da usina)</button>
+          <span className="small muted">O prazo legal já corre desde a NF; a TAG registra a saída.</span>
+        </div>
+      )}
+
+      {n.key === 'track' && (
+        <div className="row-gap">
+          <button className="btn btn-primary" type="button" onClick={() => dispatch({ type: 'advance', id: asset.id })}><PlayCircle size={16} /> Simular chegada na oficina</button>
+          <span className="small muted">Quando a TAG chega à oficina, o ativo volta para a mesa do Geraldo acompanhar o reparo.</span>
         </div>
       )}
 
@@ -223,14 +217,14 @@ function NextActionCard({ asset }: { asset: PortfolioAsset }) {
             <input className="input grow" value={note} onChange={e => setNote(e.target.value)} placeholder="O que a oficina respondeu? Ex.: nova data 30/11" aria-label="Resposta da oficina" />
             <button className="btn btn-secondary" type="submit">Registrar cobrança</button>
           </form>
-          <button className="btn btn-ghost small" type="button" onClick={() => dispatch({ type: 'advance', id: asset.id })}><PlayCircle size={16} /> Simular próxima leitura da TAG ({asset.stage === 'ida' ? 'chegou na oficina' : 'saiu da oficina'})</button>
+          <button className="btn btn-ghost small" type="button" onClick={() => dispatch({ type: 'advance', id: asset.id })}><PlayCircle size={16} /> Simular fim do reparo (TAG sai da oficina)</button>
         </div>
       )}
 
       {n.key === 'confirm_arrival' && (
         <div className="row-gap">
           <button className="btn btn-primary" type="button" onClick={() => dispatch({ type: 'advance', id: asset.id })}><PlayCircle size={16} /> Simular chegada na usina (portaria)</button>
-          <span className="small muted">Ao chegar, o Fiscal é avisado para lançar a NF de retorno.</span>
+          <span className="small muted">Ao chegar, o ativo vai para a mesa da Clarice lançar a NF de retorno.</span>
         </div>
       )}
 
