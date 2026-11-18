@@ -559,3 +559,6 @@ textarea.input { resize: vertical; font-family: inherit; }
 .guara-led.alerta .body { fill: var(--gt-guara); }
 .guara-led.alerta .rays { stroke: var(--gt-guara); }
 .clean-desk h3 { color: var(--gt-folha); }
+/* A miniatura sem foto é um <span> e herdava o flex em coluna da célula do ativo: ícone saía do centro */
+span.thumb.thumb-empty { display: grid !important; place-items: center; flex-direction: initial; }
+span.thumb.thumb-empty svg { display: block; }
