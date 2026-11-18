@@ -33,17 +33,16 @@ for name, kind in [('esp', 'wokwi-esp32-devkit-v1'), ('gps', 'chip-gps'),
                    ('seal', 'wokwi-slide-switch'), ('battery', 'wokwi-potentiometer')]:
     assert parts[name]['type'] == kind, f'Componente divergente: {name}'
 hardware_ids = {'esp', 'gps', 'seal', 'battery', 'sw_rede', 'sw_energia', 'btn_autorizar',
-                'btn_ciclo', 'btn_avancar', 'btn_voltar', 'lcd', 'buzzer', 'led', 'r_led', 'bb1', 'bb2'}
+                'btn_ciclo', 'btn_avancar', 'btn_voltar', 'lcd', 'buzzer', 'bb1', 'bb2'}
 for name, kind in [('sw_rede', 'wokwi-slide-switch'), ('sw_energia', 'wokwi-slide-switch'),
                    ('btn_autorizar', 'wokwi-pushbutton'), ('btn_ciclo', 'wokwi-pushbutton'),
                    ('btn_avancar', 'wokwi-pushbutton'), ('btn_voltar', 'wokwi-pushbutton'),
                    ('lcd', 'wokwi-lcd1602'), ('buzzer', 'wokwi-buzzer'),
-                   ('led', 'wokwi-led'), ('r_led', 'wokwi-resistor'), ('bb1', 'wokwi-breadboard'),
+                   ('bb1', 'wokwi-breadboard'),
                    ('bb2', 'wokwi-breadboard')]:
     assert parts[name]['type'] == kind, f'Componente divergente: {name}'
 assert parts['lcd']['attrs'].get('pins') == 'i2c', 'LCD deve usar o modulo I2C'
-assert [p['id'] for p in diagram['parts'] if p['type'] == 'wokwi-led'] == ['led'], 'V2 usa um unico LED, o de violacao'
-assert parts['led']['attrs'].get('color') == 'red' and parts['r_led']['attrs'].get('value') == '220'
+assert not [p for p in diagram['parts'] if p['type'] == 'wokwi-led'], 'O LED saiu na Sprint 3 (Art. 8)'
 assert all(p['type'] == 'wokwi-text' for key, p in parts.items()
            if key not in hardware_ids), 'Componente fora do escopo'
 # Texto por cima de um controle rouba o clique no Wokwi (o voltar ficou inacessivel assim);
@@ -103,20 +102,19 @@ assert not linked('esp:3V3', 'esp:VIN') and not linked('esp:3V3', 'esp:GND.1') \
     and not linked('esp:VIN', 'esp:GND.1'), '3V3, 5V e GND em curto'
 for source, target in (
     ('esp:TX0', '$serialMonitor:RX'), ('esp:RX0', '$serialMonitor:TX'),
-    ('gps:TX', 'esp:RX2'), ('gps:RX', 'esp:TX2'),
+    ('gps:TX', 'esp:VP'), ('gps:RX', 'esp:TX2'),
     ('seal:2', 'esp:D27'), ('seal:1', 'esp:GND.2'),
     ('battery:SIG', 'esp:D34'), ('gps:VCC', 'esp:3V3'),
     ('gps:GND', 'esp:GND.1'), ('battery:VCC', 'esp:3V3'),
     ('battery:GND', 'esp:GND.2'),
-    ('btn_autorizar:1.r', 'esp:D33'), ('btn_autorizar:2.l', 'esp:GND.2'),
-    ('btn_ciclo:1.r', 'esp:D14'), ('btn_ciclo:2.l', 'esp:GND.2'),
-    ('sw_rede:2', 'esp:D18'), ('sw_rede:1', 'esp:GND.1'),
+    ('btn_autorizar:1.r', 'esp:D15'), ('btn_autorizar:2.l', 'esp:GND.2'),
+    ('btn_ciclo:1.r', 'esp:D5'), ('btn_ciclo:2.l', 'esp:GND.2'),
+    ('sw_rede:2', 'esp:RX2'), ('sw_rede:1', 'esp:GND.1'),
     ('sw_energia:2', 'esp:D19'), ('sw_energia:1', 'esp:GND.1'),
-    ('lcd:SDA', 'esp:D21'), ('lcd:SCL', 'esp:D22'), ('lcd:VCC', 'esp:VIN'), ('lcd:GND', 'esp:GND.1'),
+    ('lcd:SDA', 'esp:D21'), ('lcd:SCL', 'esp:D23'), ('lcd:VCC', 'esp:VIN'), ('lcd:GND', 'esp:GND.1'),
     ('btn_avancar:1.r', 'esp:D25'), ('btn_avancar:2.l', 'esp:GND.2'),
-    ('btn_voltar:1.r', 'esp:D26'), ('btn_voltar:2.l', 'esp:GND.2'),
-    ('buzzer:2', 'esp:D23'), ('buzzer:1', 'esp:GND.1'),
-    ('esp:D13', 'r_led:2'), ('r_led:1', 'led:A'), ('led:C', 'esp:GND.2'),
+    ('btn_voltar:1.r', 'esp:D32'), ('btn_voltar:2.l', 'esp:GND.2'),
+    ('buzzer:2', 'esp:D12'), ('buzzer:1', 'esp:GND.1'),
 ):
     assert linked(source, target), f'Ligacao ausente: {source} -> {target}'
 assert {'TX', 'RX', 'VCC', 'GND'} <= set(chip['pins'])
@@ -127,20 +125,31 @@ for switch, message in (('seal', 'Lacre violado'), ('sw_rede', 'Rede indisponive
     others = [p for p in list(net) if find(p) == terminal and not re.match(r'bb\d:', p)]
     assert others == [f'{switch}:3'], f'{message} deve ficar aberto'
 config = (root / 'include/config.h').read_text(encoding='utf-8')
-pins = [('GpsRx', 16), ('GpsTx', 17), ('SealPin', 27), ('BatteryPin', 34),
-        ('LcdSdaPin', 21), ('LcdSclPin', 22), ('NextButtonPin', 25), ('PreviousButtonPin', 26),
-        ('BuzzerPin', 23), ('ViolationLedPin', 13),
-        ('AuthorizeButtonPin', 33), ('CycleButtonPin', 14), ('NetworkSwitchPin', 18),
+# Pinagem do diagrama do Wokwi e do config.h: a montagem alternada da bancada.
+pins = [('GpsRx', 36), ('GpsTx', 17), ('SealPin', 27), ('BatteryPin', 34),
+        ('LcdSdaPin', 21), ('LcdSclPin', 23), ('NextButtonPin', 25), ('PreviousButtonPin', 32),
+        ('BuzzerPin', 12),
+        ('AuthorizeButtonPin', 15), ('CycleButtonPin', 5), ('NetworkSwitchPin', 16),
         ('PowerSwitchPin', 19)]
 assert len({pin for _, pin in pins}) == len(pins), 'GPIO compartilhado entre funcoes'
-for name, pin in pins:
-    assert re.search(rf'\b{name}\s*=\s*{pin}\s*;', config), f'Pino divergente: {name}'
+defaults = pins
+def pin_source(name):
+    """Valor do pino no config.h: numero direto ou macro sobrescrivivel por -D com padrao no #define."""
+    value = re.search(rf'\b{name}\s*=\s*(\w+)\s*;', config)[1]
+    if value.isdigit():
+        return None, int(value)
+    return value, int(re.search(rf'#define\s+{value}\s+(\d+)\b', config)[1])
+macros = {}
+for name, pin in defaults:
+    macro, default = pin_source(name)
+    assert default == pin, f'Pino divergente no padrao do config.h: {name}'
+    macros[name] = macro
 for name, value in [('GpsBaud', 9600), ('ConsoleBaud', 115200), ('HeartbeatMs', 2000),
                     ('LongPressMs', 3000), ('LcdAddress', '0x27')]:
     assert re.search(rf'\b{name}\s*=\s*{value}\s*;', config), f'Configuracao divergente: {name}'
 source = (root / 'src/firmware/main.cpp').read_text(encoding='utf-8')
 assert 'pinMode(Config::SealPin, INPUT_PULLUP)' in source
-assert 'pinMode(Config::ViolationLedPin, OUTPUT)' in source
+assert 'ViolationLedPin' not in source, 'O LED saiu na Sprint 3'
 for name in ('AuthorizeButtonPin', 'CycleButtonPin', 'NetworkSwitchPin', 'PowerSwitchPin',
              'NextButtonPin', 'PreviousButtonPin'):
     assert f'pinMode(Config::{name}, INPUT_PULLUP)' in source
@@ -155,6 +164,9 @@ assert 'espressif32' in pio['env']['platform'] and 'TinyGPSPlus' in pio['env']['
 assert 'LiquidCrystal_I2C' in pio['env']['lib_deps']
 assert '-DDEMO_MODE=1' in pio['env:demo']['build_flags']
 assert '-DDEMO_MODE=0' in pio['env:weekly']['build_flags']
+# Todos os ambientes usam a pinagem padrao do config.h, sem -D de pino.
+for environment in ('demo', 'weekly', 'bancada', 'bancada-alternada'):
+    assert not set(re.findall(r'-D(\w+)=', pio[f'env:{environment}']['build_flags'])) - {'DEMO_MODE', 'SWITCH_BUTTONS'}
 wasm = root / 'chips/gps.chip.wasm'
 assert wasm.read_bytes()[:8] == b'\x00asm\x01\x00\x00\x00', 'GPS nao compilado para WebAssembly'
 for environment, filename in [('demo', 'wokwi.toml'), ('weekly', 'wokwi.weekly.toml')]:

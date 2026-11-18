@@ -10,8 +10,8 @@
 // acessar o hardware (o main.cpp escreve no LCD), para poder ser testada em host.
 // Nao faz esperas bloqueantes.
 
-enum class Screen : uint8_t { Invoice, Deadline, Location, Battery, Seal };
-constexpr uint8_t ScreenCount = 5;
+enum class Screen : uint8_t { Invoice, Deadline, Location, Battery, Seal, Connection };
+constexpr uint8_t ScreenCount = 6;
 
 enum class SealView : uint8_t { Intact, Violated, Authorized };
 
@@ -28,6 +28,8 @@ struct StatusView {
   bool batterySensorFailed;
   SealView seal;
   bool sealOpen;
+  bool linkUp;      // com MQTT: Wi-Fi e broker conectados; sem MQTT: a chave de sinal
+  uint32_t queued;  // eventos guardados na fila sem conexao
 };
 
 class ScreenController final {
@@ -35,7 +37,7 @@ class ScreenController final {
   static constexpr uint8_t Columns = 16;
   using Line = char[Columns + 1];
 
-  // Avancar e voltar percorrem as cinco telas em ordem circular; toda troca fecha a mensagem.
+  // Avancar e voltar percorrem as seis telas em ordem circular; toda troca fecha a mensagem.
   void next() {
     index_ = (index_ + 1) % ScreenCount;
     messageMs_ = 0;
@@ -73,6 +75,7 @@ class ScreenController final {
       case Screen::Location: renderLocation(view, top, bottom); break;
       case Screen::Battery: renderBattery(view, top, bottom); break;
       case Screen::Seal: renderSeal(view, top, bottom); break;
+      case Screen::Connection: renderConnection(view, top, bottom); break;
     }
   }
 
@@ -158,6 +161,12 @@ class ScreenController final {
     }
     format(top, "Bateria: %d%%", view.batteryPct);
     copy(bottom, view.batteryLow ? "BAIXA" : "normal");
+  }
+
+  // Tela da conexao: estado do MQTT e eventos guardados na fila (RN09).
+  static void renderConnection(const StatusView &view, Line top, Line bottom) {
+    copy(top, view.linkUp ? "MQTT: conectado" : "MQTT: sem sinal");
+    format(bottom, "Fila: %lu evento%s", (unsigned long)view.queued, view.queued == 1 ? "" : "s");
   }
 
   // Tela do lacre: violado, autorizado ou integro.

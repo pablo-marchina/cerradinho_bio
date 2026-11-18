@@ -2,7 +2,7 @@
 
 Este relatório descreve como o protótipo físico offline foi montado, quais problemas surgiram na bancada e o que ainda limita a montagem. Os resultados dos casos de teste estão na [seção 3.4.2 da documentação](../../../documentacao.md).
 
-**Situação em 05/11/2026:** o protótipo funciona na bancada, alimentado pelo USB do computador. A fiação foi reorganizada nessa data. As posições da seção 4 são da montagem anterior, servem de referência e devem ser conferidas na placa.
+**Situação em 12/11/2026:** o protótipo está na montagem alternada (seção 2), sem o LED, e funciona na bancada alimentado pelo USB do computador, inclusive com o MQTT (seção 3.4.3 da documentação). A fiação foi reorganizada em 05/11/2026. As posições da seção 4 são da montagem anterior, servem de referência e devem ser conferidas na placa.
 
 ![Protótipo físico com a fiação reorganizada](../../../../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/prototipoVistaSuperior.jpg)
 
@@ -18,7 +18,7 @@ Este relatório descreve como o protótipo físico offline foi montado, quais pr
 | Botão de toque | 7 | VOLTAR, AVANÇAR, CICLO, AUTORIZAR, LACRE, REDE e ON/OFF |
 | Potenciômetro de 10 kΩ | 1 | Bateria simulada |
 | Buzzer | 1 | Alarme de violação |
-| LED vermelho e resistor de 220 Ω | 1 | Indicador de violação |
+| LED vermelho e resistor de 220 Ω | 1 | Indicador de violação nos CT46 a CT69; retirado na montagem alternada |
 | Módulo GNSS GY-GPS6MV2 (NEO-6M) com antena | 1 | Posição |
 | Jumpers | — | Ligações |
 
@@ -26,22 +26,26 @@ Este relatório descreve como o protótipo físico offline foi montado, quais pr
 
 Os pinos abaixo são os usados pelo firmware. Botões ligam o pino ao GND e usam o pull-up interno do ESP32, então não precisam de resistor externo.
 
-| Componente | Sinal | GPIO |
-|---|---|---|
-| LCD | SDA | 21 |
-| LCD | SCL | 22 |
-| Botão AVANÇAR | Entrada | 25 |
-| Botão VOLTAR | Entrada | 26 |
-| Botão CICLO | Entrada | 14 |
-| Botão AUTORIZAR | Entrada | 33 |
-| Botão LACRE | Entrada | 27 |
-| Botão REDE | Entrada | 18 |
-| Botão ON/OFF | Entrada | 19 |
-| Potenciômetro | Pino do meio | 34 |
-| Buzzer | Positivo | 23 |
-| LED, pelo resistor de 220 Ω | Anodo | 13 |
-| GNSS | TX do módulo | 16 |
-| GNSS | RX do módulo (opcional) | 17 |
+A **montagem alternada** é a pinagem padrão do firmware desde a Sprint 3 (ambiente `bancada`, também chamado `bancada-alternada`; seção 5). A coluna **Montagem dos CTs** é a pinagem antiga, usada nos casos de teste da seção 3.4.2 (CT46 a CT69), que continuam valendo para ela e podem ser reproduzidos com o ambiente `bancada-antiga`. A montagem alternada troca sete pinos (em negrito) e não tem o LED: ele foi retirado da placa e do firmware, e a violação aparece no LCD e no buzzer (seção 3.4.3 da documentação).
+
+| Componente | Sinal | Montagem dos CTs (pinagem antiga) | Montagem alternada (padrão) |
+|---|---|---|---|
+| LCD | SDA | 21 | 21 |
+| LCD | SCL | 22 | **23** |
+| Botão AVANÇAR | Entrada | 25 | 25 |
+| Botão VOLTAR | Entrada | 26 | **32** |
+| Botão CICLO | Entrada | 14 | **5** |
+| Botão AUTORIZAR | Entrada | 33 | **15** |
+| Botão LACRE | Entrada | 27 | 27 |
+| Botão REDE | Entrada | 18 | **16** |
+| Botão ON/OFF | Entrada | 19 | 19 |
+| Potenciômetro | Pino do meio | 34 | 34 |
+| Buzzer | Positivo | 23 | **12** |
+| LED, pelo resistor de 220 Ω | Anodo | 13 | — (retirado) |
+| GNSS | TX do módulo | 16 | **36 (VP)** |
+| GNSS | RX do módulo (opcional) | 17 | 17 |
+
+Nenhum botão pode ir para os GPIO34 a 39: esses pinos só leem e não têm pull-up interno, então o botão nunca mudaria de nível. O firmware recusa essa configuração na compilação.
 
 ## 3. Alimentação
 
@@ -52,7 +56,7 @@ Os pinos abaixo são os usados pelo firmware. Botões ligam o pino ao GND e usam
 
 Todo o conjunto é alimentado pelo USB do computador. O GPIO34 recebe no máximo 3,3 V, porque o potenciômetro fica entre 3V3 e GND.
 
-O GND do ESP32 é a referência comum dos trilhos, do LCD, do GNSS e do potenciômetro. O catodo do LED e o negativo do buzzer retornam ao GND; o anodo do LED recebe o GPIO13 pelo resistor de 220 Ω. A foto registra a organização observada: botões na região superior, ESP32 ao centro, potenciômetro e buzzer abaixo; LCD e GNSS ficam externos às protoboards, ligados por jumpers. As posições históricas abaixo não substituem a conferência elétrica de cada ligação.
+O GND do ESP32 é a referência comum dos trilhos, do LCD, do GNSS e do potenciômetro. O negativo do buzzer retorna ao GND. Na pinagem antiga, o LED também: catodo no GND e anodo no GPIO13, pelo resistor de 220 Ω. A foto registra a organização observada: botões na região superior, ESP32 ao centro, potenciômetro e buzzer abaixo; LCD e GNSS ficam externos às protoboards, ligados por jumpers. As posições históricas abaixo não substituem a conferência elétrica de cada ligação.
 
 ## 4. Posições de referência
 
@@ -88,15 +92,22 @@ No PowerShell, também é possível compilar com `scripts/build.ps1 -Environment
 
 Com a placa ligada, a Serial a 115200 baud mostra a linha `[vivo]` a cada 2 s.
 
+A montagem alternada é a padrão: `bancada`, `bancada-alternada` (apelido) e os ambientes `demo` e `weekly` do Wokwi usam os pinos novos, e o diagrama do Wokwi segue a mesma pinagem. Só o `bancada-antiga` continua nos pinos antigos; para reproduzir os CTs da 3.4.2, troque `bancada` por `bancada-antiga` nos comandos acima.
+
+Com o `include/secrets.h` preenchido (modelo em `include/secrets.example.h`), o firmware também conecta ao Wi-Fi e ao broker MQTT, e o LCD mostra "MQTT ok". Sem esse arquivo, a placa funciona offline, como nos CTs da 3.4.2. O passo a passo está no [guia de MQTT do grupo](../3.4.3-prototipo-mqtt-i2c/orientacao-grupo-mqtt.md).
+
+**Pinos de boot da montagem alternada.** O GPIO5 (CICLO), o GPIO12 (buzzer) e o GPIO15 (AUTORIZAR) influenciam a partida do ESP32. Não segure CICLO nem AUTORIZAR ao ligar a placa, e nada pode puxar o GPIO12 para 3,3 V: com ele em nível alto no boot, o ESP32 escolhe 1,8 V para a memória flash e não parte.
+
 ## 6. Conferência da montagem
 
 | Item | Como conferir | Esperado |
 |---|---|---|
-| Boot | Abrir a Serial | `STATUS` e linhas `[vivo]` |
+| Boot | Abrir a Serial | `STATUS` e linhas `[vivo]`, sem `Brownout detector was triggered` |
 | LCD | Tocar AVANÇAR | As cinco telas, sem caracteres embaralhados |
 | Lacre | Tocar LACRE | `lacre=` muda no `[vivo]` |
-| LED e buzzer | Abrir o lacre sem autorização | LED pisca e buzzer toca |
+| Violação | Abrir o lacre sem autorização | LCD mostra a violação e o buzzer toca |
 | Bateria | Parar o potenciômetro | `bateria_sim=` estável |
+| MQTT, com `secrets.h` | Abrir a Serial | `[mqtt] conectado` e "MQTT ok" no LCD |
 | GNSS | Observar `gps_chars` | Sobe mais de 100 caracteres por segundo |
 
 ## 7. Problemas encontrados
@@ -109,10 +120,12 @@ Com a placa ligada, a Serial a 115200 baud mostra a linha `[vivo]` a cada 2 s.
 | GNSS sem dados | `gps_chars` parado e GPIO16 em nível baixo | Ligação do módulo | Refazer VCC, GND e TX, conferindo as posições |
 | Primeiro fix demorado | `fix=ausente` em ambiente fechado | Módulo sem visão do céu | Testar a céu aberto; o primeiro fix levou cerca de 9 minutos |
 | Fiação embolada | Jumpers longos dificultavam a leitura da montagem | Fios maiores que o necessário | Reorganização dos fios em 05/11/2026 |
+| Botões sem resposta na montagem alternada | Toques não mudam a tela nem o `[vivo]` | Ligação dos botões ao GND | Refazer o GND dos botões; um jumper direto do GPIO ao GND confirma o pino |
+| Brownout no boot com Wi-Fi | A Serial repete `Brownout detector was triggered` e a placa reinicia em laço ao ligar o rádio | Pico de corrente da calibração do Wi-Fi com LCD e GNSS no 5 V do USB | Recolocar o 5 V do GNSS fez a placa partir; reduzir a potência de transmissão não resolveu. Fonte de 5 V/2 A ou capacitor de 470 a 1000 µF entre 5V e GND ainda não foram testados |
 
 ## 8. Limitações
 
-- **Sem bateria:** o conjunto depende do USB, e o potenciômetro não representa bateria, divisor nem tensão real.
+- **Sem bateria:** o conjunto depende do USB, e o potenciômetro não representa bateria, divisor nem tensão real. Com Wi-Fi, o USB do notebook fica no limite (brownout na seção 7).
 - **Sensores simulados:** o botão LACRE simula o sensor real do lacre, e o botão REDE simula a disponibilidade do módulo SIM.
 - **Módulo GNSS:** a bancada usa o NEO-6M, e não o Quectel LC76G-PA escolhido para o dispositivo.
 - **Sem medição elétrica:** consumo, corrente total e níveis do barramento I2C não foram medidos.

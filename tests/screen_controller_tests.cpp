@@ -6,7 +6,7 @@
 static ScreenController::Line top, bottom;
 
 static StatusView baseView() {
-  return StatusView{"", true, 0, 5, false, false, 0, 80, false, false, SealView::Intact, false};
+  return StatusView{"", true, 0, 5, false, false, 0, 80, false, false, SealView::Intact, false, true, 0};
 }
 
 static void expect(const ScreenController &screens, const StatusView &view, uint32_t now,
@@ -14,6 +14,7 @@ static void expect(const ScreenController &screens, const StatusView &view, uint
   screens.render(view, now, top, bottom);
   if (std::strcmp(top, line1) != 0 || std::strcmp(bottom, line2) != 0) {
     std::printf("esperado [%s|%s], obtido [%s|%s]\n", line1, line2, top, bottom);
+    std::fflush(stdout);
     assert(false);
   }
 }
@@ -22,7 +23,7 @@ int main() {
   ScreenController screens;
   StatusView view = baseView();
 
-  // Navegacao circular: NF, prazo, localizacao, bateria, lacre e de volta a NF.
+  // Navegacao circular: NF, prazo, localizacao, bateria, lacre, conexao e de volta a NF.
   assert(screens.current() == Screen::Invoice);
   screens.show(Screen::Battery);  // potenciometro girado abre a tela de bateria
   assert(screens.current() == Screen::Battery);
@@ -33,7 +34,10 @@ int main() {
   for (uint8_t i = 0; i < ScreenCount; ++i) screens.next();
   assert(screens.current() == Screen::Invoice);
   screens.previous();
+  assert(screens.current() == Screen::Connection);
+  screens.previous();
   assert(screens.current() == Screen::Seal);
+  screens.next();
   screens.next();
 
   expect(screens, view, 0, "NF da remessa", "nao informada");
@@ -87,7 +91,7 @@ int main() {
   expect(screens, view, 3000, "Lacre VIOLADO", "aberto sem autor");
   screens.flash("Autorizacao ok", "vale 3 dias", 4000, 2000);
   screens.next();
-  expect(screens, baseView(), 4100, "NF da remessa", "nao informada");
+  expect(screens, baseView(), 4100, "MQTT: conectado", "Fila: 0 eventos");  // depois do lacre vem a conexao
 
   // Contagem do pressionamento de 3 s, arredondada para cima.
   ScreenController::renderHold("Iniciar ciclo", 3000, top, bottom);
@@ -99,6 +103,17 @@ int main() {
   view.invoice = "1234567890123456789";
   screens.render(view, 0, top, bottom);
   assert(std::strlen(top) <= ScreenController::Columns && std::strlen(bottom) <= ScreenController::Columns);
+
+  // Tela da conexao: MQTT e fila (RN09).
+  screens.show(Screen::Connection);
+  expect(screens, view, 0, "MQTT: conectado", "Fila: 0 eventos");
+  view.linkUp = false;
+  view.queued = 1;
+  expect(screens, view, 0, "MQTT: sem sinal", "Fila: 1 evento");
+  view.queued = 8;
+  expect(screens, view, 0, "MQTT: sem sinal", "Fila: 8 eventos");
+  view.linkUp = true;
+  view.queued = 0;
 
   std::puts("PASS: classe Telas, navegacao circular, NF, prazo/atraso, posicao, bateria, lacre e 3 s");
 }

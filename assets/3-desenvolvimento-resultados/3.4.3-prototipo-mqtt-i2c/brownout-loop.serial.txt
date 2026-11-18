@@ -1,0 +1,60 @@
+18:12:34 [memoria] NVS=ok; diagnostico limitado a 16 registros; fila de eventos de 8
+18:12:34 
+18:12:34 Brownout detector was triggered
+18:12:34 
+18:12:34 ets Jul 29 2019 12:21:46
+18:12:34 
+18:12:34 rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+18:12:34 configsip: 0, SPIWP:0xee
+18:12:34 clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+18:12:34 mode:DIO, clock div:2
+18:12:34 load:0x3fff0030,len:1184
+18:12:34 load:0x40078000,len:13232
+18:12:34 load:0x40080400,len:3028
+18:12:34 entry 0x400805e4
+18:12:34 
+18:12:34 [boot] ESP32 executando - prototipo Cerradinho
+18:12:34 [boot] uptime_inicio_ms=235 reset_reason=9
+18:12:34 [config] modo=demo intervalo=30 s tolerancia=100 m
+18:12:35 [memoria] NVS=ok; diagnostico limitado a 16 registros; fila de eventos de 8
+18:12:35 
+18:12:35 Brownout detector was triggered
+18:12:35 
+18:12:35 ets Jul 29 2019 12:21:46
+18:12:35 
+18:12:35 rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+18:12:35 configsip: 0, SPIWP:0xee
+18:12:35 clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+18:12:35 mode:DIO, clock div:2
+18:12:35 load:0x3fff0030,len:1184
+18:12:35 load:0x40078000,len:13232
+18:12:35 load:0x40080400,len:3028
+18:12:35 entry 0x400805e4
+18:12:36 
+18:12:36 [boot] ESP32 executando - prototipo Cerradinho
+18:12:36 [boot] uptime_inicio_ms=235 reset_reason=9
+18:12:36 [config] modo=demo intervalo=30 s tolerancia=100 m
+18:12:37 [memoria] NVS=ok; diagnostico limitado a 16 registros; fila de eventos de 8
+18:12:37 
+18:12:37 Brownout detector was triggered
+18:12:37 
+18:12:37 ets Jul 29 2019 12:21:46
+18:12:37 
+18:12:37 rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+18:12:37 configsip: 0, SPIWP:0xee
+18:12:37 clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+18:12:37 mode:DIO, clock div:2
+18:12:37 load:0x3fff0030,len:1184
+18:12:37 load:0x40078000,len:13232
+18:12:37 load:0x40080400,len:3028
+18:12:37 entry 0x400805e4
+18:12:38 
+18:12:38 [boot] ESP32 executando - prototipo Cerradinho
+18:12:38 [boot] uptime_inicio_ms=235 reset_reason=9
+18:12:38 [config] modo=demo intervalo=30 s tolerancia=100 m
+18:12:39 [memoria] NVS=ok; diagnostico limitado a 16 registros; fila de eventos de 8
+18:12:39 
+18:12:39 Brownout detector was triggered
+18:12:39 
+18:12:39 ets Jul 29 2019 12:21:46
+18:12:39 

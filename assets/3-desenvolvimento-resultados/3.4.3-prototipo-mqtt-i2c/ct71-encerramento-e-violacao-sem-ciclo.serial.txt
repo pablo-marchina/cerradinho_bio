@@ -1,0 +1,10 @@
+# Trecho filtrado da Serial (so eventos), linhas cortadas em 260 caracteres pelo script de captura.
+19:25:46 enviado: NF
+19:25:46 {"device_id":"prototipo-001-luiz","type":"NF_RETORNO_LANCADA","uptime_ms":32627,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":1191,"dia_o
+19:26:19 {"device_id":"prototipo-001-luiz","type":"ENCERRAMENTO_RECUSADO","uptime_ms":65886,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":1224,"di
+19:26:23 {"device_id":"prototipo-001-luiz","type":"LACRE_FECHADO","uptime_ms":69585,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":true,"dias_fora":1228,"dia_ocorrenc
+19:26:27 [botao] BTN_CICLO solto antes de 3 s; nada registrado
+19:26:31 {"device_id":"prototipo-001-luiz","type":"CICLO_ENCERRADO","uptime_ms":77347,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrenc
+19:26:58 {"device_id":"prototipo-001-luiz","type":"NF_RETORNO_LANCADA","uptime_ms":104358,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":false,"dias_fora":0,"dia_ocor
+19:27:40 {"device_id":"prototipo-001-luiz","type":"VIOLACAO_LACRE","uptime_ms":146531,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":false,"dias_fora":0,"dia_ocorre
+19:28:17 {"device_id":"prototipo-001-luiz","type":"LACRE_FECHADO","uptime_ms":183782,"clock":"uptime_only","demo":true,"seal":"intact","battery_sim_pct":100,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrenci

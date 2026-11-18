@@ -1783,7 +1783,7 @@ CTs novos para comportamentos que o V2 acrescentou: a idade da última posição
   - **CT43:** a "sem fix ainda" foi tirada no início de uma execução do CT45, porque a execução do CT43 começou com fix.
   - **CT44:** as capturas do LCD são da execução no Wokwi CLI de 02/11/2026, com o mesmo binário. O log dessa execução se perdeu, e o log de evidência é a repetição no VS Code.
 
-**Evolução do protótipo.** A seção 3.4.2 apresenta os ensaios físicos offline. A partir da seção 3.4.3, permanecem as orientações e os exemplos originais do template, que não são resultados de execução. A proposta de evolução do circuito e os CT24–CT34 estão no [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md).
+**Evolução do protótipo.** A seção 3.4.2 apresenta os ensaios físicos offline, e a seção 3.4.3, o protótipo com MQTT. A partir da seção 3.4.4, permanecem as orientações e os exemplos originais do template, que não são resultados de execução. A proposta de evolução do circuito e os CT24–CT34 estão no [planejamento de energia e GNSS](outros/3-desenvolvimento-resultados/3.4.1-prototipo-wokwi/planejamento-energia-gnss.md).
 
 <a name="prototipo-fisico-offline"></a>
 
@@ -1810,7 +1810,7 @@ Os jumpers fêmea do LCD e do GNSS seguem em paralelo e não têm código de cor
 
 Condições comuns a todos os casos:
 
-- **Ambiente:** firmware `bancada` (o `demo` e o `weekly` esperam chaves), alimentação USB e Serial a 115200 baud. Ciclo e autorização usam tempo acelerado (1 s = 1 dia); a pressão longa continua sendo de 3 s reais.
+- **Ambiente:** firmware `bancada` na pinagem antiga (hoje o ambiente `bancada-antiga`; desde a Sprint 3, o `bancada` usa a montagem alternada) (o `demo` e o `weekly` esperam chaves), alimentação USB e Serial a 115200 baud. Ciclo e autorização usam tempo acelerado (1 s = 1 dia); a pressão longa continua sendo de 3 s reais.
 - **Estado inicial:** antes de cada caso, conferir ciclo, autorização, lacre e fila na Serial. Com o LCD apagado, o primeiro toque só acende a tela. Alertas de prazo e status podem aparecer no meio dos casos e não são eventos de lacre duplicados.
 - **Entradas digitais:** botões com `INPUT_PULLUP` (solto = HIGH, pressionado = LOW). Cada pressão de LACRE estável por 60 ms alterna o lacre; soltar não o fecha.
 - **LED de violação:** pulso de 150 ms a cada 1 s só durante violação sem autorização; apagado com lacre íntegro, na retirada autorizada e depois do fechamento. Na retirada autorizada o log traz `seal="violated"` com `authorized_removal=true`, e só a violação aciona LED e buzzer.
@@ -1923,7 +1923,7 @@ O [firmware](../src/firmware/main.cpp) mantém a inicialização em `setup()` e 
 | CT53 a CT64, CT66 e CT69 | `bancada`, com o despertar do LCD corrigido | `AA6D6390660D409708342F849882950BFFA471983CB787F0DE2497A48D7683BF` |
 | CT65 | [`tests/bancada-ct65`](../tests/bancada-ct65/main.cpp), que inclui o firmware de produção sem mudanças | `6CBBC406EEFC63734AD939304A24EB77F95AE8B4470CCB5986884D0096A8065C` |
 
-Compilação: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build.ps1 -Environment bancada`. Gravação: `pio run -e bancada -t upload`. A captura da Serial segue o [relatório de montagem](outros/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/relatorio-montagem-prototipo-fisico.md). Compilar e rodar os testes de lógica no computador verifica o software; uma nova execução física exige registrar o hash do binário, o estado inicial e novos logs, imagens e vídeos, preservando os resultados acima.
+Compilação: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build.ps1 -Environment bancada` (para reproduzir estes ensaios na pinagem antiga, use `bancada-antiga`). Gravação: `pio run -e bancada -t upload`. A captura da Serial segue o [relatório de montagem](outros/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/relatorio-montagem-prototipo-fisico.md). Compilar e rodar os testes de lógica no computador verifica o software; uma nova execução física exige registrar o hash do binário, o estado inicial e novos logs, imagens e vídeos, preservando os resultados acima.
 
 Quadros dos vídeos, sem ajuste: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacre.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciado.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudanca.png) · [CT49](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizada.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistrada.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalha.png). Com realce do LCD: [CT46](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct46TelaLacreRealce.png) · [CT47](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct47CicloIniciadoRealce.png) · [CT48](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct48SemMudancaRealce.png) · [CT49](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct49RetiradaAutorizadaRealce.png) · [CT50](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct50ViolacaoRegistradaRealce.png) · [CT51](../assets/3-desenvolvimento-resultados/3.4.2-prototipo-fisico-offline/ct51SensorFalhaRealce.png).
 
@@ -1954,12 +1954,418 @@ Os casos abaixo estão **PLANEJADOS** e **NÃO EXECUTADOS**; nenhuma linha é re
 
 ### 3.4.3. Protótipo do Projeto com MQTT e I2C (sprint 3)	
 
-_Aqui você deve registrar diversas situações de uso de seu sistema como um todo, indicando exemplos de ação do usuário e resposta do sistema, apontando como o ambiente deverá estar configurado para receber a ação e produzir a resposta. Estes registros serão utilizados para testar seu sistema, portanto, descreva várias situações, incluindo não apenas casos de sucesso, mas também de falha nos comportamentos do sistema. <br>
-Siga as nomenclaturas e convenções já utilizadas anteriormente, e não se esqueça dos alinhamentos de negócios e experiência do usuário para pensar em situações representativas. Inclua figuras do protótipo físico e dashboards, além de descrições dos testes realizados para ilustrar o funcionamento do protótipo. Continue a numeração de CT a partir da tabela anterior. A tabela a seguir serve como exemplo._
+O protótipo da seção 3.4.2 passa a se comunicar por MQTT: publica o estado e os eventos do lacre num broker e recebe comandos do dashboard. O LCD 16x2 continua no barramento I2C, e a Serial segue disponível para diagnóstico.
 
-**CT#** | **Configuração do ambiente** | **Ação do usuário** | **Resposta esperada do sistema** 
-|----------|----------|----------|----------|
-|CT21|ex. precisa de um computador conectado na interface, dois ou mais dispositivos que simulem o posicionamento de um item X no espaço físico etc. | ex. usuário logado busca a localização do item X, que está ativo e operando normalmente | ex. interface do sistema acessa os dados da última localização registrada do item X e apresenta, constando local e horário de última atualização | 
+<!-- Esqueleto da 3.4.3. Cada subseção abaixo recebe o conteúdo da fatia correspondente do plano do Art. 8. -->
+
+#### Exceções ao enunciado
+
+Dois itens pedidos no enunciado não foram adicionados ao protótipo: os dois LEDs informacionais e o capacitor do debounce por hardware. A tabela explica por quê, o que cumpre o papel de cada um e onde está a evidência.
+
+| Item do enunciado | O que o protótipo faz | Justificativa | Evidência |
+|---|---|---|---|
+| 2 LEDs informacionais | Nenhum LED. A violação aparece no LCD ("VIOLACAO registrada") e no buzzer; o LED vermelho do GPIO13 da seção 3.4.2 foi retirado da placa e do firmware. | O LCD já cumpre o papel dos LEDs: mostra em texto todos os estados (lacre, bateria, ciclo e posição), e um LED só repetiria essa informação. Além disso, cada LED aceso gasta energia, e o dispositivo precisa durar com bateria todo o período em que o equipamento fica fora (RNF02). | CT80 |
+| Capacitor (debounce por hardware) | Debounce por firmware: o botão só conta quando o nível fica estável por `ButtonDebounceMs` (50 ms), em `updateButton()`, e o lacre por `SealDebounceMs` (60 ms), em `seal_settle()`. As constantes ficam em [`Config`](../include/config.h). | O firmware já filtra o repique do contato, inclusive pulsos curtos de 20 e 40 ms, como mostram os ensaios da seção 3.4.2. Um capacitor por botão somaria componentes sem mudar o resultado. | CT61 e CT65 (seção 3.4.2); CT79 |
+
+O botão com debounce continua no protótipo: é o AVANÇAR (GPIO25), que troca as telas do LCD.
+
+#### Montagem
+
+Os casos de teste da 3.4.3 rodam em duas montagens da bancada. Elas usam os mesmos componentes da seção 3.4.2 (ESP32 DevKitC, LCD 16x2 com módulo I2C, módulo GNSS GY-GPS6MV2, buzzer, botões e potenciômetro da bateria), alimentados pelo USB, e mudam o conjunto de botões e os pinos:
+
+- **Protótipo de 3 botões** (ambiente `bancada-3botoes`): só os botões ON/OFF, AVANÇAR e VOLTAR. O lacre, a rede, a autorização e o ciclo são simulados pelos comandos MQTT do dashboard (`lacre`, `rede`, `autorizar` e `ciclo_iniciar`). É a montagem dos CT70 a CT83.
+- **Montagem alternada** (ambiente `bancada-alternada`): protótipo completo, com as chaves do lacre e da rede e os botões de autorizar e de ciclo, e com os pinos espaçados para facilitar a fiação na protoboard.
+
+**Protótipo de 3 botões**
+
+| Função | GPIO | Observação |
+|---|---|---|
+| ON/OFF | 19 | liga e desliga logicamente o dispositivo (segurar 3 s) |
+| AVANÇAR | 25 | troca a tela do LCD |
+| VOLTAR | 4 | volta a tela do LCD |
+| Bateria (ADC) | 34 | extremos do potenciômetro em 3V3 e GND |
+| Buzzer | 13 | positivo no GPIO e negativo no GND |
+| LCD I2C (SDA / SCL) | 21 / 22 | VCC no 5 V e GND comum |
+| GNSS | 36 (RX do ESP32) e 17 (TX do ESP32) | TX do módulo no GPIO36 e RX do módulo no GPIO17; alimentação de 5 V |
+
+**Montagem alternada**
+
+| Função | GPIO | Observação |
+|---|---|---|
+| LCD I2C (SDA / SCL) | 21 / 23 | VCC no 5 V (VIN) e GND comum |
+| GNSS (RX do ESP32) | 36 | UART; alimentação de 5 V |
+| ON/OFF | 19 | chave que liga e desliga logicamente o dispositivo |
+| AVANÇAR | 25 | troca a tela do LCD |
+| VOLTAR | 32 | volta a tela do LCD |
+| AUTORIZAR | 15 | pino de boot: não segurar ao ligar |
+| CICLO | 5 | pino de boot: não segurar ao ligar |
+| REDE (simulação) | 16 | chave que simula a falta de rede |
+| Lacre | 27 | chave que simula o lacre |
+| Bateria (ADC) | 34 | leitura do potenciômetro |
+| Buzzer | 12 | o GPIO12 não pode ser puxado a 3,3 V no boot |
+
+*Figura 3.4.3-1 — Protótipo de 3 botões montado na protoboard, visto de cima, com o ESP32, o LCD, o GNSS, os botões e o buzzer ligados. Fonte: foto do grupo.*
+
+> **IMAGEM A INCLUIR:** `prototipo3Botoes.jpg`, protótipo de 3 botões montado na protoboard, visto de cima.
+
+![Diagrama do protótipo de 3 botões no Wokwi](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/diagramaWokwi3Botoes.png)
+
+*Figura 3.4.3-2 — Diagrama do protótipo de 3 botões no Wokwi, com os GPIO da tabela acima (VOLTAR no 4, buzzer no 13 e SCL no 22). O chip do GNSS simulado só existe no Wokwi local e não aparece nesta captura do Wokwi online. Fonte: captura do simulador Wokwi, 15/11/2026.*
+
+**O que mudou desde a 3.4.2:** o LCD ganhou uma sexta tela, "Conexão" (depois da tela do lacre), com o estado do MQTT (`MQTT: conectado` ou `MQTT: sem sinal`) e a quantidade de eventos na fila; montagem de 3 botões e montagem alternada; LED de violação retirado (ver "Exceções ao enunciado"); Wi-Fi e MQTT ligados pelo `include/secrets.h`; no boot, o dispositivo conecta ao Wi-Fi de 2,4 GHz e depois ao broker. Duas observações de montagem: o USB do notebook pode não sustentar o pico de corrente do rádio com o GNSS ligado (*brownout* em loop; ver Resultados), e o contato do conector de 4 vias do módulo GNSS é frágil.
+
+#### Comunicação MQTT
+
+**Plataforma.** O broker é o **EMQX Cloud Serverless**, com TLS na porta 8883, usuário e senha, escolhido pelo grupo porque funciona fora da rede do Inteli, aceita WebSocket seguro (para o dashboard) e foi testado com o ESP32. Para desenvolvimento há um **EMQX 5.8.9 local no Docker** (`docker/emqx`), na porta 1883, sem TLS nem login, que só deve receber dados fictícios. O firmware usa a biblioteca PubSubClient, com a CA pública do EMQX embutida (`include/mqtt_ca_emqx.h`). As credenciais ficam só no `include/secrets.h` de cada pessoa, que o Git ignora; nunca vão para o repositório, para prints ou para a documentação. A cota do plano gratuito do EMQX é limitada, e por isso o `status` não sai a cada heartbeat.
+
+##### Mapa dos tópicos
+
+Todo tópico começa com o prefixo `guaratracking/<device_id>/` (no protótipo, `<device_id>` é o `MQTT_DEVICE_ID` do `secrets.h`; o padrão é `prototipo-001`). Tudo usa **QoS 0**. O dashboard **assina** `status`, `evento`, `online` e `cmd/resposta`, e **publica** em `cmd`. O broker recusa assinar `#` e `$SYS/#`.
+
+| Tópico | Quem publica | Retido | O que vem nele |
+|---|---|---|---|
+| `status` | dispositivo | sim | Retrato do estado atual (lacre, bateria, ciclo, NF, fila). Sai ao conectar, a cada 60 s e logo depois de um evento que muda o estado (no mínimo 1 s entre dois) |
+| `evento` | dispositivo | não | Um JSON por acontecimento (violação, ciclo, autorização, bateria, GNSS, energia). É o mesmo JSON que sai na Serial |
+| `online` | dispositivo / broker | sim | Texto puro: `online` ao conectar e `offline` quando o broker perde o dispositivo (Last Will, cerca de 40 a 47 s depois da queda) |
+| `cmd` | dashboard | não | O comando a executar, em JSON |
+| `cmd/resposta` | dispositivo | não | O resultado de **cada** comando, em JSON |
+
+> ⚠️ **Retido** quer dizer que o broker guarda a última mensagem e a entrega a quem assinar depois. Por isso o dashboard já abre com o `status` e o `online` mais recentes. O `evento` e a `cmd/resposta` **não** são guardados: quem não estava assinando na hora perde a mensagem.
+
+##### Anatomia de um comando (tópico `cmd`)
+
+O comando é um JSON plano (sem objetos dentro de objetos), de até **256 bytes**, sem a barra invertida `\`. A ordem dos campos não importa, e campos que o firmware não conhece são ignorados.
+
+```json
+{"id":"a1","acao":"rede","valor":"desligada","segundos":120}
+```
+
+| Campo | Tipo | Obrigatório | Para que serve | Limites e regras |
+|---|---|---|---|---|
+| `id` | texto | recomendado | Etiqueta do pedido. O dispositivo a devolve igual na resposta, para o dashboard saber **qual** comando foi respondido | até 32 caracteres. Use um valor novo a cada envio (um contador ou um sufixo aleatório) |
+| `acao` | texto | **sim** | O que fazer. É o nome do comando (lista abaixo) | até 24 caracteres; só os nomes da lista |
+| `valor` | texto | só em `lacre`, `rede` e `remessa` | O argumento do comando: `aberto` ou `fechado` (`lacre`), `ligada` ou `desligada` (`rede`) e o número da NF (`remessa`) | até 24 caracteres |
+| `segundos` | número inteiro | só em `rede` com `desligada` | Por quanto tempo a rede simulada fica desligada. Depois disso ela volta sozinha | de 1 a 3600, sem aspas |
+
+##### Todos os comandos, prontos para copiar
+
+Os comandos que mexem no lacre, na rede simulada e no desligamento (`lacre`, `rede`, `ligar` e `desligar`) só valem no modo com chaves, que é o do protótipo de 3 botões. Com o dispositivo desligado, **só** `ligar` é aceito.
+
+**Tela e energia**
+
+| Comando (JSON) | O que faz | Efeito que o dashboard enxerga | Erros possíveis |
+|---|---|---|---|
+| `{"id":"1","acao":"avancar"}` | Vai para a tela seguinte do LCD e acende o visor (como o botão AVANÇAR) | só a resposta; nenhum evento | `dispositivo_desligado` |
+| `{"id":"2","acao":"voltar"}` | Volta uma tela do LCD e acende o visor (como o botão VOLTAR) | só a resposta; nenhum evento | `dispositivo_desligado` |
+| `{"id":"3","acao":"desligar"}` | Desliga logicamente: o LCD apaga, mas a placa continua ouvindo o `cmd` | evento `DISPOSITIVO_DESLIGADO` | `somente_modo_botoes` |
+| `{"id":"4","acao":"ligar"}` | Liga de novo o dispositivo | evento `STATUS` | `somente_modo_botoes` |
+
+**Ciclo, autorização e NF**
+
+| Comando (JSON) | O que faz | Efeito que o dashboard enxerga | Erros possíveis |
+|---|---|---|---|
+| `{"id":"5","acao":"ciclo_iniciar"}` (ou `"acao":"vincular"`) | Abre o ciclo de remessa (como segurar CICLO por 3 s sem ciclo ativo) | evento `CICLO_INICIADO`; `status.ciclo_ativo` vira `true` | `ciclo_ativo` |
+| `{"id":"6","acao":"remessa","valor":"NF-000123"}` | Registra o **número da NF de remessa** do ciclo ativo (RN02). O LCD mostra "NF registrada" | `status.nf` passa a trazer o número | `sem_ciclo_ativo`, `nf_invalida` |
+| `{"id":"7","acao":"nf_retorno"}` | Lança a **NF de retorno**, que libera o encerramento (RN11). Vale **uma vez por ciclo** | evento `NF_RETORNO_LANCADA` | `sem_ciclo_ativo`, `nf_ja_lancada` |
+| `{"id":"8","acao":"autorizar"}` | Registra a autorização de retirada, válida por 3 dias (RN06) | evento `AUTORIZACAO_REGISTRADA` | `dispositivo_desligado` |
+| `{"id":"9","acao":"ciclo_encerrar"}` | Encerra o ciclo. Exige **lacre fechado** e **NF de retorno** lançada | evento `CICLO_ENCERRADO`; `status.ciclo_ativo` vira `false` | `sem_ciclo_ativo`, `encerramento_recusado` (e o evento `ENCERRAMENTO_RECUSADO` com o `motivo`) |
+
+**Simulações da bancada**
+
+| Comando (JSON) | O que faz | Efeito que o dashboard enxerga | Erros possíveis |
+|---|---|---|---|
+| `{"id":"10","acao":"lacre","valor":"aberto"}` | Simula a **abertura** do lacre | sem autorização vigente: evento `VIOLACAO_LACRE` (crítico), `status.lacre` vira `violado` e o buzzer toca; com autorização: `RETIRADA_AUTORIZADA` | `lacre_ja_aberto`, `valor_invalido`, `somente_modo_botoes` |
+| `{"id":"11","acao":"lacre","valor":"fechado"}` | Simula o **fechamento** do lacre | evento `LACRE_FECHADO` (depois de violação) ou `LACRE_REAPLICADO` (depois de retirada autorizada) | `lacre_ja_fechado`, `valor_invalido`, `somente_modo_botoes` |
+| `{"id":"12","acao":"rede","valor":"desligada","segundos":60}` | Tira a rede simulada por 60 s: os eventos ficam na fila e saem sozinhos quando a rede volta | `status.fila` sobe; no fim do prazo os eventos chegam em ordem | `segundos_invalido`, `valor_invalido`, `somente_modo_botoes` |
+| `{"id":"13","acao":"rede","valor":"ligada"}` | Religa a rede simulada na hora e cancela o prazo | a fila é enviada | `valor_invalido`, `somente_modo_botoes` |
+
+> ⚠️ **Atenção:** com a rede desligada o broker **não entrega** comandos ao dispositivo. Por isso o `segundos` é obrigatório: é ele que faz a rede voltar.
+
+##### A resposta (tópico `cmd/resposta`)
+
+Cada comando validado gera uma resposta lógica, mesmo quando é recusado. Se a publicação falhar,
+o mesmo JSON fica salvo para reenvio; por isso o dashboard correlaciona e deduplica pelo `id`.
+
+```json
+{"id":"10","acao":"lacre","ok":true}
+{"id":"10","acao":"lacre","ok":false,"erro":"lacre_ja_aberto"}
+```
+
+| Campo | Tipo | Quando aparece | Significado |
+|---|---|---|---|
+| `id` | texto | sempre | O mesmo `id` do pedido. Vazio se o JSON era ilegível |
+| `acao` | texto | sempre | A mesma `acao` do pedido. Vazia se não deu para lê-la |
+| `ok` | verdadeiro/falso | sempre | ✅ `true` = o comando foi **aceito, executado e, quando altera o contexto, persistido**; o efeito aparece depois em `evento` e `status`. ❌ `false` = não há sucesso confirmado; consulte `erro`, `status` e `evento` |
+| `erro` | texto | só quando `ok` é `false` | O motivo da recusa ou a indicação de persistência pendente, conforme a tabela abaixo |
+| `pendente` | verdadeiro | quando a NVS falha após a ação | A ação ocorreu em RAM e o firmware continuará tentando salvar; não repetir o comando |
+| `motivo` | texto | encerramento recusado com ciclo ativo | Distingue `lacre_aberto` de `nf_retorno_ausente` |
+| `janela_dias` | inteiro | autorização aceita | Duração da autorização segundo a RN06 |
+| `valida_ate_ms` | inteiro | autorização aceita | Limite no relógio acumulado do dispositivo; não é uma data UTC |
+
+| `erro` | O que aconteceu |
+|---|---|
+| `json_vazio` | O corpo da mensagem tinha 0 bytes |
+| `json_invalido` | O objeto está incompleto, tem sintaxe inválida, chave repetida, conteúdo depois do `}` ou estrutura fora do contrato plano |
+| `payload_grande` | Mais de 256 bytes |
+| `acao_ausente` | Não há o campo `acao`, ou o JSON está ilegível |
+| `acao_desconhecida` | O nome da `acao` não está na lista |
+| `dispositivo_desligado` | Qualquer comando, exceto `ligar`, com o dispositivo desligado |
+| `somente_modo_botoes` | `ligar`, `desligar`, `lacre` ou `rede` fora do modo com chaves |
+| `valor_invalido` | O `valor` não é um dos aceitos (`aberto`/`fechado`, `ligada`/`desligada`) |
+| `lacre_ja_aberto` / `lacre_ja_fechado` | O lacre já está no estado pedido |
+| `segundos_invalido` | `rede` `desligada` sem `segundos`, ou fora de 1 a 3600 |
+| `ciclo_ativo` | `ciclo_iniciar` com um ciclo em andamento (RN01) |
+| `sem_ciclo_ativo` | `ciclo_encerrar`, `remessa` ou `nf_retorno` sem ciclo ativo |
+| `nf_invalida` | `remessa` sem `valor`, com mais de 15 caracteres ou com caractere fora de letras, dígitos, `-`, `.` e `/` |
+| `nf_ja_lancada` | `nf_retorno` quando a NF de retorno deste ciclo já foi lançada |
+| `encerramento_recusado` | `ciclo_encerrar` com lacre aberto ou sem NF de retorno |
+| `persistencia_pendente` | A ação ocorreu em RAM, mas a NVS falhou; vem com `pendente:true` e não deve ser repetida |
+| `resposta_anterior_pendente` | A ação nova não foi executada porque o reenvio de uma resposta anterior ainda falhou |
+| `fila_respostas_cheia` | As quatro vagas regulares estavam ocupadas; a ação nova não foi executada e sua recusa usou a vaga reservada |
+
+O JSON inteiro é validado antes da execução, inclusive contra chaves repetidas. Para uma ação que
+muda ciclo, NF, lacre ou autorização, o novo contexto é salvo antes de qualquer `ok:true` ser
+publicado ou guardado para reenvio. Se a NVS falhar depois de a ação alterar a RAM ou emitir
+eventos, a resposta é `persistencia_pendente`, com `pendente:true`; o `loop` continua tentando
+salvar e o dashboard não repete o comando. Se `mqtt.publish()` falhar, a resposta completa entra
+em uma outbox copy-on-write com dois snapshots, geração e checksum. Durante a remoção, uma falha
+parcial conserva o último snapshot válido, podendo repetir a resposta enviada, mas sem apagar as
+respostas posteriores que já estavam duráveis. Há quatro vagas
+regulares e uma reservada para `fila_respostas_cheia`; enquanto houver pendências, o firmware
+prioriza o reenvio e suspende a leitura de outro comando. Como `cmd/resposta` usa QoS 0, o
+dashboard mantém timeout, deduplica pelo `id` e consulta `status`/`evento` antes de repetir uma
+ação que altera estado.
+
+##### O `status` (retido)
+
+Um retrato do dispositivo, para o dashboard desenhar o estado atual sem esperar um evento.
+
+```json
+{"device_id":"prototipo-001","lacre":"integro","bateria_pct":68,"ciclo_ativo":false,"nf":"","dias_fora":0,"gnss_fix":false,"fila":0}
+```
+
+| Campo | Tipo | Significado |
+|---|---|---|
+| `device_id` | texto | Qual dispositivo é (o mesmo `<device_id>` do tópico) |
+| `lacre` | texto | `integro` ou `violado` |
+| `bateria_pct` | inteiro 0 a 100 | Nível da bateria (no protótipo, o potenciômetro) |
+| `ciclo_ativo` | verdadeiro/falso | Há um ciclo de remessa em andamento |
+| `nf` | texto | Número da NF de remessa do ciclo; vazio (`""`) se não foi informada |
+| `dias_fora` | inteiro | Dias fora, contados desde a remessa (no demo, 1 s = 1 dia) |
+| `gnss_fix` | verdadeiro/falso | O GNSS tem posição válida agora |
+| `fila` | inteiro | Quantos eventos estão guardados esperando a conexão (RN09). Como a fila sai **antes** de o `status` ser publicado, quase sempre chega `0` |
+
+##### Os eventos (tópico `evento`)
+
+Um JSON por acontecimento. Todos começam com os mesmos campos:
+
+```json
+{"device_id":"prototipo-001","type":"VIOLACAO_LACRE","uptime_ms":146531,"clock":"uptime_only","demo":true,"seal":"violated","battery_sim_pct":68,"wifi_connected":true,"network_sim_available":true,"ciclo_id":1,"ciclo_ativo":false,"dias_fora":0,"dia_ocorrencia":146,"atraso":false,"permanencia":false,"critico":true}
+```
+
+| Campo | Tipo | Significado |
+|---|---|---|
+| `device_id` | texto | Qual dispositivo gerou o evento |
+| `type` | texto | **O tipo do evento** (tabela abaixo). É por ele que o dashboard decide o que mostrar |
+| `uptime_ms` | inteiro | Milissegundos desde que a placa ligou. Serve para **ordenar** eventos; não é data nem hora real |
+| `clock` | texto | `uptime_only`: o dispositivo ainda não tem data e hora reais |
+| `demo` | verdadeiro/falso | `true` quando o relógio do ciclo está acelerado (1 s = 1 dia) |
+| `seal` | texto | `intact` ou `violated` |
+| `battery_sim_pct` | inteiro | Bateria no momento |
+| `wifi_connected` | verdadeiro/falso | O Wi-Fi estava conectado |
+| `network_sim_available` | verdadeiro/falso | A rede simulada estava ligada |
+| `ciclo_id` | inteiro | Número do ciclo (1, 2, 3...) |
+| `ciclo_ativo` | verdadeiro/falso | Havia ciclo em andamento |
+| `dias_fora` | inteiro | Dias fora no momento |
+| `dia_ocorrencia` | inteiro | Dia do relógio em que o evento aconteceu |
+| `atraso` | verdadeiro/falso | O ciclo já passou do prazo (RN04) |
+| `permanencia` | verdadeiro/falso | O ciclo passou do limiar de permanência (RN04) |
+| `critico` | verdadeiro/falso | 🚨 `true` nos eventos que pedem aviso imediato (violação do lacre) |
+
+| `type` | Quando acontece | Campos a mais |
+|---|---|---|
+| `VIOLACAO_LACRE` | Lacre aberto sem autorização vigente (RN05) | — |
+| `VIOLACAO_LACRE_RESUMO` | Violações que não couberam na fila cheia, somadas | `quantidade` e primeira/última ocorrência |
+| `LACRE_FECHADO` | Lacre fechado depois de uma violação | — |
+| `RETIRADA_AUTORIZADA` | Lacre aberto com autorização vigente (RN06) | — |
+| `LACRE_REAPLICADO` | Lacre fechado depois de uma retirada autorizada | — |
+| `AUTORIZACAO_REGISTRADA` | Autorização de retirada registrada | — |
+| `CICLO_INICIADO` | Ciclo aberto | — |
+| `CICLO_ENCERRADO` | Ciclo encerrado | `ciclos_encerrados` |
+| `ENCERRAMENTO_RECUSADO` | Pedido de encerrar recusado | `motivo`: `sem_ciclo_ativo`, `lacre_aberto` ou `nf_retorno_ausente` |
+| `VINCULO_RECUSADO` | Pedido de abrir ciclo com um ciclo ativo | `motivo`: `ciclo_ativo` |
+| `NF_RETORNO_LANCADA` | NF de retorno lançada | — |
+| `ALERTA_ATRASO` | O ciclo passou do prazo (uma vez por ciclo) | — |
+| `ALERTA_PERMANENCIA` | O ciclo passou do limiar de permanência (uma vez por ciclo) | — |
+| `LIMIAR_ALTERADO` | Limiar de permanência alterado | `limiar_dias` |
+| `STATUS_SEMANAL` | Status periódico do ciclo (a cada 7 dias por padrão, RN07) | — |
+| `STATUS` | Dispositivo ligado ou religado | `contexto_restaurado` |
+| `BATERIA_BAIXA` | Bateria abaixo de 20% (RN10) | — |
+| `SENSOR_BATERIA_FALHA` | Leitura zero da bateria: falha do sensor, não bateria vazia | — |
+| `GNSS_SEM_FIX` | Perdeu a posição GNSS (RN22) | `motivo` (`sem_fix`, `sem_dados` ou `sinal_fraco`) e `satelites` |
+| `GNSS_RECUPERADO` | A posição GNSS voltou | — |
+| `DISPOSITIVO_DESLIGADO` | Dispositivo desligado logicamente | — |
+
+##### Um exemplo do começo ao fim
+
+```text
+1. dashboard    → cmd           {"id":"10","acao":"lacre","valor":"aberto"}
+2. dispositivo  → cmd/resposta  {"id":"10","acao":"lacre","ok":true}
+3. dispositivo  → evento        {"type":"VIOLACAO_LACRE","critico":true,...}
+4. dispositivo  → status        {"lacre":"violado",...}          (retido)
+```
+
+**Dicas para quem for integrar o dashboard**
+- Assine `status`, `evento`, `online` e `cmd/resposta` **antes** de publicar o primeiro comando, para não perder a resposta.
+- Gere um `id` novo a cada comando e case a resposta pelo `id`. Como o QoS é 0, a mensagem pode se perder; vale um tempo de espera (por exemplo 5 s) antes de tentar de novo.
+- Trate o `status` como o retrato atual e o `evento` como o histórico; o `online` diz se o dispositivo está presente (`offline` chega cerca de 40 a 47 s depois de a energia cair).
+- O dashboard roda no navegador e usa MQTT por WebSocket (`ws://<broker>:8083/mqtt` no broker local de desenvolvimento; a porta do WebSocket seguro do EMQX Cloud ainda não foi testada). Usuário e senha do broker nunca entram no repositório.
+
+**Pré-requisitos.** Wi-Fi de **2,4 GHz** (o ESP32 não usa 5 GHz), sem login por navegador e com a porta **8883** liberada; a rede do Inteli provavelmente não serve, e o hotspot do celular costuma servir. Cada placa precisa de `MQTT_CLIENT_ID` e `MQTT_DEVICE_ID` próprios no `secrets.h`, senão duas placas se derrubam no mesmo broker. Os pinos 12, 5 e 15 são pinos de boot: não segurar CICLO nem AUTORIZAR ao ligar.
+
+![MQTT Explorer com online e status](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70ExplorerOnlineStatus3Botoes.png)
+
+*Figura 3.4.3-3 — MQTT Explorer assinando `guaratracking/#`, com `online` e o `status` retidos logo depois de ligar o protótipo. Fonte: captura do MQTT Explorer, 15/11/2026.*
+
+**Como acompanhar no MQTT Explorer.**
+
+1. Instalar o MQTT Explorer (mqtt-explorer.com) e criar uma conexão com o host do deployment, porta 8883, TLS ligado, e o usuário e a senha MQTT do deployment (criados em *Access Control* no EMQX, e não o e-mail da conta; com o e-mail, o firmware recebe `estado=5`, não autorizado).
+2. Em *Advanced*, retirar `#` e `$SYS/#` da lista de assinaturas e assinar `guaratracking/#`; o EMQX recusa a assinatura de `#`.
+3. Ligar o protótipo: devem aparecer `online = online` e o `status` retidos, e o LCD mostra "MQTT ok / TLS" por 2 s.
+4. Para enviar um comando, publicar em `guaratracking/<device_id>/cmd` um JSON como os acima, com texto no corpo (um Publish sem texto chega vazio e recebe `json_vazio`), e ler a resposta em `cmd/resposta`.
+
+#### Dashboard
+
+<!-- Telas do dashboard como figuras, com o que cada uma mostra. -->
+
+#### Casos de teste
+
+Condições comuns: firmware `bancada` (montagem alternada), alimentação USB estável, Serial a 115200 baud, Wi-Fi de 2,4 GHz com a porta 8883 liberada, EMQX Cloud no ar, `secrets.h` preenchido com nomes únicos e MQTT Explorer assinando `guaratracking/#`. Os CT70 em diante não alteram os CTs anteriores.
+
+| CT | Configuração do ambiente | Ação do usuário | Resposta esperada do sistema |
+|---|---|---|---|
+| CT70 | Broker no ar; dispositivo sem energia | Ligar o protótipo | O LCD mostra "MQTT ok" por 2 s; o broker recebe `online = online` e o `status` retidos |
+| CT71 | CT70 aprovado; lacre fechado | Abrir o lacre (violação) | O evento `VIOLACAO_LACRE` chega em `evento` no mesmo segundo; o `status` retido passa a mostrar o lacre violado; o LCD mostra "VIOLACAO registrada" e o buzzer toca |
+| CT72 | CT70 aprovado; fila zerada | Desligar o Wi-Fi ou o broker, gerar eventos, restabelecer | A tela de conexão do LCD mostra `MQTT: sem sinal` e a fila subindo; ao voltar, os eventos chegam ao broker na ordem em que ocorreram e a fila zera (RN09) |
+| CT73 | CT70 aprovado | Cortar a alimentação do protótipo | Em até 45 s o broker publica `offline` em `online`; ao religar, volta a `online` |
+| CT74 | CT70 aprovado; dispositivo ligado | Publicar `{"id":"1","acao":"avancar"}` em `cmd`, e depois `voltar` | `cmd/resposta` devolve `ok:true` com o mesmo `id`; o LCD troca para a tela seguinte e depois volta |
+| CT75 | CT74 aprovado; lacre fechado | Publicar `{"id":"2","acao":"lacre","valor":"aberto"}` e depois `"fechado"` | `ok:true` nas duas; o lacre abre e fecha como pelo botão, com o `evento` e o `status` correspondentes |
+| CT76 | CT74 aprovado | Publicar `{"id":"3","acao":"abrir"}`, depois o mesmo `lacre` aberto duas vezes, e um Publish sem texto | `ok:false` com `acao_desconhecida`, `lacre_ja_aberto` e `json_vazio`; nada muda no dispositivo |
+| CT77 | CT74 aprovado | Publicar `{"id":"4","acao":"rede","valor":"desligada","segundos":60}` | `ok:true`; o dispositivo fica sem rede simulada e os eventos entram na fila; ao fim dos 60 s a rede volta sozinha e a fila é enviada |
+| CT78 | CT74 aprovado | Publicar `desligar` e, em seguida, `avancar` e `ligar` | `desligar` e `ligar` respondem `ok:true`; `avancar` com o dispositivo desligado responde `ok:false` com `dispositivo_desligado` |
+| CT83 | CT74 aprovado; sem ciclo ativo | Publicar `remessa` e `nf_retorno` sem ciclo; iniciar o ciclo (`ciclo_iniciar`); publicar `remessa` com um número válido e um inválido; `nf_retorno` duas vezes; `ciclo_encerrar` | Sem ciclo, `remessa` e `nf_retorno` respondem `sem_ciclo_ativo`; com ciclo, a NF aparece na tela de NF do LCD, o número inválido responde `nf_invalida`, a NF de retorno é aceita uma vez (`nf_ja_lancada` na segunda) e o ciclo encerra |
+| CT84 | CT74 aprovado; lacre fechado; sem ciclo ativo | Enviar JSON incompleto e outro com duas chaves `acao`; iniciar o ciclo; tentar encerrar sem NF; lançar a NF de retorno; tentar encerrar com o lacre aberto; fechar o lacre e encerrar; repetir parte do fluxo combinando comando e botão físico | Os dois JSON inválidos respondem `json_invalido` sem alterar o ciclo; as recusas informam `nf_retorno_ausente` e `lacre_aberto`; o sucesso gera `CICLO_ENCERRADO` e “Ciclo encerrado” no LCD; o botão de 3 s continua funcionando |
+| CT85 | CT74 aprovado; lacre fechado | Publicar `autorizar`; abrir e fechar o lacre dentro da janela; autorizar novamente, aguardar a janela expirar e abrir o lacre | A resposta informa `janela_dias` e `valida_ate_ms`; dentro da janela ocorre `RETIRADA_AUTORIZADA` sem buzzer; após o vencimento ocorre `VIOLACAO_LACRE` com buzzer |
+
+#### Resultados
+
+Estado em 15/11/2026. O CT70, o CT71, o CT74, o CT75, o CT76 e o CT78 foram executados no protótipo de 3 botões contra o EMQX Cloud, com a Serial, o MQTT Explorer e vídeos como instrumentos; o CT73 foi ensaiado no protótipo físico completo, e o CT72 e o CT77 ainda não foram executados.
+
+| CT | Situação | Resultado observado | O que falta |
+|---|---|---|---|
+| CT70 | Aprovado | Wi-Fi e conexão TLS em cerca de 7 s depois do boot; "MQTT ok / TLS" no LCD; `online` e `status` retidos no Explorer; a fila restaurada (1 evento) é reenviada e a Serial mostra `0 pendentes` (vídeo) | Print do console do EMQX com o cliente conectado |
+| CT71 | Aprovado | A violação por comando (`lacre` `aberto`) gera `VIOLACAO_LACRE` no `evento` e o `status` passa a mostrar o lacre violado; o fechamento gera `LACRE_FECHADO`; conferido com e sem ciclo ativo, no LCD e no buzzer (vídeo) | — |
+| CT72 | Aprovado | Com o Wi-Fi fora, a fila subiu e a tela de conexão do LCD mostrou o MQTT sem sinal e a fila; ao religar, os eventos foram enviados na ordem e a fila zerou (vídeo) | — |
+| CT73 | Aprovado | `offline` cerca de 34 s depois de tirar o USB (esperado até 45 s); o vídeo mostra a queda de energia no protótipo de 3 botões, o `online = offline` no Explorer e um cronômetro | — |
+| CT74 | Aprovado | `avancar` troca para a tela seguinte e `voltar` retorna, com `ok:true` e o `id` devolvido, visíveis no Explorer e no LCD (vídeo) | — |
+| CT75 | Aprovado | `lacre` `aberto` e `fechado` com `ok:true`, com o `evento` e o `status` correspondentes (vídeo) | — |
+| CT76 | Aprovado | `acao_desconhecida`, `lacre_ja_aberto`, `lacre_ja_fechado` e `json_vazio` recusados com `ok:false` e o `erro` esperado, sem mudar o dispositivo; o comando recusado também acende o LCD (vídeo) | — |
+| CT77 | Aprovado | `rede` desligada por tempo com `ok:true`; a fila subiu durante o prazo e, ao fim, os eventos foram enviados na ordem e a fila zerou (vídeo) | — |
+| CT78 | Aprovado | `desligar` e `ligar` com `ok:true` e `avancar` desligado recusado com `dispositivo_desligado`; pelo botão ON/OFF o `evento` também muda, e o tipo observado foi `STATUS_SEMANAL` (vídeo) | — |
+| CT83 | Aprovado | Executado conforme o roteiro: `remessa` e `nf_retorno` recusados sem ciclo (`sem_ciclo_ativo`); com ciclo, NF inválida recusada (`nf_invalida`) e válida exibida no LCD; NF de retorno aceita uma vez (`nf_ja_lancada` na segunda); ciclo encerrado (vídeo) | — |
+| CT84 | Planejado | Fluxo coberto pelos testes host, sem execução registrada no protótipo físico | Executar no protótipo, gravar vídeo e salvar Serial e respostas MQTT |
+| CT85 | Planejado | Janela e expiração cobertas pelos testes host, sem execução registrada no protótipo físico | Executar no protótipo, gravar vídeo e confirmar ausência/presença do buzzer |
+
+
+<a name="evidencias-ct70"></a>
+<details>
+<summary>CT70 — Conexão e `status` retido: evidências</summary>
+
+Vídeo do ensaio, com o LCD ("MQTT ok / TLS") e o Explorer (host mascarado): [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70Conexao3Botoes.mp4).
+
+![CT70: Explorer com online e status](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70ExplorerOnlineStatus3Botoes.png)
+
+*Figura 3.4.3-CT70-2 — `online` e `status` retidos no MQTT Explorer. Fonte: captura do MQTT Explorer, 15/11/2026.*
+
+*Figura 3.4.3-CT70-3 — Console do EMQX com o cliente conectado (host e usuário mascarados). Fonte: captura do console do EMQX Cloud.*
+
+> **IMAGEM A INCLUIR:** `ct70ConsoleEmqx.png`, console do EMQX com o cliente conectado (host e usuário mascarados).
+
+![CT70: Serial com a conexão](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct70Serial3Botoes.png)
+
+*Figura 3.4.3-CT70-4 — Serial no boot: conexão ao broker, reenvio de 1 evento da fila e `0 pendentes`, com o host mascarado. Fonte: captura do terminal do PlatformIO, 15/11/2026.*
+
+</details>
+
+<a name="evidencias-ct71"></a>
+<details>
+<summary>CT71 — Violação do lacre: evidências</summary>
+
+Vídeo do ensaio, com o LCD, o buzzer e o Explorer: [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct71Violacao3Botoes.mp4).
+
+*Figura 3.4.3-CT71-1 — LCD com "VIOLACAO registrada". Fonte: quadro do vídeo do ensaio, 12/11/2026.*
+
+> **IMAGEM A INCLUIR:** `ct71LcdViolacao.png`, LCD com "VIOLACAO registrada".
+
+*Figura 3.4.3-CT71-2 — `VIOLACAO_LACRE` no tópico `evento`, com o mesmo `uptime_ms` da Serial. Fonte: captura do MQTT Explorer, 12/11/2026.*
+
+> **IMAGEM A INCLUIR:** `ct71ExplorerViolacao.png`, `VIOLACAO_LACRE` no tópico `evento`, com o mesmo `uptime_ms` da Serial.
+
+*Figura 3.4.3-CT71-3 — `status` retido com `"lacre":"violado"`. Fonte: captura do MQTT Explorer.*
+
+> **IMAGEM A INCLUIR:** `ct71ExplorerStatusViolado.png`, `status` retido com `"lacre":"violado"`.
+
+*Figura 3.4.3-CT71-4 — LCD com "Lacre fechado / apos violacao". Fonte: quadro do vídeo do ensaio, 12/11/2026.*
+
+> **IMAGEM A INCLUIR:** `ct71LcdLacreFechado.png`, LCD com "Lacre fechado / apos violacao".
+
+</details>
+
+<a name="evidencias-ct72"></a>
+<details>
+<summary>CT72 — Fila sem rede: evidências</summary>
+
+Vídeo do ensaio, com a Serial, o LCD e o Explorer: [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct72FilaSemRede3Botoes.mp4).
+
+</details>
+
+<a name="evidencias-ct73"></a>
+<details>
+<summary>CT73 — Queda de energia e Last Will: evidências</summary>
+
+Vídeo da queda de energia no protótipo de 3 botões (USB desligado, LCD apagando, `online = offline` no Explorer e cronômetro; a linha do host do broker está tarjada): [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct73QuedaEnergia3Botoes.mp4).
+
+*Figura 3.4.3-CT73-1 — `online = offline` no MQTT Explorer depois de tirar o USB, com a hora da queda anotada. Fonte: captura do MQTT Explorer.*
+
+> **IMAGEM A INCLUIR:** `ct73ExplorerOffline.png`, `online = offline` no MQTT Explorer depois de tirar o USB, com a hora da queda anotada.
+
+*Figura 3.4.3-CT73-2 — `online = online` depois de religar o protótipo. Fonte: captura do MQTT Explorer.*
+
+> **IMAGEM A INCLUIR:** `ct73ExplorerOnline.png`, `online = online` depois de religar o protótipo.
+
+</details>
+
+<a name="evidencias-ct74-ct78"></a>
+<details>
+<summary>CT74 a CT78 e CT83 — Comandos do dashboard: evidências</summary>
+
+Vídeos do ensaio, com o Explorer, o protótipo e o LCD: CT74 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct74Comandos3Botoes.mp4), CT75 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct75Lacre3Botoes.mp4), CT76 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct76Recusas3Botoes.mp4), CT77 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct77RedeDesligada3Botoes.mp4), CT78 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct78Desligado3Botoes.mp4) e CT83 [Vídeo](../assets/3-desenvolvimento-resultados/3.4.3-prototipo-mqtt-i2c/ct83Nf3Botoes.mp4). 
+
+</details>
+
+**Anomalias encontradas.** (1) *Brownout* em loop no boot do rádio, três vezes no dia, com o 5 V do USB do notebook, o LCD e o GNSS; recolocar o 5 V do GNSS resolveu, e a correção definitiva é uma fonte de 5 V e 2 A ou um capacitor de 470 a 1000 µF perto do ESP32. (2) No demo (1 s = 1 dia), o `STATUS_SEMANAL` sai a cada 7 s e cobre o último `evento` no Explorer; o `status` deixou de ser republicado por eventos periódicos, mas o evento continua saindo. (3) O boot imprimia que o envio ao broker estava pendente; a mensagem foi corrigida. (4) A NF de retorno era aceita sem ciclo ativo e repetida; agora é recusada sem ciclo e lançada uma vez por ciclo (RN11). (5) O firmware agora registra se a assinatura de `cmd` foi enviada, mas, com o PubSubClient, não sabe se a ACL do broker a aceitou. (6) Em uma das montagens, o GNSS só recebe caracteres quando se mexe nos fios, por mau contato no conector de 4 vias.
+
+#### Organização do firmware
+
+Tudo do MQTT fica em `src/firmware/main.cpp`, dentro de `#if MQTT_ENABLED`; sem MQTT, o firmware se comporta como na 3.4.2. Os tópicos (`TopicStatus`, `TopicEvento`, `TopicOnline`, `TopicCmd` e `TopicCmdResposta`) e os tempos (`MqttStatusMs` de 60 s e `MqttStatusMinMs` de 1 s) são constantes no início do bloco do MQTT; os pinos ficam em `include/config.h`.
+
+| Função | O que faz |
+|---|---|
+| `updateMqtt()` | Mantém o Wi-Fi e o broker, conecta com o Last Will em `online`, assina `cmd`, reenvia a fila e republica o `status` |
+| `publishEvent()` | Envia o JSON do evento à Serial e ao tópico `evento`; se não sair, o evento fica na fila (RN09) |
+| `publishMqttStatus()` | Publica o `status` retido |
+| `handleDashboardCommand()` | Valida e executa o comando de `cmd` e responde em `cmd/resposta` com `{id,acao,ok[,erro]}` |
+| `dashboard_cmd.h` | Lê o JSON do comando (id, ação, valor e segundos) e os limites do payload, testado no host por `scripts/verify-host.sh` |
 
 ### 3.4.4. Protótipo Físico do Projeto (online) (sprint 4)	
 
@@ -2044,7 +2450,9 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 64. <a name="ref-64"></a>INTERNATIONAL TELECOMMUNICATION UNION. *Information technology — Open Distributed Processing — Reference Model: Overview*. Recomendação ITU-T X.901 (08/1997), também publicada como ISO/IEC 10746-1. Genebra: ITU, 1997. Disponível em: [ITU-T X.901](https://www.itu.int/rec/T-REC-X.901-199708-I/en). Acesso em: 10 nov. 2026.
 65. <a name="ref-65"></a>INTERNATIONAL TELECOMMUNICATION UNION. *Information technology — Open distributed processing — Reference model: Architecture*. Recomendação ITU-T X.903 (10/2009), também publicada como ISO/IEC 10746-3. Genebra: ITU, 2009. Disponível em: [ITU-T X.903](https://www.itu.int/rec/T-REC-X.903-200910-I/en). Acesso em: 10 nov. 2026.
 66. <a name="ref-66"></a>WASHIZAKI, Hironori (ed.). *Guide to the Software Engineering Body of Knowledge (SWEBOK Guide)*. Versão 4.0a, lançamento de agosto de 2026. IEEE Computer Society, 2026. Disponível em: [SWEBOK Guide — PDF](https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf). Acesso em: 10 nov. 2026.
-67. <a name="ref-67"></a>HYNCDZ. *HY1C222M100200CD288: capacitor eletrolítico de alumínio, 2200 µF, ±20 %*. LCSC Electronics. Disponível em: https://www.lcsc.com/product-detail/C2841106.html. Acesso em: 17 nov. 2026.
+67. <a name="ref-67"></a>NICHICON. *Aluminum electrolytic capacitors: UVR series, miniature sized*. Catálogo CAT.8100M. Disponível em: https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uvr.pdf. Acesso em: 18 nov. 2026.
+68. <a name="ref-68"></a>MINIPA DO BRASIL. *Multímetro digital modelo ET-1002: proposta técnica*. 2012. Disponível em: https://global.cdn.magazord.com.br/casadainstrumentacao/img/2022/11/produto/180/et-1002-minipa-proposta-tecnica.pdf. Acesso em: 18 nov. 2026.
+69. <a name="ref-69"></a>NIPPON CHEMI-CON. *Technical note: judicious use of aluminum electrolytic capacitors*. CAT. No. E1001A, 2026. Disponível em: https://www.chemi-con.co.jp/products/relatedfiles/capacitor/catalog/al-technote-e.pdf. Acesso em: 18 nov. 2026.
 
 ## <a name="c6"></a>6. Anexos
 
@@ -2190,7 +2598,7 @@ A tensão no capacitor (Vc) foi medida com um multímetro digital Minipa ET-1002
 
 #### 6.1.4. Coleta de Dados
 
-Antes do ensaio, o capacitor foi descarregado até o multímetro indicar 0,00 V. O multímetro ficou na escala de 20 V DC, com resolução de 0,01 V. A impedância de entrada dele é da ordem de 10 MΩ, muito maior que R_eq, então a medição praticamente não interfere na carga. Todo o ensaio foi filmado com o display do multímetro enquadrado, e o instante t = 0 é o quadro em que o jumper encosta no pino 5V, quando a leitura deixa de ser 0,00 V.
+Antes do ensaio, o capacitor foi descarregado até o multímetro indicar 0,00 V. O multímetro ficou na escala de 20 V DC, com resolução de 0,01 V. A impedância de entrada dele na tensão DC é de pelo menos 1 MΩ [68], cerca de 36 vezes R_eq. Como ele ficou em paralelo com o capacitor durante todo o ensaio, esse efeito é considerado na seção 6.1.7. Todo o ensaio foi filmado com o display do multímetro enquadrado, e o instante t = 0 é o quadro em que o jumper encosta no pino 5V, quando a leitura deixa de ser 0,00 V.
 
 Os valores da Tabela 6.1-2 foram lidos depois, quadro a quadro, nos tempos pedidos no roteiro: o ponto inicial, 20 pontos a cada 3 s no primeiro minuto, 20 pontos a cada 6 s entre 1 e 3 min e 10 pontos a cada 12 s entre 3 e 5 min, num total de 51 medições. Depois da carga, foram medidas a tensão da fonte, V₀ = 4,60 V (do pino 5V ao GND), e a tensão em que o capacitor se estabilizou, V∞ = 4,37 V. A Tabela 6.1-1 reúne os parâmetros do circuito.
 
@@ -2300,15 +2708,29 @@ Os pontos experimentais têm a mesma forma da curva teórica: sobem rápido no i
 
 O gráfico da seção 6.1.5 mostra que os pontos experimentais seguem a forma exponencial prevista pelo modelo: a tensão sobe rápido no início e desacelera conforme o capacitor se aproxima da carga máxima. Nos primeiros segundos, medida e teoria praticamente coincidem. Em t = 3 s, a tensão medida (0,22 V) é igual à teórica, e o capacitor carregou no início a cerca de 0,073 V/s, contra os 0,075 V/s previstos por V₀/τ = 4,60 V / 61,1 s.
 
-A partir de uns 30 s, os pontos passam a ficar sempre abaixo da curva teórica. A diferença cresce até cerca de 0,4 V (10 %) entre 120 s e 180 s e cai um pouco no fim do intervalo, chegando a 0,33 V em t = 300 s. A tensão no capacitor também nunca chegou à da fonte: mesmo depois de 15 minutos, ela parou em V∞ = 4,37 V, enquanto a fonte media V₀ = 4,60 V. Num circuito RC ideal a corrente zera ao fim da carga e o capacitor atinge V₀, então essa diferença indica que parte da corrente continuou atravessando o próprio capacitor.
+A partir de uns 30 s, os pontos passam a ficar sempre abaixo da curva teórica. A diferença cresce até cerca de 0,4 V (10 %) entre 120 s e 180 s e cai um pouco no fim do intervalo, chegando a 0,33 V em t = 300 s. A tensão no capacitor também nunca chegou à da fonte: mesmo depois de 15 minutos, ela parou em V∞ = 4,37 V, enquanto a fonte media V₀ = 4,60 V. Num circuito RC ideal, a corrente zera ao fim da carga e o capacitor atinge V₀, então essa diferença indica que alguma corrente continuou saindo do nó do capacitor para o GND.
 
-Isso é o que se espera da corrente de fuga de um capacitor eletrolítico de alumínio, cujo dielétrico não isola perfeitamente. A fuga pode ser representada por uma resistência em paralelo com o capacitor, que, com a carga estabilizada, forma um divisor de tensão com R_eq:
+Parte dessa corrente passa pelo próprio multímetro. Na tensão DC, o ET-1002 tem impedância de entrada de pelo menos 1 MΩ [68], e ele ficou em paralelo com o capacitor durante todo o ensaio. O resto é corrente de fuga do capacitor eletrolítico, cujo dielétrico não isola perfeitamente. Os dois efeitos podem ser representados por uma única resistência R_p em paralelo com o capacitor, que forma um divisor de tensão com R_eq. Para a tensão final ser 4,37 V, essa resistência precisa valer:
 
-$$R_{fuga} = R_{eq} \cdot \frac{V_\infty}{V_0 - V_\infty} = 27{,}7\ \text{k}\Omega \cdot \frac{4{,}37\ \text{V}}{4{,}60\ \text{V} - 4{,}37\ \text{V}} \approx 530\ \text{k}\Omega$$
+$$R_{p} = R_{eq} \cdot \frac{V_\infty}{V_0 - V_\infty} = 27{,}7\ \text{k}\Omega \cdot \frac{4{,}37\ \text{V}}{4{,}60\ \text{V} - 4{,}37\ \text{V}} \approx 526\ \text{k}\Omega$$
 
-Essa resistência é cerca de 20 vezes maior que R_eq, por isso quase não interfere no começo da carga. O efeito aparece no trecho final da curva, que é justamente onde os dados se afastam do modelo.
+Só o multímetro já levaria a tensão final para cerca de 4,48 V. O restante corresponde a uma fuga do capacitor da ordem de 1,1 MΩ.
 
-Para obter a constante de tempo experimental, usamos a definição: em t = τ, o capacitor atinge 63,2 % da tensão final. Com a tensão final que o capacitor realmente alcançou, V∞ = 4,37 V, a referência é 0,632 × 4,37 V ≈ 2,76 V. Na Tabela 6.1-2, esse valor fica entre t = 60 s (2,65 V) e t = 66 s (2,80 V). Interpolando linearmente:
+Pelo teorema de Thévenin, essa resistência em paralelo também muda a constante de tempo: o capacitor passa a carregar por R_eq ∥ R_p ≈ 26,3 kΩ, o que dá τ ≈ 57,9 s. A carga fica um pouco mais rápida, mas tende a uma tensão menor que V₀, e por isso a curva medida fica abaixo da teórica. A inclinação inicial não muda, porque a razão entre a tensão final e τ continua igual a V₀/(R_eq·C), o que bate com a concordância dos primeiros segundos.
+
+Esse modelo, porém, não explica a curva inteira. Com uma resistência fixa, a tensão já estaria em cerca de 4,35 V aos 300 s, mas o valor medido foi 4,24 V, e o capacitor ainda subiu devagar até 4,37 V por volta dos 9 minutos. Uma única exponencial também não se ajusta a todos os pontos: usando só os primeiros 120 s, o ajuste dá τ ≈ 56 s e tensão final de 4,02 V; usando os 300 s, dá τ ≈ 60 s e 4,17 V. Essa cauda lenta é compatível com dois comportamentos de eletrolíticos: a corrente de fuga diminui aos poucos depois que a tensão é aplicada, e o dielétrico continua absorvendo carga lentamente (absorção dielétrica) [69].
+
+Por causa disso, o τ experimental depende da tensão final adotada. A Tabela 6.1-3 reúne as três estimativas calculadas a partir da Tabela 6.1-2.
+
+| Método | Tensão final usada | τ experimental | Desvio em relação a 61,1 s |
+|---|---|---|---|
+| 63,2 % da tensão em que o capacitor se estabilizou | 4,37 V (medida) | 64,5 s | +5,5 % |
+| 63,2 % da tensão da fonte | 4,60 V (medida) | 71,4 s | +16,9 % |
+| Ajuste por mínimos quadrados dos 51 pontos, com tensão final e τ livres | 4,17 V (ajustada) | 60,4 ± 0,5 s | −1,1 % |
+
+*Tabela 6.1-3 — Estimativas do τ experimental. Fonte: cálculos do grupo a partir da Tabela 6.1-2.*
+
+A estimativa principal usa V∞ = 4,37 V, porque é a tensão em que o capacitor de fato se estabilizou. Com o multímetro e a fuga em paralelo, ele nunca chegaria a 4,60 V, então 63,2 % de V₀ não corresponde a nenhum ponto característico da carga real e superestima τ. Com 0,632 × 4,37 V ≈ 2,76 V, o valor fica entre t = 60 s (2,65 V) e t = 66 s (2,80 V) na Tabela 6.1-2. Interpolando linearmente:
 
 $$\tau_{exp} \approx 60\ \text{s} + \frac{2{,}76 - 2{,}65}{2{,}80 - 2{,}65} \cdot 6\ \text{s} \approx 64{,}5\ \text{s}$$
 
@@ -2316,10 +2738,10 @@ Em relação ao valor teórico da seção 6.1.2 (τ ≈ 61,1 s), o desvio é de:
 
 $$\frac{64{,}5 - 61{,}1}{61{,}1} \times 100\% \approx 5{,}5\%$$
 
-Ou seja, o τ experimental ficou dentro da faixa de projeto de 60 ± 10 s e perto do valor teórico.
+O ajuste de curva, que usa os 51 pontos de uma vez, dá uma segunda estimativa de 60,4 s, cerca de 1 % abaixo do teórico. As duas ficam dentro da faixa de projeto de 60 ± 10 s. A diferença de uns 4 s entre elas vem da cauda lenta: o V∞ de 4,37 V inclui a subida que aconteceu depois dos 5 minutos, e o ajuste de 0 a 300 s não chega a vê-la.
 
-A maior fonte de erro é a tolerância do capacitor. Eletrolíticos de alumínio costumam ter ±20 % de tolerância na capacitância, e é esse o valor que a fabricante do componente usado (HYNCDZ) informa para peças de 2200 µF [67]. Só essa faixa já permite τ entre aproximadamente 49 s e 73 s, o que cobre com folga o desvio de 5,5 %. Não deu para medir a capacitância real, porque o multímetro usado não tem essa função. Os resistores pesam bem menos: medidos fora do circuito, deram R1 = 67,3 kΩ e R2 = 47,1 kΩ, no máximo 1 % longe dos valores nominais. Com eles, R_eq = 27,7 kΩ e τ = 61,0 s, uma diferença desprezível em relação ao τ nominal.
+A maior incerteza do valor teórico é a tolerância do capacitor. Eletrolíticos de alumínio costumam ter ±20 % de tolerância na capacitância [67], o que, sozinho, permite τ entre aproximadamente 49 s e 73 s e cobre as três estimativas da Tabela 6.1-3. Não deu para medir a capacitância real, porque o multímetro usado não tem essa função. Os resistores pesam bem menos: medidos fora do circuito, deram R1 = 67,3 kΩ e R2 = 47,1 kΩ, no máximo 1 % longe dos valores nominais. Com eles, R_eq = 27,7 kΩ e τ = 61,0 s, uma diferença desprezível em relação ao τ nominal.
 
-A corrente de fuga, discutida acima, impede o capacitor de chegar a V₀ e deixa o final da carga mais lento do que o modelo ideal prevê. A fonte também contribui: o pino 5V da ESP32 recebe a tensão da porta USB através de um diodo de proteção, por isso ficou abaixo de 5 V (4,60 V), e variou entre os ensaios, de 4,40 V a 4,60 V. Por fim, o multímetro tem resolução de 0,01 V e atualiza o display poucas vezes por segundo. Junto com a marcação do instante t = 0 (o contato do jumper), isso dá uma incerteza de cerca de ±0,5 s nos tempos, que pesa mais nos primeiros pontos, quando a tensão muda mais rápido.
+O multímetro e a corrente de fuga, discutidos acima, baixam a tensão final e deixam a curva medida abaixo da teórica a partir dos 30 s. A fonte também contribui: o pino 5V da ESP32 recebe a tensão da porta USB através de um diodo de proteção, por isso ficou abaixo de 5 V (4,60 V), e variou entre os ensaios, de 4,40 V a 4,60 V. Por fim, o multímetro tem resolução de 0,01 V e atualiza o display poucas vezes por segundo. Junto com a marcação do instante t = 0 (o contato do jumper), isso dá uma incerteza de cerca de ±0,5 s nos tempos, que pesa mais nos primeiros pontos, quando a tensão muda mais rápido.
 
-Em resumo, o experimento reproduziu a carga exponencial de um capacitor num circuito RC, e o τ obtido, cerca de 64,5 s, ficou a 5,5 % do teórico de 61,1 s, dentro da margem de projeto e da tolerância do capacitor. O modelo descreve bem o início da carga. O final, por outro lado, mostra um limite do modelo ideal para eletrolíticos reais: com a corrente de fuga, a tensão se estabiliza abaixo da tensão da fonte. Para uma comparação mais precisa, o próximo passo seria medir a capacitância real com um capacímetro e usar uma fonte regulada.
+Em resumo, o experimento reproduziu a carga exponencial de um capacitor num circuito RC. O τ experimental ficou entre 60,4 s (ajuste de curva) e 64,5 s (63,2 % da tensão final medida), no máximo 5,5 % longe do teórico de 61,1 s, dentro da margem de projeto e da tolerância do capacitor. O modelo ideal descreve bem o início da carga, mas não o final: o multímetro em paralelo e a fuga do eletrolítico fazem a tensão se estabilizar abaixo da fonte, e a fuga que diminui com o tempo e a absorção dielétrica deixam uma cauda lenta que uma única exponencial não acompanha. Para uma comparação mais precisa, o próximo passo seria medir a capacitância real com um capacímetro, usar uma fonte regulada e medir a tensão com um instrumento de impedância de entrada maior (de 10 MΩ, por exemplo).
