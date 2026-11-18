@@ -479,6 +479,11 @@ bool enqueueCmdResponse(const String &json, bool useReservedSlot = false) {
   std::strncpy(next.text[next.count], json.c_str(), CmdResponseTextMax - 1);
   next.text[next.count][CmdResponseTextMax - 1] = '\0';
   ++next.count;
+  if (!storageReady) {
+    // Sem NVS a fila vive so em RAM; nada a persistir e nada a marcar como pendente.
+    pendingCmdResponses = next;
+    return true;
+  }
   if (!persistCmdResponseOutbox(next)) {
     // Preserva em RAM e tenta tornar duravel antes de qualquer reenvio.
     pendingCmdResponses = next;
@@ -537,6 +542,11 @@ void restorePendingCmdResponses() {
   }
   --next.count;
   std::memset(next.text[next.count], 0, CmdResponseTextMax);
+  // Sem NVS a fila e so RAM: aplica a remocao direto, sem persistir, para nao reenviar em loop.
+  if (!storageReady) {
+    pendingCmdResponses = next;
+    return true;
+  }
   if (!persistCmdResponseOutbox(next)) {
     Serial.println("[cmd] ALERTA: resposta enviada, mas remocao nao persistiu; sera reenviada");
     return false;
@@ -1246,7 +1256,11 @@ bool mqttWasConnected = false, mqttConfigured = false;
 // Reenvia as respostas exatamente como foram produzidas, inclusive `id`, `acao`, resultado e
 // extras. A remocao so ocorre depois de cada publicacao aceita pelo cliente MQTT.
 bool resendPendingCmdResponses() {
-  if (cmdResponsePersistencePending && !persistCmdResponseOutbox(pendingCmdResponses)) {
+  // Sem NVS nada e duravel: a fila vive so em RAM. Exigir persistencia aqui deixaria
+  // cmdResponsePersistencePending preso, resendPendingCmdResponses() sempre falharia e o
+  // updateMqtt sairia antes do mqtt.loop(), sem keepalive, derrubando a conexao (NVS ausente).
+  if (storageReady && cmdResponsePersistencePending &&
+      !persistCmdResponseOutbox(pendingCmdResponses)) {
     Serial.println("[cmd] reenvio suspenso ate a fila ficar duravel");
     return false;
   }
