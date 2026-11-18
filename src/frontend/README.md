@@ -94,7 +94,7 @@ public/                    # recorte da assinatura oficial, worker gerado
  docs/                     # especificações, cobertura e integração
 ```
 
-Stack efetivamente usada: React, Vite, TypeScript, Tailwind, React Router, TanStack Query e Table, Lucide, CVA/clsx/tailwind-merge, MSW, React Hook Form, Zod, MapLibre e Recharts. Não foi adicionado Zustand: estado global remoto simulado fica em TanStack Query e estado visual em React/URL. Os primitives foram mantidos em código local compatível com tokens shadcn; não foram gerados pela CLI. As fontes vêm de Google Fonts com fallback de sistema. O logo PNG é recorte do guia; trocar pelo arquivo-mestre aprovado. Grafismos Pataxó não foram incluídos. O mapa não infere rotas; uso público do servidor de tiles exige revisão das condições do provedor.
+Stack efetivamente usada: React, Vite, TypeScript, Tailwind, React Router, TanStack Query e Table, Lucide, CVA/clsx/tailwind-merge, MSW, React Hook Form, Zod, MapLibre e Recharts. Não foi adicionado Zustand: estado global remoto simulado fica em TanStack Query e estado visual em React/URL. Os primitives foram mantidos em código local compatível com tokens shadcn; não foram gerados pela CLI. As fontes vêm de Google Fonts com fallback de sistema. O logo é o SVG da assinatura principal (10b), extraído do guia sem o fundo. Grafismos Pataxó não foram incluídos. O mapa não infere rotas; uso público do servidor de tiles exige revisão das condições do provedor.
 
 ## Validação e limites
 
