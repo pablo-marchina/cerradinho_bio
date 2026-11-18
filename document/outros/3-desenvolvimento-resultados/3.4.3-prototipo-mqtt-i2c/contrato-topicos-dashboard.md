@@ -1,10 +1,9 @@
 # Contrato MQTT entre dispositivo e dashboard — versão 1
 
-- **Issue de origem:** #127 — Contrato de tópicos com o dashboard, parte 1
 - **Data da versão:** 16/11/2026
-- **Situação:** proposta pronta para validação pelo responsável do dashboard
-- **Responsável pelo dashboard:** @pablo.marchina
-- **Confirmação do dashboard:** PENDENTE
+- **Situação:** proposta pronta para validação com o responsável pelo dashboard
+
+<!-- Confirmação do responsável pelo dashboard ainda pendente; acompanhar no quadro do grupo. -->
 
 ## 1. Objetivo e limites
 
@@ -16,7 +15,7 @@ Este contrato define os cinco canais MQTT usados entre o dispositivo GuaráTrack
 - `cmd`;
 - `cmd/resposta`.
 
-O contrato descreve o formato alvo da integração. Na implementação integrada até a issue #123, o firmware já publica `status`, `online` e `evento` e assina `cmd`; `cmd/resposta` e a execução dos comandos ainda dependem das issues bloqueadas pela #127. O dashboard visual atual também é uma demonstração estática, sem backend ou MQTT.
+O contrato descreve o formato alvo da integração. Na implementação integrada atual, o firmware já publica `status`, `online` e `evento` e assina `cmd`; `cmd/resposta` e a execução dos comandos ainda são trabalho futuro. O dashboard visual atual também é uma demonstração estática, sem backend ou MQTT.
 
 O ESP32 não é a fonte de nome do equipamento, fornecedor, responsável, prazo comercial, situação fiscal ou tratamento administrativo de alertas. Esses dados pertencem ao backend. O dispositivo informa somente seu estado físico, contexto local, posição, fila e resultado dos comandos que executa.
 
@@ -27,8 +26,8 @@ Todos os exemplos usam identificadores e dados fictícios.
 | Ambiente | Transporte | Endpoint | Situação |
 |---|---|---|---|
 | Desenvolvimento local | MQTT TCP | `mqtt://IP-do-notebook:1883` | Disponível no EMQX 5.8.9 do `docker/emqx` |
-| Dashboard local | MQTT por WebSocket | `ws://IP-do-notebook:8083/mqtt` | Testado nos dois sentidos em 13/11/2026 pela issue #138 |
-| Broker online | MQTT com TLS | Host do deployment EMQX Cloud, porta `8883` | Escolhido e testado com o ESP32 na issue #122 |
+| Dashboard local | MQTT por WebSocket | `ws://IP-do-notebook:8083/mqtt` | Testado nos dois sentidos em 13/11/2026 |
+| Broker online | MQTT com TLS | Host do deployment EMQX Cloud, porta `8883` | Escolhido e testado com o ESP32 |
 | Dashboard online | MQTT por WebSocket seguro | Endpoint WSS fornecido pelo deployment | Exige credenciais e validação específica do frontend |
 
 O teste local automatizado está em `scripts/test-emqx-local.cjs`. Ele comprovou que uma mensagem publicada por MQTT TCP chega ao WebSocket e que uma mensagem publicada pelo WebSocket chega ao cliente MQTT TCP. Ele não comprova o ESP32 físico, o Firewall entre equipamentos ou o WSS do Cloud.
@@ -208,7 +207,7 @@ A idade da última comunicação não pode tratar uma entrega retida como uma co
 
 Assim, a mensagem retida continua útil para reconstruir o último estado e a presença conhecida, mas não comprova atividade nova do dispositivo.
 
-A implementação da #122 ainda publica as strings simples `online` e `offline`. A troca pelos objetos JSON acima é uma alteração necessária para cumprir o exemplo por tópico e deve ser feita junto da implementação do contrato.
+A implementação atual ainda publica as strings simples `online` e `offline`. A troca pelos objetos JSON acima é uma alteração necessária para cumprir o exemplo por tópico e deve ser feita junto da implementação do contrato.
 
 ## 8. Tópicos `cmd` e `cmd/resposta`
 
@@ -436,7 +435,7 @@ Reconhecer ou resolver um alerta não é comando MQTT nesta versão. Essa ação
 
 ## 10. Compatibilidade e implementação pendente
 
-| Item | Situação integrada até #123 | Necessário para cumprir este contrato |
+| Item | Situação integrada atual | Necessário para cumprir este contrato |
 |---|---|---|
 | `status` | Publicado e retido com campos resumidos | Acrescentar schema, tempo, ciclo, posição e detalhamento da fila sem ultrapassar o buffer |
 | `online` | Strings `online` e `offline` retidas | Trocar por JSON; manter Last Will retido |

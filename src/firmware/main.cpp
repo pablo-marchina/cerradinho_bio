@@ -24,7 +24,7 @@
 #include <PubSubClient.h>
 #if MQTT_TLS
 #include <WiFiClientSecure.h>
-// Certificados raiz embutidos no core do ESP32 (inclui o ISRG Root X1 do HiveMQ Cloud).
+// Certificados raiz embutidos no core do ESP32 (cobrem a CA usada pelo EMQX Cloud).
 extern const uint8_t rootca_crt_bundle_start[] asm("_binary_x509_crt_bundle_start");
 #endif
 #endif
@@ -1237,8 +1237,8 @@ void publishCmdResponse(const char *id, const char *action, bool ok, const char 
 #endif
 
 #if MQTT_ENABLED
-// Walking skeleton MQTT (card #122): conecta ao broker (padrao: HiveMQ no Docker, porta 1883,
-// sem TLS e sem login; TLS com usuario/senha para HiveMQ Cloud por MQTT_TLS 1), publica `status`
+// Walking skeleton MQTT: conecta ao broker (padrao: EMQX no Docker, porta 1883,
+// sem TLS e sem login; TLS com usuario/senha para EMQX Cloud por MQTT_TLS 1), publica `status`
 // retido, assina `cmd` e mantem `online` retido com LWT. Contrato: secao 3.4.3, Artefato 8.
 constexpr const char *TopicStatus = MQTT_TOPIC_PREFIX "status";
 constexpr const char *TopicOnline = MQTT_TOPIC_PREFIX "online";
@@ -1347,6 +1347,15 @@ bool publishMqttEvent(const char *json) {
 void publishMqttStatus() {
   String json;
   json.reserve(256);
+  // Estado logico do lacre (mesma fonte do LCD), nao o nivel fisico stableSeal: uma retirada
+  // autorizada nao e violacao, e uma violacao com o lacre fechado continua violada ate o
+  // tratamento. Mapeia para o contrato: integro, violado ou indeterminado (autorizacao vigente).
+  const char *sealStatus;
+  switch (sealView(clockMs())) {
+    case SealView::Violated: sealStatus = "violado"; break;
+    case SealView::Authorized: sealStatus = "indeterminado"; break;
+    default: sealStatus = "integro"; break;
+  }
   json = "{\"device_id\":\"";
   json += Config::DeviceId;
   json += "\",\"lacre\":\"";
@@ -1365,15 +1374,6 @@ void publishMqttStatus() {
   json += pending.count;
   json += "}";
   const bool sent = mqtt.publish(TopicStatus, json.c_str(), true);
-  // Estado logico do lacre (mesma fonte do LCD), nao o nivel fisico stableSeal: uma retirada
-  // autorizada nao e violacao, e uma violacao com o lacre fechado continua violada ate o
-  // tratamento. Mapeia para o contrato: integro, violado ou indeterminado (autorizacao vigente).
-  const char *sealStatus;
-  switch (sealView(clockMs())) {
-    case SealView::Violated: sealStatus = "violado"; break;
-    case SealView::Authorized: sealStatus = "indeterminado"; break;
-    default: sealStatus = "integro"; break;
-  }
   Serial.printf("[mqtt] status %s (%u bytes)\r\n", sent ? "publicado" : "falhou", (unsigned)json.length());
 }
 

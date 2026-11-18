@@ -21,14 +21,14 @@ Este guia é para quem vai gravar o firmware no ESP32 e ver as mensagens no brok
 ## 3. Pegar o código
 
 1. Clone o repositório do projeto (g01) e abra a pasta no VS Code.
-2. Troque para a branch indicada pelo Arthur (por enquanto `122-walking-skeleton-mqtt`; depois do merge, a `develop-Art8` ou a `develop`).
+2. Use a branch de trabalho atual do MQTT (ou a `develop-Art8`/`develop` após o merge), conforme combinado no grupo.
 
 ## 4. Criar o seu `include/secrets.h`
 
 1. Copie `include/secrets.example.h` para `include/secrets.h`. **Esse arquivo nunca vai para o Git** (já está no `.gitignore`).
 2. Use o **modo 2 (EMQX Cloud)** do exemplo e preencha:
    - nome e senha do **Wi-Fi 2,4 GHz**;
-   - endereço do broker, usuário e senha do EMQX, que o Arthur passa por **mensagem privada**. Nunca coloque no grupo, no repositório ou em print;
+   - endereço do broker, usuário e senha do EMQX, que o responsável pelo MQTT no grupo passa por **mensagem privada**. Nunca coloque no grupo, no repositório ou em print;
    - porta **8883** e `MQTT_TLS 1`.
 3. **Cada pessoa precisa de nomes únicos**, senão duas placas se derrubam no mesmo broker. Descomente e ajuste:
    ```

@@ -26,7 +26,7 @@
 #include "config.local.h"
 #endif
 
-// Padrao: broker local (HiveMQ no Docker), porta 1883, sem TLS. MQTT_TLS 1 = HiveMQ Cloud (8883).
+// Padrao: broker local (EMQX no Docker), porta 1883, sem TLS. MQTT_TLS 1 = EMQX Cloud (8883).
 #ifndef MQTT_TLS
 #define MQTT_TLS 0
 #endif
