@@ -2044,7 +2044,9 @@ _Escreva, de forma resumida, sobre os principais resultados do seu projeto e fa�
 64. <a name="ref-64"></a>INTERNATIONAL TELECOMMUNICATION UNION. *Information technology — Open Distributed Processing — Reference Model: Overview*. Recomendação ITU-T X.901 (08/1997), também publicada como ISO/IEC 10746-1. Genebra: ITU, 1997. Disponível em: [ITU-T X.901](https://www.itu.int/rec/T-REC-X.901-199708-I/en). Acesso em: 10 nov. 2026.
 65. <a name="ref-65"></a>INTERNATIONAL TELECOMMUNICATION UNION. *Information technology — Open distributed processing — Reference model: Architecture*. Recomendação ITU-T X.903 (10/2009), também publicada como ISO/IEC 10746-3. Genebra: ITU, 2009. Disponível em: [ITU-T X.903](https://www.itu.int/rec/T-REC-X.903-200910-I/en). Acesso em: 10 nov. 2026.
 66. <a name="ref-66"></a>WASHIZAKI, Hironori (ed.). *Guide to the Software Engineering Body of Knowledge (SWEBOK Guide)*. Versão 4.0a, lançamento de agosto de 2026. IEEE Computer Society, 2026. Disponível em: [SWEBOK Guide — PDF](https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf). Acesso em: 10 nov. 2026.
-67. <a name="ref-67"></a>HYNCDZ. *HY1C222M100200CD288: capacitor eletrolítico de alumínio, 2200 µF, ±20 %*. LCSC Electronics. Disponível em: https://www.lcsc.com/product-detail/C2841106.html. Acesso em: 17 nov. 2026.
+67. <a name="ref-67"></a>NICHICON. *Aluminum electrolytic capacitors: UVR series, miniature sized*. Catálogo CAT.8100M. Disponível em: https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uvr.pdf. Acesso em: 18 nov. 2026.
+68. <a name="ref-68"></a>MINIPA DO BRASIL. *Multímetro digital modelo ET-1002: proposta técnica*. 2012. Disponível em: https://global.cdn.magazord.com.br/casadainstrumentacao/img/2022/11/produto/180/et-1002-minipa-proposta-tecnica.pdf. Acesso em: 18 nov. 2026.
+69. <a name="ref-69"></a>NIPPON CHEMI-CON. *Technical note: judicious use of aluminum electrolytic capacitors*. CAT. No. E1001A, 2026. Disponível em: https://www.chemi-con.co.jp/products/relatedfiles/capacitor/catalog/al-technote-e.pdf. Acesso em: 18 nov. 2026.
 
 ## <a name="c6"></a>6. Anexos
 
@@ -2190,7 +2192,7 @@ A tensão no capacitor (Vc) foi medida com um multímetro digital Minipa ET-1002
 
 #### 6.1.4. Coleta de Dados
 
-Antes do ensaio, o capacitor foi descarregado até o multímetro indicar 0,00 V. O multímetro ficou na escala de 20 V DC, com resolução de 0,01 V. A impedância de entrada dele é da ordem de 10 MΩ, muito maior que R_eq, então a medição praticamente não interfere na carga. Todo o ensaio foi filmado com o display do multímetro enquadrado, e o instante t = 0 é o quadro em que o jumper encosta no pino 5V, quando a leitura deixa de ser 0,00 V.
+Antes do ensaio, o capacitor foi descarregado até o multímetro indicar 0,00 V. O multímetro ficou na escala de 20 V DC, com resolução de 0,01 V. A impedância de entrada dele na tensão DC é de pelo menos 1 MΩ [68], cerca de 36 vezes R_eq. Como ele ficou em paralelo com o capacitor durante todo o ensaio, esse efeito é considerado na seção 6.1.7. Todo o ensaio foi filmado com o display do multímetro enquadrado, e o instante t = 0 é o quadro em que o jumper encosta no pino 5V, quando a leitura deixa de ser 0,00 V.
 
 Os valores da Tabela 6.1-2 foram lidos depois, quadro a quadro, nos tempos pedidos no roteiro: o ponto inicial, 20 pontos a cada 3 s no primeiro minuto, 20 pontos a cada 6 s entre 1 e 3 min e 10 pontos a cada 12 s entre 3 e 5 min, num total de 51 medições. Depois da carga, foram medidas a tensão da fonte, V₀ = 4,60 V (do pino 5V ao GND), e a tensão em que o capacitor se estabilizou, V∞ = 4,37 V. A Tabela 6.1-1 reúne os parâmetros do circuito.
 
@@ -2272,15 +2274,29 @@ A incerteza de leitura é de ±0,01 V na tensão (resolução do multímetro) e 
 
 O gráfico da seção 6.1.5 mostra que os pontos experimentais seguem a forma exponencial prevista pelo modelo: a tensão sobe rápido no início e desacelera conforme o capacitor se aproxima da carga máxima. Nos primeiros segundos, medida e teoria praticamente coincidem. Em t = 3 s, a tensão medida (0,22 V) é igual à teórica, e o capacitor carregou no início a cerca de 0,073 V/s, contra os 0,075 V/s previstos por V₀/τ = 4,60 V / 61,1 s.
 
-A partir de uns 30 s, os pontos passam a ficar sempre abaixo da curva teórica. A diferença cresce até cerca de 0,4 V (10 %) entre 120 s e 180 s e cai um pouco no fim do intervalo, chegando a 0,33 V em t = 300 s. A tensão no capacitor também nunca chegou à da fonte: mesmo depois de 15 minutos, ela parou em V∞ = 4,37 V, enquanto a fonte media V₀ = 4,60 V. Num circuito RC ideal a corrente zera ao fim da carga e o capacitor atinge V₀, então essa diferença indica que parte da corrente continuou atravessando o próprio capacitor.
+A partir de uns 30 s, os pontos passam a ficar sempre abaixo da curva teórica. A diferença cresce até cerca de 0,4 V (10 %) entre 120 s e 180 s e cai um pouco no fim do intervalo, chegando a 0,33 V em t = 300 s. A tensão no capacitor também nunca chegou à da fonte: mesmo depois de 15 minutos, ela parou em V∞ = 4,37 V, enquanto a fonte media V₀ = 4,60 V. Num circuito RC ideal, a corrente zera ao fim da carga e o capacitor atinge V₀, então essa diferença indica que alguma corrente continuou saindo do nó do capacitor para o GND.
 
-Isso é o que se espera da corrente de fuga de um capacitor eletrolítico de alumínio, cujo dielétrico não isola perfeitamente. A fuga pode ser representada por uma resistência em paralelo com o capacitor, que, com a carga estabilizada, forma um divisor de tensão com R_eq:
+Parte dessa corrente passa pelo próprio multímetro. Na tensão DC, o ET-1002 tem impedância de entrada de pelo menos 1 MΩ [68], e ele ficou em paralelo com o capacitor durante todo o ensaio. O resto é corrente de fuga do capacitor eletrolítico, cujo dielétrico não isola perfeitamente. Os dois efeitos podem ser representados por uma única resistência R_p em paralelo com o capacitor, que forma um divisor de tensão com R_eq. Para a tensão final ser 4,37 V, essa resistência precisa valer:
 
-$$R_{fuga} = R_{eq} \cdot \frac{V_\infty}{V_0 - V_\infty} = 27{,}7\ \text{k}\Omega \cdot \frac{4{,}37\ \text{V}}{4{,}60\ \text{V} - 4{,}37\ \text{V}} \approx 530\ \text{k}\Omega$$
+$$R_{p} = R_{eq} \cdot \frac{V_\infty}{V_0 - V_\infty} = 27{,}7\ \text{k}\Omega \cdot \frac{4{,}37\ \text{V}}{4{,}60\ \text{V} - 4{,}37\ \text{V}} \approx 526\ \text{k}\Omega$$
 
-Essa resistência é cerca de 20 vezes maior que R_eq, por isso quase não interfere no começo da carga. O efeito aparece no trecho final da curva, que é justamente onde os dados se afastam do modelo.
+Só o multímetro já levaria a tensão final para cerca de 4,48 V. O restante corresponde a uma fuga do capacitor da ordem de 1,1 MΩ.
 
-Para obter a constante de tempo experimental, usamos a definição: em t = τ, o capacitor atinge 63,2 % da tensão final. Com a tensão final que o capacitor realmente alcançou, V∞ = 4,37 V, a referência é 0,632 × 4,37 V ≈ 2,76 V. Na Tabela 6.1-2, esse valor fica entre t = 60 s (2,65 V) e t = 66 s (2,80 V). Interpolando linearmente:
+Pelo teorema de Thévenin, essa resistência em paralelo também muda a constante de tempo: o capacitor passa a carregar por R_eq ∥ R_p ≈ 26,3 kΩ, o que dá τ ≈ 57,9 s. A carga fica um pouco mais rápida, mas tende a uma tensão menor que V₀, e por isso a curva medida fica abaixo da teórica. A inclinação inicial não muda, porque a razão entre a tensão final e τ continua igual a V₀/(R_eq·C), o que bate com a concordância dos primeiros segundos.
+
+Esse modelo, porém, não explica a curva inteira. Com uma resistência fixa, a tensão já estaria em cerca de 4,35 V aos 300 s, mas o valor medido foi 4,24 V, e o capacitor ainda subiu devagar até 4,37 V por volta dos 9 minutos. Uma única exponencial também não se ajusta a todos os pontos: usando só os primeiros 120 s, o ajuste dá τ ≈ 56 s e tensão final de 4,02 V; usando os 300 s, dá τ ≈ 60 s e 4,17 V. Essa cauda lenta é compatível com dois comportamentos de eletrolíticos: a corrente de fuga diminui aos poucos depois que a tensão é aplicada, e o dielétrico continua absorvendo carga lentamente (absorção dielétrica) [69].
+
+Por causa disso, o τ experimental depende da tensão final adotada. A Tabela 6.1-3 reúne as três estimativas calculadas a partir da Tabela 6.1-2.
+
+| Método | Tensão final usada | τ experimental | Desvio em relação a 61,1 s |
+|---|---|---|---|
+| 63,2 % da tensão em que o capacitor se estabilizou | 4,37 V (medida) | 64,5 s | +5,5 % |
+| 63,2 % da tensão da fonte | 4,60 V (medida) | 71,4 s | +16,9 % |
+| Ajuste por mínimos quadrados dos 51 pontos, com tensão final e τ livres | 4,17 V (ajustada) | 60,4 ± 0,5 s | −1,1 % |
+
+*Tabela 6.1-3 — Estimativas do τ experimental. Fonte: cálculos do grupo a partir da Tabela 6.1-2.*
+
+A estimativa principal usa V∞ = 4,37 V, porque é a tensão em que o capacitor de fato se estabilizou. Com o multímetro e a fuga em paralelo, ele nunca chegaria a 4,60 V, então 63,2 % de V₀ não corresponde a nenhum ponto característico da carga real e superestima τ. Com 0,632 × 4,37 V ≈ 2,76 V, o valor fica entre t = 60 s (2,65 V) e t = 66 s (2,80 V) na Tabela 6.1-2. Interpolando linearmente:
 
 $$\tau_{exp} \approx 60\ \text{s} + \frac{2{,}76 - 2{,}65}{2{,}80 - 2{,}65} \cdot 6\ \text{s} \approx 64{,}5\ \text{s}$$
 
@@ -2288,10 +2304,10 @@ Em relação ao valor teórico da seção 6.1.2 (τ ≈ 61,1 s), o desvio é de:
 
 $$\frac{64{,}5 - 61{,}1}{61{,}1} \times 100\% \approx 5{,}5\%$$
 
-Ou seja, o τ experimental ficou dentro da faixa de projeto de 60 ± 10 s e perto do valor teórico.
+O ajuste de curva, que usa os 51 pontos de uma vez, dá uma segunda estimativa de 60,4 s, cerca de 1 % abaixo do teórico. As duas ficam dentro da faixa de projeto de 60 ± 10 s. A diferença de uns 4 s entre elas vem da cauda lenta: o V∞ de 4,37 V inclui a subida que aconteceu depois dos 5 minutos, e o ajuste de 0 a 300 s não chega a vê-la.
 
-A maior fonte de erro é a tolerância do capacitor. Eletrolíticos de alumínio costumam ter ±20 % de tolerância na capacitância, e é esse o valor que a fabricante do componente usado (HYNCDZ) informa para peças de 2200 µF [67]. Só essa faixa já permite τ entre aproximadamente 49 s e 73 s, o que cobre com folga o desvio de 5,5 %. Não deu para medir a capacitância real, porque o multímetro usado não tem essa função. Os resistores pesam bem menos: medidos fora do circuito, deram R1 = 67,3 kΩ e R2 = 47,1 kΩ, no máximo 1 % longe dos valores nominais. Com eles, R_eq = 27,7 kΩ e τ = 61,0 s, uma diferença desprezível em relação ao τ nominal.
+A maior incerteza do valor teórico é a tolerância do capacitor. Eletrolíticos de alumínio costumam ter ±20 % de tolerância na capacitância [67], o que, sozinho, permite τ entre aproximadamente 49 s e 73 s e cobre as três estimativas da Tabela 6.1-3. Não deu para medir a capacitância real, porque o multímetro usado não tem essa função. Os resistores pesam bem menos: medidos fora do circuito, deram R1 = 67,3 kΩ e R2 = 47,1 kΩ, no máximo 1 % longe dos valores nominais. Com eles, R_eq = 27,7 kΩ e τ = 61,0 s, uma diferença desprezível em relação ao τ nominal.
 
-A corrente de fuga, discutida acima, impede o capacitor de chegar a V₀ e deixa o final da carga mais lento do que o modelo ideal prevê. A fonte também contribui: o pino 5V da ESP32 recebe a tensão da porta USB através de um diodo de proteção, por isso ficou abaixo de 5 V (4,60 V), e variou entre os ensaios, de 4,40 V a 4,60 V. Por fim, o multímetro tem resolução de 0,01 V e atualiza o display poucas vezes por segundo. Junto com a marcação do instante t = 0 (o contato do jumper), isso dá uma incerteza de cerca de ±0,5 s nos tempos, que pesa mais nos primeiros pontos, quando a tensão muda mais rápido.
+O multímetro e a corrente de fuga, discutidos acima, baixam a tensão final e deixam a curva medida abaixo da teórica a partir dos 30 s. A fonte também contribui: o pino 5V da ESP32 recebe a tensão da porta USB através de um diodo de proteção, por isso ficou abaixo de 5 V (4,60 V), e variou entre os ensaios, de 4,40 V a 4,60 V. Por fim, o multímetro tem resolução de 0,01 V e atualiza o display poucas vezes por segundo. Junto com a marcação do instante t = 0 (o contato do jumper), isso dá uma incerteza de cerca de ±0,5 s nos tempos, que pesa mais nos primeiros pontos, quando a tensão muda mais rápido.
 
-Em resumo, o experimento reproduziu a carga exponencial de um capacitor num circuito RC, e o τ obtido, cerca de 64,5 s, ficou a 5,5 % do teórico de 61,1 s, dentro da margem de projeto e da tolerância do capacitor. O modelo descreve bem o início da carga. O final, por outro lado, mostra um limite do modelo ideal para eletrolíticos reais: com a corrente de fuga, a tensão se estabiliza abaixo da tensão da fonte. Para uma comparação mais precisa, o próximo passo seria medir a capacitância real com um capacímetro e usar uma fonte regulada.
+Em resumo, o experimento reproduziu a carga exponencial de um capacitor num circuito RC. O τ experimental ficou entre 60,4 s (ajuste de curva) e 64,5 s (63,2 % da tensão final medida), no máximo 5,5 % longe do teórico de 61,1 s, dentro da margem de projeto e da tolerância do capacitor. O modelo ideal descreve bem o início da carga, mas não o final: o multímetro em paralelo e a fuga do eletrolítico fazem a tensão se estabilizar abaixo da fonte, e a fuga que diminui com o tempo e a absorção dielétrica deixam uma cauda lenta que uma única exponencial não acompanha. Para uma comparação mais precisa, o próximo passo seria medir a capacitância real com um capacímetro, usar uma fonte regulada e medir a tensão com um instrumento de impedância de entrada maior (de 10 MΩ, por exemplo).
