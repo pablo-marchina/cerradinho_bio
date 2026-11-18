@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Mail, Phone, MapPin, BatteryMedium, ShieldCheck, ShieldAlert, Radio, Building2, Receipt, CalendarClock, PlayCircle } from 'lucide-react';
 import { usePortfolio } from '@/portfolio/store';
-import { AssetThumb, DeskOwner, DueBar, FlagChips, Journey, StagePill } from '@/portfolio/ui';
+import { AssetThumb, Avatar, DeskOwner, DueBar, StatusText, Journey, StageLabel } from '@/portfolio/ui';
 import {
   ago, criticalityLabel, dateBr, daysSinceNf, dueRemaining, icmsAtRisk, legalLimitDays, legalRemaining, money, nextAction, personaLabel, personaName, supplierOf,
 } from '@/portfolio/logic';
@@ -16,7 +16,7 @@ export function AssetDetail() {
   const { state } = usePortfolio();
   const a = state.assets.find(x => x.id === id);
   if (!a) return (
-    <div className="persona-page">
+    <div className="pp">
       <h1>Ativo não encontrado</h1>
       <Link to="/">Voltar ao painel</Link>
     </div>
@@ -25,19 +25,19 @@ export function AssetDetail() {
   const legal = legalRemaining(a, state.now, state.suppliers);
   const since = daysSinceNf(a, state.now);
   return (
-    <div className="persona-page">
+    <div className="pp">
       <Link to="/" className="back"><ArrowLeft size={16} /> Painel</Link>
-      <header className="asset-hero card">
+      <header className="asset-hero">
         <AssetThumb asset={a} size={112} />
         <div className="asset-hero-main">
           <div className="row-gap">
-            <StagePill stage={a.stage} />
+            <StageLabel stage={a.stage} />
             <span className={`chip crit-${a.criticality}`}>Criticidade {criticalityLabel[a.criticality]}</span>
           </div>
           <h1>{a.name}</h1>
           <p className="muted mono">{a.id} · {a.om} · {a.tag ?? 'sem TAG'} · {a.area}</p>
           <p className="small">{a.problem}</p>
-          <FlagChips asset={a} />
+          <StatusText asset={a} />
           <DeskOwner asset={a} />
         </div>
       </header>
@@ -46,8 +46,8 @@ export function AssetDetail() {
 
       <NextActionCard asset={a} />
 
-      <div className="detail-grid">
-        <section className="card section-card">
+      <div className="detail-cols">
+        <section className="pp-section">
           <h2><Building2 size={18} /> Oficina e combinado</h2>
           {s ? (
             <dl className="facts">
@@ -68,7 +68,7 @@ export function AssetDetail() {
           {['ida', 'oficina'].includes(a.stage) && <div className="due-big"><DueBar asset={a} now={state.now} /></div>}
         </section>
 
-        <section className="card section-card">
+        <section className="pp-section">
           <h2><Receipt size={18} /> Fiscal</h2>
           <dl className="facts">
             <div><dt>NF de remessa</dt><dd className="mono">{a.remittance?.number ?? 'Não emitida'}</dd></div>
@@ -89,7 +89,7 @@ export function AssetDetail() {
           )}
         </section>
 
-        <section className="card section-card">
+        <section className="pp-section">
           <h2><Radio size={18} /> TAG e lacre</h2>
           {a.tag ? (
             <dl className="facts">
@@ -104,7 +104,7 @@ export function AssetDetail() {
           <Link className="small link" to="/dispositivos">Ver telemetria e comandos da TAG</Link>
         </section>
 
-        <section className="card section-card">
+        <section className="pp-section">
           <h2>Histórico</h2>
           <ol className="history">
             {a.history.map((h, i) => (
@@ -149,7 +149,7 @@ function NextActionCard({ asset }: { asset: PortfolioAsset }) {
   return (
     <section className={`card next-card who-${n.persona}`} aria-labelledby="next">
       <div className="next-head">
-        <span className={`persona-dot p-${n.persona}`}>{personaLabel[n.persona][0]}</span>
+        <Avatar p={n.persona} />
         <div>
           <p className="eyebrow">Próxima ação · {personaLabel[n.persona]}</p>
           <h2 id="next">{n.label}</h2>

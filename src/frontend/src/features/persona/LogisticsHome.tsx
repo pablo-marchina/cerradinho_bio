@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Bar, BarChart, CartesianGrid, Legend, Line, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell } from 'recharts';
 import { PlayCircle, Truck, Timer, Target, Landmark, Hourglass, Download } from 'lucide-react';
 import { usePortfolio } from '@/portfolio/store';
-import { AssetThumb, StagePill, StageTrack, Tile } from '@/portfolio/ui';
+import { AssetThumb, Avatar, StageLabel, ProcessRail, Figure } from '@/portfolio/ui';
 import { handoffStuckDays, ownerOf, personaName, sortByAttention, icmsAtRisk, isOpen, isOutside, moneyShort, personaLabel, STAGES, stageCounts, stageDwell, stageIndex, supplierOf, supplierStats } from '@/portfolio/logic';
 import type { PortfolioState } from '@/portfolio/types';
 
@@ -49,8 +49,8 @@ export function LogisticsHome() {
   const icms = open.reduce((s, a) => s + icmsAtRisk(a), 0);
 
   return (
-    <div className="persona-page">
-      <header className="persona-hero">
+    <div className="pp">
+      <header className="pp-hero">
         <div>
           <p className="eyebrow">Visão da Logística · Izidio</p>
           <h1>Onde o processo está travando</h1>
@@ -61,24 +61,24 @@ export function LogisticsHome() {
         <button type="button" className="btn btn-secondary" onClick={() => csv(state)}><Download size={16} /> Exportar ciclos (CSV para o BI)</button>
       </header>
 
-      <section className="tiles" aria-label="Indicadores">
-        <Tile icon={Truck} label="Ativos fora da usina" value={open.filter(isOutside).length} hint={`${open.length} ciclos abertos`} />
-        <Tile icon={Timer} label="Reparo médio" value={`${avgRepair} d`} hint="Da chegada à saída da oficina" />
-        <Tile icon={Target} label="Devolvidos no prazo" value={`${onTime}%`} tone={onTime < 70 ? 'warning' : 'success'} hint={`${finished} ciclos concluídos`} />
-        <Tile icon={Landmark} label="ICMS suspenso" value={moneyShort(icms)} hint="Estimativa de 12%" />
-        <Tile icon={Hourglass} label="Passagens paradas" value={stuck.length} tone={stuck.length ? 'warning' : 'success'} hint="Entre áreas há mais de 2 dias" />
+      <section className="figs" aria-label="Indicadores">
+        <Figure label="Ativos fora da usina" value={open.filter(isOutside).length} />
+        <Figure label="Reparo médio" value={`${avgRepair} d`} />
+        <Figure label="Devolvidos no prazo" value={`${onTime}%`} tone={onTime < 70 ? 'warn' : 'ok'} />
+        <Figure label="ICMS suspenso" value={moneyShort(icms)} />
+        <Figure label="Passagens paradas" value={stuck.length} tone={stuck.length ? 'warn' : 'ok'} />
       </section>
 
       <LogisticsDesk />
 
-      <section className="card section-card">
-        <div className="section-head"><h2>Esteira do processo</h2></div>
-        <StageTrack counts={stageCounts(open)} hide={['encerrado']} />
+      <section className="pp-section">
+        <div className="pp-head row-between"><h2>Esteira do processo</h2></div>
+        <ProcessRail counts={stageCounts(open)} hide={['encerrado']} />
       </section>
 
       <div className="split">
-        <section className="card section-card" aria-labelledby="dwell">
-          <div className="section-head"><h2 id="dwell">Tempo médio em cada etapa</h2><span className="muted small">Barras em dias; vermelho é o maior gargalo</span></div>
+        <section className="pp-section" aria-labelledby="dwell">
+          <div className="pp-head row-between"><h2 id="dwell">Tempo médio em cada etapa</h2><span className="muted small">Barras em dias; vermelho é o maior gargalo</span></div>
           <div className="chart">
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={dwell} layout="vertical" margin={{ left: 24, right: 16 }}>
@@ -94,8 +94,8 @@ export function LogisticsHome() {
           </div>
         </section>
 
-        <section className="card section-card" aria-labelledby="fluxo">
-          <div className="section-head"><h2 id="fluxo">Saídas e retornos por mês</h2></div>
+        <section className="pp-section" aria-labelledby="fluxo">
+          <div className="pp-head row-between"><h2 id="fluxo">Saídas e retornos por mês</h2></div>
           <div className="chart">
             <ResponsiveContainer width="100%" height={260}>
               <ComposedChart data={monthly(state)}>
@@ -112,10 +112,10 @@ export function LogisticsHome() {
         </section>
       </div>
 
-      <section className="card section-card" aria-labelledby="ofic">
-        <div className="section-head"><h2 id="ofic">Desempenho das oficinas</h2><span className="muted small">Base para renovar ou trocar de fornecedor</span></div>
-        <div className="table-wrap">
-          <table className="asset-table">
+      <section className="pp-section" aria-labelledby="ofic">
+        <div className="pp-head row-between"><h2 id="ofic">Desempenho das oficinas</h2><span className="muted small">Base para renovar ou trocar de fornecedor</span></div>
+        <div className="rows-wrap">
+          <table className="rows">
             <thead><tr><th>Oficina</th><th>Na oficina</th><th>Atrasados</th><th>Reparo médio</th><th>No prazo</th><th></th></tr></thead>
             <tbody>
               {stats.map(x => (
@@ -140,8 +140,8 @@ export function LogisticsHome() {
         </div>
       </section>
 
-      <section className="card section-card" aria-labelledby="stuck">
-        <div className="section-head"><h2 id="stuck">Passagens paradas entre áreas</h2><span className="muted small">Quem precisa ser cobrado</span></div>
+      <section className="pp-section" aria-labelledby="stuck">
+        <div className="pp-head row-between"><h2 id="stuck">Passagens paradas entre áreas</h2><span className="muted small">Quem precisa ser cobrado</span></div>
         {!stuck.length && <p className="muted empty">Nenhuma passagem parada.</p>}
         <ul className="stuck-list">
           {stuck.map(({ a, d }) => {
@@ -149,7 +149,7 @@ export function LogisticsHome() {
             return (
               <li key={a.id}>
                 <Link to={`/ativos/${a.id}`}>
-                  <span className={`persona-dot p-${who}`}>{personaName[who][0]}</span>
+                  <Avatar p={who} />
                   <span className="grow"><b>{a.name}</b><span className="small muted mono"> {a.id}</span><br /><span className="small">{STAGES[stageIndex(a.stage)].label} há {d} dias · cobrar {personaName[who]} ({personaLabel[who]})</span></span>
                 </Link>
               </li>
@@ -167,15 +167,15 @@ function LogisticsDesk() {
   const mine = sortByAttention(state.assets.filter(a => ownerOf(a) === 'logistica'), state.now, state.suppliers);
   const label = { aguardando_coleta: 'Simular coleta', ida: 'Simular chegada na oficina', retorno: 'Simular chegada na usina' } as Record<string, string>;
   return (
-    <section className="card section-card" aria-labelledby="mesa-log">
-      <div className="section-head"><h2 id="mesa-log">Na sua mesa <span className="muted mono">({mine.length})</span></h2><span className="muted small">Coletas pedidas e ativos em trânsito</span></div>
+    <section className="pp-section" aria-labelledby="mesa-log">
+      <div className="pp-head row-between"><h2 id="mesa-log">Na sua mesa <span className="muted mono">({mine.length})</span></h2><span className="muted small">Coletas pedidas e ativos em trânsito</span></div>
       {!mine.length && <p className="muted empty">Nada com você agora.</p>}
       <ul className="desk-list">
         {mine.slice(0, 8).map(a => (
           <li key={a.id}>
             <AssetThumb asset={a} size={36} />
             <Link to={`/ativos/${a.id}`} className="grow"><b>{a.name}</b><span className="small muted mono">{a.id} · {supplierOf(a, state.suppliers)?.city ?? ''}</span></Link>
-            <StagePill stage={a.stage} />
+            <StageLabel stage={a.stage} />
             <button type="button" className="btn btn-secondary" onClick={() => dispatch({ type: 'advance', id: a.id })}><PlayCircle size={16} /> {label[a.stage]}</button>
           </li>
         ))}

@@ -1,200 +1,206 @@
 import { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Siren, Clock, Hourglass, WifiOff, Phone, BellRing, Wrench, Truck, Undo2, Plus, FileText, Factory } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Plus, X, ArrowRight } from 'lucide-react';
 import { usePortfolio } from '@/portfolio/store';
-import { AssetThumb, DueBar, FlagChips, NextActionTag, RegionMap, StagePill, StageTrack, Tile } from '@/portfolio/ui';
+import { MapView } from '@/portfolio/MapView';
+import { DeadlineCalendar } from '@/portfolio/Calendar';
+import { AssetThumb, Avatar, DueBar, Figure, MiniJourney, ProcessRail, StageLabel, StatusText, statusOf } from '@/portfolio/ui';
 import {
-  flagsOf, isCritical, isNoSignal, isNotified, isOpen, isOutside, isOverdue, isUrgent, needsCall, ownerOf, sortByAttention, stageCounts, supplierOf, type Flag,
+  STAGES, flagsOf, isCritical, isNoSignal, isNotified, isOpen, isOutside, isOverdue, isUrgent, needsCall, nextAction, ownerOf, personaLabel, personaName, sortByAttention, stageCounts, stageIndex, supplierOf, type Flag,
 } from '@/portfolio/logic';
 import type { PortfolioAsset, Stage } from '@/portfolio/types';
 
-type TileFilter = Flag | 'oficina' | 'ida' | 'retorno' | null;
+type Pick = { kind: 'stage'; stage: Stage } | { kind: 'flag'; flag: Flag } | null;
+
+const flagTitle: Partial<Record<Flag, string>> = {
+  critico: 'Críticos',
+  atrasado: 'Prazo vencido',
+  urgente: 'Perto do prazo',
+  ligar: 'Precisam de ligação',
+  notificado: 'Oficina já cobrada',
+  sem_sinal: 'Sem sinal da TAG',
+};
+const flagHelp: Partial<Record<Flag, string>> = {
+  critico: 'Lacre rompido, atraso em ativo de criticidade alta ou prazo fiscal com 15 dias ou menos.',
+  atrasado: 'Passaram da data prometida pela oficina.',
+  urgente: 'A data prometida vence em até 7 dias ou o prazo fiscal em até 30.',
+  ligar: 'Atrasados ou vencendo em 5 dias, sem cobrança registrada nos últimos 3 dias.',
+  notificado: 'Você cobrou a oficina nos últimos 3 dias.',
+  sem_sinal: 'A TAG não se comunica há mais de 8 dias.',
+};
 
 export function PcmHome() {
   const { state } = usePortfolio();
-  const nav = useNavigate();
   const { now, suppliers } = state;
   const open = useMemo(() => state.assets.filter(isOpen), [state.assets]);
-  const [stage, setStage] = useState<Stage | null>(null);
-  const [tile, setTile] = useState<TileFilter>(null);
+  const [pick, setPick] = useState<Pick>(null);
   const [q, setQ] = useState('');
-
   const count = (fn: (a: PortfolioAsset) => boolean) => open.filter(fn).length;
-  const tiles: { id: TileFilter; label: string; value: number; icon: typeof Siren; tone: string; hint: string }[] = [
-    { id: 'critico', label: 'Críticos', value: count(a => isCritical(a, now, suppliers)), icon: Siren, tone: 'danger', hint: 'Lacre violado, atraso em item crítico ou prazo legal no fim' },
-    { id: 'atrasado', label: 'Acima do prazo', value: count(a => isOverdue(a, now)), icon: Clock, tone: 'danger', hint: 'Passaram da data combinada com a oficina' },
-    { id: 'urgente', label: 'Urgentes', value: count(a => isUrgent(a, now, suppliers)), icon: Hourglass, tone: 'warning', hint: 'Vencem em até 7 dias ou prazo legal em 30' },
-    { id: 'ligar', label: 'Precisam de ligação', value: count(a => needsCall(a, now)), icon: Phone, tone: 'warning', hint: 'Atrasados ou perto do prazo sem cobrança recente' },
-    { id: 'notificado', label: 'Já cobrados', value: count(a => isOutside(a) && isNotified(a, now)), icon: BellRing, tone: 'success', hint: 'Oficina cobrada nos últimos 3 dias' },
-    { id: 'sem_sinal', label: 'Sem sinal', value: count(a => isNoSignal(a, now)), icon: WifiOff, tone: 'neutral', hint: 'TAG sem comunicação há mais de 8 dias' },
+
+  const figures: { flag: Flag; value: number; tone: 'alert' | 'warn' | 'ok' | 'none' }[] = [
+    { flag: 'critico', value: count(a => isCritical(a, now, suppliers)), tone: 'alert' },
+    { flag: 'atrasado', value: count(a => isOverdue(a, now)), tone: 'alert' },
+    { flag: 'urgente', value: count(a => isUrgent(a, now, suppliers)), tone: 'warn' },
+    { flag: 'ligar', value: count(a => needsCall(a, now)), tone: 'warn' },
+    { flag: 'notificado', value: count(a => isOutside(a) && isNotified(a, now)), tone: 'ok' },
+    { flag: 'sem_sinal', value: count(a => isNoSignal(a, now)), tone: 'none' },
   ];
-  const where: { id: TileFilter; label: string; value: number; icon: typeof Siren }[] = [
-    { id: 'ida', label: 'Indo para a oficina', value: count(a => a.stage === 'ida'), icon: Truck },
-    { id: 'oficina', label: 'Na oficina', value: count(a => a.stage === 'oficina'), icon: Wrench },
-    { id: 'retorno', label: 'Voltando', value: count(a => a.stage === 'retorno'), icon: Undo2 },
-  ];
+
+  const picked = useMemo(() => {
+    if (!pick) return [];
+    const xs = pick.kind === 'stage' ? open.filter(a => a.stage === pick.stage) : open.filter(a => flagsOf(a, now, suppliers).includes(pick.flag));
+    return sortByAttention(xs, now, suppliers);
+  }, [pick, open, now, suppliers]);
 
   const list = useMemo(() => {
-    let xs = open;
-    if (stage) xs = xs.filter(a => a.stage === stage);
-    if (tile === 'ida' || tile === 'oficina' || tile === 'retorno') xs = xs.filter(a => a.stage === tile);
-    else if (tile) xs = xs.filter(a => flagsOf(a, now, suppliers).includes(tile));
-    if (q.trim()) {
-      const t = q.trim().toLowerCase();
-      xs = xs.filter(a => [a.name, a.id, a.tag ?? '', a.om, a.remittance?.number ?? '', supplierOf(a, suppliers)?.name ?? ''].some(v => v.toLowerCase().includes(t)));
-    }
+    const t = q.trim().toLowerCase();
+    const xs = t ? open.filter(a => [a.name, a.id, a.tag ?? '', a.om, a.remittance?.number ?? '', supplierOf(a, suppliers)?.name ?? ''].some(v => v.toLowerCase().includes(t))) : open;
     return sortByAttention(xs, now, suppliers);
-  }, [open, stage, tile, q, now, suppliers]);
-  const [limit, setLimit] = useState(12);
-  const myNotices = state.notices.filter(n => n.to === 'pcm' && !n.read).slice(0, 3);
+  }, [open, q, now, suppliers]);
+  const [limit, setLimit] = useState(10);
+  const mine = sortByAttention(open.filter(a => ownerOf(a) === 'pcm'), now, suppliers);
 
   return (
-    <div className="persona-page">
-      <header className="persona-hero">
+    <div className="pp">
+      <header className="pp-hero">
         <div>
-          <p className="eyebrow">Visão do PCM · Geraldo</p>
+          <p className="eyebrow">Painel do PCM</p>
           <h1>{open.length} ativos em manutenção externa</h1>
-          <p className="muted">
-            {count(a => isCritical(a, now, suppliers))} críticos, {count(a => isOverdue(a, now))} acima do prazo e {count(a => needsCall(a, now))} esperando uma ligação sua.
+          <p className="lead">
+            <span className="t-alert">{count(a => isCritical(a, now, suppliers))} críticos</span>, {count(a => isOverdue(a, now))} com prazo vencido e {count(a => needsCall(a, now))} esperando uma ligação sua.
           </p>
         </div>
-        <Link className="btn btn-primary" to="/ativos/novo">
-          <Plus size={18} /> Novo envio
-        </Link>
+        <Link className="btn btn-primary btn-lg" to="/ativos/novo"><Plus size={20} /> Novo envio</Link>
       </header>
 
-      {myNotices.length > 0 && (
-        <div className="notice-strip">
-          {myNotices.map(n => (
-            <Link key={n.id} to={`/ativos/${n.assetId}`} className="notice">
-              <FileText size={16} aria-hidden="true" /> {n.text}
-            </Link>
+      <section className="pp-section" aria-labelledby="proc">
+        <div className="pp-head">
+          <h2 id="proc">Onde está cada ativo no processo</h2>
+          <p className="muted">Clique numa etapa para ver os ativos que estão nela e com quem estão.</p>
+        </div>
+        <ProcessRail counts={stageCounts(open)} active={pick?.kind === 'stage' ? pick.stage : null} onPick={s => setPick(s ? { kind: 'stage', stage: s } : null)} hide={['encerrado']} />
+        <div className="figs" role="group" aria-label="Situação dos ativos">
+          {figures.map(f => (
+            <Figure key={f.flag} value={f.value} label={flagTitle[f.flag]!} tone={f.tone} active={pick?.kind === 'flag' && pick.flag === f.flag} onClick={() => setPick(pick?.kind === 'flag' && pick.flag === f.flag ? null : { kind: 'flag', flag: f.flag })} />
           ))}
         </div>
-      )}
-
-      <section className="card section-card" aria-labelledby="pipe">
-        <div className="section-head">
-          <h2 id="pipe">Onde está cada ativo no processo</h2>
-          <span className="muted small">Clique numa etapa para filtrar a lista</span>
-        </div>
-        <StageTrack counts={stageCounts(open)} active={stage} onPick={setStage} hide={['encerrado']} />
+        {pick && <PickPanel pick={pick} assets={picked} onClose={() => setPick(null)} />}
       </section>
 
-      <section className="tiles" aria-label="Situação dos ativos">
-        {tiles.map(t => (
-          <Tile key={t.id} icon={t.icon} label={t.label} value={t.value} hint={t.hint} tone={t.tone} active={tile === t.id} onClick={() => setTile(tile === t.id ? null : t.id)} />
-        ))}
-      </section>
-
-      <div className="split">
-        <section className="card section-card" aria-labelledby="mapa">
-          <div className="section-head">
+      <div className="pp-cols">
+        <section className="pp-section" aria-labelledby="mapa">
+          <div className="pp-head">
             <h2 id="mapa">Onde estão agora</h2>
-            <span className="legend">
-              <i className="lg-go" /> indo <i className="lg-back" /> voltando <i className="lg-sup" /> na oficina
-            </span>
+            <p className="muted">Usina em Chapadão do Céu (GO), oficinas e ativos na estrada. Clique numa oficina para ver os detalhes.</p>
           </div>
-          <RegionMap assets={open} suppliers={suppliers} onPick={id => nav(`/ativos/${id}`)} />
-          <div className="where">
-            {where.map(w => (
-              <button key={w.id} type="button" className={`where-item ${tile === w.id ? 'on' : ''}`} onClick={() => setTile(tile === w.id ? null : w.id)}>
-                <w.icon size={18} aria-hidden="true" />
-                <b className="mono">{w.value}</b> {w.label}
-              </button>
-            ))}
-            <span className="where-item static">
-              <Factory size={18} aria-hidden="true" />
-              <b className="mono">{count(a => a.stage === 'na_usina')}</b> na usina sem baixa
-            </span>
-          </div>
+          <MapView assets={open} />
+          <p className="map-legend">
+            <span><i className="lg-plant" /> Usina</span>
+            <span><i className="lg-sup" /> Oficina, com nº em reparo</span>
+            <span><i className="lg-truck" /> Ativo na estrada</span>
+            <span><i className="lg-alert" /> Com alerta</span>
+          </p>
         </section>
 
-        <section className="card section-card" aria-labelledby="fila">
-          <div className="section-head">
-            <h2 id="fila">Na sua mesa <span className="muted mono">({open.filter(a => ownerOf(a) === 'pcm').length})</span></h2>
-            <span className="muted small">Ativos parados com você, do mais urgente</span>
+        <section className="pp-section" aria-labelledby="mesa">
+          <div className="pp-head">
+            <h2 id="mesa">Na sua mesa <span className="muted mono">{mine.length}</span></h2>
+            <p className="muted">Ativos parados com você, do mais urgente.</p>
           </div>
-          <ol className="queue">
-            {sortByAttention(open.filter(a => ownerOf(a) === 'pcm'), now, suppliers)
-              .slice(0, 6)
-              .map(a => (
-                <li key={a.id}>
-                  <Link to={`/ativos/${a.id}`}>
-                    <AssetThumb asset={a} size={36} />
-                    <span className="queue-main">
-                      <b>{a.name}</b>
-                      <span className="small muted mono">{a.id} · {supplierOf(a, suppliers)?.name ?? 'sem oficina'}</span>
-                      <FlagChips asset={a} />
-                    </span>
-                    <NextActionTag asset={a} />
-                  </Link>
-                </li>
-              ))}
+          <ol className="desk">
+            {mine.slice(0, 7).map(a => (
+              <li key={a.id}>
+                <Link to={`/ativos/${a.id}`}>
+                  <AssetThumb asset={a} size={44} />
+                  <span className="grow">
+                    <b>{a.name}</b>
+                    <span className="muted mono">{a.id} · {supplierOf(a, suppliers)?.name ?? 'oficina a definir'}</span>
+                    <StatusText asset={a} />
+                  </span>
+                  <span className="desk-next">{nextAction(a, now).label} <ArrowRight size={16} /></span>
+                </Link>
+              </li>
+            ))}
           </ol>
         </section>
       </div>
 
-      <section className="card section-card" aria-labelledby="todos">
-        <div className="section-head">
-          <h2 id="todos">
-            Ativos {stage || tile ? <span className="muted">· filtrado</span> : null} <span className="muted mono">({list.length})</span>
-          </h2>
+      <section className="pp-section" aria-labelledby="cal">
+        <div className="pp-head">
+          <h2 id="cal">Calendário de prazos</h2>
+          <p className="muted">Datas prometidas pelas oficinas e limites fiscais da suspensão do ICMS.</p>
+        </div>
+        <DeadlineCalendar />
+      </section>
+
+      <section className="pp-section" aria-labelledby="todos">
+        <div className="pp-head row-between">
+          <h2 id="todos">Todos os ativos <span className="muted mono">{list.length}</span></h2>
           <div className="row-gap">
-            <input className="input" value={q} onChange={e => setQ(e.target.value)} placeholder="Buscar ativo, TAG, OM, NF ou oficina" aria-label="Buscar na carteira" />
-            {(stage || tile || q) && (
-              <button type="button" className="btn btn-ghost" onClick={() => { setStage(null); setTile(null); setQ(''); }}>
-                Limpar filtros
-              </button>
-            )}
+            <input className="input" value={q} onChange={e => setQ(e.target.value)} placeholder="Buscar ativo, TAG, OM, NF ou oficina" aria-label="Buscar ativo" />
+            <Link to="/ativos" className="btn btn-secondary">Ver trajetórias</Link>
           </div>
         </div>
-        <AssetTable assets={list.slice(0, limit)} />
-        {list.length > limit && (
-          <button type="button" className="btn btn-secondary more" onClick={() => setLimit(limit + 20)}>
-            Mostrar mais {Math.min(20, list.length - limit)}
-          </button>
-        )}
+        <AssetRows assets={list.slice(0, limit)} />
+        {list.length > limit && <button type="button" className="btn btn-secondary more" onClick={() => setLimit(limit + 20)}>Mostrar mais {Math.min(20, list.length - limit)}</button>}
       </section>
     </div>
   );
 }
 
-export function AssetTable({ assets }: { assets: PortfolioAsset[] }) {
-  const { state } = usePortfolio();
-  if (!assets.length) return <p className="muted empty">Nenhum ativo com esse filtro.</p>;
+function PickPanel({ pick, assets, onClose }: { pick: NonNullable<Pick>; assets: PortfolioAsset[]; onClose: () => void }) {
+  const stage = pick.kind === 'stage' ? STAGES[stageIndex(pick.stage)] : null;
   return (
-    <div className="table-wrap">
-      <table className="asset-table">
+    <div className="pick" role="region" aria-live="polite" aria-label="Ativos selecionados">
+      <div className="pick-head">
+        <div>
+          <h3>{stage ? stage.label : flagTitle[pick.kind === 'flag' ? pick.flag : 'critico']} <span className="muted mono">{assets.length}</span></h3>
+          <p className="muted">
+            {stage ? (
+              <>{stage.hint}. {stage.who !== 'sistema' && <>Fica na mesa de <b>{personaName[stage.who]}</b> ({personaLabel[stage.who]}).</>}</>
+            ) : flagHelp[pick.kind === 'flag' ? pick.flag : 'critico']}
+          </p>
+        </div>
+        <button type="button" className="icon-btn" onClick={onClose} aria-label="Fechar"><X size={20} /></button>
+      </div>
+      {assets.length ? <AssetRows assets={assets.slice(0, 12)} /> : <p className="muted">Nenhum ativo aqui agora.</p>}
+      {assets.length > 12 && <p className="muted">E mais {assets.length - 12}. Use a busca em "Todos os ativos".</p>}
+    </div>
+  );
+}
+
+export function AssetRows({ assets, journey = false }: { assets: PortfolioAsset[]; journey?: boolean }) {
+  const { state } = usePortfolio();
+  return (
+    <div className="rows-wrap">
+      <table className="rows">
         <thead>
           <tr>
             <th>Ativo</th>
-            <th>Etapa</th>
+            <th>{journey ? 'Trajetória' : 'Etapa'}</th>
+            <th>Com quem</th>
             <th>Oficina</th>
             <th>Prazo</th>
             <th>Situação</th>
-            <th>Próxima ação</th>
           </tr>
         </thead>
         <tbody>
           {assets.map(a => {
             const s = supplierOf(a, state.suppliers);
+            const o = ownerOf(a);
             return (
-              <tr key={a.id}>
+              <tr key={a.id} className={statusOf(a, state.now, state.suppliers).tone === 'alert' ? 'row-alert' : ''}>
                 <td>
                   <Link to={`/ativos/${a.id}`} className="asset-cell">
-                    <AssetThumb asset={a} size={36} />
-                    <span>
-                      <b>{a.name}</b>
-                      <span className="small muted mono">{a.id} · {a.tag ?? 'sem TAG'}</span>
-                    </span>
+                    <AssetThumb asset={a} size={44} />
+                    <span><b>{a.name}</b><span className="muted mono">{a.id} · {a.tag ?? 'sem TAG'}</span></span>
                   </Link>
                 </td>
-                <td><StagePill stage={a.stage} /></td>
-                <td>{s ? <><span>{s.name}</span><br /><span className="small muted">{s.city}/{s.uf}</span></> : <span className="muted">A definir</span>}</td>
+                <td>{journey ? <><MiniJourney stage={a.stage} /><span className="muted block">{STAGES[stageIndex(a.stage)].label}</span></> : <StageLabel stage={a.stage} />}</td>
+                <td>{o ? <span className="who"><Avatar p={o} size="sm" /> {personaName[o]}</span> : <span className="muted">—</span>}</td>
+                <td>{s ? <>{s.name}<span className="muted block">{s.city}/{s.uf}</span></> : <span className="muted">A definir</span>}</td>
                 <td><DueBar asset={a} now={state.now} /></td>
-                <td><FlagChips asset={a} /></td>
-                <td><NextActionTag asset={a} /></td>
+                <td><StatusText asset={a} /></td>
               </tr>
             );
           })}

@@ -2,9 +2,10 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Factory, CalendarClock, Landmark, Search, CircleCheck, CircleAlert, ChevronDown } from 'lucide-react';
 import { usePortfolio } from '@/portfolio/store';
-import { AssetThumb, StagePill, StageTrack, Tile } from '@/portfolio/ui';
+import { AssetThumb, StageLabel, ProcessRail, Figure } from '@/portfolio/ui';
 import { ago, cfopFor, dateBr, icmsAtRisk, isOpen, legalLimitDays, legalRemaining, money, moneyShort, stageCounts, supplierOf } from '@/portfolio/logic';
 import { NfForm } from './NfForm';
+import { DeadlineCalendar } from '@/portfolio/Calendar';
 import type { PortfolioAsset } from '@/portfolio/types';
 
 export function FiscalHome() {
@@ -21,8 +22,8 @@ export function FiscalHome() {
   const [open1, setOpen1] = useState<string | null>(null);
 
   return (
-    <div className="persona-page">
-      <header className="persona-hero">
+    <div className="pp">
+      <header className="pp-hero">
         <div>
           <p className="eyebrow">Visão do Fiscal · Clarice</p>
           <h1>{toIssue.length} NFs para emitir e {noReturn.length} retornos sem baixa</h1>
@@ -30,16 +31,16 @@ export function FiscalHome() {
         </div>
       </header>
 
-      <section className="tiles" aria-label="Pendências fiscais">
-        <Tile icon={FileText} label="NFs de remessa a emitir" value={toIssue.length} tone="warning" hint="Pedidas pelo PCM" />
-        <Tile icon={Factory} label="Voltaram sem NF de retorno" value={noReturn.length} tone="danger" hint="Remessa ainda aberta" />
-        <Tile icon={CalendarClock} label="Prazo legal em até 30 dias" value={legal.filter(x => x.r <= 30).length} tone="danger" hint="270 dias em GO, 360 fora" />
-        <Tile icon={Landmark} label="ICMS suspenso (estimado)" value={moneyShort(icms)} tone="neutral" hint="12% do valor das NFs abertas" />
+      <section className="figs" aria-label="Pendências fiscais">
+        <Figure label="NFs de remessa a emitir" value={toIssue.length} tone="warn" />
+        <Figure label="Voltaram sem NF de retorno" value={noReturn.length} tone="alert" />
+        <Figure label="Prazo legal em até 30 dias" value={legal.filter(x => x.r <= 30).length} tone="alert" />
+        <Figure label="ICMS suspenso (estimado)" value={moneyShort(icms)}  />
       </section>
 
       <div className="split">
-        <section className="card section-card" aria-labelledby="emitir">
-          <div className="section-head"><h2 id="emitir">NFs de remessa a emitir</h2><span className="muted small">Mais antigas primeiro</span></div>
+        <section className="pp-section" aria-labelledby="emitir">
+          <div className="pp-head row-between"><h2 id="emitir">NFs de remessa a emitir</h2><span className="muted small">Mais antigas primeiro</span></div>
           {!toIssue.length && <p className="muted empty">Nenhum pedido de NF pendente.</p>}
           <ul className="fiscal-list">
             {toIssue.map(a => {
@@ -62,8 +63,8 @@ export function FiscalHome() {
           </ul>
         </section>
 
-        <section className="card section-card" aria-labelledby="baixa">
-          <div className="section-head"><h2 id="baixa">Voltaram para a usina sem baixa</h2><span className="muted small">Lance a NF de retorno para encerrar</span></div>
+        <section className="pp-section" aria-labelledby="baixa">
+          <div className="pp-head row-between"><h2 id="baixa">Voltaram para a usina sem baixa</h2><span className="muted small">Lance a NF de retorno para encerrar</span></div>
           {!noReturn.length && <p className="muted empty">Nenhum retorno pendente.</p>}
           <ul className="fiscal-list">
             {noReturn.map(a => (
@@ -72,7 +73,7 @@ export function FiscalHome() {
                   <AssetThumb asset={a} size={36} />
                   <span className="grow">
                     <b>{a.name}</b>
-                    <span className="small muted mono">{a.id} · NF {a.remittance?.number}</span>
+                    <span className="small muted mono">{a.id} · {a.remittance?.number}</span>
                     <span className="small text-danger">Chegou {ago(a.arrivedPlantAt, now)} ({dateBr(a.arrivedPlantAt)})</span>
                   </span>
                   <ChevronDown size={18} className={open1 === a.id ? 'rot' : ''} />
@@ -85,8 +86,8 @@ export function FiscalHome() {
       </div>
 
       <div className="split">
-        <section className="card section-card" aria-labelledby="legal">
-          <div className="section-head"><h2 id="legal">Prazo legal da suspensão do ICMS</h2><span className="muted small">Os 10 mais próximos de vencer</span></div>
+        <section className="pp-section" aria-labelledby="legal">
+          <div className="pp-head row-between"><h2 id="legal">Prazo legal da suspensão do ICMS</h2><span className="muted small">Os 10 mais próximos de vencer</span></div>
           <ul className="legal-list">
             {legal.slice(0, 10).map(({ a, r }) => {
               const lim = legalLimitDays(supplierOf(a, suppliers));
@@ -105,12 +106,17 @@ export function FiscalHome() {
         <ReturnLookup />
       </div>
 
-      <section className="card section-card" aria-labelledby="pipe-f">
-        <div className="section-head"><h2 id="pipe-f">Panorama do processo</h2></div>
-        <StageTrack counts={stageCounts(open)} hide={['encerrado']} />
+      <section className="pp-section" aria-labelledby="pipe-f">
+        <div className="pp-head row-between"><h2 id="pipe-f">Panorama do processo</h2></div>
+        <ProcessRail counts={stageCounts(open)} hide={['encerrado']} />
       </section>
 
-      <section className="card section-card" aria-labelledby="nfguia">
+      <section className="pp-section" aria-labelledby="calf">
+        <div className="pp-head"><h2 id="calf">Calendário dos limites fiscais</h2><p className="muted">Quando vence a suspensão do ICMS de cada remessa aberta.</p></div>
+        <DeadlineCalendar kinds={['fiscal']} />
+      </section>
+
+      <section className="pp-section" aria-labelledby="nfguia">
         <h2 id="nfguia">O que a NF de remessa para conserto leva</h2>
         <p className="small muted">Levantamento para validar com o Fiscal da Cerradinho. A emissão e a assinatura continuam no sistema fiscal; o GuaráTracking só guarda o vínculo com o ativo.</p>
         <ul className="nf-guide">
@@ -136,8 +142,8 @@ function ReturnLookup() {
     return state.assets.filter(a => [a.name, a.id, a.tag ?? '', a.om, a.remittance?.number ?? ''].some(v => v.toLowerCase().includes(t))).slice(0, 5);
   }, [q, state.assets]);
   return (
-    <section className="card section-card" aria-labelledby="voltou">
-      <div className="section-head"><h2 id="voltou">Esse ativo já voltou?</h2></div>
+    <section className="pp-section" aria-labelledby="voltou">
+      <div className="pp-head row-between"><h2 id="voltou">Esse ativo já voltou?</h2></div>
       <label className="search-box">
         <Search size={18} aria-hidden="true" />
         <input className="input" value={q} onChange={e => setQ(e.target.value.toUpperCase())} placeholder="NF, TAG, OM ou código do ativo" aria-label="Buscar ativo por NF, TAG ou OM" />
@@ -151,8 +157,8 @@ function ReturnLookup() {
                 {back ? <CircleCheck className="ok" size={22} /> : <CircleAlert className="warn" size={22} />}
                 <span className="grow">
                   <b>{back ? 'Sim, está na usina' : 'Não, ainda está fora'}</b>
-                  <span className="small muted">{a.name} · {a.id} · NF {a.remittance?.number ?? '—'}</span>
-                  <span className="small">{back ? `Chegou em ${dateBr(a.arrivedPlantAt)}${a.stage === 'na_usina' ? ' · falta a NF de retorno' : ' · ciclo encerrado'}` : <StagePill stage={a.stage} />}</span>
+                  <span className="small muted">{a.name} · {a.id} · {a.remittance?.number ?? 'sem NF'}</span>
+                  <span className="small">{back ? `Chegou em ${dateBr(a.arrivedPlantAt)}${a.stage === 'na_usina' ? ' · falta a NF de retorno' : ' · ciclo encerrado'}` : <StageLabel stage={a.stage} />}</span>
                 </span>
               </Link>
             </li>
