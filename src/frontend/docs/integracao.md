@@ -7,6 +7,10 @@ O frontend mantém duas fontes de dados explicitamente separadas:
 
 O modo é selecionado por `VITE_DATA_SOURCE`. O arquivo `.env.mqtt.example` contém a configuração local sem credenciais.
 
+## Contrato vigente
+
+A integração física da Sprint 3 usa o protocolo compacto implementado pelo firmware: pedidos com `id` e `acao`, e respostas com `id`, `acao`, `ok` e `erro`. O formato expandido com `command_id`, `ciclo_id`, `status`, `motivo` e `estado` permanece como alvo futuro e não é usado para alegar o RNF06.3 nesta versão. O adaptador continua capaz de ler alguns campos expandidos para facilitar uma migração posterior, mas não os publica como contrato atual.
+
 ## Fluxo MQTT
 
 Para o dispositivo configurado em `VITE_MQTT_DEVICE_ID`, o dashboard:

@@ -2,6 +2,8 @@
 
 Contrato entre o dashboard e o firmware do protótipo (comandos implementados em `handleDashboardCommand`, `main.cpp`, e lidos por `dashboard_cmd.h`).
 
+**Situação:** vigente na integração física da Sprint 3. O documento `contrato-topicos-dashboard.md` registra um formato expandido futuro, ainda não implementado de ponta a ponta. Nesta versão, `ciclo_divergente` e a presença em objeto JSON não são alegados como concluídos.
+
 ## 1. Tópicos
 
 Prefixo: `guaratracking/<device_id>/` (protótipo: `guaratracking/prototipo-001/`). QoS 0. Só `status` e `online` são retidos; as demais mensagens não.

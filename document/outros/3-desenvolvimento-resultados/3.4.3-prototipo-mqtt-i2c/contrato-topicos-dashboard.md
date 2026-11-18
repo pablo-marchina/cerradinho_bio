@@ -1,13 +1,12 @@
 # Contrato MQTT entre dispositivo e dashboard — versão 1
 
 - **Data da versão:** 16/11/2026
-- **Situação:** proposta pronta para validação com o responsável pelo dashboard
-
-<!-- Confirmação do responsável pelo dashboard ainda pendente; acompanhar no quadro do grupo. -->
+- **Situação:** alvo futuro, não vigente na integração da Sprint 3
+- **Decisão de integração:** o dashboard consome o protocolo compacto vigente em `protocolo-mqtt-dashboard.md`; esta versão expandida depende de uma issue própria para firmware, dashboard e testes conjuntos
 
 ## 1. Objetivo e limites
 
-Este contrato define os cinco canais MQTT usados entre o dispositivo GuaráTracking, o broker EMQX e a plataforma que alimenta o dashboard:
+Este documento preserva o formato expandido proposto para uma evolução futura dos cinco canais MQTT usados entre o dispositivo GuaráTracking, o broker EMQX e a plataforma que alimenta o dashboard:
 
 - `status`;
 - `evento`;
@@ -15,7 +14,7 @@ Este contrato define os cinco canais MQTT usados entre o dispositivo GuaráTrack
 - `cmd`;
 - `cmd/resposta`.
 
-O contrato descreve o formato alvo da integração. Na implementação integrada atual, o firmware já publica `status`, `online` e `evento` e assina `cmd`; `cmd/resposta` e a execução dos comandos ainda são trabalho futuro. O dashboard visual atual também é uma demonstração estática, sem backend ou MQTT.
+Este não é o contrato vigente da integração física da Sprint 3. O firmware e o dashboard implementam o protocolo compacto documentado em `protocolo-mqtt-dashboard.md`, com `id`, `acao`, `ok` e `erro`. Migrar para `command_id`, `ciclo_id`, `status`, `motivo`, `estado` e presença em objeto JSON exige alteração coordenada dos dois lados. Até essa migração incluir o RNF06.3, o formato expandido não deve ser usado para testar nem declarar a integração atual.
 
 O ESP32 não é a fonte de nome do equipamento, fornecedor, responsável, prazo comercial, situação fiscal ou tratamento administrativo de alertas. Esses dados pertencem ao backend. O dispositivo informa somente seu estado físico, contexto local, posição, fila e resultado dos comandos que executa.
 
