@@ -314,7 +314,13 @@ class MqttGateway {
     const payload: Json = {id, acao: action};
     if (input.type === 'remittance') payload.valor = input.payload.nf;
     const topic = `guaratracking/${mqttRuntime.deviceId}/cmd`;
-    await new Promise<void>((resolve, reject) => this.client!.publish(topic, JSON.stringify(payload), {qos: 0, retain: false}, error => error ? reject(error) : resolve()));
+    try {
+      await new Promise<void>((resolve, reject) => this.client!.publish(topic, JSON.stringify(payload), {qos: 0, retain: false}, error => error ? reject(error) : resolve()));
+    } catch (error) {
+      commandStep(record, 'timeout', now());
+      record.reason = `Falha ao publicar no broker MQTT${error instanceof Error ? `: ${error.message}` : '.'}`;
+      throw error;
+    }
     if (record.status === 'created') {
       commandStep(record, 'published', now());
       record.reason = 'Publicado; aguardando cmd/resposta do ESP32.';
