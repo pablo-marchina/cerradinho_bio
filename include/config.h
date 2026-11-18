@@ -13,7 +13,11 @@
 // secrets.h (ignorado pelo Git; modelo em secrets.example.h) traz Wi-Fi e broker MQTT.
 // MQTT so liga com secrets.h e PubSubClient presentes; os testes em computador e o
 // Wokwi sem secrets.h continuam sem rede real.
-#if __has_include("secrets.h")
+#if defined(GUARA_HOST_INTEGRATION)
+// Nos testes host, permite que o `secrets.h` falso do primeiro -I tenha precedencia sobre o
+// arquivo local real que fica ao lado deste header.
+#include <secrets.h>
+#elif __has_include("secrets.h")
 #include "secrets.h"
 #endif
 #if __has_include("secrets.h") && __has_include(<PubSubClient.h>)
