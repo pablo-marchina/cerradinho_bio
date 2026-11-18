@@ -2259,7 +2259,7 @@ Condições comuns: firmware `bancada` (montagem alternada), alimentação USB e
 
 #### Resultados
 
-Estado em 15/11/2026. O CT70, o CT71, o CT74, o CT75, o CT76 e o CT78 foram executados no protótipo de 3 botões contra o EMQX Cloud, com a Serial, o MQTT Explorer e vídeos como instrumentos; o CT73 foi ensaiado no protótipo físico completo, e o CT72 e o CT77 ainda não foram executados.
+Estado em 18/11/2026. O CT70, o CT71, o CT72, o CT73, o CT74, o CT75, o CT76, o CT77, o CT78 e o CT83 foram executados no protótipo de 3 botões contra o EMQX Cloud. Na rodada física da issue #131, partes dos CT84 e CT85 foram repetidas pelo dashboard com o dispositivo `prototipo-001-rachel`; os passos não executados continuam indicados na coluna “O que falta”.
 
 | CT | Situação | Resultado observado | O que falta |
 |---|---|---|---|
@@ -2273,8 +2273,10 @@ Estado em 15/11/2026. O CT70, o CT71, o CT74, o CT75, o CT76 e o CT78 foram exec
 | CT77 | Aprovado | `rede` desligada por tempo com `ok:true`; a fila subiu durante o prazo e, ao fim, os eventos foram enviados na ordem e a fila zerou (vídeo) | — |
 | CT78 | Aprovado | `desligar` e `ligar` com `ok:true` e `avancar` desligado recusado com `dispositivo_desligado`; pelo botão ON/OFF o `evento` também muda, e o tipo observado foi `STATUS_SEMANAL` (vídeo) | — |
 | CT83 | Aprovado | Executado conforme o roteiro: `remessa` e `nf_retorno` recusados sem ciclo (`sem_ciclo_ativo`); com ciclo, NF inválida recusada (`nf_invalida`) e válida exibida no LCD; NF de retorno aceita uma vez (`nf_ja_lancada` na segunda); ciclo encerrado (vídeo) | — |
-| CT84 | Planejado | Fluxo coberto pelos testes host, sem execução registrada no protótipo físico | Executar no protótipo, gravar vídeo e salvar Serial e respostas MQTT |
-| CT85 | Planejado | Janela e expiração cobertas pelos testes host, sem execução registrada no protótipo físico | Executar no protótipo, gravar vídeo e confirmar ausência/presença do buzzer |
+| CT84 | Parcial | Pelo dashboard e no ESP32 físico: ciclo iniciado; encerramento sem NF de retorno recusado; NF de retorno registrada; encerramento aceito e ciclo finalizado. As respostas positivas e a abertura do ciclo têm captura; a recusa e o encerramento foram observados durante o ensaio da #131. | Executar JSON inválido/chave repetida, recusa com lacre aberto, botão físico, vídeo e Serial do roteiro completo |
+| CT85 | Parcial | O comando `autorizar` recebeu resposta positiva correlacionada do ESP32 físico e apareceu como “Executado pelo ESP32” no dashboard. | Abrir o lacre dentro e fora da janela, comprovar `RETIRADA_AUTORIZADA`/`VIOLACAO_LACRE`, LCD e buzzer |
+
+O relatório da rodada física da #131, com ambiente, resultados, limites e links para as capturas, está em [`issue-131-integracao-dashboard-fisica.md`](outros/reports/Sprint03/issue-131-integracao-dashboard-fisica.md). Ele também registra bateria por potenciômetro, inspeção do `status` no MQTTX, Last Will e reconexão, sem usar esses resultados para aprovar os passos do lacre que não foram executados.
 
 
 <a name="evidencias-ct70"></a>

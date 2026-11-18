@@ -29,20 +29,22 @@ Validar o ciclo completo por `cmd`, as recusas do RF016, a validação integral 
 - O encerramento válido publica o estado já encerrado e atualiza o LCD.
 - Comando e pressão longa permanecem compatíveis.
 
-## Evidências pendentes
+## Evidências
 
 | Marque | Arquivo | O que registrar |
 |---|---|---|
 | [ ] | `ct84CicloDashboard.mp4` | Explorer, protótipo, LCD e botão durante o fluxo completo |
 | [ ] | `ct84-ciclo-dashboard.serial.txt` | eventos e mensagens da Serial |
 | [ ] | `ct84CicloDashboard.png` | respostas correlacionadas por `id` no Explorer |
+| [x] | `issue131CmdAbrirCiclo.png` | abertura do ciclo confirmada pelo ESP32 no dashboard |
+| [x] | `issue131CmdNfRemessa.png` | NF de remessa confirmada pelo ESP32 no dashboard |
 
 ## Resultado
 
 | Campo | Valor |
 |---|---|
-| Data e hora | A definir |
-| Firmware (ambiente e commit) | A definir |
-| Situação | [ ] Aprovado  [ ] Reprovado  [x] Pendente |
-| Observado | Testes host aprovados; ensaio físico ainda não executado. |
-| Problemas | A definir |
+| Data e hora | 18/11/2026, 13:57–14:07 (horário exibido no dashboard) |
+| Firmware (ambiente e commit) | `bancada-3botoes`; branch da #131 a partir de `e9727ea5` com alteração local de bateria |
+| Situação | [ ] Aprovado  [ ] Reprovado  [x] Parcial |
+| Observado | No ESP32 físico, abrir ciclo, recusar encerramento sem NF de retorno, registrar NF de retorno e encerrar passaram pelo dashboard e por `cmd/resposta`. |
+| Problemas | Não foram executados JSON inválido/chave repetida, encerramento com lacre aberto nem compatibilidade com o botão físico; vídeo e Serial do roteiro completo continuam pendentes. |

@@ -26,20 +26,21 @@ Validar a autorização por `cmd`, a janela de três dias da RN06 e a diferença
 - A autorização vigente é consumida na primeira abertura e não gera violação.
 - A autorização vencida não impede a violação nem o buzzer.
 
-## Evidências pendentes
+## Evidências
 
 | Marque | Arquivo | O que registrar |
 |---|---|---|
 | [ ] | `ct85AutorizacaoDashboard.mp4` | resposta, duas aberturas, LCD e buzzer |
 | [ ] | `ct85-autorizacao-dashboard.serial.txt` | eventos dentro e fora da janela |
 | [ ] | `ct85AutorizacaoDashboard.png` | resposta com `janela_dias` e `valida_ate_ms` |
+| [x] | `issue131CmdAutorizar.png` | comando `autorizar` confirmado pelo ESP32 no dashboard |
 
 ## Resultado
 
 | Campo | Valor |
 |---|---|
-| Data e hora | A definir |
-| Firmware (ambiente e commit) | A definir |
-| Situação | [ ] Aprovado  [ ] Reprovado  [x] Pendente |
-| Observado | Testes host aprovados; ensaio físico ainda não executado. |
-| Problemas | A definir |
+| Data e hora | 18/11/2026, 14:03 (horário exibido no dashboard) |
+| Firmware (ambiente e commit) | `bancada-3botoes`; branch da #131 a partir de `e9727ea5` com alteração local de bateria |
+| Situação | [ ] Aprovado  [ ] Reprovado  [x] Parcial |
+| Observado | O comando de autorização chegou ao ESP32 físico e recebeu resposta positiva correlacionada no dashboard. |
+| Problemas | A abertura física dentro e fora da janela, `RETIRADA_AUTORIZADA`, violação, LCD e buzzer não foram executados; permanecem planejados. |
