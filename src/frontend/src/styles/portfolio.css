@@ -562,3 +562,16 @@ textarea.input { resize: vertical; font-family: inherit; }
 /* A miniatura sem foto é um <span> e herdava o flex em coluna da célula do ativo: ícone saía do centro */
 span.thumb.thumb-empty { display: grid !important; place-items: center; flex-direction: initial; }
 span.thumb.thumb-empty svg { display: block; }
+
+/* Chave Demonstração / Dispositivo real no topo */
+.source-toggle { display: inline-flex; border: 1px solid var(--gt-areia); border-radius: 10px; overflow: hidden; background: white; flex: none; }
+.source-toggle button { display: inline-flex; gap: 6px; align-items: center; padding: 8px 12px; border: 0; background: none; font: 700 14px var(--gt-font-body); color: var(--gt-pedra); cursor: pointer; white-space: nowrap; }
+.source-toggle button + button { border-left: 1px solid var(--gt-areia); }
+.source-toggle button.on { background: var(--gt-semente); color: var(--gt-polpa); }
+.source-toggle button:disabled { opacity: .45; cursor: not-allowed; }
+@media (max-width: 1280px) { .source-toggle button { font-size: 0; gap: 0; padding: 8px 10px; } .source-toggle button svg { width: 18px; height: 18px; } }
+/* Topo: a busca não some quando a barra fica cheia */
+.topbar .top-search { flex: 1 1 200px; min-width: 200px; }
+.topbar .persona-switch { flex: none; }
+@media (max-width: 1600px) { .led-status span { display: none; } .persona-tab small { display: none; } }
+@media (max-width: 1000px) { .topbar .top-search { min-width: 0; flex-basis: 40px; } }
