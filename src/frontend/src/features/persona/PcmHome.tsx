@@ -67,7 +67,7 @@ export function PcmHome() {
         <Link className="btn btn-primary btn-lg" to="/ativos/novo"><Plus size={20} /> Novo envio</Link>
       </header>
 
-      <section className="block" aria-labelledby="sit">
+      <section className="pp-block" aria-labelledby="sit">
         <div className="block-head">
           <span className="block-icon"><Siren size={24} /></span>
           <div>
@@ -94,7 +94,7 @@ export function PcmHome() {
         {pick?.kind === 'flag' && <PickPanel pick={pick} assets={picked} onClose={() => setPick(null)} />}
       </section>
 
-      <section className="block" aria-labelledby="proc">
+      <section className="pp-block" aria-labelledby="proc">
         <div className="block-head">
           <span className="block-icon"><Workflow size={24} /></span>
           <div>
@@ -106,7 +106,7 @@ export function PcmHome() {
         {pick?.kind === 'stage' && <PickPanel pick={pick} assets={picked} onClose={() => setPick(null)} />}
       </section>
 
-      <section className="block" aria-labelledby="mesa">
+      <section className="pp-block" aria-labelledby="mesa">
         <div className="block-head row-between">
           <div className="row-gap nowrap">
             <span className="block-icon"><Inbox size={24} /></span>
