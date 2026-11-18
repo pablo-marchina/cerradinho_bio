@@ -575,3 +575,33 @@ span.thumb.thumb-empty svg { display: block; }
 .topbar .persona-switch { flex: none; }
 @media (max-width: 1600px) { .led-status span { display: none; } .persona-tab small { display: none; } }
 @media (max-width: 1000px) { .topbar .top-search { min-width: 0; flex-basis: 40px; } }
+
+/* Painel do PCM v4: mesa primeiro, riscos e semana lado a lado, etapas compactas no fim */
+.pp-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; }
+.risk-list { display: flex; flex-direction: column; gap: 10px; }
+.risk { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 14px; padding: 16px 18px; border-radius: 14px; border: 1.5px solid var(--line); background: white; text-align: left; cursor: pointer; color: var(--gt-semente); transition: transform .18s cubic-bezier(.3,1.6,.5,1), box-shadow .2s, border-color .2s; }
+.risk:hover { transform: translateX(3px); box-shadow: 0 8px 20px rgb(22 20 20 / 9%); border-color: var(--gt-pedra); }
+.risk.on { border-color: var(--gt-semente); box-shadow: inset 0 0 0 1.5px var(--gt-semente); }
+.risk.tone-alert { border-left: 6px solid var(--t-alert); }
+.risk.tone-ok { border-left: 6px solid var(--t-ok); }
+.risk-label { font-size: 19px; font-weight: 700; }
+.risk-value { font-size: 30px; font-weight: 500; }
+.week { list-style: none; margin: 0; padding: 0; }
+.week li { border-bottom: 1px solid var(--line); }
+.week a { display: flex; gap: 16px; align-items: center; padding: 12px 4px; }
+.week a:hover { background: rgb(255 255 255 / 70%); }
+.week-day { width: 64px; flex: none; display: flex; flex-direction: column; align-items: center; padding: 6px 0; border-radius: 10px; background: white; border: 1px solid var(--line); line-height: 1.2; }
+.week-day b { text-transform: capitalize; font-size: 15px; }
+.week-day .mono { font-size: 14px; color: var(--gt-pedra); }
+.week .grow { display: flex; flex-direction: column; }
+.week .grow .muted { font-size: 16px; }
+.more-left { align-self: flex-start; }
+.pp-block.compact .rail-dot { width: 54px; height: 54px; }
+.pp-block.compact .rail-stop::before { top: 27px; }
+.pp-block.compact .rail-count { font-size: 26px; }
+.pp-block.compact .rail-label { font-size: 16px; }
+.pp-block.compact .rail-who { font-size: 15px; }
+.signal-note { display: inline-flex; gap: 8px; align-items: center; padding: 10px 14px; border-radius: 10px; border: 1.5px solid var(--line); background: white; font: 700 15px var(--gt-font-body); color: var(--gt-pedra); cursor: pointer; }
+.signal-note:hover { border-color: var(--gt-semente); color: var(--gt-semente); }
+.pp-hero .eyebrow { margin-bottom: 8px; }
+@media (max-width: 1100px) { .pp-two { grid-template-columns: 1fr; } }
