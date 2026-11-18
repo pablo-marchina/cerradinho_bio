@@ -5,6 +5,7 @@ import { usePortfolio } from '@/portfolio/store';
 import { legalLimitDays, money, supplierStats, dateBr } from '@/portfolio/logic';
 import { AssetThumb, Avatar } from '@/portfolio/ui';
 import type { Criticality, PortfolioAsset } from '@/portfolio/types';
+import { CONTACTS } from '@/portfolio/ShareDialog';
 
 /** Reduz a foto para no máximo 480 px, para caber no armazenamento local. */
 function resize(file: File): Promise<string> {
@@ -49,6 +50,7 @@ export function NewAsset() {
     supplierId: '', quote: '', days: '30', tag: '', seal: false,
   });
   const [q, setQ] = useState('');
+  const [notify, setNotify] = useState<string[]>([]);
   const [error, setError] = useState('');
   const set = <K extends keyof typeof f>(k: K, v: (typeof f)[K]) => setF(x => ({ ...x, [k]: v }));
   const supplier = state.suppliers.find(s => s.id === f.supplierId) ?? null;
@@ -80,7 +82,9 @@ export function NewAsset() {
       stage: requestNf ? 'aguardando_nf' : 'planejamento', supplierId: f.supplierId, quote: Number(f.quote), agreedDays: Number(f.days), problem: f.problem.trim(),
       createdAt: now, nfRequestedAt: requestNf ? now : null, remittance: null, pickupRequestedAt: null, departedAt: null, arrivedSupplierAt: null, dueAt: null, returnStartedAt: null,
       arrivedPlantAt: null, returnInvoice: null, closedAt: null, seal: 'integro', battery: 100, lastSignalAt: now, position: null, lastFollowUpAt: null,
+      watchers: notify.length ? notify : undefined,
       history: [
+        ...(notify.length ? [{ at: now, who: 'Geraldo (PCM)', text: `Acompanhamento compartilhado com ${notify.join(', ')}.` }] : []),
         ...(requestNf ? [{ at: now, who: 'Geraldo (PCM)', text: 'NF de remessa solicitada ao Fiscal.' }] : []),
         { at: now, who: 'Geraldo (PCM)', text: `Envio cadastrado: ${supplier?.name}, ${money(Number(f.quote))}, ${f.days} dias. ${f.tag} vinculada e lacre aplicado.` },
       ],
@@ -233,6 +237,21 @@ export function NewAsset() {
           {s.id === 'revisar' && (
             <div className="wz-body">
               <p className="lead">Ao enviar, o ativo sai da sua mesa e vai para a da <b>Clarice (Fiscal)</b> emitir a NF de remessa. Quando a NF sair, ele volta para você acionar a coleta.</p>
+              <fieldset className="notify">
+                <legend className="big-label">Quem mais deve acompanhar este ativo?</legend>
+                <p className="muted">Essas pessoas recebem o link da trajetória e veem cada mudança de etapa.</p>
+                <ul className="share-people">
+                  {CONTACTS.filter(c => c.id !== 'c1').map(c => (
+                    <li key={c.id}>
+                      <label>
+                        <input type="checkbox" checked={notify.includes(c.name)} onChange={e => setNotify(e.target.checked ? [...notify, c.name] : notify.filter(x => x !== c.name))} />
+                        <span className="avatar-p">{c.name[0]}</span>
+                        <span className="grow"><b>{c.name}</b><span className="muted">{c.role}</span></span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </fieldset>
             </div>
           )}
 
@@ -261,6 +280,7 @@ export function NewAsset() {
               <div><dt>Combinado</dt><dd>{f.quote ? `${money(Number(f.quote))} · ${f.days} dias` : '—'}</dd></div>
               <div><dt>TAG</dt><dd className="mono">{f.tag ? `${f.tag}${f.seal ? ' · lacrada' : ''}` : '—'}</dd></div>
               <div><dt>NF de remessa</dt><dd>Será emitida pelo Fiscal</dd></div>
+              <div><dt>Acompanham</dt><dd>{notify.length ? notify.join(', ') : '—'}</dd></div>
             </dl>
           </div>
         </aside>

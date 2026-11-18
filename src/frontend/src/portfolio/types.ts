@@ -70,6 +70,7 @@ export type PortfolioAsset = {
   lastSignalAt: string | null;
   position: { lat: number; lng: number; label: string; at: string } | null;
   lastFollowUpAt: string | null; // última cobrança registrada ao fornecedor
+  watchers?: string[]; // pessoas da empresa que acompanham o ativo
   history: HistoryEntry[];
 };
 

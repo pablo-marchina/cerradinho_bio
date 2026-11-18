@@ -12,6 +12,7 @@ type Action =
   | { type: 'advance'; id: string }
   | { type: 'follow_up'; id: string; note: string }
   | { type: 'return_nf'; id: string; invoice: Invoice }
+  | { type: 'share'; id: string; names: string[] }
   | { type: 'read_notices'; to: Persona }
   | { type: 'reset' };
 
@@ -73,6 +74,9 @@ function reducer(state: PortfolioState, action: Action): PortfolioState {
       }
       break;
     }
+    case 'share':
+      a = log({ ...a, watchers: Array.from(new Set([...(a.watchers ?? []), ...action.names])) }, 'Geraldo (PCM)', `Acompanhamento compartilhado com ${action.names.join(', ')}.`);
+      break;
     case 'follow_up':
       a = log({ ...a, lastFollowUpAt: now }, 'Geraldo (PCM)', action.note || 'Oficina cobrada sobre o prazo.');
       break;

@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, Mail, Phone, MapPin, BatteryMedium, ShieldCheck, ShieldAlert, Radio, Building2, Receipt, CalendarClock, PlayCircle } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, MapPin, BatteryMedium, ShieldCheck, ShieldAlert, Radio, Building2, Receipt, CalendarClock, PlayCircle, Share2, Users } from 'lucide-react';
 import { usePortfolio } from '@/portfolio/store';
 import { AssetThumb, Avatar, DeskOwner, DueBar, StatusText, Journey, StageLabel } from '@/portfolio/ui';
 import {
   ago, criticalityLabel, dateBr, daysSinceNf, dueRemaining, icmsAtRisk, legalLimitDays, legalRemaining, money, nextAction, personaLabel, personaName, supplierOf,
 } from '@/portfolio/logic';
 import { NfForm } from './NfForm';
+import { ShareDialog } from '@/portfolio/ShareDialog';
 import type { PortfolioAsset } from '@/portfolio/types';
 
 const sealText = { integro: 'Íntegro', violado: 'Violado', autorizado: 'Aberto com autorização', sem_lacre: 'Sem lacre' } as const;
@@ -14,6 +15,7 @@ const sealText = { integro: 'Íntegro', violado: 'Violado', autorizado: 'Aberto 
 export function AssetDetail() {
   const { id } = useParams();
   const { state } = usePortfolio();
+  const [sharing, setSharing] = useState(false);
   const a = state.assets.find(x => x.id === id);
   if (!a) return (
     <div className="pp">
@@ -26,7 +28,15 @@ export function AssetDetail() {
   const since = daysSinceNf(a, state.now);
   return (
     <div className="pp">
-      <Link to="/" className="back"><ArrowLeft size={16} /> Painel</Link>
+      <div className="row-between">
+        <Link to="/" className="back"><ArrowLeft size={16} /> Painel</Link>
+        <div className="row-gap">
+          <button type="button" className="btn btn-secondary" onClick={() => setSharing(true)}><Share2 size={16} /> Compartilhar acompanhamento</button>
+          {s && <a className="btn btn-secondary" href={mailto(a, s.email, state.now)}><Mail size={16} /> E-mail para a oficina</a>}
+          {s && <a className="btn btn-secondary" href={`tel:${s.phone.replace(/\D/g, '')}`}><Phone size={16} /> Ligar para a oficina</a>}
+        </div>
+      </div>
+      {sharing && <ShareDialog asset={a} onClose={() => setSharing(false)} />}
       <header className="asset-hero">
         <AssetThumb asset={a} size={112} />
         <div className="asset-hero-main">
@@ -38,7 +48,10 @@ export function AssetDetail() {
           <p className="muted mono">{a.id} · {a.om} · {a.tag ?? 'sem TAG'} · {a.area}</p>
           <p className="small">{a.problem}</p>
           <StatusText asset={a} />
-          <DeskOwner asset={a} />
+          <div className="row-gap">
+            <DeskOwner asset={a} />
+            {!!a.watchers?.length && <span className="watchers"><Users size={16} /> Acompanham: {a.watchers.join(', ')}</span>}
+          </div>
         </div>
       </header>
 
