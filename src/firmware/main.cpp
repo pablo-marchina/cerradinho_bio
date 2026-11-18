@@ -769,6 +769,10 @@ void updateNetwork() {
     flushPending();
     if (!announced) return;
     const unsigned sent = before - pending.count - (pending.overflowCount > 0 ? 1u : 0u);
+    // Com MQTT, updateMqtt() conecta e esvazia a fila antes de updateNetwork() ver a transicao,
+    // entao aqui before pode ser 0. Nesse caso nao ha reenvio a anunciar e o "MQTT ok" do
+    // updateMqtt nao deve ser sobrescrito por "enviados: 0".
+    if (before == 0) return;
     snprintf(bottom, sizeof(bottom), "enviados: %u", sent);
     showMessage("Sinal ok", bottom);
   } else {
