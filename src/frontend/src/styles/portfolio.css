@@ -436,3 +436,8 @@ textarea.input { resize: vertical; font-family: inherit; }
 .fig-value { font-size: 28px; }
 .fig-icon { width: 36px; height: 36px; }
 .fig { padding: 16px 18px; gap: 6px; }
+
+/* Valor da faixa nunca quebra linha; valores longos (R$ 637 mil) ficam menores */
+.fig-top { flex-wrap: nowrap; min-width: 0; }
+.fig-value { white-space: nowrap; }
+.fig-value.long { font-size: clamp(20px, 1.6vw, 26px); }

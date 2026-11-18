@@ -96,7 +96,7 @@ export function Figure({ value, label, tone = 'none', active, onClick, icon: Ico
     <>
       <span className="fig-top">
         {Icon && <span className={`fig-icon i-${tone}`}><Icon size={22} strokeWidth={2.2} aria-hidden="true" /></span>}
-        <span className={`fig-value mono t-${tone}`}>{value}</span>
+        <span className={`fig-value mono t-${tone} ${String(value).length > 5 ? 'long' : ''}`}>{value}</span>
       </span>
       <span className="fig-label">{label}</span>
     </>
