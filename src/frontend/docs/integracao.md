@@ -61,7 +61,9 @@ $env:VITE_MQTT_SOURCE='simulator'
 npx playwright test e2e/mqtt.spec.ts --project=desktop
 ```
 
-Esse ensaio não comprova o ESP32 físico. A rodada física deve encerrar o simulador, conectar a placa ao mesmo broker, repetir os cenários e registrar as evidências. Até essa rodada, as telas devem ser identificadas como integração com dispositivo simulado.
+Esse ensaio automatizado não comprova o ESP32 físico. A rodada física de 18/11/2026 encerrou o simulador, conectou o protótipo `prototipo-001-rachel` ao mesmo EMQX Cloud e comprovou `status`, bateria por potenciômetro, comandos aceitos e recusados, `cmd/resposta`, Last Will e reconexão. O relatório e as capturas estão em [`issue-131-integracao-dashboard-fisica.md`](../../../document/outros/reports/Sprint03/issue-131-integracao-dashboard-fisica.md).
+
+O ensaio físico não cobriu a abertura do lacre, o GNSS por MQTT nem todos os casos negativos do CT84. Essas partes permanecem explicitamente pendentes e não são inferidas a partir do aceite dos comandos.
 
 ## Limites
 
@@ -69,4 +71,4 @@ Esse ensaio não comprova o ESP32 físico. A rodada física deve encerrar o simu
 - Cadastro, fornecedor, responsável, prazo, tratamento persistente de alertas e histórico entre sessões dependem de backend.
 - Usuário e senha em variáveis `VITE_*` ficam visíveis no bundle. O modo atual é destinado ao broker local de demonstração sem credenciais; um broker externo exige backend ou credencial temporária de privilégio mínimo.
 - O dashboard preserva a última coordenada recebida, mas não inventa horário absoluto quando o firmware publica apenas `uptime_ms`.
-- O modo MQTT não transforma dados do simulador em evidência de hardware.
+- O modo MQTT não transforma dados do simulador em evidência de hardware; somente a rodada física registrada no relatório da #131 sustenta as funcionalidades nela observadas.
