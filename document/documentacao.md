@@ -2266,7 +2266,35 @@ A incerteza de leitura é de ±0,01 V na tensão (resolução do multímetro) e 
 
 #### 6.1.5. Gráfico Teórico × Experimental
 
+Os 51 pares de tempo e tensão da Tabela 6.1-2 foram plotados no Microsoft Excel como um gráfico de dispersão. O tempo $t$, em segundos, está no eixo horizontal, e a tensão no capacitor $V_C$, em volts, no eixo vertical. Cada ponto é uma leitura do multímetro. Os pontos não foram ligados por linhas, porque não há medições entre eles. A mesma figura traz a curva teórica $V_C(t)$, descrita na seção 6.1.6, para que medida e modelo possam ser comparados diretamente.
+
+![Gráfico de dispersão da tensão no capacitor em função do tempo, de 0 a 300 s: os pontos experimentais sobem de 0 a 4,24 V, e a curva teórica com V_f = 4,60 V e τ = 61,14 s fica acima deles a partir de cerca de 30 s](../assets/6-anexos/6.1-circuito-rc/graficoRC.png)
+
+*Figura 6.1-4 — Carga do capacitor no circuito RC: dados experimentais (pontos) e curva teórica (linha). Fonte: elaborado pelo grupo a partir da Tabela 6.1-2, 2026.*
+
 #### 6.1.6. Análise Comparativa
+
+A curva teórica da Figura 6.1-4 usa a equação da seção 6.1.1, $V_C(t)=V_f\left(1-e^{-t/\tau}\right)$, com dois parâmetros:
+
+- **$\tau = 61{,}14\ \text{s}$**, a constante de tempo teórica calculada na seção 6.1.2 com os valores nominais de R1, R2 e C.
+- **$V_f = 4{,}60\ \text{V}$**, a tensão medida no pino 5V da ESP32 (Tabela 6.1-1).
+
+O valor de 5 V é só o nominal do pino. A tensão que de fato carregou o capacitor foi 4,60 V, por causa da queda no circuito de alimentação da placa. Com 5 V, boa parte da distância entre a curva e os pontos viria de uma fonte que não existiu no ensaio. Ela não diria nada sobre o comportamento do circuito. A tensão final do capacitor, $V_\infty = 4{,}37\ \text{V}$, também não entra na curva: ela é um resultado do experimento, e usá-la seria ajustar o modelo aos próprios dados. Como $V_0$ foi medido uma vez, depois da carga, e variou entre 4,40 V e 4,60 V de um ensaio para outro, a curva tem uma incerteza da mesma ordem na tensão final.
+
+A Tabela 6.1-3 compara alguns instantes da Tabela 6.1-2 com os valores da curva teórica.
+
+| Tempo t (s) | Vc teórico (V) | Vc medido (V) | Diferença (V) | Diferença relativa ao teórico |
+|---|---|---|---|---|
+| 3 | 0,22 | 0,22 | 0,00 | 0 % |
+| 30 | 1,78 | 1,65 | 0,13 | 7 % |
+| 60 | 2,88 | 2,65 | 0,23 | 8 % |
+| 120 | 3,95 | 3,54 | 0,41 | 10 % |
+| 180 | 4,36 | 3,93 | 0,43 | 10 % |
+| 300 | 4,57 | 4,24 | 0,33 | 7 % |
+
+*Tabela 6.1-3 — Tensão teórica ($V_f$ = 4,60 V, τ = 61,14 s) e medida em instantes selecionados. Fonte: elaborado pelo grupo a partir da Tabela 6.1-2, 2026.*
+
+Os pontos experimentais têm a mesma forma da curva teórica: sobem rápido no início e desaceleram conforme o capacitor carrega. Nos primeiros segundos, medida e teoria coincidem. A partir de cerca de 30 s, os pontos ficam sempre abaixo da curva. A diferença chega a cerca de 0,4 V entre 120 s e 180 s e diminui um pouco até 300 s. A seção 6.1.7 determina a constante de tempo experimental e discute as causas dessa diferença.
 
 #### 6.1.7. Interpretação e Conclusão
 
