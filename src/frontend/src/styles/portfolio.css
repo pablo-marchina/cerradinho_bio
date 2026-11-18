@@ -550,3 +550,12 @@ textarea.input { resize: vertical; font-family: inherit; }
 @media (max-width: 1400px) { .sit-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 760px) { .sit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .photo-drop img { object-fit: contain; background: var(--gt-polpa); }
+
+/* Cor do guará-LED segue o estado (pedido do grupo): folha = em dia, pequi = atenção, guará = problema */
+.guara-led.aceso .body { fill: var(--gt-folha); }
+.guara-led.aceso .rays { stroke: var(--gt-folha); }
+.guara-led.transmitindo .body { fill: var(--gt-pequi); }
+.guara-led.transmitindo .rays { stroke: var(--gt-pequi); }
+.guara-led.alerta .body { fill: var(--gt-guara); }
+.guara-led.alerta .rays { stroke: var(--gt-guara); }
+.clean-desk h3 { color: var(--gt-folha); }

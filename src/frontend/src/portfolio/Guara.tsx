@@ -36,7 +36,7 @@ export function PortfolioLed() {
   const crit = open.filter(a => isCritical(a, state.now, state.suppliers)).length;
   const soon = open.filter(a => isOverdue(a, state.now) || isUrgent(a, state.now, state.suppliers)).length;
   const s: LedState = crit ? 'alerta' : soon ? 'transmitindo' : 'aceso';
-  const text = crit ? `Alerta · ${crit} críticos` : soon ? `Atenção · ${soon} perto do prazo` : 'Tudo em dia';
+  const text = crit ? `Problema · ${crit} críticos` : soon ? `Atenção · ${soon} perto do prazo` : 'Tudo em dia';
   return (
     <Link to="/" className={`led-status s-${s}`} title={text} aria-label={`Estado da carteira: ${text}`}>
       <GuaraBird state={s} size={34} />
