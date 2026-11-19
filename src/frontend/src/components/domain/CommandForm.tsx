@@ -1,13 +1,63 @@
+import type React from 'react';
 import {useState} from 'react';
-import {useMutation,useQueryClient} from '@tanstack/react-query';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
-import {Button,Card} from '@/components/ui/primitives';
+import {Button, Card} from '@/components/ui/primitives';
 import {StatusBadge} from './StatusBadge';
 import {api} from '@/services/api';
-import {commandLabels,commandStatuses,cycleId,DEFAULT_AUTHORIZATION_MINUTES} from '@/services/simulator';
+import {commandLabels, commandStatuses, cycleId, DEFAULT_AUTHORIZATION_MINUTES} from '@/services/simulator';
 import {formatDate} from '@/services/domain';
-import type {Asset,Snapshot,CommandInput,CommandType} from '@/services/types';
+import {isMqttMode,isPhysicalEsp32} from '@/services/runtime';
+import type {Asset, Snapshot, CommandInput, CommandStatus, CommandType} from '@/services/types';
+
 const schema=z.object({nf:z.string().trim().max(80),tag:z.string().trim().max(80),supplier:z.string().trim().max(120),owner:z.string().trim().max(120),departedAt:z.string(),dueAt:z.string(),permanenceLimit:z.string(),validityMinutes:z.string(),reason:z.string().trim().max(300),confirm:z.boolean()});
 type Fields=z.infer<typeof schema>;
-export function CommandForm({asset:a,snapshot:s}:{asset:Asset;snapshot:Snapshot}){const qc=useQueryClient(),[type,setType]=useState<CommandType>(a.closedAt?'open':'authorize'),[scenario,setScenario]=useState<CommandInput['scenario']>('normal'),[error,setError]=useState('');const f=useForm<Fields>({defaultValues:{nf:'',tag:a.tag,supplier:a.supplier==='Não vinculado'?'':a.supplier,owner:a.owner==='Não definido'?'':a.owner,departedAt:s.asOf.slice(0,10),dueAt:'',permanenceLimit:'150',validityMinutes:String(DEFAULT_AUTHORIZATION_MINUTES),reason:'',confirm:false}});const m=useMutation({mutationFn:api.command,onSuccess:()=>{f.setValue('confirm',false);void qc.invalidateQueries({queryKey:['snapshot']});}});const pending=(s.commands??[]).some(c=>c.assetId===a.id&&['created','published','received'].includes(c.status));const isOpen=type==='open',isRemit=type==='remittance',isReturn=type==='return_nf',needsReason=type==='authorize'||type==='reapply',needsConfirm=type==='authorize'||type==='close'||type==='physical_return';const submit=f.handleSubmit(values=>{setError('');const parsed=schema.safeParse(values);if(!parsed.success){setError('Revise os campos e seus limites.');return;}if(needsConfirm&&!values.confirm){setError('Confirme explicitamente o alvo e a ação.');return;}const payload:Record<string,string>=Object.fromEntries(Object.entries(parsed.data).map(([k,v])=>[k,String(v)]));if(isOpen||isRemit){payload.departedAt=values.departedAt+'T03:00:00Z';payload.dueAt=values.dueAt?new Date(Date.parse(values.dueAt+'T03:00:00Z')+86400000-1).toISOString():'';}m.mutate({assetId:a.id,type,payload,scenario});});return <Card className="section-card"><h2>Central de comandos</h2><p className="small muted">Alvo: <strong>{a.tag}</strong> · {cycleId(a)}. Publicação e resposta exclusivamente simuladas. Autorizar, reaplicar e encerrar exigem TAG conectada no cenário normal.</p><form className="gt-form" onSubmit={submit}><label>Ação<select value={type} onChange={e=>{setType(e.target.value as CommandType);f.setValue('confirm',false);setError('');}}>{Object.entries(commandLabels).map(([k,v])=><option key={k} value={k}>{v}</option>)}</select></label><label>Resposta de teste<select value={scenario} onChange={e=>setScenario(e.target.value as CommandInput['scenario'])}><option value="normal">Fluxo normal</option><option value="refused">Forçar recusa</option><option value="timeout">Simular ausência de resposta</option><option value="expired">Simular expiração</option></select></label>{(isOpen||isRemit||isReturn)&&<label>Número fictício da NF<input required {...f.register('nf')} placeholder="DEMO-0001"/></label>}{(isOpen||isRemit)&&<label>Emissão da NF<input type="date" required {...f.register('departedAt')}/></label>}{isOpen&&<><label>TAG<input required {...f.register('tag')}/></label><label>Fornecedor fictício<input required {...f.register('supplier')}/></label><label>Responsável fictício<input required {...f.register('owner')}/></label><label>Prazo previsto<input type="date" required {...f.register('dueAt')}/></label><label>Limiar de permanência (dias)<input type="number" min="1" required {...f.register('permanenceLimit')}/></label></>}{type==="authorize"&&<label>Validade simulada (min)<input type="number" min="1" max="4320" required {...f.register("validityMinutes")}/></label>}{needsReason&&<label className="full">Justificativa<textarea required {...f.register('reason')}/></label>}{needsConfirm&&<label className="check-field full"><input type="checkbox" {...f.register('confirm')}/> Confirmo {commandLabels[type].toLowerCase()} em {a.tag} / {cycleId(a)}.</label>}<div className="full"><Button type="submit" variant="primary" disabled={m.isPending||pending}>{pending?'Aguardando resposta…':'Enviar comando simulado'}</Button></div></form>{(error||m.error)&&<p role="alert" className="error-text">{error||m.error?.message}</p>}<div aria-live="polite">{(s.commands??[]).filter(c=>c.assetId===a.id).slice().reverse().slice(0,8).map(c=><article className="command-record" key={c.id}><div className="section-heading"><strong>{commandLabels[c.type]}</strong><StatusBadge tone={c.status==='executed'?'success':c.status==='refused'||c.status==='timeout'||c.status==='expired'?'warning':'info'}>{commandStatuses[c.status]}</StatusBadge></div><p className="small mono break-any">{c.id} · {c.tag} · {c.cycleId}{c.resultCycleId&&c.resultCycleId!==c.cycleId?` → ${c.resultCycleId}`:""}</p><p>{c.reason}</p><p className="small muted">Validade: {formatDate(c.expiresAt)}</p><ol className="step-list">{c.steps.map((x,i)=><li key={i}>{commandStatuses[x.status]} — {formatDate(x.at)}</li>)}</ol></article>)}</div></Card>}
+const mqttCommands: CommandType[]=['open','remittance','authorize','return_nf','close'];
+const mqttStatuses: Record<CommandStatus,string>={created:'Criado',published:'Publicado no broker',received:'Recebido',executed:isPhysicalEsp32?'Executado pelo ESP32':'Executado pelo simulador',refused:isPhysicalEsp32?'Recusado pelo ESP32':'Recusado pelo simulador',timeout:'Sem resposta',expired:'Expirado'};
+
+export function CommandForm({asset:a,snapshot:s}:{asset:Asset;snapshot:Snapshot}){
+  const qc=useQueryClient();
+  const [type,setType]=useState<CommandType>(a.closedAt?'open':'authorize');
+  const [scenario,setScenario]=useState<CommandInput['scenario']>('normal');
+  const [error,setError]=useState('');
+  const f=useForm<Fields>({defaultValues:{nf:'',tag:a.tag,supplier:a.supplier==='Não vinculado'?'':a.supplier,owner:a.owner==='Não definido'?'':a.owner,departedAt:s.asOf.slice(0,10),dueAt:'',permanenceLimit:'150',validityMinutes:String(DEFAULT_AUTHORIZATION_MINUTES),reason:'',confirm:false}});
+  const m=useMutation({mutationFn:api.command,onSuccess:()=>{f.setValue('confirm',false);void qc.invalidateQueries({queryKey:['snapshot']});}});
+  const pending=(s.commands??[]).some(c=>c.assetId===a.id&&['created','published','received'].includes(c.status));
+  const isOpen=type==='open',isRemit=type==='remittance',isReturn=type==='return_nf';
+  const needsReason=!isMqttMode&&(type==='authorize'||type==='reapply');
+  const needsConfirm=type==='authorize'||type==='close'||(!isMqttMode&&type==='physical_return');
+  const available=Object.entries(commandLabels).filter(([key])=>!isMqttMode||mqttCommands.includes(key as CommandType));
+  const labels=isMqttMode?mqttStatuses:commandStatuses;
+  const submit=f.handleSubmit(values=>{
+    setError('');
+    const parsed=schema.safeParse(values);
+    if(!parsed.success){setError('Revise os campos e seus limites.');return;}
+    if(needsConfirm&&!values.confirm){setError('Confirme explicitamente o alvo e a ação.');return;}
+    if(isMqttMode&&isRemit&&!values.nf.trim()){setError('Informe a NF de remessa.');return;}
+    const payload:Record<string,string>=Object.fromEntries(Object.entries(parsed.data).map(([key,value])=>[key,String(value)]));
+    if(!isMqttMode&&(isOpen||isRemit)){
+      payload.departedAt=values.departedAt+'T03:00:00Z';
+      payload.dueAt=values.dueAt?new Date(Date.parse(values.dueAt+'T03:00:00Z')+86400000-1).toISOString():'';
+    }
+    m.mutate({assetId:a.id,type,payload,scenario:isMqttMode?'normal':scenario});
+  });
+  return <Card className="section-card">
+    <h2>Central de comandos</h2>
+    <p className="small muted">Alvo: <strong>{a.tag}</strong> · {cycleId(a)}. {isMqttMode?`O pedido é publicado em cmd e só aparece como executado após cmd/resposta ${isPhysicalEsp32?'do ESP32':'do simulador'}.`:'Publicação e resposta exclusivamente simuladas.'}</p>
+    <form className="gt-form" onSubmit={submit}>
+      <label>Ação<select value={type} onChange={event=>{setType(event.target.value as CommandType);f.setValue('confirm',false);setError('');}}>{available.map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
+      {!isMqttMode&&<label>Resposta de teste<select value={scenario} onChange={event=>setScenario(event.target.value as CommandInput['scenario'])}><option value="normal">Fluxo normal</option><option value="refused">Forçar recusa</option><option value="timeout">Simular ausência de resposta</option><option value="expired">Simular expiração</option></select></label>}
+      {isMqttMode&&isRemit&&<label>Número anonimizado da NF<input required maxLength={15} {...f.register('nf',{setValueAs:(v:string)=>String(v??'').toUpperCase().trim(),onChange:(e:React.ChangeEvent<HTMLInputElement>)=>{e.target.value=e.target.value.toUpperCase();}})} autoCapitalize="characters" style={{textTransform:'uppercase'}} placeholder="NF-000123"/></label>}
+      {!isMqttMode&&(isOpen||isRemit||isReturn)&&<label>Número fictício da NF<input required {...f.register('nf',{setValueAs:(v:string)=>String(v??'').toUpperCase().trim(),onChange:(e:React.ChangeEvent<HTMLInputElement>)=>{e.target.value=e.target.value.toUpperCase();}})} autoCapitalize="characters" style={{textTransform:'uppercase'}} placeholder="DEMO-0001"/></label>}
+      {!isMqttMode&&(isOpen||isRemit)&&<label>Emissão da NF<input type="date" required {...f.register('departedAt')}/></label>}
+      {!isMqttMode&&isOpen&&<><label>TAG<input required {...f.register('tag',{onChange:(e:React.ChangeEvent<HTMLInputElement>)=>{e.target.value=e.target.value.toUpperCase();}})}/></label><label>Fornecedor fictício<input required {...f.register('supplier')}/></label><label>Responsável fictício<input required {...f.register('owner')}/></label><label>Prazo previsto<input type="date" required {...f.register('dueAt')}/></label><label>Limiar de permanência (dias)<input type="number" min="1" required {...f.register('permanenceLimit')}/></label></>}
+      {!isMqttMode&&type==='authorize'&&<label>Validade simulada (min)<input type="number" min="1" max="4320" required {...f.register('validityMinutes')}/></label>}
+      {needsReason&&<label className="full">Justificativa<textarea required {...f.register('reason')}/></label>}
+      {needsConfirm&&<label className="check-field full"><input type="checkbox" {...f.register('confirm')}/> Confirmo {commandLabels[type].toLowerCase()} em {a.tag} / {cycleId(a)}.</label>}
+      <div className="full"><Button type="submit" variant="primary" disabled={m.isPending||pending}>{pending?'Aguardando resposta…':isMqttMode?(isPhysicalEsp32?'Enviar comando ao ESP32':'Enviar comando ao simulador'):'Enviar comando simulado'}</Button></div>
+    </form>
+    {(error||m.error)&&<p role="alert" className="error-text">{error||m.error?.message}</p>}
+    <div aria-live="polite">{(s.commands??[]).filter(c=>c.assetId===a.id).slice().reverse().slice(0,8).map(c=><article className="command-record" key={c.id}><div className="section-heading"><strong>{commandLabels[c.type]}</strong><StatusBadge tone={c.status==='executed'?'success':c.status==='refused'||c.status==='timeout'||c.status==='expired'?'warning':'info'}>{labels[c.status]}</StatusBadge></div><p className="small mono break-any">{c.id} · {c.tag} · {c.cycleId}{c.resultCycleId&&c.resultCycleId!==c.cycleId?` → ${c.resultCycleId}`:''}</p><p>{c.reason}</p><p className="small muted">Validade: {formatDate(c.expiresAt)}</p><ol className="step-list">{c.steps.map((step,index)=><li key={index}>{labels[step.status]} — {formatDate(step.at)}</li>)}</ol></article>)}</div>
+  </Card>;
+}

@@ -6,7 +6,7 @@ export function daysOutside(a: Asset, now: string) { return daysBetween(a.depart
 export function overdue(a: Asset, now: string) { return !a.returnedAt && !a.closedAt && Date.parse(now) > Date.parse(a.dueAt); }
 export function lateDays(a: Asset, now: string) { return overdue(a, now) ? Math.ceil((Date.parse(now)-Date.parse(a.dueAt))/DAY) : 0; }
 export function prolonged(a: Asset, now: string) { return !a.returnedAt && !a.closedAt && daysOutside(a, now) >= a.permanenceLimit; }
-export function silent(a: Asset, now: string) { const reference=a.lastContact??a.monitoringStartedAt??a.departedAt; return !a.returnedAt && !a.closedAt && Date.parse(now)-Date.parse(reference)>a.intervalDays*2*DAY; }
+export function silent(a: Asset, now: string) { const reference=a.lastContact??a.monitoringStartedAt; return !!reference && !a.returnedAt && !a.closedAt && Date.parse(now)-Date.parse(reference)>a.intervalDays*2*DAY; }
 export function fiscalPending(a: Asset) { return !!a.returnedAt && !a.closedAt; }
 export function unresolved(alerts: Alert[], id: string, kind: AlertKind) { return alerts.some(x=>x.assetId===id && x.kind===kind && x.status!=='resolved'); }
 export function priority(a: Asset, s: Snapshot) { if(unresolved(s.alerts,a.id,'seal') || a.seal==='violated') return 0; if(overdue(a,s.asOf)) return 1; if(fiscalPending(a)) return 2; if(prolonged(a,s.asOf)) return 3; if(silent(a,s.asOf)) return 5; if(a.batteryFault || (a.battery!==null && a.battery<20)) return 6; return 7; }

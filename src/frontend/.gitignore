@@ -2,6 +2,7 @@ node_modules/
 dist/
 .env*
 !.env.example
+!.env.mqtt.example
 public/mockServiceWorker.js
 test-results/
 playwright-report/

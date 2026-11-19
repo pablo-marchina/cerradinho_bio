@@ -32,6 +32,10 @@ test('sem primeiro contato, silêncio usa início do acompanhamento sem inventar
   assert.equal(silent(a,new Date(threshold+1).toISOString()),true);
   assert.equal(a.lastContact,null);
 });
+test('status retido sem horário não usa a saída como última comunicação',()=>{
+  const a={...find('AT-0055'),lastContact:null,monitoringStartedAt:undefined,departedAt:'2026-01-01T00:00:00.000Z',closedAt:null,returnedAt:null};
+  assert.equal(silent(a,'2026-11-17T00:00:00.000Z'),false);
+});
 test('proximidade de sete dias não cria prioridade operacional',()=>{
   const c=createSnapshot(),a=c.assets.find(x=>x.id==='AT-0055');
   a.dueAt=new Date(Date.parse(c.asOf)+6*86400000).toISOString();

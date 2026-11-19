@@ -1,8 +1,8 @@
 # Guarátracking — Frontend v1.0
 
-**Candidato a release acadêmica, frontend-only, em modo demonstração.** Painel operacional de equipamentos remetidos à manutenção externa. A identidade segue o guia Guarátracking v2. O cenário inicial tem seis equipamentos sintéticos e um relógio simulado em 12/11/2026, 10h de Brasília, independente do relógio do navegador.
+Painel operacional de equipamentos remetidos à manutenção externa. A identidade segue o guia Guarátracking v2. A aplicação oferece dois modos separados: demonstração com dados sintéticos e integração MQTT por WebSocket com o protótipo.
 
-Não há backend, banco de dados, credenciais MQTT, comunicação com ESP32, emissão de NF, autenticação real ou dados do parceiro. Alterações duram enquanto a aplicação permanece carregada; recarregar a página ou reiniciar o cenário restaura os dados. Comandos e telemetria simulados nunca constituem evidência de integração da seção 3.4.3.
+Não há backend, banco de dados, emissão de NF ou autenticação real. O modo demonstração continua sem comunicação externa. No modo MQTT, telemetria e comandos vivem apenas na sessão do navegador; nenhum segredo deve ser incluído no bundle nem versionado.
 
 ## Executar
 
@@ -15,6 +15,28 @@ npm run dev
 ```
 
 Abra http://localhost:5173 (ou a URL exibida). O `postinstall` gera `public/mockServiceWorker.js`; caso os scripts estejam desabilitados, execute `npx msw init public --save`. MSW precisa de localhost ou HTTPS. A aplicação inicia o worker antes de renderizar, sem API externa.
+
+## Integração MQTT local
+
+O modo MQTT assina `status`, `evento`, `online` e `cmd/resposta` e publica em `cmd`, sempre sob `guaratracking/{device_id}/`. Ele aceita o formato compacto atual do firmware, inclusive `online`/`offline` em texto, e também compreende o formato expandido previsto no contrato. A versão atual do firmware ainda não publica coordenadas no MQTT; a posição enviada pelo simulador exercita o formato proposto para a próxima integração.
+
+1. Copie `.env.mqtt.example` para `.env.local` e mantenha os valores locais sem credenciais.
+2. Inicie o EMQX com MQTT TCP em `1883` e WebSocket em `8083`, caminho `/mqtt`.
+3. Em um terminal, execute o simulador fiel aos tópicos do ESP32:
+
+   ```powershell
+   npm run simulate:mqtt
+   ```
+
+4. Em outro terminal, execute:
+
+   ```powershell
+   npm run dev
+   ```
+
+O simulador publica status, violação e uma posição fictícia no formato proposto, além de responder aos mesmos comandos planos implementados pelo firmware. Para usar a placa física, encerre o simulador, defina `VITE_MQTT_SOURCE=esp32` e configure o ESP32 com o mesmo `device_id` e o endereço MQTT TCP do notebook. O dashboard continua usando WebSocket. Até o firmware publicar a última posição válida, essa informação ficará indisponível no modo físico.
+
+Variáveis disponíveis: `VITE_MQTT_URL`, `VITE_MQTT_DEVICE_ID`, `VITE_MQTT_SOURCE` (`simulator` ou `esp32`), `VITE_MQTT_USERNAME` e `VITE_MQTT_PASSWORD`. Usuário e senha em variáveis `VITE_*` ficam visíveis no navegador; portanto, este caminho é adequado apenas ao broker local de demonstração. Um ambiente externo autenticado precisa de backend ou credencial temporária de escopo mínimo.
 
 ```bash
 npm run test:domain       # Node 22: não precisa de npm install
@@ -72,7 +94,7 @@ public/                    # recorte da assinatura oficial, worker gerado
  docs/                     # especificações, cobertura e integração
 ```
 
-Stack efetivamente usada: React, Vite, TypeScript, Tailwind, React Router, TanStack Query e Table, Lucide, CVA/clsx/tailwind-merge, MSW, React Hook Form, Zod, MapLibre e Recharts. Não foi adicionado Zustand: estado global remoto simulado fica em TanStack Query e estado visual em React/URL. Os primitives foram mantidos em código local compatível com tokens shadcn; não foram gerados pela CLI. As fontes vêm de Google Fonts com fallback de sistema. O logo PNG é recorte do guia; trocar pelo arquivo-mestre aprovado. Grafismos Pataxó não foram incluídos. O mapa não infere rotas; uso público do servidor de tiles exige revisão das condições do provedor.
+Stack efetivamente usada: React, Vite, TypeScript, Tailwind, React Router, TanStack Query e Table, Lucide, CVA/clsx/tailwind-merge, MSW, React Hook Form, Zod, MapLibre e Recharts. Não foi adicionado Zustand: estado global remoto simulado fica em TanStack Query e estado visual em React/URL. Os primitives foram mantidos em código local compatível com tokens shadcn; não foram gerados pela CLI. As fontes vêm de Google Fonts com fallback de sistema. O logo é o SVG da assinatura principal (10b), extraído do guia sem o fundo. Grafismos Pataxó não foram incluídos. O mapa não infere rotas; uso público do servidor de tiles exige revisão das condições do provedor.
 
 ## Validação e limites
 

@@ -1,4 +1,7 @@
 import type { Alert, AlertStatus, Asset, CommandInput, CommandRecord, Scenario, Snapshot } from './types';
+import {isMqttMode} from './runtime';
+import {mqttApi} from './mqtt';
 async function request<T>(path:string,init?:RequestInit):Promise<T>{const r=await fetch(`/api/demo/${path}`,init);if(!r.ok){const body=await r.json().catch(()=>({message:'Não foi possível carregar os dados'}));throw new Error(body.message||'Falha na solicitação');}return r.json() as Promise<T>;}
 const json=(method:string,body:unknown):RequestInit=>({method,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-export const api={snapshot:()=>request<Snapshot>('snapshot'),updateAlert:(id:string,status:AlertStatus,reason:string)=>request<Alert>(`alerts/${id}`,json('PATCH',{status,reason})),registerAsset:(input:Record<string,string>)=>request<Asset>('assets',json('POST',input)),command:(input:CommandInput)=>request<CommandRecord>('commands',json('POST',input)),scenario:(id:string,scenario:Scenario)=>request<Asset>('scenario',json('POST',{id,scenario})),reset:()=>request<{ok:boolean}>('reset',{method:'POST'})};
+const demoApi={snapshot:()=>request<Snapshot>('snapshot'),updateAlert:(id:string,status:AlertStatus,reason:string)=>request<Alert>(`alerts/${id}`,json('PATCH',{status,reason})),registerAsset:(input:Record<string,string>)=>request<Asset>('assets',json('POST',input)),command:(input:CommandInput)=>request<CommandRecord>('commands',json('POST',input)),scenario:(id:string,scenario:Scenario)=>request<Asset>('scenario',json('POST',{id,scenario})),reset:()=>request<{ok:boolean}>('reset',{method:'POST'})};
+export const api=isMqttMode?mqttApi:demoApi;
