@@ -28,12 +28,12 @@ export function AssetDetail() {
   const since = daysSinceNf(a, state.now);
   return (
     <div className="pp">
-      <div className="row-between">
+      <div className="row-between detail-top">
         <Link to="/" className="back"><ArrowLeft size={16} /> Painel</Link>
         <div className="row-gap">
-          <button type="button" className="btn btn-secondary" onClick={() => setSharing(true)}><Share2 size={16} /> Compartilhar acompanhamento</button>
-          {s && <a className="btn btn-secondary" href={mailto(a, s.email, state.now)}><Mail size={16} /> E-mail para a oficina</a>}
-          {s && <a className="btn btn-secondary" href={`tel:${s.phone.replace(/\D/g, '')}`}><Phone size={16} /> Ligar para a oficina</a>}
+          <button type="button" className="btn btn-secondary" onClick={() => setSharing(true)}><Share2 size={16} /> <span className="lbl-full">Compartilhar acompanhamento</span><span className="lbl-short">Compartilhar</span></button>
+          {s && <a className="btn btn-secondary" href={mailto(a, s.email, state.now)}><Mail size={16} /> <span className="lbl-full">E-mail para a oficina</span><span className="lbl-short">E-mail</span></a>}
+          {s && <a className="btn btn-secondary" href={`tel:${s.phone.replace(/\D/g, '')}`}><Phone size={16} /> <span className="lbl-full">Ligar para a oficina</span><span className="lbl-short">Ligar</span></a>}
         </div>
       </div>
       {sharing && <ShareDialog asset={a} onClose={() => setSharing(false)} />}

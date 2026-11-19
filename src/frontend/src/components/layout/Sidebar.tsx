@@ -7,6 +7,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { isMqttMode, isPhysicalEsp32 } from '@/services/runtime';
 import { useCurrentPersona } from '@/portfolio/ui';
 import { personaLabel, personaName } from '@/portfolio/logic';
+import { SourceToggle } from './SourceToggle';
 import type { Persona } from '@/portfolio/types';
 
 type Item = { to: string; label: string; icon: LucideIcon; end?: boolean };
@@ -70,6 +71,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
           {tag.filter(item => !isMqttMode || item.to !== '/relatorios').map(link)}
         </details>
       </nav>
+      <div className="sidebar-source"><p>FONTE DOS DADOS</p><SourceToggle /></div>
       <div className="sidebar-footer"><span className="small-dot" /> {environment}<br /><span className="muted">Frontend · v1.0</span></div>
     </aside>
   );

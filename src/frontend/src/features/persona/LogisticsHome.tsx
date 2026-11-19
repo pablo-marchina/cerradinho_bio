@@ -135,10 +135,10 @@ export function LogisticsOficinas() {
               {stats.map(x => (
                 <tr key={x.supplier.id}>
                   <td><b>{x.supplier.name}</b><br /><span className="small muted">{x.supplier.city}/{x.supplier.uf}</span></td>
-                  <td className="mono">{x.open}</td>
-                  <td className={`mono ${x.overdue ? 'text-danger' : ''}`}>{x.overdue}</td>
-                  <td className="mono">{x.avgRepairDays === null ? '—' : `${x.avgRepairDays} d`}</td>
-                  <td>
+                  <td className="mono" data-label="Na oficina">{x.open}</td>
+                  <td className={`mono ${x.overdue ? 'text-danger' : ''}`} data-label="Atrasados">{x.overdue}</td>
+                  <td className="mono" data-label="Reparo médio">{x.avgRepairDays === null ? '—' : `${x.avgRepairDays} d`}</td>
+                  <td data-label="No prazo">
                     {x.onTimeRate === null ? '—' : (
                       <span className="due">
                         <span className={`due-bar ${x.onTimeRate < 60 ? 'late' : x.onTimeRate < 80 ? 'soon' : 'ok'}`}><span style={{ width: `${x.onTimeRate}%` }} /></span>
