@@ -731,3 +731,22 @@ span.thumb.thumb-empty svg { display: block; }
   .filters .seg-tabs button { justify-content: center; padding: 10px 4px; font-size: 14px; flex-direction: column; gap: 2px; }
   .filters .input { width: 100% !important; }
 }
+
+/* Celular: barra de baixo com os botões principais da pessoa; troca de pessoa no menu */
+.sidebar-persona { display: none; }
+@media (max-width: 760px) {
+  .bottom-bar { display: flex !important; justify-content: space-around; align-items: stretch; gap: 2px; }
+  .bottom-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 6px 2px; border-radius: 12px; font-size: 12px; font-weight: 700; color: var(--gt-pedra); min-height: 54px; }
+  .bottom-item.on { color: var(--gt-semente); background: var(--gt-polpa); }
+  .bottom-item.primary svg { background: var(--gt-guara); color: white; border-radius: 50%; padding: 6px; width: 34px; height: 34px; box-sizing: border-box; }
+  .bottom-item.primary { color: var(--gt-guara); }
+  .sidebar-persona { display: block; padding: 12px 8px; border-top: 1px solid var(--gt-areia); }
+  .sidebar-persona p { font-size: 12px; font-weight: 700; letter-spacing: .06em; color: var(--gt-pedra); margin: 0 0 8px; }
+  .sidebar-persona .persona-switch { display: grid !important; grid-template-columns: 1fr; gap: 4px; margin: 0; }
+  .sidebar-persona .persona-tab { padding: 8px 10px; border-radius: 10px; border-bottom: 0; }
+  .sidebar-persona .persona-tab span { display: inline !important; }
+  .sidebar-persona .persona-tab small { display: inline !important; margin-left: 6px; }
+  .sidebar-persona .persona-tab.on { background: var(--gt-polpa); }
+  .sidebar-persona .desk-count { margin-left: auto; }
+}
+@media (max-width: 760px) { .sidebar-persona .persona-tab .avatar-p { display: inline-grid !important; place-items: center; } }

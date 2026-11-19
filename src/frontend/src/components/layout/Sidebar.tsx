@@ -5,26 +5,26 @@ import {
 } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { isMqttMode, isPhysicalEsp32 } from '@/services/runtime';
-import { useCurrentPersona } from '@/portfolio/ui';
+import { PersonaSwitcher, useCurrentPersona } from '@/portfolio/ui';
 import { personaLabel, personaName } from '@/portfolio/logic';
 import { SourceToggle } from './SourceToggle';
 import type { Persona } from '@/portfolio/types';
 
-type Item = { to: string; label: string; icon: LucideIcon; end?: boolean };
+type Item = { to: string; label: string; icon: LucideIcon; end?: boolean; short?: string };
 
 /** Cada pessoa tem o próprio menu: o PCM não vê as telas da Logística e vice-versa. */
 const byPersona: Record<Persona, Item[]> = {
   pcm: [
     { to: '/', label: 'Painel', icon: Workflow, end: true },
-    { to: '/ativos/novo', label: 'Novo envio', icon: PlusCircle },
+    { to: '/ativos/novo', label: 'Novo envio', icon: PlusCircle, short: 'Novo' },
     { to: '/ativos', label: 'Trajetórias', icon: Route, end: true },
-    { to: '/prazos', label: 'Calendário de prazos', icon: CalendarDays },
-    { to: '/onde-estao', label: 'Onde estão', icon: MapIcon },
+    { to: '/prazos', label: 'Calendário de prazos', icon: CalendarDays, short: 'Prazos' },
+    { to: '/onde-estao', label: 'Onde estão', icon: MapIcon, short: 'Mapa' },
   ],
   fiscal: [
     { to: '/fiscal', label: 'Pendências', icon: Inbox, end: true },
-    { to: '/fiscal/prazos', label: 'Prazos fiscais', icon: CalendarClock },
-    { to: '/fiscal/consulta', label: 'Consultar ativo', icon: Search },
+    { to: '/fiscal/prazos', label: 'Prazos fiscais', icon: CalendarClock, short: 'Prazos' },
+    { to: '/fiscal/consulta', label: 'Consultar ativo', icon: Search, short: 'Consultar' },
   ],
   logistica: [
     { to: '/logistica', label: 'Gargalos', icon: Hourglass, end: true },
@@ -71,8 +71,24 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
           {tag.filter(item => !isMqttMode || item.to !== '/relatorios').map(link)}
         </details>
       </nav>
+      <div className="sidebar-persona"><p>VER COMO</p><PersonaSwitcher /></div>
       <div className="sidebar-source"><p>FONTE DOS DADOS</p><SourceToggle /></div>
       <div className="sidebar-footer"><span className="small-dot" /> {environment}<br /><span className="muted">Frontend · v1.0</span></div>
     </aside>
+  );
+}
+
+/** No celular, os botões principais da pessoa ficam embaixo, ao alcance do polegar. */
+export function BottomNav() {
+  const persona = useCurrentPersona();
+  return (
+    <nav className="bottom-bar" aria-label="Atalhos">
+      {byPersona[persona].map(({ to, label, short, icon: Icon, end }) => (
+        <NavLink key={to} to={to} end={end} className={({ isActive }) => `bottom-item ${isActive ? 'on' : ''} ${to === '/ativos/novo' ? 'primary' : ''}`}>
+          <Icon size={22} aria-hidden="true" />
+          <span>{short ?? label}</span>
+        </NavLink>
+      ))}
+    </nav>
   );
 }
